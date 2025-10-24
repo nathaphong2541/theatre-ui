@@ -1,0 +1,95 @@
+<!-- News Section -->
+<section id="news" class="bg-white py-16">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900">ข่าวสารและอัปเดต</h2>
+
+            <!-- Search + Filters -->
+            <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+                <div class="relative sm:w-72">
+                    <input type="text" placeholder="ค้นหาข่าว…"
+                        class="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" />
+                    <svg class="pointer-events-none absolute right-3 top-2.5 h-5 w-5 text-gray-400" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M14.293 13.293a8 8 0 1 0-1 1l3.854 3.853a.75.75 0 0 0 1.06-1.06l-3.914-3.793zM8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <!-- ตัวอย่างแท็กฟิลเตอร์ -->
+                    <button class="rounded-full border px-3 py-1.5 text-sm hover:bg-gray-50">ทั้งหมด</button>
+                    <button class="rounded-full border px-3 py-1.5 text-sm hover:bg-gray-50">ประกาศ</button>
+                    <button class="rounded-full border px-3 py-1.5 text-sm hover:bg-gray-50">อัปเดตระบบ</button>
+                    <button class="rounded-full border px-3 py-1.5 text-sm hover:bg-gray-50">กิจกรรม</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Card -->
+            <!-- *ถ้าใช้ Angular: วนด้วย *ngFor="let item of newsList" -->
+            <article class="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-lg transition">
+                <div class="aspect-[16/9] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?w=900&q=80" alt="News cover"
+                        class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                </div>
+                <div class="p-5">
+                    <div class="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                        <span class="rounded-full bg-indigo-50 px-2 py-0.5 font-medium text-indigo-700">ประกาศ</span>
+                        <span>•</span>
+                        <time datetime="2025-09-27">27 ก.ย. 2568</time>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">
+                        เปิดตัวฟีเจอร์ใหม่ ช่วยงานร่วมกันได้เร็วขึ้น
+                    </h3>
+                    <p class="mt-2 line-clamp-3 text-sm text-gray-600">
+                        เราได้ปรับปรุงระบบการทำงานร่วมกัน พร้อมเพิ่มความปลอดภัยและประสิทธิภาพในการจัดการข้อมูลของคุณ…
+                    </p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <a href="#" class="text-sm font-semibold text-indigo-600 hover:underline">อ่านต่อ</a>
+                        <div class="text-xs text-gray-500">โดย ทีมงานแพลตฟอร์ม</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ทำสำเนา card นี้อีก 5–8 ใบเป็นตัวอย่างได้เลย -->
+            <article class="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-lg transition">
+                <div class="aspect-[16/9] overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=900&q=80"
+                        class="h-full w-full object-cover group-hover:scale-[1.03] transition" />
+                </div>
+                <div class="p-5">
+                    <div class="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                        <span class="rounded-full bg-green-50 px-2 py-0.5 font-medium text-green-700">กิจกรรม</span>
+                        <span>•</span>
+                        <time datetime="2025-09-15">15 ก.ย. 2568</time>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">
+                        สรุปงานพบปะผู้ใช้งานประจำไตรมาส</h3>
+                    <p class="mt-2 line-clamp-3 text-sm text-gray-600">เก็บภาพบรรยากาศและไฮไลต์จากงาน
+                        พร้อมแนวทางพัฒนาร่วมกันในไตรมาสถัดไป…</p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <a href="#" class="text-sm font-semibold text-indigo-600 hover:underline">อ่านต่อ</a>
+                        <div class="text-xs text-gray-500">โดย Community Team</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- …การ์ดอื่นๆ -->
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-12 flex items-center justify-center gap-2" aria-label="Pagination">
+            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40"
+                disabled>ก่อนหน้า</button>
+            <button class="rounded-lg border px-3 py-2 text-sm bg-gray-900 text-foreground">1</button>
+            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">2</button>
+            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">3</button>
+            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">ถัดไป</button>
+        </nav>
+    </div>
+</section>

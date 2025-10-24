@@ -1,0 +1,129 @@
+<!-- Member Search (Profile Cards) -->
+<section id="member-search" class="bg-white py-16">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+
+        <!-- Header + Filters -->
+        <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <h2 class="text-3xl font-bold tracking-tight text-gray-900">ค้นหาสมาชิก</h2>
+                <p class="mt-2 text-gray-600">ค้นหาด้วยชื่อ, เลขสมาชิก, จังหวัด, หรือสถานะ</p>
+            </div>
+            <form class="w-full sm:w-auto">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <div class="relative sm:w-80">
+                        <input type="text" placeholder="ชื่อ/เลขสมาชิก/อีเมล…"
+                            class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <svg class="pointer-events-none absolute right-3 top-2.5 h-5 w-5 text-gray-400"
+                            viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M14.293 13.293a8 8 0 1 0-1 1l3.854 3.853a.75.75 0 0 0 1.06-1.06l-3.914-3.793zM8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <select
+                        class="rounded-xl border px-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <option value="">สถานะ: ทั้งหมด</option>
+                        <option value="active">ใช้งาน</option>
+                        <option value="inactive">ระงับ</option>
+                        <option value="pending">รอตรวจสอบ</option>
+                    </select>
+                    <button type="button"
+                        class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-indigo-500">
+                        ค้นหา
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Profile Card Grid -->
+        <!-- *Angular: *ngFor="let m of members" -->
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <!-- Card -->
+            <article class="group overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-lg">
+                <div class="flex items-start gap-4 p-5">
+                    <!-- Avatar -->
+                    <img class="h-16 w-16 flex-none rounded-full object-cover ring-2 ring-gray-100"
+                        src="https://i.pravatar.cc/160?img=12" alt="avatar">
+
+                    <!-- Main -->
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-start justify-between gap-2">
+                            <h3 class="truncate text-base font-semibold text-gray-900">
+                                กิตติ ศิริวงศ์
+                            </h3>
+                            <!-- Status -->
+                            <span
+                                class="shrink-0 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
+                                ใช้งาน
+                            </span>
+                        </div>
+                        <div class="mt-1 text-sm text-gray-600">
+                            MEM-000123 • เชียงใหม่
+                        </div>
+                        <div class="mt-1 truncate text-sm text-gray-500">
+                            kitti&#64;example.com • 08x-xxx-xxxx
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <span
+                                class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">Premium</span>
+                            <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs">ภาคเหนือ</span>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-4 flex items-center gap-2">
+                            <a href="#"
+                                class="inline-flex items-center rounded-xl border px-3 py-2 text-sm hover:bg-gray-50">
+                                ดูโปรไฟล์
+                            </a>
+                            <button
+                                class="inline-flex items-center rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-foreground hover:bg-gray-800">
+                                ติดต่อ
+                            </button>
+                            <button class="ml-auto rounded-xl px-3 py-2 text-sm hover:bg-gray-50">
+                                ⋯
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer stats -->
+                <div class="grid grid-cols-3 border-t text-center text-xs text-gray-600">
+                    <div class="px-3 py-3">
+                        <div class="font-semibold text-gray-900">12</div>
+                        ออร์เดอร์
+                    </div>
+                    <div class="px-3 py-3">
+                        <div class="font-semibold text-gray-900">4.8</div>
+                        เรตติ้ง
+                    </div>
+                    <div class="px-3 py-3">
+                        <div class="font-semibold text-gray-900">2025</div>
+                        เริ่มใช้งาน
+                    </div>
+                </div>
+            </article>
+
+            <!-- ทำซ้ำการ์ดตามจำนวนสมาชิก -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="mt-10 hidden rounded-2xl border border-dashed p-10 text-center text-gray-500" id="empty">
+            ไม่พบสมาชิกที่ตรงเงื่อนไข
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-10 flex items-center justify-between">
+            <div class="text-sm text-gray-500">แสดง 1–12 จาก 120 รายการ</div>
+            <div class="flex items-center gap-2">
+                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40"
+                    disabled>ก่อนหน้า</button>
+                <button class="rounded-lg border px-3 py-2 text-sm bg-gray-900 text-foreground">1</button>
+                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">2</button>
+                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">3</button>
+                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">ถัดไป</button>
+            </div>
+        </nav>
+    </div>
+</section>

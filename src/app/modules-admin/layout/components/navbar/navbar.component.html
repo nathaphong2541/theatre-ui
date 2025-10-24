@@ -1,0 +1,34 @@
+<div class="bg-background relative">
+  <div class="mx-auto px-2">
+    <div class="flex items-center justify-between py-3.5 md:justify-start">
+      <!-- Mobile Navigation Menu Button-->
+      <div class="sm:order-1 md:hidden">
+        <button (click)="toggleMobileMenu()" type="button"
+          class="bg-muted text-muted-foreground focus:ring-primary hover:bg-muted-foreground hover:text-muted inline-flex items-center justify-center rounded-md p-2 focus:outline-hidden focus:ring-2 focus:ring-inset">
+          <span class="sr-only">Open menu</span>
+          <svg-icon src="assets/icons/heroicons/outline/menu.svg" [svgClass]="'h-6 w-6'"></svg-icon>
+        </button>
+      </div>
+      <!-- Logo -->
+      <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10 lg:hidden">
+        <a class="flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
+          <img src="assets/images/logo.png" width="30" />
+        </a>
+        <h1 i18n="@@homeTitle" class="text-foreground font-bold uppercase">พอร์ทัลผู้ทำบัญชี</h1>
+      </div>
+      <!-- Right: Navbar menu then Profile -->
+      <div class="sm:order-4 md:flex md:flex-1 lg:w-0 md:ml-auto items-center justify-end">
+        <!-- Navbar menu (desktop only) -->
+        <!-- <div class="hidden md:flex items-center space-x-10 order-1">
+          <app-navbar-menu></app-navbar-menu>
+        </div> -->
+        <!-- Profile -->
+        <app-profile-menu class="order-2 md:ml-4"></app-profile-menu>
+        <app-language-menu class="order-3 md:ml-4"></app-language-menu>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <app-navbar-mobile></app-navbar-mobile>
+</div>

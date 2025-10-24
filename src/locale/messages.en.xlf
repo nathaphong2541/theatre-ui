@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="th" target-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+
+      <trans-unit id="flagTh" datatype="html">
+        <source>ภาษาไทย</source>
+        <target>Thailand</target>
+      </trans-unit>
+
+      <trans-unit id="flagEng" datatype="html">
+        <source>ภาษาอังกฤษ</source>
+        <target>English</target>
+      </trans-unit>
+
+      <trans-unit id="homeTitle" datatype="html">
+        <source>พอร์ทัลผู้ทำบัญชี</source>
+        <target>Accountant Portal</target>
+      </trans-unit>
+
+      <trans-unit id="loginBtn" datatype="html">
+        <source>เข้าสู่ระบบ</source>
+        <target>Sign in</target>
+      </trans-unit>
+
+      <trans-unit id="helloMsg" datatype="html">
+        <source>สวัสดี {{name}}!</source>
+        <target>Hello {{name}}!</target>
+      </trans-unit>
+
+    </body>
+  </file>
+</xliff>
