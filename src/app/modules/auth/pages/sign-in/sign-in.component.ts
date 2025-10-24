@@ -1,50 +1,68 @@
-import { NgClass, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css'],
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgIf, ButtonComponent, NgClass],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AngularSvgIconModule,
+    LanguageMenuComponent
+  ],
 })
 export class SignInComponent implements OnInit {
-  form!: FormGroup;
-  submitted = false;
-  passwordTextType!: boolean;
 
-  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router) {}
+  serverError?: string = undefined; // ตั้งค่าจาก response ของ backend เมื่อ login fail
 
-  onClick() {
-    console.log('Button clicked');
-  }
+  loading = signal(false);
+  showPassword = signal(false);
+
+
+  form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    remember: [true]
+  });
+
+  constructor(
+    private router: Router,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit(): void {
-    this.form = this._formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
   }
 
-  get f() {
-    return this.form.controls;
-  }
+  get f() { return this.form.controls; }
 
-  togglePasswordTextType() {
-    this.passwordTextType = !this.passwordTextType;
-  }
 
-  onSubmit() {
-    this.submitted = true;
-    const { email, password } = this.form.value;
-
+  async onSubmit() {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
+    this.loading.set(true);
 
-    this._router.navigate(['/']);
+
+    // TODO: Replace with your AuthService
+    await new Promise(r => setTimeout(r, 800));
+
+
+    this.loading.set(false);
+    // Example: navigate to dashboard
+    this.router.navigate(['/']);
+  }
+
+  policy() {
+    console.log("dd");
+    this.router.navigate(['/en/auth/policy']);
   }
 }

@@ -1,4 +1,5 @@
-<div class="bg-background relative shadow">
+<!-- src/app/layout/navbar/navbar.component.html -->
+<div class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 relative shadow">
   <div class="mx-auto px-5">
     <div class="flex items-center justify-between md:justify-start">
       <!-- Mobile Navigation Menu Button-->
@@ -9,22 +10,30 @@
           <svg-icon src="assets/icons/heroicons/outline/menu.svg" [svgClass]="'h-6 w-6'"></svg-icon>
         </button>
       </div>
+
       <!-- Logo -->
       <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10">
         <a class="flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
           <img src="assets/images/logo.png" width="50" />
         </a>
-        <h1 i18n="@@homeTitle" class="text-foreground font-bold uppercase">พอร์ทัลผู้ทำบัญชี</h1>
+        <h1 i18n="@@homeTitle" class="text-white font-bold uppercase">พอร์ทัลผู้ทำบัญชี</h1>
       </div>
-      <!-- Right: Navbar menu then Profile -->
-      <div class="sm:order-4 md:flex md:flex-1 lg:w-0 md:ml-auto items-center justify-end">
-        <!-- Navbar menu (desktop only) -->
-        <!-- <div class="hidden md:flex items-center space-x-10 order-1">
-          <app-navbar-menu></app-navbar-menu>
-        </div> -->
-        <!-- Profile -->
-        <app-profile-menu class="order-2 md:ml-4"></app-profile-menu>
-        <app-language-menu class="order-3 md:ml-4"></app-language-menu>
+
+      <!-- Right: Navbar menu then Profile / Login -->
+      <div class="sm:order-4 md:flex md:flex-1 lg:w-0 md:ml-auto items-center justify-end space-x-3">
+        <ng-container *ngIf="isLoggedIn; else guest">
+          <app-profile-menu class="order-2 md:ml-4"></app-profile-menu>
+        </ng-container>
+
+        <ng-template #guest>
+          <a (click)="login()" class="order-2 md:ml-4 inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium
+                    hover:bg-muted bg-card border-muted text-foreground focus:outline-hidden focus:ring-1">
+            <!-- ใช้ i18n และ JSON พร้อมกัน: key 'login' -->
+            <span i18n="@@login">เข้าสู่ระบบ</span>
+          </a>
+        </ng-template>
+
+        <app-language-menu class="order-3 md:ml-2"></app-language-menu>
       </div>
     </div>
   </div>

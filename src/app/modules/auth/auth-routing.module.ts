@@ -6,6 +6,7 @@ import { NewPasswordComponent } from './pages/new-password/new-password.componen
 import { SignInComponent } from './pages/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/sign-up/sign-up.component';
 import { TwoStepsComponent } from './pages/two-steps/two-steps.component';
+import { PolicyConsentComponent } from 'src/app/shared/components/policy-conset/policy-conset.component';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
       { path: 'sign-in', component: SignInComponent, data: { returnUrl: window.location.pathname } },
+      { path: 'policy', component: PolicyConsentComponent },
       { path: 'sign-up', component: SignUpComponent },
       { path: 'forgot-password', component: ForgotPasswordComponent },
       { path: 'new-password', component: NewPasswordComponent },
@@ -27,4 +29,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AuthRoutingModule {}
+export class AuthRoutingModule { }
