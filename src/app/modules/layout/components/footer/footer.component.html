@@ -1,82 +1,63 @@
-<!-- Footer -->
-<footer class="relative bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 text-foreground">
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-background/20"></div>
-
-  <div class="relative mx-auto max-w-7xl px-6 py-16 lg:px-8">
-    <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
-
-      <!-- Brand -->
+<footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-300 border-t-4 border-t-green-400">
+  <div class="mx-auto max-w-7xl px-6 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Logo & Description -->
       <div>
-        <h3 class="text-2xl font-bold">MyBrand</h3>
-        <p class="mt-4 text-sm text-gray-200">
-          แพลตฟอร์มที่ช่วยให้คุณทำงานง่ายขึ้น
-          สะดวกขึ้น และเติบโตไปด้วยกัน
+        <div class="flex items-center space-x-2">
+          <img src="assets/images/logo.png" alt="Logo" class="h-8 w-8 rounded-md shadow" />
+          <span class="text-lg font-semibold text-white" i18n="@@org_name">มูลนิธิละครไทย</span>
+        </div>
+        <p class="mt-3 text-sm text-gray-400 leading-relaxed" i18n="@@footer_note">
+          พื้นที่สร้างสรรค์เพื่อศิลปะการละคร และชุมชนผู้ชม
         </p>
-        <div class="mt-6 flex space-x-4">
-          <a href="#" class="hover:text-yellow-300">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+      </div>
+
+      <!-- Quick Links -->
+      <div class="flex flex-col space-y-2">
+        <h3 i18n="@@footer_quickLinks" class="text-sm font-semibold text-white uppercase tracking-wide">เมนูหลัก</h3>
+        <a href="#" i18n="@@footer_home">หน้าแรก</a>
+        <a href="#" i18n="@@footer_about">เกี่ยวกับเรา</a>
+        <a href="#" i18n="@@footer_activities">กิจกรรม</a>
+        <a href="#" i18n="@@footer_contact">ติดต่อเรา</a>
+      </div>
+
+      <!-- Social Links -->
+      <div>
+        <h3 class="text-sm font-semibold text-white uppercase tracking-wide" i18n="@@footer_followUs">ติดตามเรา</h3>
+        <div class="mt-3 flex space-x-4">
+          <a href="#" aria-label="Facebook" class="hover:text-blue-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path
-                d="M22.54 6.42a8.66 8.66 0 0 1-2.53.7 4.43 4.43 0 0 0 1.93-2.46 8.73 8.73 0 0 1-2.77 1.06 4.36 4.36 0 0 0-7.61 2.98c0 .34.04.68.11 1a12.4 12.4 0 0 1-9.02-4.57 4.34 4.34 0 0 0 1.34 5.81 4.25 4.25 0 0 1-1.97-.55v.06a4.38 4.38 0 0 0 3.5 4.28 4.41 4.41 0 0 1-1.96.07 4.38 4.38 0 0 0 4.08 3.03A8.74 8.74 0 0 1 2 19.54a12.34 12.34 0 0 0 6.7 1.97c8.05 0 12.45-6.67 12.45-12.45 0-.19 0-.38-.01-.57a8.9 8.9 0 0 0 2.18-2.27z" />
+                d="M22 12.07C22 6.5 17.52 2 12 2S2 6.5 2 12.07c0 5 3.66 9.13 8.44 9.93v-7.02H8.08v-2.9h2.36V9.41c0-2.33 1.4-3.62 3.54-3.62 1.02 0 2.09.18 2.09.18v2.3h-1.18c-1.17 0-1.54.73-1.54 1.48v1.78h2.63l-.42 2.9h-2.21v7.02C18.34 21.2 22 17.08 22 12.07Z" />
             </svg>
           </a>
-          <a href="#" class="hover:text-yellow-300">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+          <a href="#" aria-label="Twitter" class="hover:text-sky-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path
-                d="M12 2.04c-5.52 0-10 4.48-10 10.01 0 4.42 3.6 8.09 8.2 8.87v-6.28h-2.46v-2.59h2.46V9.41c0-2.42 1.44-3.76 3.65-3.76 1.06 0 2.18.19 2.18.19v2.4h-1.23c-1.21 0-1.59.75-1.59 1.52v1.82h2.71l-.43 2.59h-2.28v6.28c4.6-.78 8.2-4.45 8.2-8.87 0-5.53-4.48-10.01-10-10.01z" />
+                d="M22.46 6c-.77.35-1.6.58-2.46.69a4.23 4.23 0 0 0 1.84-2.34c-.83.5-1.76.85-2.75 1.05A4.17 4.17 0 0 0 16.11 4a4.18 4.18 0 0 0-4.17 4.17c0 .33.04.65.1.96A11.86 11.86 0 0 1 3.15 5.15a4.17 4.17 0 0 0 1.3 5.56 4.22 4.22 0 0 1-1.89-.52v.05a4.18 4.18 0 0 0 3.35 4.09 4.2 4.2 0 0 1-1.88.07 4.18 4.18 0 0 0 3.9 2.9A8.37 8.37 0 0 1 2 19.54a11.8 11.8 0 0 0 6.41 1.88c7.69 0 11.9-6.38 11.9-11.9l-.01-.54A8.33 8.33 0 0 0 22.46 6Z" />
             </svg>
           </a>
-          <a href="#" class="hover:text-yellow-300">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+          <a href="#" aria-label="Instagram" class="hover:text-pink-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path
-                d="M21.6 0H2.4C1.08 0 0 1.08 0 2.4v19.2C0 22.92 1.08 24 2.4 24h19.2c1.32 0 2.4-1.08 2.4-2.4V2.4C24 1.08 22.92 0 21.6 0zM7.2 20.16H3.84V9.6H7.2v10.56zM5.52 8.16c-1.09 0-1.98-.89-1.98-1.98 0-1.1.89-1.98 1.98-1.98 1.1 0 1.98.88 1.98 1.98 0 1.09-.88 1.98-1.98 1.98zm14.64 12h-3.36v-5.14c0-1.22-.02-2.8-1.71-2.8-1.71 0-1.97 1.34-1.97 2.72v5.22H9.76V9.6h3.22v1.45h.05c.45-.86 1.54-1.77 3.17-1.77 3.39 0 4.02 2.23 4.02 5.12v5.76z" />
+                d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7Zm10 2c1.6 0 3 1.4 3 3v10c0 1.6-1.4 3-3 3H7c-1.6 0-3-1.4-3-3V7c0-1.6 1.4-3 3-3h10Zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.51 5.51 0 0 0 12 7.5Zm0 9A3.5 3.5 0 1 1 15.5 13 3.51 3.51 0 0 1 12 16.5Zm5.75-9.88a1.12 1.12 0 1 1-1.12-1.12 1.12 1.12 0 0 1 1.12 1.12Z" />
             </svg>
           </a>
         </div>
       </div>
-
-      <!-- Navigation -->
-      <div>
-        <h4 class="text-lg font-semibold">เมนู</h4>
-        <ul class="mt-4 space-y-2 text-sm text-gray-200">
-          <li><a href="#" class="hover:text-yellow-300">หน้าหลัก</a></li>
-          <li><a href="#about" class="hover:text-yellow-300">เกี่ยวกับเรา</a></li>
-          <li><a href="#news" class="hover:text-yellow-300">ข่าวสาร</a></li>
-          <li><a href="#member-search" class="hover:text-yellow-300">ค้นหาสมาชิก</a></li>
-          <li><a href="#donate" class="hover:text-yellow-300">สนับสนุน</a></li>
-        </ul>
-      </div>
-
-      <!-- Contact -->
-      <div>
-        <h4 class="text-lg font-semibold">ติดต่อเรา</h4>
-        <ul class="mt-4 space-y-2 text-sm text-gray-200">
-          <li>📍 123 ถนนสุขุมวิท กรุงเทพฯ</li>
-          <li>📞 02-123-4567</li>
-          <li>✉️ support&#64;mybrand.com</li>
-        </ul>
-      </div>
-
-      <!-- Newsletter -->
-      <div>
-        <h4 class="text-lg font-semibold">รับข่าวสาร</h4>
-        <p class="mt-4 text-sm text-gray-200">
-          สมัครเพื่อไม่พลาดอัปเดตล่าสุด
-        </p>
-        <form class="mt-4 flex">
-          <input type="email" placeholder="อีเมลของคุณ"
-            class="w-full rounded-l-xl border border-white/30 bg-white/20 px-3 py-2 text-sm placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-yellow-300" />
-          <button type="submit"
-            class="rounded-r-xl bg-yellow-400 px-4 text-sm font-semibold text-black hover:bg-yellow-300">
-            สมัคร
-          </button>
-        </form>
-      </div>
     </div>
 
     <!-- Divider -->
-    <div class="mt-12 border-t border-white/20 pt-6 text-center text-sm text-gray-200">
-      © 2025 MyBrand. All rights reserved.
+    <div class="my-8 border-t border-gray-700/50"></div>
+
+    <!-- Bottom Footer -->
+    <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+      <p>&copy; {{ year }} <label i18n="@@org_name">มูลนิธิละครไทย.</label> All rights reserved.</p>
+      <div class="mt-2 md:mt-0 flex space-x-3">
+        <a href="#" class="hover:text-primary" i18n="@@footer_privacyPolicy">นโยบายความเป็นส่วนตัว</a>
+        <span>|</span>
+        <a href="#" class="hover:text-primary" i18n="@@footer_termsOfService">ข้อตกลงการใช้งาน</a>
+      </div>
     </div>
   </div>
 </footer>

@@ -1,0 +1,208 @@
+<div class="min-h-screen bg-[#0b0e13] text-[#e9edf1]">
+    <div class="mx-auto max-w-6xl px-4 py-10">
+        <!-- Header -->
+        <header class="mb-6">
+            <h1 class="text-4xl font-semibold tracking-tight">Settings</h1>
+            <p class="text-sm text-white/60">Manage your profile visibility, account and preferences.</p>
+        </header>
+
+        <!-- Options -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold mb-3">Options</h2>
+
+            <div
+                class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                <!-- Row: Private Profile -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
+                    <div class="flex items-start gap-4">
+                        <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
+                            <span class="text-xl">👁️</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-lg font-semibold">Private Profile: <span>{{ privateProfile() ? 'On' :
+                                        'Off' }}</span></h3>
+                                <!-- toggle -->
+                                <button type="button" (click)="togglePrivate()" class="relative inline-flex h-6 w-11 rounded-full transition
+                               border border-white/10" [class.bg-emerald-500]="privateProfile()"
+                                    [class.bg-gray-600]="!privateProfile()">
+                                    <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition"
+                                        [class.translate-x-5]="privateProfile()"></span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-white/70 mt-1">
+                                Your profile is
+                                <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                    {{ privateProfile() ? 'private' : 'public' }}
+                                </span>
+                                and you'll {{ privateProfile() ? 'not ' : '' }}appear in searches.
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-white/80">
+                        Set your profile to private to hide it from searches. Your profile is still viewable with a
+                        link.
+                        You can switch this any time.
+                    </p>
+                </div>
+
+                <div class="h-px my-3 bg-white/10"></div>
+
+                <!-- Row: Profile Type -->
+                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
+                    <div class="flex items-start gap-4">
+                        <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-lg font-semibold">
+                                    Profile type: <span>{{ isCompany() ? 'Company' : 'Personal' }}</span>
+                                </h3>
+                                <button type="button" (click)="toggleProfileType()"
+                                    class="relative inline-flex h-6 w-11 rounded-full transition border border-white/10"
+                                    [class.bg-sky-500]="isCompany()" [class.bg-gray-600]="!isCompany()">
+                                    <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition"
+                                        [class.translate-x-5]="isCompany()"></span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-white/70 mt-1">
+                                This is a
+                                <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                    {{ isCompany() ? 'company' : 'personal' }}
+                                </span>
+                                profile
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-white/80">
+                        Your account can represent an individual or an organization. Only individuals appear in search
+                        results.
+                    </p>
+                </div>
+
+                <div class="h-px my-3 bg-white/10"></div> -->
+
+                <!-- Row: Theme -->
+                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
+                    <div class="flex items-start gap-4">
+                        <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
+                            <span class="text-xl">🌙</span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-lg font-semibold">Dark/Light Theme</h3>
+                                <button type="button" (click)="toggleTheme()"
+                                    class="relative inline-flex h-6 w-11 rounded-full transition border border-white/10"
+                                    [class.bg-indigo-500]="themeDark()" [class.bg-gray-600]="!themeDark()">
+                                    <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition"
+                                        [class.translate-x-5]="themeDark()"></span>
+                                </button>
+                            </div>
+                            <p class="text-sm text-white/70 mt-1">
+                                <span
+                                    class="inline-flex items-center gap-1 rounded bg-lime-300/20 px-2 py-0.5 text-lime-200">
+                                    {{ themeDark() ? 'Dark' : 'Light' }}
+                                </span>
+                                mode
+                            </p>
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-white/80">
+                        Change the Directory's color mode to light or dark.
+                    </p>
+                </div> -->
+            </div>
+        </section>
+
+        <!-- Account -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold mb-3">Account</h2>
+
+            <div
+                class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 md:p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                <div class="flex flex-wrap gap-3">
+                    <button type="button" (click)="changeEmail()"
+                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        Change your email address
+                    </button>
+                    <button type="button" (click)="changePassword()"
+                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        Change your password
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile handle -->
+        <!-- <section class="mb-10">
+            <h2 class="text-2xl font-semibold mb-3">Profile</h2>
+
+            <div
+                class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                <h3 class="text-lg font-semibold mb-1">Profile handle</h3>
+                <p class="text-sm text-white/70 mb-4">Give yourself a memorable handle to make sharing your profile
+                    easy.</p>
+
+                <form [formGroup]="handleForm" (ngSubmit)="saveHandle()" novalidate
+                    class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+                    <div class="md:col-span-2">
+                        <div class="relative">
+                            <input formControlName="handle" type="text" maxlength="20" placeholder="new-handle" class="w-full rounded-xl border border-white/10 bg-[#0f131a] px-3.5 py-2.5 pr-14 text-sm outline-none
+                       focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)]"
+                                [attr.aria-invalid]="handleForm.controls.handle.invalid && handleForm.controls.handle.touched" />
+                            <span class="absolute right-3 top-2 text-[11px] text-white/50">
+                                {{ handleForm.controls.handle.value?.length || 0 }}/20
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-white/60">
+                            Letters, numbers, dashes, and underscores.
+                        </p>
+
+                        <p *ngIf="handleForm.controls.handle.invalid && handleForm.controls.handle.touched"
+                            class="mt-1 text-xs text-rose-300">
+                            Please enter 1–20 characters (a–z, 0–9, -, _).
+                        </p>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="submit" [disabled]="saving()" class="rounded-xl border border-emerald-400/40 bg-emerald-400/15 px-4 py-2.5 text-sm text-emerald-200
+                           hover:bg-emerald-400/25 disabled:opacity-50 disabled:cursor-not-allowed
+                           focus:outline-none focus:ring-2 focus:ring-emerald-400/30">
+                            {{ saving() ? 'Saving…' : 'Save' }}
+                        </button>
+
+                        <div
+                            class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm">
+                            <code class="truncate">/{{ profileUrl() }}</code>
+                            <button type="button" (click)="copyProfileUrl()"
+                                class="rounded-md border border-white/10 bg-white/10 px-2 py-1 text-xs hover:bg-white/20">
+                                Copy
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section> -->
+
+        <!-- Danger zone -->
+        <section>
+            <h2 class="text-2xl font-semibold mb-3">Close your account</h2>
+
+            <div
+                class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                <p class="text-sm text-white/80 mb-4">
+                    If you'd like to remove your account entirely and delete your data, you can do so below. You can
+                    re-register at any time.
+                </p>
+                <button type="button" (click)="deleteAccount()" class="inline-flex items-center gap-2 rounded-xl border border-rose-400/40 bg-rose-400/15 px-4 py-2.5 text-sm text-rose-200
+                       hover:bg-rose-400/25 focus:outline-none focus:ring-2 focus:ring-rose-400/30">
+                    Delete account
+                </button>
+            </div>
+        </section>
+    </div>
+</div>

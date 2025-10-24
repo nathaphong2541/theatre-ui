@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
-  <div class="w-full max-w-xl rounded-2xl border bg-card border-muted shadow p-6 md:p-8">
+  <div class="w-full max-w-xl rounded-2xl border bg-card border-muted shadow p-5 md:p-6">
     <div class="flex">
       <div class="flex-grow">
         <h1 class="text-2xl font-semibold leading-tight" i18n="@@signup_title">สร้างบัญชีผู้ใช้ใหม่</h1>
@@ -11,13 +11,18 @@
     <form class="mt-6 space-y-5" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <!-- Name -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- First name -->
         <div>
           <label for="firstName" class="block text-sm font-medium">
             <span i18n="@@signup_firstName">ชื่อ</span><span class="text-red-500">*</span>
           </label>
-          <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name"
+
+          <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name" inputmode="text"
+            autocapitalize="off" spellcheck="false" pattern="[A-Za-z ]+" (beforeinput)="onBeforeNameInput($event)"
+            (paste)="onPasteName($event, 'firstName')"
             class="mt-1 w-full rounded-lg border px-3 py-2 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
             [attr.aria-invalid]="form.get('firstName')?.invalid && form.get('firstName')?.touched" />
+
           <p *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" class="mt-1 text-sm text-red-500"
             role="alert">
             <span *ngIf="form.get('firstName')?.errors?.['required']"
@@ -25,15 +30,23 @@
             <span *ngIf="form.get('firstName')?.errors?.['maxlength']"
               i18n="@@err_firstName_max">ความยาวชื่อเกินกำหนด</span>
           </p>
+          <div class="text-xs text-red-500" *ngIf="hasErr('firstName','invalidNameChars')">
+            First name: English letters and spaces only.
+          </div>
         </div>
 
+        <!-- Last name -->
         <div>
           <label for="lastName" class="block text-sm font-medium">
             <span i18n="@@signup_lastName">นามสกุล</span><span class="text-red-500">*</span>
           </label>
-          <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name"
+
+          <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name" inputmode="text"
+            autocapitalize="off" spellcheck="false" pattern="[A-Za-z ]+" (beforeinput)="onBeforeNameInput($event)"
+            (paste)="onPasteName($event, 'lastName')"
             class="mt-1 w-full rounded-lg border px-3 py-2 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
             [attr.aria-invalid]="form.get('lastName')?.invalid && form.get('lastName')?.touched" />
+
           <p *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched" class="mt-1 text-sm text-red-500"
             role="alert">
             <span *ngIf="form.get('lastName')?.errors?.['required']"
@@ -41,9 +54,11 @@
             <span *ngIf="form.get('lastName')?.errors?.['maxlength']"
               i18n="@@err_lastName_max">ความยาวนามสกุลเกินกำหนด</span>
           </p>
+          <div class="text-xs text-red-500" *ngIf="hasErr('lastName','invalidNameChars')">
+            Last name: English letters and spaces only.
+          </div>
         </div>
       </div>
-
       <!-- Email -->
       <div>
         <label for="email" class="block text-sm font-medium">
@@ -146,7 +161,7 @@
           <span i18n="@@signup_password_requirements_title">ข้อกำหนดรหัสผ่าน</span>
         </p>
 
-        <ul class="text-xs leading-5 space-y-1">
+        <ul class="text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
           <li class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full transition-colors"
               [ngClass]="haveUpper ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>

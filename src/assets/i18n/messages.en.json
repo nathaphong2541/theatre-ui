@@ -19,6 +19,17 @@
   "or": "or",
   "join_now": "Join now",
   "footer_note": "© Thai Theatre Foundation — for Performing Arts Education and Development",
+
+  "footer_quickLinks": "Quick Links",
+  "footer_home": "Home",
+  "footer_about": "About",
+  "footer_activities": "Activities",
+  "footer_contact": "Contact",
+  "footer_followUs": "Follow Us",
+  "footer_privacyPolicy": "Privacy Policy (PDPA) and Data Disclosure Terms",
+  "footer_termsOfService": "Terms of Service",
+  "footer_allRights": "All rights reserved.",
+
   "policy_title": "Privacy Policy (PDPA) and Data Disclosure Terms",
   "policy_readHint": "Please read thoroughly. Scroll to the bottom to enable acceptance.",
   "policy_version": "Version : ",
@@ -55,6 +66,7 @@
   "policy_scrollToEnable": "You must scroll to the end before you can accept.",
   "policy_back": "Back",
   "policy_next": "Next",
+
   "signup_title": "Create a New Account",
   "signup_subtitle": "Fill in your information to get started",
   "signup_firstName": "First Name",

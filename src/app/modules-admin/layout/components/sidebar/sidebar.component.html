@@ -1,57 +1,124 @@
-<nav
-  [ngClass]="menuService.showSideBar ? 'w-[210px] xl:w-[280px]' : 'w-[70px]'"
-  class="bg-background hidden h-full flex-col justify-between pt-3 transition-all duration-300 lg:flex">
-  <div class="overflow-hidden">
-    <!-- Logo -->
-    <div
-      [ngClass]="menuService.showSideBar ? 'justify-between' : 'justify-center'"
-      class="mx-4 mb-2 flex h-9 items-center">
-      <div class="flex items-center" *ngIf="menuService.showSideBar">
-        <a
-          (click)="toggleSidebar()"
-          class="bg-primary flex cursor-pointer items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
-          <svg-icon src="assets/icons/logo.svg"> </svg-icon>
-        </a>
-        <b class="text-foreground ps-2 ml-1 grow text-sm font-bold" i18n="@@homeTitle">
-          พอร์ทัลผู้ทำบัญชี
-        </b>
+<nav class="hidden lg:flex h-full flex-col justify-between transition-[width] duration-300
+         bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-200
+         border-r border-white/10 shadow-[inset_-1px_0_0_rgba(255,255,255,0.04)]"
+  [ngClass]="menuService.showSideBar ? 'w-[240px] xl:w-[300px]' : 'w-[76px]'" role="navigation" aria-label="Sidebar">
+  <!-- TOP -->
+  <div class="min-h-0 flex-1 flex flex-col overflow-hidden">
+    <!-- Brand / Toggle -->
+    <div class="px-3 pt-3 pb-2">
+      <div class="flex items-center" [ngClass]="menuService.showSideBar ? 'justify-between' : 'justify-center'">
+        <div class="flex items-center gap-2" *ngIf="menuService.showSideBar">
+          <button (click)="toggleSidebar()" class="grid place-items-center size-9 rounded-md
+                         bg-white/5 hover:bg-white/10 border border-white/10
+                         focus:outline-none focus:ring-2 focus:ring-sky-400/40">
+            <svg-icon src="assets/icons/logo.svg"></svg-icon>
+          </button>
+          <div class="ml-1">
+            <b class="block text-sm font-bold tracking-wide text-white" i18n="@@homeTitle">
+              พอร์ทัลผู้ทำบัญชี
+            </b>
+            <span class="block text-[10px] text-gray-400">Backoffice Suite</span>
+          </div>
+        </div>
+
+        <button (click)="toggleSidebar()" class="grid place-items-center size-9 rounded-md text-gray-400 hover:text-gray-200
+                       hover:bg-white/5 border border-white/10 transition
+                       focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+          [attr.aria-expanded]="menuService.showSideBar" [ngClass]="{ 'rotate-180': !menuService.showSideBar }">
+          <svg-icon src="assets/icons/heroicons/solid/chevron-double-left.svg"></svg-icon>
+        </button>
       </div>
-      <button
-        (click)="toggleSidebar()"
-        class="text-muted-foreground/50 hover:text-muted-foreground flex items-center justify-center rounded-md p-2 transition-all duration-200 focus:outline-hidden"
-        [ngClass]="{ 'rotate-180': !menuService.showSideBar }">
-        <svg-icon src="assets/icons/heroicons/solid/chevron-double-left.svg"> </svg-icon>
-      </button>
     </div>
 
-    <!-- Menu Items -->
+    <!-- Divider glow -->
+    <div class="h-px mx-3 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+    <!-- MENU SCROLL -->
     <div
-      class="scrollbar-thumb--sm scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-card h-full overflow-auto px-4">
-      <app-sidebar-menu></app-sidebar-menu>
+      class="relative flex-1 overflow-auto px-3 py-2
+                [scrollbar-width:thin] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20">
+      <!-- subtle top fade -->
+      <div aria-hidden="true"
+        class="pointer-events-none absolute inset-x-0 -top-2 h-4 bg-gradient-to-b from-black/20 to-transparent"></div>
+
+      <!-- App Menu -->
+      <div class="mt-2">
+        <app-sidebar-menu></app-sidebar-menu>
+      </div>
     </div>
   </div>
 
-  <div class="mx-4 my-4 space-y-1">
-    <!-- Version -->
-    <a
-      target="_blank"
-      href=""
-      class="-sm hover:bg-card group flex h-9 cursor-pointer items-center justify-start p-2">
-      <svg-icon
-        src="assets/icons/heroicons/outline/information-circle.svg"
-        [svgClass]="'h-5 w-5 text-muted-foreground/50'">
-      </svg-icon>
+  <!-- BOTTOM -->
+  <div class="px-3 pb-3 space-y-2">
+    <div class="h-px mx-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
 
-      <div class="ml-3 truncate text-[10px] font-semibold tracking-wide focus:outline-hidden">
-        <span class="bg-primary/10 text-primary px-2 font-semibold">v{{ appJson.version }}</span>
-      </div>
+    <!-- Compact actions when collapsed -->
+    <div class="flex items-center gap-2" [ngClass]="menuService.showSideBar ? 'justify-between' : 'justify-center'">
+      <!-- Version pill -->
+      <a target="_blank" href="" class="group relative inline-flex items-center rounded-md border border-white/10
+                bg-white/5 hover:bg-white/10 transition px-2.5 py-1.5">
+        <svg-icon src="assets/icons/heroicons/outline/information-circle.svg"
+          [svgClass]="'h-4 w-4 text-gray-400 group-hover:text-gray-200'">
+        </svg-icon>
 
-      <div class="fixed w-full" *ngIf="!menuService.showSideBar">
-        <span
-          class="z-1 bg-foreground text-background absolute left-12 -top-4 w-auto min-w-max origin-left scale-0 p-2 text-xs font-bold shadow-md transition-all duration-200 group-hover:scale-100">
+        <!-- Expanded label -->
+        <div class="ml-2 truncate text-[11px] font-semibold tracking-wide hidden"
+          [ngClass]="{ 'sm:inline': menuService.showSideBar }">
+          <span class="px-2 rounded bg-sky-400/10 text-sky-300 border border-sky-400/20">v{{ appJson.version }}</span>
+        </div>
+
+        <!-- Tooltip when collapsed -->
+        <span *ngIf="!menuService.showSideBar" class="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2
+                     origin-left scale-0 group-hover:scale-100 transition
+                     rounded-md bg-white text-gray-900 text-xs font-medium px-2 py-1 shadow-lg">
           v{{ appJson.version }}
         </span>
+      </a>
+
+      <!-- Settings & Profile (expanded) -->
+      <div *ngIf="menuService.showSideBar" class="flex items-center gap-2">
+        <button type="button" class="grid place-items-center size-9 rounded-md border border-white/10
+                       bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white
+                       focus:outline-none focus:ring-2 focus:ring-emerald-400/30">
+          <svg-icon src="assets/icons/heroicons/outline/cog-6-tooth.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        </button>
+
+        <button type="button" class="flex items-center gap-2 rounded-md border border-white/10
+                       bg-white/5 hover:bg-white/10 px-2 py-1.5 text-left
+                       focus:outline-none focus:ring-2 focus:ring-emerald-400/30">
+          <img class="size-7 rounded-md object-cover" src="https://avatars.githubusercontent.com/u/12519008?v=4"
+            alt="avatar" />
+          <div class="leading-tight">
+            <div class="text-[12px] font-semibold text-white">Accountant</div>
+            <div class="text-[10px] text-gray-400">Signed in</div>
+          </div>
+        </button>
       </div>
-    </a>
+    </div>
+
+    <!-- Collapsed-only mini buttons -->
+    <div *ngIf="!menuService.showSideBar" class="flex items-center justify-center gap-2">
+      <button type="button" class="group relative grid place-items-center size-9 rounded-md border border-white/10
+                     bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white
+                     focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+        <svg-icon src="assets/icons/heroicons/outline/cog-6-tooth.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span class="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2
+                     origin-left scale-0 group-hover:scale-100 transition
+                     rounded-md bg-white text-gray-900 text-xs font-medium px-2 py-1 shadow-lg">
+          Settings
+        </span>
+      </button>
+
+      <button type="button" class="group relative grid place-items-center size-9 rounded-md border border-white/10
+                     bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white
+                     focus:outline-none focus:ring-2 focus:ring-rose-400/30">
+        <svg-icon src="assets/icons/heroicons/outline/power.svg" [svgClass]="'h-5 w-5'"></svg-icon>
+        <span class="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2
+                     origin-left scale-0 group-hover:scale-100 transition
+                     rounded-md bg-white text-gray-900 text-xs font-medium px-2 py-1 shadow-lg">
+          Logout
+        </span>
+      </button>
+    </div>
   </div>
 </nav>

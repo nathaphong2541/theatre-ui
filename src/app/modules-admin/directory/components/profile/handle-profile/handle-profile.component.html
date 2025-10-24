@@ -1,1 +1,632 @@
-<p>handle-profile works!</p>
+<div class="min-h-screen bg-[#0f1216] text-[#e9edf1]">
+    <!-- Top bar -->
+    <header
+        class="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-[#0f1216]/70 bg-[#0f1216]/90 border-b border-white/5">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-8 w-8 rounded-xl bg-gradient-to-br from-sky-400/20 to-emerald-400/10 grid place-items-center ring-1 ring-white/10">
+                    <svg class="h-4 w-4 text-sky-300" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-semibold tracking-tight">Update Profile</h1>
+                    <p class="text-xs text-gray-400">Keep your info fresh so people can find you easily.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="#credits"
+                    class="inline-flex items-center gap-2 rounded-xl border border-sky-500/40 bg-sky-500/15 px-4 py-2.5 text-sky-200 hover:bg-sky-500/25 transition">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 5v14m7-7H5" />
+                    </svg>
+                    Jump to Credits
+                </a>
+                <button type="button"
+                    class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">Preview</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative">
+        <div aria-hidden="true"
+            class="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_40%_at_50%_-10%,rgba(56,189,248,0.08),transparent),radial-gradient(40%_30%_at_80%_10%,rgba(16,185,129,0.06),transparent)]">
+        </div>
+
+        <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10">
+                <!-- LEFT -->
+                <aside class="lg:col-span-1 space-y-6 lg:space-y-8">
+                    <!-- Avatar -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-sky-400/70"></span>Profile Image
+                            </h2>
+                            <p class="text-sm text-gray-400">Portrait orientation works best. Max 2MB.</p>
+                        </div>
+
+                        <label
+                            class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition">
+                            <input type="file" class="hidden" (change)="onPickAvatar($event)" accept="image/*" />
+                            <div class="flex items-center gap-4 p-6 sm:p-8">
+                                <div
+                                    class="grid place-items-center rounded-full bg-[#0b0e13] ring-1 ring-white/10 h-20 w-20">
+                                    <svg class="h-10 w-10 text-gray-400" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.5">
+                                        <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
+                                        <path d="M20 20c0-4-4-6-8-6s-8 2-8 6" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-base md:text-lg">Drag & drop or click to upload</p>
+                                    <p class="text-xs text-gray-400">JPG, PNG, GIF, or WEBP up to 2MB</p>
+                                </div>
+                            </div>
+                        </label>
+                    </section>
+
+                    <!-- Options -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6 sticky top-24">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-emerald-400/70"></span>Options
+                            </h2>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Private -->
+                            <div class="flex items-start gap-4">
+                                <label class="inline-flex items-center select-none">
+                                    <input type="checkbox" class="peer sr-only"
+                                        [formControl]="form.controls.privateProfile" />
+                                    <span
+                                        class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-sky-500">
+                                        <span
+                                            class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+                                    </span>
+                                </label>
+                                <div class="min-w-0">
+                                    <div class="font-medium">Private Profile: {{ form.value.privateProfile ? 'On' :
+                                        'Off' }}</div>
+                                    <p class="text-sm text-gray-300">
+                                        Your profile is
+                                        <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                            {{ form.value.privateProfile ? 'private' : 'public' }}
+                                        </span>
+                                        and you'll appear in searches.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Company -->
+                            <div class="flex items-start gap-4">
+                                <label class="inline-flex items-center select-none">
+                                    <input type="checkbox" class="peer sr-only"
+                                        [formControl]="form.controls.profileIsCompany" />
+                                    <span
+                                        class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-emerald-500">
+                                        <span
+                                            class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+                                    </span>
+                                </label>
+                                <div class="min-w-0">
+                                    <div class="font-medium">Profile type: {{ form.value.profileIsCompany ? 'Company' :
+                                        'Personal' }}</div>
+                                    <p class="text-sm text-gray-300">
+                                        This is a
+                                        <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                            {{ form.value.profileIsCompany ? 'company' : 'personal' }}
+                                        </span> profile
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Conflicts -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <h3 class="text-lg font-semibold">Scheduling Conflicts</h3>
+                                    <button type="button"
+                                        class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10"
+                                        (click)="addConflict()">+ Add Dates</button>
+                                </div>
+                                <p class="text-sm text-gray-300">Add conflict dates (shown on profile, not used in
+                                    search).</p>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+
+                <!-- RIGHT -->
+                <section class="lg:col-span-2 space-y-8 lg:space-y-10">
+                    <!-- Name -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-fuchsia-400/70"></span>Name
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <input placeholder="First name"
+                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                    [formControl]="form.controls.firstName" />
+                                <p class="mt-1 text-xs text-gray-400">First name *</p>
+                            </div>
+                            <div>
+                                <input placeholder="Last name"
+                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                    [formControl]="form.controls.lastName" />
+                                <p class="mt-1 text-xs text-gray-400">Last name *</p>
+                            </div>
+                            <div>
+                                <input placeholder="Pronouns"
+                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                    [formControl]="form.controls.pronouns" />
+                                <p class="mt-1 text-xs text-gray-400">Pronouns</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Profession -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-sky-400/70"></span>Profession
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                            <div class="md:col-span-2">
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">☆</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="programmer" [formControl]="form.controls.title" maxlength="50" />
+                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">{{
+                                        form.controls.title.value.length || 0 }}/50</span>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Title/Trade/Profession</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="1.5">
+                                            <path d="M3 7h18M3 12h18M3 17h18" />
+                                        </svg>
+                                    </span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="Thailand" [formControl]="form.controls.location" maxlength="25" />
+                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">{{
+                                        form.controls.location.value.length || 0 }}/25</span>
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Where do you currently live?</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Contact -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-amber-400/70"></span>Contact
+                            </h2>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">✉️</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="you@example.com" [formControl]="form.controls.email" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Contact Email</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">📞</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="080-000-0000" [formControl]="form.controls.phone" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Phone</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">🔗</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://example.com" [formControl]="form.controls.website" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Website</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Additional Languages -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                    <span class="inline-block size-2.5 rounded-full bg-indigo-400/70"></span>Additional
+                                    Languages
+                                </h2>
+                                <p class="text-sm text-gray-400">Let people know you can work in multiple languages.</p>
+                            </div>
+                            <label class="inline-flex items-center gap-3 text-base md:text-lg">
+                                <input type="checkbox" class="size-5 rounded border-gray-600 bg-transparent"
+                                    [formControl]="form.controls.multiLang" />
+                                <span>I speak more than one language</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Social -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-pink-400/70"></span>Social
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">in</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://linkedin.com/in/yourprofile"
+                                        [formControl]="form.controls.linkedin" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">LinkedIn URL</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">f</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://facebook.com/you" [formControl]="form.controls.facebook" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Facebook URL</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">📷</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="@handle" [formControl]="form.controls.instagram" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">Instagram</p>
+                            </div>
+                            <div>
+                                <div class="relative">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">𝕏</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="@handle" [formControl]="form.controls.twitter" />
+                                </div>
+                                <p class="mt-1 text-xs text-gray-400">X/Twitter</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Work Locations -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-cyan-400/70"></span>Work Locations
+                            </h2>
+                            <p class="text-sm text-gray-400">Select any areas in which you're a local hire.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2.5">
+                            <label *ngFor="let wl of workLocations"
+                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedWorkLocations.has(wl.value)}"
+                                (click)="toggleWorkLocation(wl.value)">
+                                <span>{{ wl.label }}</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Travel / Tour / Resume -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                            <div>
+                                <h3 class="text-lg font-semibold">Travel</h3>
+                                <p class="text-sm text-gray-300 mb-3">Would you work away from home?</p>
+                                <div
+                                    class="inline-flex items-center gap-1 rounded-xl bg-white/5 p-1 border border-white/10">
+                                    <button type="button"
+                                        class="px-4 py-1.5 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition"
+                                        [ngClass]="{'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30': form.value.travel === true}"
+                                        (click)="form.patchValue({ travel: true })">Yes</button>
+                                    <button type="button"
+                                        class="px-4 py-1.5 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition"
+                                        [ngClass]="{'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30': form.value.travel === false}"
+                                        (click)="form.patchValue({ travel: false })">No</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold">Tour</h3>
+                                <p class="text-sm text-gray-300 mb-3">Would you go on tour?</p>
+                                <div
+                                    class="inline-flex items-center gap-1 rounded-xl bg-white/5 p-1 border border-white/10">
+                                    <button type="button"
+                                        class="px-4 py-1.5 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition"
+                                        [ngClass]="{'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30': form.value.tour === true}"
+                                        (click)="form.patchValue({ tour: true })">Yes</button>
+                                    <button type="button"
+                                        class="px-4 py-1.5 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition"
+                                        [ngClass]="{'bg-emerald-500/20 text-emerald-200 border border-emerald-500/30': form.value.tour === false}"
+                                        (click)="form.patchValue({ tour: false })">No</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold">Resume</h3>
+                                <p class="text-sm text-gray-300 mb-2">PDF or image</p>
+                                <label
+                                    class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition min-h-[180px]">
+                                    <input type="file" class="hidden" (change)="onPickResume($event)"
+                                        accept=".pdf,image/*" />
+                                    <div class="py-8 text-center">
+                                        <div class="text-4xl">⬆️</div>
+                                        <div class="mt-2">Drag & drop or click to choose</div>
+                                        <div class="mt-1 text-xs text-gray-400">JPG, PNG, GIF, WEBP, or PDF up to 2MB
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Unions -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-lime-400/70"></span>Unions / Guilds /
+                                Memberships
+                            </h2>
+                            <p class="text-sm text-gray-400">We employ members of the following unions or guilds:</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2.5">
+                            <label *ngFor="let u of unions"
+                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedUnions.has(u.value)}"
+                                (click)="toggleUnion(u.value)">
+                                <span>{{ u.label }}</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Experience -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-orange-400/70"></span>Experience
+                                Levels
+                            </h2>
+                            <p class="text-sm text-gray-400">At what levels have you worked?</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2.5">
+                            <label *ngFor="let e of experienceLevels"
+                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedExp.has(e.value)}"
+                                (click)="toggleExp(e.value)">
+                                <span>{{ e.label }}</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Partners -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-teal-400/70"></span>Partner
+                                Directories
+                            </h2>
+                            <p class="text-sm text-gray-400">Are you a member of one of our partner organizations?</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2.5">
+                            <label *ngFor="let p of partnerDirectories"
+                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedPartners.has(p.value)}"
+                                (click)="togglePartner(p.value)">
+                                <span>{{ p.label }}</span>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Credits + About -->
+                    <section id="credits"
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-rose-400/70"></span>Credits
+                            </h2>
+                            <button type="button"
+                                class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10"
+                                (click)="addCredit()">+ New Credit</button>
+                        </div>
+                        <ul class="space-y-2 mb-8">
+                            <li *ngFor="let c of credits; let i = index"
+                                class="rounded-lg bg-[#12151a] border border-white/10 px-3.5 py-2.5 flex items-center justify-between">
+                                <span class="truncate">{{ c }}</span>
+                                <button class="text-sm text-red-300 hover:text-red-200"
+                                    (click)="removeCredit(i)">Remove</button>
+                            </li>
+                        </ul>
+
+                        <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 mb-3">
+                            <span class="inline-block size-2.5 rounded-full bg-sky-400/70"></span>About
+                        </h2>
+                        <textarea
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm h-48 resize-y"
+                            placeholder="Tell us about yourself" [formControl]="form.controls.about"></textarea>
+                    </section>
+
+                    <!-- Identity -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-violet-400/70"></span>Identity
+                            </h2>
+                            <p class="text-sm text-gray-400">
+                                The following optional fields will be <span class="underline">searchable</span>, but
+                                <i>will not appear</i> on your public profile.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Gender</h3>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <label *ngFor="let g of genders"
+                                        class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                        [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedGenders.has(g.value)}"
+                                        (click)="toggleGender(g.value)">
+                                        <span>{{ g.label }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-2">Race/Ethnicity</h3>
+                                <div class="flex flex-wrap gap-2.5">
+                                    <label *ngFor="let r of races"
+                                        class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                        [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedRaces.has(r.value)}"
+                                        (click)="toggleRace(r.value)">
+                                        <span>{{ r.label }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold mb-2">Additional</h3>
+                            <div class="flex flex-wrap gap-2.5">
+                                <label *ngFor="let a of additionals"
+                                    class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
+                                    [ngClass]="{'border-emerald-400/40 bg-emerald-400/10 text-emerald-200 shadow-[0_0_0_3px_rgba(16,185,129,0.12)]': selectedAdds.has(a.value)}"
+                                    (click)="toggleAdd(a.value)">
+                                    <span>{{ a.label }}</span>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-amber-300/70"></span>Education +
+                                Training
+                            </h2>
+                        </div>
+                        <textarea
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm h-40 resize-y"
+                            placeholder="Schools, certifications, workshops"
+                            [formControl]="form.controls.education"></textarea>
+                    </section>
+
+                    <!-- Media -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-sky-300/70"></span>Media
+                            </h2>
+                            <p class="text-sm text-gray-400">Showcase your work with images and videos.</p>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3">Videos</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="relative mb-2">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">🔗</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://youtube.com/watch?v=..."
+                                        [formControl]="form.controls.video1" (blur)="updateEmbed(1)" />
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2">Video embed 1</p>
+                                <div *ngIf="embed1()"
+                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
+                                    <iframe [src]="embed1()" class="h-[420px] w-full" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="relative mb-2">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">🔗</span>
+                                    <input
+                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://youtube.com/watch?v=..."
+                                        [formControl]="form.controls.video2" (blur)="updateEmbed(2)" />
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2">Video embed 2</p>
+                                <div *ngIf="embed2()"
+                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
+                                    <iframe [src]="embed2()" class="h-[420px] w-full" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mt-8 mb-3">Images</h3>
+                        <p class="text-sm text-gray-400 mb-3">Allowed: jpg, png, gif, heic, webp. ≤ 2MB.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <label *ngFor="let i of [0,1,2,3,4,5]"
+                                class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-6 text-center min-h-[220px] hover:border-white/20 transition bg-[#101318]/60">
+                                <input type="file" class="hidden" accept="image/*" />
+                                <div class="grid place-items-center h-full">
+                                    <div class="text-center">
+                                        <div class="text-4xl">⬆️</div>
+                                        <div class="mt-2">Drag & drop or click</div>
+                                        <div class="mt-1 text-xs text-gray-400">Up to 2MB</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Save -->
+                    <div class="sticky bottom-4">
+                        <div
+                            class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] py-4 px-5 md:px-6 flex justify-end gap-3">
+                            <button type="button"
+                                class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">Cancel</button>
+                            <button type="button"
+                                class="rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-5 py-2.5 text-emerald-200 hover:bg-emerald-500/30 transition"
+                                (click)="save()">Save Changes</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+</div>

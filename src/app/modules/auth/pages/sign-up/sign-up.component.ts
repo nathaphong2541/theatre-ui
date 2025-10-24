@@ -25,6 +25,23 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
   return isValid ? null : { weakPassword: true };
 }
 
+// --- Name (EN only) ---
+function nameEnValidator(control: AbstractControl): ValidationErrors | null {
+  const raw = (control.value ?? '') as string;
+  if (!raw) return null; // ให้ required จัดการเอง
+  // อนุญาตเฉพาะ A-Z a-z และเว้นวรรค
+  const ok = /^[A-Za-z\s]+$/.test(raw);
+  return ok ? null : { invalidNameChars: true };
+}
+
+function sanitizeNameEn(s: string): string {
+  // ตัดทุกอย่างที่ไม่ใช่ A-Z a-z หรือเว้นวรรค
+  let out = s.replace(/[^A-Za-z\s]/g, '');
+  // ลดเว้นวรรคซ้อนและ trim
+  out = out.replace(/\s{2,}/g, ' ').trimStart(); // ปล่อยให้มี space ท้ายได้ถ้าชอบก็เปลี่ยนเป็น trim() ได้
+  return out;
+}
+
 @Component({
   selector: 'app-sign-up',
   standalone: true,
@@ -40,12 +57,11 @@ export class SignUpComponent implements OnInit {
   showConfirmPassword = signal(false);
 
   form = this.fb.group({
-    firstName: ['', [Validators.required, Validators.maxLength(100)]],
-    lastName: ['', [Validators.required, Validators.maxLength(100)]],
+    firstName: ['', [Validators.required, Validators.maxLength(100), nameEnValidator]],
+    lastName: ['', [Validators.required, Validators.maxLength(100), nameEnValidator]],
     email: ['', [Validators.required, Validators.email]],
     passwordGroup: this.fb.group(
       {
-        // เอา noThaiValidator ออก แล้วใช้ตัวกรองอัตโนมัติแทน
         password: ['', [Validators.required, passwordStrengthValidator]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -68,24 +84,60 @@ export class SignUpComponent implements OnInit {
   get haveMinLen(): boolean { return (this.pw?.value ?? '').length >= 8; }
 
   ngOnInit(): void {
-    // กรองอักขระไทยทิ้งทันทีเมื่อมีการเปลี่ยนค่า (พิมพ์/วาง)
+    // --- ของเดิมสำหรับ password ---
     const stripThai = (s: string) => s.replace(/[\u0E00-\u0E7F]/g, '');
-
     this.pw?.valueChanges.subscribe((val: string | null) => {
       const v = val ?? '';
       const cleaned = stripThai(v);
-      if (cleaned !== v) {
-        this.pw?.setValue(cleaned, { emitEvent: false }); // ไม่ลูปซ้ำ
-      }
+      if (cleaned !== v) this.pw?.setValue(cleaned, { emitEvent: false });
     });
-
     this.cf?.valueChanges.subscribe((val: string | null) => {
       const v = val ?? '';
       const cleaned = stripThai(v);
-      if (cleaned !== v) {
-        this.cf?.setValue(cleaned, { emitEvent: false });
-      }
+      if (cleaned !== v) this.cf?.setValue(cleaned, { emitEvent: false });
     });
+
+    // --- ใหม่: กรองชื่อและนามสกุล ---
+    const fn = this.f['firstName'];
+    const ln = this.f['lastName'];
+
+    fn.valueChanges.subscribe((val: string | null) => {
+      const v = val ?? '';
+      const cleaned = sanitizeNameEn(v);
+      if (cleaned !== v) fn.setValue(cleaned, { emitEvent: false });
+    });
+
+    ln.valueChanges.subscribe((val: string | null) => {
+      const v = val ?? '';
+      const cleaned = sanitizeNameEn(v);
+      if (cleaned !== v) ln.setValue(cleaned, { emitEvent: false });
+    });
+  }
+
+  private invalidNameChar = /[^A-Za-z ]/g; // อนุญาตเฉพาะ A-Z a-z และช่องว่าง
+
+  onBeforeNameInput(e: InputEvent) {
+    // บาง browser จะให้ e.data เฉพาะตอนพิมพ์ตัวเดียว (ไม่รวม paste/drag)
+    const data = (e as any).data as string | null | undefined;
+    if (data && this.invalidNameChar.test(data)) {
+      e.preventDefault();
+    }
+  }
+
+  // เผื่อกรณี paste ใส่ทีละหลายตัว
+  onPasteName(e: ClipboardEvent, control: 'firstName' | 'lastName') {
+    const pasted = e.clipboardData?.getData('text') ?? '';
+    const cleaned = pasted.replace(this.invalidNameChar, '');
+    if (cleaned !== pasted) {
+      e.preventDefault();
+      const ctrl = this.form.get(control)!;
+      const cur = (ctrl.value ?? '') as string;
+      ctrl.setValue((cur + cleaned).replace(/\s{2,}/g, ' ').trimStart());
+    }
+  }
+
+  hasErr(ctrl: 'firstName' | 'lastName', key: string) {
+    return this.form.get(ctrl)?.touched && !!this.form.get(ctrl)?.errors?.[key];
   }
 
   togglePassword(type: 'pw' | 'cf') {

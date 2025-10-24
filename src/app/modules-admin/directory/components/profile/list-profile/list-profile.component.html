@@ -1,1 +1,215 @@
-<p>list-profile works!</p>
+<div class="min-h-screen bg-[#0b0e13] text-[#e9edf1]">
+    <!-- Banner / Cover -->
+    <section class="relative">
+        <div class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[28px] border-b border-white/10">
+            <!-- gradient base -->
+            <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700"></div>
+            <!-- user cover -->
+            <img *ngIf="coverUrl()" [src]="coverUrl()"
+                class="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-luminosity" alt="cover" />
+            <!-- top glow -->
+            <div
+                class="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_-10%,rgba(56,189,248,0.18),transparent),radial-gradient(50%_30%_at_80%_-10%,rgba(16,185,129,0.12),transparent)]">
+            </div>
+            <!-- bottom fade -->
+            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b0e13] to-transparent"></div>
+        </div>
+
+        <!-- Edit Button -->
+        <div class="absolute top-4 right-4">
+            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2
+               shadow-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/40">
+                <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+                <span i18n="@@edit_profile" class="text-sm">Edit profile</span>
+            </button>
+        </div>
+
+        <!-- Avatar Card -->
+        <div class="absolute inset-x-0 -bottom-16">
+            <div class="mx-auto max-w-6xl px-4">
+                <div class="flex items-end gap-6">
+                    <!-- Avatar -->
+                    <div class="relative">
+                        <div class="rounded-3xl p-[3px]
+                        bg-[conic-gradient(at_50%_50%,#34d399,45deg,#fb7185,180deg,#60a5fa,315deg,#34d399)]">
+                            <div class="size-36 md:size-40 rounded-2xl bg-[#0f131a] p-1">
+                                <div
+                                    class="size-full rounded-xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center overflow-hidden">
+                                    <img *ngIf="hasAvatar()" [src]="avatarUrl()" class="h-full w-full object-cover"
+                                        alt="profile" />
+                                    <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24" class="h-20 w-20 opacity-60">
+                                        <path fill="currentColor"
+                                            d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Headline -->
+                    <div class="pb-2">
+                        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight uppercase drop-shadow-sm">
+                            {{ displayName() }}
+                        </h1>
+                        <p class="mt-1 text-sm md:text-base text-white/80">
+                            {{ headline() }}
+                        </p>
+
+                        <!-- Meta -->
+                        <div class="mt-6 flex flex-wrap items-center gap-2.5 text-sm">
+                            <span
+                                class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
+                                <svg-icon src="assets/icons/heroicons/outline/map-pin.svg"
+                                    [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
+                                {{ location() }}
+                            </span>
+                            <ng-container *ngFor="let t of tags()">
+                                <span
+                                    class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
+                                    <svg-icon src="assets/icons/heroicons/outline/globe-alt.svg"
+                                        [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
+                                    {{ t.label }}
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Body -->
+    <main class="mx-auto max-w-6xl px-4 pt-24 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left: contact + stats -->
+            <aside class="lg:col-span-1">
+                <!-- Contact -->
+                <div
+                    class="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                    <h2 class="text-xs font-semibold tracking-wider text-white/60 mb-3" i18n="@@contact">Contact</h2>
+                    <div class="space-y-3">
+                        <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener" class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#0f131a]/70 px-4 py-3
+                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-sky-400/30 transition">
+                            <div class="flex items-center gap-3">
+                                <svg-icon [src]="'assets/icons/' + l.icon"
+                                    [svgClass]="'h-5 w-5 text-white/70 group-hover:text-white'"></svg-icon>
+                                <div class="leading-tight">
+                                    <div class="text-sm font-medium">{{ l.label }}</div>
+                                    <div class="text-xs text-white/60">{{ l.value }}</div>
+                                </div>
+                            </div>
+                            <svg-icon src="assets/icons/heroicons/outline/chevron-right.svg"
+                                [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/70'"></svg-icon>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="mt-6 grid grid-cols-3 gap-3">
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
+                        <div class="text-2xl font-semibold">18</div>
+                        <div class="text-[11px] text-white/60" i18n="@@projects">Projects</div>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
+                        <div class="text-2xl font-semibold">4.9</div>
+                        <div class="text-[11px] text-white/60" i18n="@@rating">Rating</div>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
+                        <div class="text-2xl font-semibold">7yr</div>
+                        <div class="text-[11px] text-white/60" i18n="@@experience">Experience</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Right: tabs + content -->
+            <section class="lg:col-span-2">
+                <!-- Tabs -->
+                <nav class="mb-4 flex items-center gap-2 overflow-x-auto">
+                    <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm
+                         bg-white/5 border border-white/10 text-white/80 hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        <span i18n="@@about">About</span>
+                        <span class="absolute inset-x-2 -bottom-[1px] h-[2px] rounded bg-sky-400/70"></span>
+                    </button>
+                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
+                         bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        <span i18n="@@portfolio">Portfolio</span>
+                    </button>
+                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
+                         bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        <span i18n="@@reviews">Reviews</span>
+                    </button>
+                </nav>
+
+                <!-- About card -->
+                <div
+                    class="rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                    <h3 class="text-base font-semibold mb-2" i18n="@@bio">Bio</h3>
+                    <p class="text-sm text-white/70 leading-relaxed">
+                        สวัสดีครับ ผมเป็นโปรแกรมเมอร์สาย Frontend/Full-stack ที่ชอบงานออกแบบระบบและทำงานกับ
+                        Angular, React Native และ Spring Boot เน้นโค้ดสะอาด ดูแลง่าย และเข้ากับธุรกิจจริง
+                        สนใจเรื่อง Performance, UX และ Security เป็นพิเศษ
+                    </p>
+
+                    <div class="mt-6 grid gap-4 md:grid-cols-2">
+                        <div class="rounded-xl border border-white/10 bg-[#0f131a]/70 p-4">
+                            <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@skills">Skills</div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span
+                                    class="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">Angular</span>
+                                <span
+                                    class="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs text-sky-200">Tailwind</span>
+                                <span
+                                    class="rounded-full border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-1 text-xs text-fuchsia-200">DevExtreme</span>
+                                <span
+                                    class="rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs text-amber-200">Spring
+                                    Boot</span>
+                                <span
+                                    class="rounded-full border border-indigo-400/30 bg-indigo-400/10 px-3 py-1 text-xs text-indigo-200">SQL
+                                    Server</span>
+                            </div>
+                        </div>
+                        <div class="rounded-xl border border-white/10 bg-[#0f131a]/70 p-4">
+                            <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@services">Services
+                            </div>
+                            <ul class="mt-2 list-disc pl-5 text-sm text-white/80">
+                                <li>UX/UI &amp; Frontend Engineering</li>
+                                <li>API &amp; Auth (JWT/Refresh Token)</li>
+                                <li>Mobile App (React Native)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio -->
+                <div class="mt-6 grid gap-4 md:grid-cols-2">
+                    <article
+                        class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
+                        <div class="aspect-video w-full rounded-xl bg-white/5 ring-1 ring-white/10"></div>
+                        <div class="mt-3 text-sm font-medium">e-Accountant Portal</div>
+                        <p class="text-xs text-white/60">Angular + DevExtreme + JWT</p>
+                    </article>
+                    <article
+                        class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
+                        <div class="aspect-video w-full rounded-xl bg-white/5 ring-1 ring-white/10"></div>
+                        <div class="mt-3 text-sm font-medium">Custom Shirt Designer</div>
+                        <p class="text-xs text-white/60">Angular + Canvas + Spring Boot</p>
+                    </article>
+                </div>
+            </section>
+        </div>
+
+        <!-- Media -->
+        <section
+            class="mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+            <h3 class="text-lg font-semibold flex items-center gap-2">
+                <svg-icon src="assets/icons/heroicons/outline/video-camera.svg"
+                    [svgClass]="'h-5 w-5 text-sky-300'"></svg-icon>
+                Media / Video
+            </h3>
+            <app-video-gallery [viewOnly]="true" [limit]="2"></app-video-gallery>
+        </section>
+    </main>
+</div>

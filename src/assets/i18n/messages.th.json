@@ -19,6 +19,17 @@
   "or": "หรือ",
   "join_now": "เข้าร่วมตอนนี้ (Join Now)",
   "footer_note": "© มูลนิธิละครไทย — เพื่อการศึกษาและพัฒนาศิลปะการละคร",
+
+  "footer_quickLinks": "เมนูหลัก",
+  "footer_home": "หน้าแรก",
+  "footer_about": "เกี่ยวกับเรา",
+  "footer_activities": "กิจกรรม",
+  "footer_contact": "ติดต่อเรา",
+  "footer_followUs": "ติดตามเรา",
+  "footer_privacyPolicy": "นโยบายความเป็นส่วนตัว (PDPA) และเงื่อนไขการให้ข้อมูล",
+  "footer_termsOfService": "ข้อตกลงการใช้งาน",
+  "footer_allRights": "สงวนลิขสิทธิ์ทั้งหมด",
+
   "policy_title": "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA) และเงื่อนไขการให้ข้อมูล",
   "policy_readHint": "โปรดอ่านให้ครบถ้วน เลื่อนลงจนสุดแล้วจึงยอมรับ",
   "policy_version": "เวอร์ชัน : ",

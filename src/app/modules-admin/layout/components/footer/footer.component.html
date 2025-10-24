@@ -1,23 +1,63 @@
-<div class="flex h-16 items-center bg-background">
-  <div class="flex w-full items-center justify-between px-7 text-[13px] font-medium">
-    <div class="text-muted-foreground/50">
-      <span class="mr-2">{{ year }}©</span>
-      <a href="" target="_blank" class="hover:text-primary">
-        Angular Tailwind
-      </a>
+<footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-gray-300 border-t-4 border-t-green-400">
+  <div class="mx-auto max-w-7xl px-6 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Logo & Description -->
+      <div>
+        <div class="flex items-center space-x-2">
+          <img src="assets/images/logo.png" alt="Logo" class="h-8 w-8 rounded-md shadow" />
+          <span class="text-lg font-semibold text-white" i18n="@@org_name">มูลนิธิละครไทย</span>
+        </div>
+        <p class="mt-3 text-sm text-gray-400 leading-relaxed" i18n="@@footer_note">
+          พื้นที่สร้างสรรค์เพื่อศิลปะการละคร และชุมชนผู้ชม
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="flex flex-col space-y-2">
+        <h3 i18n="@@footer_quickLinks" class="text-sm font-semibold text-white uppercase tracking-wide">เมนูหลัก</h3>
+        <a href="#" i18n="@@footer_home">หน้าแรก</a>
+        <a href="#" i18n="@@footer_about">เกี่ยวกับเรา</a>
+        <a href="#" i18n="@@footer_activities">กิจกรรม</a>
+        <a href="#" i18n="@@footer_contact">ติดต่อเรา</a>
+      </div>
+
+      <!-- Social Links -->
+      <div>
+        <h3 class="text-sm font-semibold text-white uppercase tracking-wide" i18n="@@footer_followUs">ติดตามเรา</h3>
+        <div class="mt-3 flex space-x-4">
+          <a href="#" aria-label="Facebook" class="hover:text-blue-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M22 12.07C22 6.5 17.52 2 12 2S2 6.5 2 12.07c0 5 3.66 9.13 8.44 9.93v-7.02H8.08v-2.9h2.36V9.41c0-2.33 1.4-3.62 3.54-3.62 1.02 0 2.09.18 2.09.18v2.3h-1.18c-1.17 0-1.54.73-1.54 1.48v1.78h2.63l-.42 2.9h-2.21v7.02C18.34 21.2 22 17.08 22 12.07Z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter" class="hover:text-sky-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M22.46 6c-.77.35-1.6.58-2.46.69a4.23 4.23 0 0 0 1.84-2.34c-.83.5-1.76.85-2.75 1.05A4.17 4.17 0 0 0 16.11 4a4.18 4.18 0 0 0-4.17 4.17c0 .33.04.65.1.96A11.86 11.86 0 0 1 3.15 5.15a4.17 4.17 0 0 0 1.3 5.56 4.22 4.22 0 0 1-1.89-.52v.05a4.18 4.18 0 0 0 3.35 4.09 4.2 4.2 0 0 1-1.88.07 4.18 4.18 0 0 0 3.9 2.9A8.37 8.37 0 0 1 2 19.54a11.8 11.8 0 0 0 6.41 1.88c7.69 0 11.9-6.38 11.9-11.9l-.01-.54A8.33 8.33 0 0 0 22.46 6Z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="hover:text-pink-400 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7Zm10 2c1.6 0 3 1.4 3 3v10c0 1.6-1.4 3-3 3H7c-1.6 0-3-1.4-3-3V7c0-1.6 1.4-3 3-3h10Zm-5 3.5A5.5 5.5 0 1 0 17.5 13 5.51 5.51 0 0 0 12 7.5Zm0 9A3.5 3.5 0 1 1 15.5 13 3.51 3.51 0 0 1 12 16.5Zm5.75-9.88a1.12 1.12 0 1 1-1.12-1.12 1.12 1.12 0 0 1 1.12 1.12Z" />
+            </svg>
+          </a>
+        </div>
+      </div>
     </div>
-    <ul class="flex text-muted-foreground/50">
-      <li class="hover:text-primary">
-        <a href="" target="_blank" class="menu-link px-2">
-          Issues
-        </a>
-      </li>
-      <li class="hover:text-primary">
-        <a href="" target="_blank" class="menu-link px-2">Sponsor</a>
-      </li>
-      <li class="hover:text-primary">
-        <a href="" target="_blank" class="menu-link px-2">Starred</a>
-      </li>
-    </ul>
+
+    <!-- Divider -->
+    <div class="my-8 border-t border-gray-700/50"></div>
+
+    <!-- Bottom Footer -->
+    <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+      <p>&copy; {{ year }} <label i18n="@@org_name">มูลนิธิละครไทย.</label> All rights reserved.</p>
+      <div class="mt-2 md:mt-0 flex space-x-3">
+        <a href="#" class="hover:text-primary" i18n="@@footer_privacyPolicy">นโยบายความเป็นส่วนตัว</a>
+        <span>|</span>
+        <a href="#" class="hover:text-primary" i18n="@@footer_termsOfService">ข้อตกลงการใช้งาน</a>
+      </div>
+    </div>
   </div>
-</div>
+</footer>

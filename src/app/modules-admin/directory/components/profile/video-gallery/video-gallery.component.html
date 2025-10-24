@@ -1,0 +1,43 @@
+<div class="w-full text-foreground">
+    <div class="mx-auto max-w-6xl px-4 py-10">
+        <!-- ฟอร์มเพิ่มลิงก์ -->
+        <form *ngIf="!viewOnly && videos().length < limit" class="mb-6 flex flex-col sm:flex-row gap-3"
+            [formGroup]="form" (ngSubmit)="add()">
+            <input formControlName="url" type="url" placeholder="วางลิงก์ YouTube หรือรหัสวิดีโอ (11 ตัว)…"
+                class="flex-1 rounded-xl border border-muted bg-card px-4 py-3 outline-none focus:ring-2 focus:ring-primary" />
+            <button type="submit" class="rounded-xl border border-muted bg-card px-5 py-3 font-medium hover:bg-background
+               focus:outline-hidden focus:ring-2 focus:ring-primary">
+                เพิ่มวิดีโอ
+            </button>
+        </form>
+
+        <!-- แจ้งเตือนเมื่อครบจำนวน -->
+        <p *ngIf="!viewOnly && videos().length >= limit" class="text-sm text-muted-foreground mb-6">
+            ✅ เพิ่มได้สูงสุด {{ limit }} วิดีโอ
+        </p>
+
+        <!-- ✅ Grid แสดงแนวนอน -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div *ngFor="let v of videos(); let i = index"
+                class="rounded-2xl overflow-hidden border border-muted bg-card/70 shadow-md">
+                <div class="aspect-[4/3] w-full">
+                    <iframe class="h-full w-full rounded-t-2xl" [src]="v.embedUrl" title="YouTube video player"
+                        allowfullscreen loading="lazy">
+                    </iframe>
+                </div>
+
+
+                <div class="flex items-center justify-between p-4 bg-background/60">
+                    <a [href]="v.rawUrl" target="_blank" rel="noopener"
+                        class="truncate text-sm text-primary hover:underline">
+                        {{ v.rawUrl }}
+                    </a>
+                    <button *ngIf="!viewOnly" type="button" (click)="remove(i)"
+                        class="rounded-lg border border-muted bg-card/70 px-3 py-1.5 text-xs hover:bg-muted/20">
+                        ลบ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
