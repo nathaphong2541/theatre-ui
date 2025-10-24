@@ -48,17 +48,17 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/download.svg',
           label: 'Dashboard',
-          route: '/th/directory/dashboard',
+          route: '/en/directory/dashboard',
         },
         {
           icon: 'assets/icons/heroicons/outline/gift.svg',
           label: 'Profle',
-          route: '/th/directory/profile',
+          route: '/en/directory/profile',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Setting',
-          route: '/th/directory/setting',
+          route: '/en/directory/setting',
         },
       ],
     },
