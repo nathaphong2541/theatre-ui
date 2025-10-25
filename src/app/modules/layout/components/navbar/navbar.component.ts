@@ -1,15 +1,17 @@
 // src/app/layout/navbar/navbar.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { TranslateModule } from '@ngx-translate/core';
+import { startWith } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { MenuService } from '../../services/menu.service';
 import { NavbarMobileComponent } from './navbar-mobile/navbar-mobilecomponent';
 import { ProfileMenuComponent } from './profile-menu/profile-menu.component';
 import { LanguageMenuComponent } from 'src/locale/language-menu.component';
-import { AuthService } from 'src/app/core/services/auth.service';
+import { AuthService } from 'src/app/modules/auth/service/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -26,7 +28,8 @@ import { AuthService } from 'src/app/core/services/auth.service';
   ],
 })
 export class NavbarComponent implements OnInit {
-  isLoggedIn = false;
+  // ใช้ observable + async pipe ให้เปลี่ยนทันทีที่ auth เปลี่ยน
+  isLoggedIn$!: Observable<boolean>;
 
   constructor(
     private router: Router,
@@ -35,8 +38,13 @@ export class NavbarComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.auth.hasToken();
-    this.auth.isLoggedIn$.subscribe(v => this.isLoggedIn = v);
+    // ตรวจสอบ session ครั้งแรก
+    this.auth.checkSession();
+
+    // subscribe เพื่ออัปเดต UI
+    this.isLoggedIn$ = this.auth.isLoggedIn$.pipe(
+      startWith(false)
+    );
   }
 
   public toggleMobileMenu(): void {

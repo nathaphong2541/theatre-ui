@@ -1,4 +1,4 @@
-import { enableProdMode, importProvidersFrom, LOCALE_ID } from '@angular/core';
+import { APP_INITIALIZER, enableProdMode, importProvidersFrom, LOCALE_ID } from '@angular/core';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { registerLocaleData } from '@angular/common';
@@ -10,6 +10,15 @@ import localeEn from '@angular/common/locales/en';
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { TokenInterceptor } from './app/core/guards/token.interceptor';
+import { AuthErrorInterceptor } from './app/core/guards/auth-error.interceptor';
+import { AuthService } from './app/modules/auth/service/auth.service';
+
+export function initSession(auth: AuthService) {
+  return () => auth.checkSession().toPromise(); // เรียกเฉพาะกรณีมี flag; ไม่งั้น noop
+}
+
 
 // ลงทะเบียนข้อมูล locale (วันที่/ตัวเลข ฯลฯ)
 registerLocaleData(localeTh, 'th');
@@ -87,7 +96,16 @@ async function bootstrap() {
 
   await bootstrapApplication(AppComponent, {
     providers: [
-      importProvidersFrom(BrowserModule, AppRoutingModule),
+      importProvidersFrom(BrowserModule, AppRoutingModule), // ✅ เพิ่ม CoreModule
+      provideAnimations(),
+      provideHttpClient(withInterceptorsFromDi()), // ✅ now it will find the interceptor!
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: TokenInterceptor,
+        multi: true
+      },
+      { provide: HTTP_INTERCEPTORS, useClass: AuthErrorInterceptor, multi: true },
+      { provide: APP_INITIALIZER, useFactory: initSession, deps: [AuthService], multi: true },
       provideAnimations(),
       { provide: LOCALE_ID, useValue: locale }, // ให้ Angular Pipes ใช้ locale ที่ถูกต้อง
     ],

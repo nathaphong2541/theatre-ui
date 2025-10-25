@@ -1,30 +1,35 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
-  // root ให้ redirect ไป /th
   { path: '', redirectTo: 'en', pathMatch: 'full' },
 
-  // locale wrapper
   {
     path: ':lang',
-    // path: ':lang',
     children: [
+      // ✅ PUBLIC — เข้าตรง /en ได้เลย
       {
         path: '',
         loadChildren: () =>
           import('./modules/layout/layout.module').then((m) => m.LayoutModule),
       },
+
+      // ✅ PRIVATE — ต้องล็อกอินก่อน (ค่อยเด้งไป login)
       {
         path: 'directory',
+        canMatch: [AuthGuard],        // <— ใช้ canMatch กันตั้งแต่จับคู่ route
         loadChildren: () =>
           import('./modules-admin/layout/layout.module').then((m) => m.LayoutModule),
       },
+
+      // ✅ AUTH — เปิดเสมอ
       {
         path: 'auth',
         loadChildren: () =>
           import('./modules/auth/auth.module').then((m) => m.AuthModule),
       },
+
       {
         path: 'errors',
         loadChildren: () =>
@@ -34,7 +39,6 @@ const routes: Routes = [
     ],
   },
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

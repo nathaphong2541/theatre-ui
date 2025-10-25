@@ -1,15 +1,17 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { ClickOutsideDirective } from '../../../../../shared/directives/click-outside.directive';
+import { AuthService } from 'src/app/modules/auth/service/auth.service';
 
 type ProfileItem = {
   title: string;
   icon: string;
-  link: any[]; // ใช้ routerLink แบบ array เพื่อเปลี่ยน prefix ตาม locale ได้ง่าย
+  link?: any[];
+  action?: () => void; // ✅ เพิ่มเพื่อรองรับการทำงานของ logout
 };
 
 @Component({
@@ -27,9 +29,15 @@ type ProfileItem = {
   ],
 })
 export class ProfileMenuComponent {
-  @Input() locale: 'en' | 'th' = 'en'; // ใช้ค่าจากภายนอก (หรือฉีด LocaleSwitcherService แทนก็ได้)
+  @Input() locale: 'en' | 'th' = 'en';
 
   public isOpen = false;
+
+  constructor(
+    public themeService: ThemeService,
+    private auth: AuthService,           // ✅ Inject service
+    private router: Router
+  ) { }
 
   get profileMenu(): ProfileItem[] {
     const L = (path: string) => ['/', this.locale, ...path.split('/').filter(Boolean)];
@@ -47,7 +55,7 @@ export class ProfileMenuComponent {
       {
         title: 'Log out',
         icon: './assets/icons/heroicons/outline/logout.svg',
-        link: ['/auth'],
+        action: () => this.onLogout(), // ✅ ใช้ action แทน routerLink
       },
     ];
   }
@@ -62,16 +70,10 @@ export class ProfileMenuComponent {
     { name: 'violet', code: '#6d28d9' },
   ];
 
-  public themeMode: Array<'light' | 'dark'> = ['light', 'dark'];
-  public themeDirection: Array<'ltr' | 'rtl'> = ['ltr', 'rtl'];
-
-  constructor(public themeService: ThemeService) { }
-
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
   }
 
-  // ✅ แก้บั๊ก: สลับโหมดให้ถูกต้อง
   toggleThemeMode(): void {
     this.themeService.theme.update((theme) => {
       const mode = this.themeService.isDark ? 'light' : 'dark';
@@ -85,5 +87,18 @@ export class ProfileMenuComponent {
 
   setDirection(value: 'ltr' | 'rtl'): void {
     this.themeService.theme.update((theme) => ({ ...theme, direction: value }));
+  }
+
+  /** ✅ ฟังก์ชัน logout */
+  onLogout(): void {
+    this.auth.logout().subscribe({
+      next: () => {
+        this.router.navigate(['/', this.locale, 'auth', 'sign-in']);
+      },
+      error: () => {
+        // แม้ error ก็ redirect กลับ login เพื่อความปลอดภัย
+        this.router.navigate(['/', this.locale, 'auth', 'sign-in']);
+      }
+    });
   }
 }

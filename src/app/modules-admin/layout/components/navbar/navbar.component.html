@@ -1,9 +1,9 @@
 <!-- src/app/layout/navbar/navbar.component.html -->
 <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 relative shadow">
   <div class="mx-auto px-5">
-    <div class="flex items-center justify-between md:py-3.5 md:justify-start">
+    <div class="flex items-center justify-between md:justify-start">
       <!-- Mobile Navigation Menu Button-->
-      <div class="sm:order-1 lg:hidden">
+      <div class="sm:order-1 md:hidden">
         <button (click)="toggleMobileMenu()" type="button"
           class="bg-muted text-muted-foreground focus:ring-primary hover:bg-muted-foreground hover:text-muted inline-flex items-center justify-center rounded-md p-2 focus:outline-hidden focus:ring-2 focus:ring-inset">
           <span class="sr-only">Open menu</span>
@@ -12,23 +12,30 @@
       </div>
 
       <!-- Logo -->
-      <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10 md:hidden">
+      <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10">
         <a class="flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
-          <img src="assets/images/logo.png" width="40" />
+          <img src="assets/images/logo.png" width="50" />
         </a>
         <h1 i18n="@@homeTitle" class="text-white font-bold uppercase">พอร์ทัลผู้ทำบัญชี</h1>
       </div>
 
+      <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10 lg:hidden">
+        <a class="bg-primary flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
+          <svg-icon src="assets/icons/logo.svg"></svg-icon>
+        </a>
+        <b class="text-foreground hidden text-sm font-bold sm:block"> Angular Tailwind </b>
+      </div>
+
+
       <!-- Right: Navbar menu then Profile / Login -->
       <div class="sm:order-4 md:flex md:flex-1 lg:w-0 md:ml-auto items-center justify-end space-x-3">
-        <ng-container *ngIf="isLoggedIn; else guest">
+        <ng-container *ngIf="(isLoggedIn$ | async); else guest">
           <app-profile-menu class="order-2 md:ml-4"></app-profile-menu>
         </ng-container>
 
         <ng-template #guest>
           <a (click)="login()" class="order-2 md:ml-4 inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium
-                    hover:bg-muted bg-card border-muted text-foreground focus:outline-hidden focus:ring-1">
-            <!-- ใช้ i18n และ JSON พร้อมกัน: key 'login' -->
+              hover:bg-muted bg-card border-muted text-foreground focus:outline-hidden focus:ring-1">
             <span i18n="@@login">เข้าสู่ระบบ</span>
           </a>
         </ng-template>

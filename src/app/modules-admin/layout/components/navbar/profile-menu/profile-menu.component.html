@@ -1,39 +1,45 @@
-<div class="relative ml-3">
+<!-- ปิดเมนูเมื่อคลิกนอกกรอบ ควรผูกที่ wrapper -->
+<div class="relative ml-3" clickOutside (clickOutside)="isOpen = false">
   <!-- Profile Button -->
-  <button (click)="toggleMenu()" class="bg-card relative flex rounded-full text-sm" type="button" aria-haspopup="menu"
-    [attr.aria-expanded]="isOpen">
+  <button (click)="toggleMenu()" class="bg-card relative flex rounded-full text-sm" type="button">
     <span class="sr-only">Open user menu</span>
-    <img clickOutside (clickOutside)="isOpen = false" class="size-9 shrink-0 rounded-md"
-      src="https://avatars.githubusercontent.com/u/12519008?v=4" alt="" />
+    <img class="size-9 shrink-0 rounded-md" src="https://avatars.githubusercontent.com/u/12519008?v=4" alt="" />
   </button>
 
   <!-- Dropdown -->
   <div [@openClose]="isOpen ? 'open' : 'closed'"
-    class="bg-background shadow-custom border-muted absolute z-20 mt-2 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0"
-    role="menu">
-    <div class="flex-row flex items-center px-4 pb-4">
+    class="bg-background shadow-custom border-muted absolute z-20 mt-2 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0">
+
+    <div class="flext-row flex items-center px-4 pb-4">
       <div class="w-10 shrink-0">
         <img class="rounded-md" src="https://avatars.githubusercontent.com/u/12519008?v=4" alt="" />
       </div>
       <div class="text-foreground overflow-hidden px-2 text-sm font-semibold">
         Nathaphong Thongkhamrod
-        <p class="text-muted-foreground truncate text-ellipsis text-xs font-semibold">
-          Nathaphong2541&#64;gmail.com
-        </p>
+        <p class="text-muted-foreground truncate text-ellipsis text-xs font-semibold">Nathaphong2541&#64;gmail.com</p>
       </div>
     </div>
 
     <div class="border-border border-b border-dashed"></div>
 
     <ul class="my-2 mx-2 flex flex-col">
-      @for (item of profileMenu; track item.title; let i = $index) {
-      <li class="rounded-md">
-        <a [routerLink]="item.link"
-          class="text-muted-foreground hover:bg-card hover:text-primary inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold"
-          role="menuitem">
+      @for (item of profileMenu; track $index) {
+      <li class="inline-flex rounded-md">
+        @if (item.action) {
+        <!-- ▶️ กรณี Logout / เมนูที่เป็น action -->
+        <button type="button" (click)="item.action(); isOpen = false"
+          class="text-muted-foreground hover:bg-card hover:text-primary w-full text-left inline-flex items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
+          <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"></svg-icon>
+          {{ item.title }}
+        </button>
+        } @else {
+        <!-- ▶️ กรณีเมนูทั่วไปที่เป็น link -->
+        <a [routerLink]="item.link" (click)="isOpen = false"
+          class="text-muted-foreground hover:bg-card hover:text-primary inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
           <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"></svg-icon>
           {{ item.title }}
         </a>
+        }
       </li>
       }
     </ul>
