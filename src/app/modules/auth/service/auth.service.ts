@@ -6,6 +6,13 @@ import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 export type MeResponse = { firstName: string; lastName: string, email: string };
+export type RegisterRequest = {
+  policyConfirm: boolean;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -92,5 +99,14 @@ export class AuthService {
 
   get isLoggedIn(): boolean {
     return this._isLoggedIn$.value === true;
+  }
+
+  register(data: RegisterRequest, autoLogin = true): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http
+      .post<void>(`${this.api}/register`, data, { headers, withCredentials: true })
+      .pipe(
+      );
   }
 }

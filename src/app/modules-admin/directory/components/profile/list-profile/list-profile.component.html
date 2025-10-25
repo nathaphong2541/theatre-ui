@@ -19,7 +19,7 @@
         <div class="absolute top-4 right-4">
             <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2
                shadow-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/40">
-                <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg" [svgClass]="'h-4 w-4'"></svg-icon>
+                <svg-icon src="" [svgClass]="'h-4 w-4'"></svg-icon>
                 <span i18n="@@edit_profile" class="text-sm">Edit profile</span>
             </button>
         </div>
@@ -59,14 +59,14 @@
                         <div class="mt-6 flex flex-wrap items-center gap-2.5 text-sm">
                             <span
                                 class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                                <svg-icon src="assets/icons/heroicons/outline/map-pin.svg"
+                                <svg-icon src=""
                                     [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
                                 {{ location() }}
                             </span>
                             <ng-container *ngFor="let t of tags()">
                                 <span
                                     class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                                    <svg-icon src="assets/icons/heroicons/outline/globe-alt.svg"
+                                    <svg-icon src=""
                                         [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
                                     {{ t.label }}
                                 </span>
@@ -98,7 +98,7 @@
                                     <div class="text-xs text-white/60">{{ l.value }}</div>
                                 </div>
                             </div>
-                            <svg-icon src="assets/icons/heroicons/outline/chevron-right.svg"
+                            <svg-icon src=""
                                 [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/70'"></svg-icon>
                         </a>
                     </div>
@@ -148,9 +148,7 @@
                     class="rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
                     <h3 class="text-base font-semibold mb-2" i18n="@@bio">Bio</h3>
                     <p class="text-sm text-white/70 leading-relaxed">
-                        สวัสดีครับ ผมเป็นโปรแกรมเมอร์สาย Frontend/Full-stack ที่ชอบงานออกแบบระบบและทำงานกับ
-                        Angular, React Native และ Spring Boot เน้นโค้ดสะอาด ดูแลง่าย และเข้ากับธุรกิจจริง
-                        สนใจเรื่อง Performance, UX และ Security เป็นพิเศษ
+                        {{ about() }}
                     </p>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-2">
@@ -205,7 +203,7 @@
         <section
             class="mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
             <h3 class="text-lg font-semibold flex items-center gap-2">
-                <svg-icon src="assets/icons/heroicons/outline/video-camera.svg"
+                <svg-icon src=""
                     [svgClass]="'h-5 w-5 text-sky-300'"></svg-icon>
                 Media / Video
             </h3>

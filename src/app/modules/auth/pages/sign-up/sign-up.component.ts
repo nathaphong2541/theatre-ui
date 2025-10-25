@@ -1,9 +1,12 @@
+// src/app/modules/auth/sign-up/sign-up.component.ts
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LanguageMenuComponent } from 'src/locale/language-menu.component';
-
+import { AuthService, RegisterRequest } from '../../service/auth.service';
+import { lastValueFrom } from 'rxjs';
+import { ToastService } from 'src/app/shared/components/toast/toast.service';
 // --- Custom Validators ---
 function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
   const pw = group.get('password')?.value ?? '';
@@ -29,16 +32,13 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
 function nameEnValidator(control: AbstractControl): ValidationErrors | null {
   const raw = (control.value ?? '') as string;
   if (!raw) return null; // ให้ required จัดการเอง
-  // อนุญาตเฉพาะ A-Z a-z และเว้นวรรค
   const ok = /^[A-Za-z\s]+$/.test(raw);
   return ok ? null : { invalidNameChars: true };
 }
 
 function sanitizeNameEn(s: string): string {
-  // ตัดทุกอย่างที่ไม่ใช่ A-Z a-z หรือเว้นวรรค
   let out = s.replace(/[^A-Za-z\s]/g, '');
-  // ลดเว้นวรรคซ้อนและ trim
-  out = out.replace(/\s{2,}/g, ' ').trimStart(); // ปล่อยให้มี space ท้ายได้ถ้าชอบก็เปลี่ยนเป็น trim() ได้
+  out = out.replace(/\s{2,}/g, ' ').trimStart();
   return out;
 }
 
@@ -51,6 +51,8 @@ function sanitizeNameEn(s: string): string {
 export class SignUpComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private auth = inject(AuthService);
+  private toast = inject(ToastService); // ✅ ใช้งาน Toast
 
   submitting = signal(false);
   showPassword = signal(false);
@@ -70,7 +72,7 @@ export class SignUpComponent implements OnInit {
     over18: [false, [Validators.requiredTrue]],
   });
 
-  // Getters ช่วยให้ template อ่านง่าย
+  // Getters
   get f() { return this.form.controls; }
   get pwGroup(): FormGroup { return this.form.get('passwordGroup') as FormGroup; }
   get pw() { return this.pwGroup.get('password'); }
@@ -114,17 +116,15 @@ export class SignUpComponent implements OnInit {
     });
   }
 
-  private invalidNameChar = /[^A-Za-z ]/g; // อนุญาตเฉพาะ A-Z a-z และช่องว่าง
+  private invalidNameChar = /[^A-Za-z ]/g;
 
   onBeforeNameInput(e: InputEvent) {
-    // บาง browser จะให้ e.data เฉพาะตอนพิมพ์ตัวเดียว (ไม่รวม paste/drag)
     const data = (e as any).data as string | null | undefined;
     if (data && this.invalidNameChar.test(data)) {
       e.preventDefault();
     }
   }
 
-  // เผื่อกรณี paste ใส่ทีละหลายตัว
   onPasteName(e: ClipboardEvent, control: 'firstName' | 'lastName') {
     const pasted = e.clipboardData?.getData('text') ?? '';
     const cleaned = pasted.replace(this.invalidNameChar, '');
@@ -145,17 +145,56 @@ export class SignUpComponent implements OnInit {
     else this.showConfirmPassword.set(!this.showConfirmPassword());
   }
 
+  /** ✅ อ่าน PDPA consent จาก localStorage.pdpaConsent */
+  private getPdpaAccepted(): boolean {
+    try {
+      const raw = localStorage.getItem('pdpaConsent');
+      if (!raw) return false;
+      const obj = JSON.parse(raw);
+      return obj?.accepted === true;
+    } catch {
+      return false;
+    }
+  }
+
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน', { title: 'ข้อมูลไม่ครบ' });
       return;
     }
 
+    // ต้องยอมรับ PDPA ก่อน (ดึงจาก localStorage)
+    const policyConfirm = this.getPdpaAccepted();
+    if (!policyConfirm) {
+      this.toast.warning('โปรดยอมรับนโยบายความเป็นส่วนตัว (PDPA) ก่อนสมัครใช้งาน', {
+        title: 'ต้องยอมรับ PDPA',
+        actionText: 'อ่านนโยบาย',
+        onAction: () => this.router.navigate(['/pdpa']),
+        duration: 6000,
+      });
+      return;
+    }
+
+    const payload: RegisterRequest = {
+      policyConfirm,
+      firstName: this.f['firstName'].value!,
+      lastName: this.f['lastName'].value!,
+      email: this.f['email'].value!,
+      password: this.pw?.value!,
+    };
+
     this.submitting.set(true);
     try {
-      // TODO: เรียก service สมัครสมาชิกจริง
-      alert('✅ Registration successful!');
-      this.router.navigate(['/auth/sign-in']);
+      await lastValueFrom(this.auth.register(payload, true)); // auto-login หลังสมัคร
+      this.toast.success('สมัครสมาชิกสำเร็จ 🎉', {
+        title: 'Welcome!',
+        duration: 3000,
+        onTimeout: () => this.router.navigate(['/']),
+      });
+    } catch (err: any) {
+      const msg = err?.error?.message || 'สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง';
+      this.toast.error(msg, { title: 'เกิดข้อผิดพลาด' });
     } finally {
       this.submitting.set(false);
     }
