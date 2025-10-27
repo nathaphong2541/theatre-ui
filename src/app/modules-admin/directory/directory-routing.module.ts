@@ -14,6 +14,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'profile-new', component: HandleProfileComponent },
       { path: 'profile/:id', component: HandleProfileComponent },
       { path: 'setting', component: SettingComponent },
       { path: '**', redirectTo: 'errors/404' },

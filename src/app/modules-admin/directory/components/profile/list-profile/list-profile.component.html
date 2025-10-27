@@ -4,9 +4,11 @@
         <div class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[28px] border-b border-white/10">
             <!-- gradient base -->
             <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700"></div>
+
             <!-- user cover -->
-            <img *ngIf="coverUrl()" [src]="coverUrl()"
-                class="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-luminosity" alt="cover" />
+            <!-- <img *ngIf="coverUrl()" [src]="coverUrl()"
+                class="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-luminosity" alt="cover" /> -->
+
             <!-- top glow -->
             <div
                 class="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_-10%,rgba(56,189,248,0.18),transparent),radial-gradient(50%_30%_at_80%_-10%,rgba(16,185,129,0.12),transparent)]">
@@ -18,7 +20,8 @@
         <!-- Edit Button -->
         <div class="absolute top-4 right-4">
             <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2
-               shadow-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/40">
+                     shadow-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+                aria-label="Edit profile">
                 <svg-icon src="" [svgClass]="'h-4 w-4'"></svg-icon>
                 <span i18n="@@edit_profile" class="text-sm">Edit profile</span>
             </button>
@@ -36,8 +39,9 @@
                                 <div
                                     class="size-full rounded-xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center overflow-hidden">
                                     <img *ngIf="hasAvatar()" [src]="avatarUrl()" class="h-full w-full object-cover"
-                                        alt="profile" />
-                                    <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24" class="h-20 w-20 opacity-60">
+                                        alt="profile avatar" />
+                                    <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24" class="h-20 w-20 opacity-60"
+                                        aria-hidden="true">
                                         <path fill="currentColor"
                                             d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z" />
                                     </svg>
@@ -47,26 +51,26 @@
                     </div>
 
                     <!-- Headline -->
-                    <div class="pb-2">
-                        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight uppercase drop-shadow-sm">
-                            {{ displayName() }}
+                    <div class="pb-2 min-w-0">
+                        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight uppercase drop-shadow-sm truncate">
+                            {{ displayName() || '—' }}
                         </h1>
-                        <p class="mt-1 text-sm md:text-base text-white/80">
+                        <p *ngIf="headline()" class="mt-1 text-sm md:text-base text-white/80 truncate">
                             {{ headline() }}
                         </p>
 
                         <!-- Meta -->
                         <div class="mt-6 flex flex-wrap items-center gap-2.5 text-sm">
-                            <span
+                            <span *ngIf="location()"
                                 class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                                <svg-icon src=""
-                                    [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
+                                <svg-icon src=".svg" [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
                                 {{ location() }}
                             </span>
-                            <ng-container *ngFor="let t of tags()">
-                                <span
+
+                            <ng-container *ngIf="tags()?.length">
+                                <span *ngFor="let t of tags()"
                                     class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                                    <svg-icon src=""
+                                    <svg-icon *ngIf="t.icon" [src]="t.icon"
                                         [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
                                     {{ t.label }}
                                 </span>
@@ -87,24 +91,28 @@
                 <div
                     class="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
                     <h2 class="text-xs font-semibold tracking-wider text-white/60 mb-3" i18n="@@contact">Contact</h2>
-                    <div class="space-y-3">
+
+                    <div *ngIf="links()?.length; else noLinks" class="space-y-3">
                         <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener" class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#0f131a]/70 px-4 py-3
-                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-sky-400/30 transition">
-                            <div class="flex items-center gap-3">
-                                <svg-icon [src]="'assets/icons/' + l.icon"
+                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-sky-400/30 transition"
+                            [attr.aria-label]="l.label + ' ' + l.value">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <svg-icon [src]="l.icon"
                                     [svgClass]="'h-5 w-5 text-white/70 group-hover:text-white'"></svg-icon>
-                                <div class="leading-tight">
-                                    <div class="text-sm font-medium">{{ l.label }}</div>
-                                    <div class="text-xs text-white/60">{{ l.value }}</div>
+                                <div class="leading-tight truncate">
+                                    <div class="text-sm font-medium truncate">{{ l.label }}</div>
+                                    <div class="text-xs text-white/60 truncate">{{ l.value }}</div>
                                 </div>
                             </div>
-                            <svg-icon src=""
-                                [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/70'"></svg-icon>
+                            <svg-icon src="" [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/70'"></svg-icon>
                         </a>
                     </div>
+                    <ng-template #noLinks>
+                        <div class="text-xs text-white/50" i18n="@@no_contact">No contact info.</div>
+                    </ng-template>
                 </div>
 
-                <!-- Stats -->
+                <!-- Stats (ตัวอย่าง mock) -->
                 <div class="mt-6 grid grid-cols-3 gap-3">
                     <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
                         <div class="text-2xl font-semibold">18</div>
@@ -127,7 +135,7 @@
                 <nav class="mb-4 flex items-center gap-2 overflow-x-auto">
                     <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm
                          bg-white/5 border border-white/10 text-white/80 hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                         focus:outline-none focus:ring-2 focus:ring-sky-400/30" aria-current="page">
                         <span i18n="@@about">About</span>
                         <span class="absolute inset-x-2 -bottom-[1px] h-[2px] rounded bg-sky-400/70"></span>
                     </button>
@@ -147,8 +155,8 @@
                 <div
                     class="rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
                     <h3 class="text-base font-semibold mb-2" i18n="@@bio">Bio</h3>
-                    <p class="text-sm text-white/70 leading-relaxed">
-                        {{ about() }}
+                    <p class="text-sm text-white/70 leading-relaxed whitespace-pre-line">
+                        {{ about() || ('(No bio provided)' | i18nSelect:{'': ''}) }}
                     </p>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-2">
@@ -181,7 +189,7 @@
                     </div>
                 </div>
 
-                <!-- Portfolio -->
+                <!-- Portfolio (ตัวอย่าง mock) -->
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
                     <article
                         class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
@@ -203,11 +211,11 @@
         <section
             class="mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
             <h3 class="text-lg font-semibold flex items-center gap-2">
-                <svg-icon src=""
-                    [svgClass]="'h-5 w-5 text-sky-300'"></svg-icon>
+                <svg-icon src="" [svgClass]="'h-5 w-5 text-sky-300'"></svg-icon>
                 Media / Video
             </h3>
-            <app-video-gallery [viewOnly]="true" [limit]="2"></app-video-gallery>
+            <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()">
+            </app-video-gallery>
         </section>
     </main>
 </div>

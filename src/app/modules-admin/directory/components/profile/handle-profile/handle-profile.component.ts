@@ -5,6 +5,7 @@ import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ProfileService } from '../../../service/profile.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 type Labeled = { label: string; value: number };
 
@@ -38,6 +39,7 @@ export type ProfileDto = {
   credits: number[];
   createdAt: string;
   updatedAt: string;
+  avatarUrl?: string; // 👈 เพิ่ม
 };
 
 export type ProfilePayload = {
@@ -79,6 +81,15 @@ export type ProfilePayload = {
 })
 export class HandleProfileComponent implements OnInit {
 
+  // ==== เพิ่ม: จัดการ avatar ====
+  avatarFile: File | null = null;
+  avatarPreviewUrl: string | null = null; // ใช้โชว์ preview (object URL หรือจาก server)
+  private serverAvatarUrl: string | null = null;
+
+  get avatarSrc(): string | null {
+    return this.avatarPreviewUrl ?? this.serverAvatarUrl ?? null;
+  }
+
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
@@ -86,6 +97,9 @@ export class HandleProfileComponent implements OnInit {
     private toast: ToastService,
     private router: Router,
   ) { }
+
+  /** ใช้บอกว่าหน้านี้คือหน้า "สร้างโปรไฟล์ใหม่" หรือไม่ */
+  private isNewProfile = false;
 
   /** เก็บโปรไฟล์ปัจจุบันไว้ใช้ตัดสินใจ POST/PUT */
   private currentProfile: ProfileDto | null = null;
@@ -217,7 +231,19 @@ export class HandleProfileComponent implements OnInit {
   embed2 = computed(() => this._embed2());
 
   ngOnInit(): void {
-    this.loadProfile();
+    this.isNewProfile = this.router.url.includes('/profile-new');
+    if (!this.isNewProfile) {
+      this.loadProfile();
+    } else {
+      this.currentProfile = null;
+    }
+  }
+
+  // ป้องกัน memory leak จาก object URL
+  ngOnDestroy(): void {
+    if (this.avatarPreviewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.avatarPreviewUrl);
+    }
   }
 
   /** ---------- Load & map from API ---------- */
@@ -226,12 +252,19 @@ export class HandleProfileComponent implements OnInit {
       next: (p: ProfileDto) => {
         this.currentProfile = p;
         this.populateFromProfile(p);
+
+        // ✅ สร้าง URL เต็มจาก avatarUrl
+        if (p.avatarUrl) {
+          // ถ้า backend ส่ง path เริ่มด้วย /files/... ให้ต่อ base จาก environment
+          const apiBase = environment.apiUrl.replace(/\/api\/?$/, ''); // ตัด /api ออก
+          this.serverAvatarUrl = p.avatarUrl.startsWith('http')
+            ? p.avatarUrl
+            : `${apiBase}${p.avatarUrl}`;
+        } else {
+          this.serverAvatarUrl = null;
+        }
       },
-      error: (err) => {
-        console.error('getProfile failed', err);
-        this.currentProfile = null; // ไม่มีโปรไฟล์ => สร้างใหม่
-        this.toast.error('ไม่สามารถดึงข้อมูลโปรไฟล์ได้', { title: 'โหลดข้อมูลล้มเหลว' });
-      },
+      error: () => this.toast.error('ไม่สามารถดึงข้อมูลโปรไฟล์ได้', { title: 'โหลดข้อมูลล้มเหลว' }),
     });
   }
 
@@ -273,7 +306,37 @@ export class HandleProfileComponent implements OnInit {
   }
 
   // ---------- UI helpers ----------
-  onPickAvatar(_e: Event) { }
+  onPickAvatar(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const ok = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!ok.includes(file.type)) { this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP'); return; }
+    if (file.size > 2 * 1024 * 1024) { this.toast.warning('ไฟล์ต้องไม่เกิน 2MB'); return; }
+
+    // พรีวิวทับรูปจากเซิร์ฟเวอร์ทันที
+    if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
+    this.avatarPreviewUrl = URL.createObjectURL(file);
+    this.avatarFile = file; // ถ้าคุณอัปโหลดตอนกด Save
+  }
+
+  clearLocalAvatar() {
+    if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
+    this.avatarPreviewUrl = null;
+  }
+
+  deleteAvatar() {
+    this.profileService.deleteAvatar().subscribe({
+      next: (res: any) => {
+        this.clearLocalAvatar();
+        this.serverAvatarUrl = res?.avatarUrl || null; // ส่วนใหญ่จะเป็น null หลังลบ
+        this.toast.success('ลบรูปเรียบร้อย');
+      },
+      error: () => this.toast.error('ลบรูปไม่สำเร็จ'),
+    });
+  }
+
   onPickResume(_e: Event) { }
 
   addConflict() {
@@ -315,7 +378,6 @@ export class HandleProfileComponent implements OnInit {
 
   /** ---------- Save payload กลับไปหา API ---------- */
   save() {
-    // ถ้าฟอร์มไม่ผ่าน ให้เตือนด้วย toast และไม่ยิง API
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน', { title: 'ข้อมูลไม่ครบ' });
@@ -323,9 +385,10 @@ export class HandleProfileComponent implements OnInit {
     }
 
     const base = this.form.getRawValue();
-
     const payload: ProfilePayload = {
-      ...(this.currentProfile ? { id: this.currentProfile.id, userId: this.currentProfile.userId } : {}),
+      ...(this.currentProfile && !this.isNewProfile
+        ? { id: this.currentProfile.id, userId: this.currentProfile.userId }
+        : {}),
       privateProfile: !!base.privateProfile,
       profileIsCompany: !!base.profileIsCompany,
       firstName: base.firstName!,
@@ -353,19 +416,32 @@ export class HandleProfileComponent implements OnInit {
       credits: this.credits,
     };
 
-    const req$ = this.currentProfile
-      ? this.profileService.updateProfile(payload)  // PUT /me
-      : this.profileService.saveProfile(payload);   // POST /save
+    // ✅ ถ้ามี avatarFile → ใช้ multipart; ถ้าไม่มีก็ยิง JSON ปกติ
+    const isMultipart = !!this.avatarFile;
+
+    const req$ = this.isNewProfile
+      ? (isMultipart
+        ? this.profileService.saveProfileMultipart(payload, this.avatarFile!) // POST multipart
+        : this.profileService.saveProfile(payload))                           // POST json
+      : (this.currentProfile
+        ? (isMultipart
+          ? this.profileService.updateProfileMultipart(payload, this.avatarFile!) // PUT multipart
+          : this.profileService.updateProfile(payload))                           // PUT json
+        : (isMultipart
+          ? this.profileService.saveProfileMultipart(payload, this.avatarFile!)   // POST multipart
+          : this.profileService.saveProfile(payload)));                           // POST json
 
     req$.subscribe({
-      next: (res: ProfileDto) => {
-        this.currentProfile = res;
+      next: (res: ProfileDto & { avatarUrl?: string }) => {
+        this.currentProfile = res as ProfileDto;
+        if ((res as any).avatarUrl) this.avatarPreviewUrl = (res as any).avatarUrl!;
+        this.avatarFile = null; // เคลียร์ไฟล์หลังบันทึกสำเร็จ
+
         this.toast.success('บันทึกข้อมูลสำเร็จ 🎉', {
           title: 'Saved',
           duration: 3000,
-          onTimeout: () => this.router.navigate(['/profile']),
+          onTimeout: () => this.router.navigate(['en/directory/profile']),
         });
-
       },
       error: (err) => {
         console.error('Save profile failed', err);
@@ -373,5 +449,9 @@ export class HandleProfileComponent implements OnInit {
         this.toast.error(msg, { title: 'เกิดข้อผิดพลาด' });
       }
     });
+  }
+
+  cancel() {
+    this.router.navigate(['en/directory/profile']);
   }
 }

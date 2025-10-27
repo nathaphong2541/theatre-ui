@@ -3,20 +3,23 @@
   <!-- Profile Button -->
   <button (click)="toggleMenu()" class="bg-card relative flex rounded-full text-sm" type="button">
     <span class="sr-only">Open user menu</span>
-    <img class="size-9 shrink-0 rounded-md" src="https://avatars.githubusercontent.com/u/12519008?v=4" alt="" />
+    <img class="size-9 shrink-0 rounded-md"
+      [src]="(menuUser$ | async)?.avatarSrc || 'assets/images/avatar-placeholder.png'" alt="user avatar" />
   </button>
 
   <!-- Dropdown -->
   <div [@openClose]="isOpen ? 'open' : 'closed'"
     class="bg-background shadow-custom border-muted absolute z-20 mt-2 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0">
-
-    <div class="flext-row flex items-center px-4 pb-4">
+    <!-- Header: avatar + name + email -->
+    <div class="flex-row flex items-center px-4 pb-4" *ngIf="menuUser$ | async as u">
       <div class="w-10 shrink-0">
-        <img class="rounded-md" src="https://avatars.githubusercontent.com/u/12519008?v=4" alt="" />
+        <img class="rounded-md" [src]="u.avatarSrc || 'assets/images/avatar-placeholder.png'" alt="user avatar" />
       </div>
       <div class="text-foreground overflow-hidden px-2 text-sm font-semibold">
-        Nathaphong Thongkhamrod
-        <p class="text-muted-foreground truncate text-ellipsis text-xs font-semibold">Nathaphong2541&#64;gmail.com</p>
+        {{ u.displayName || '—' }}
+        <p class="text-muted-foreground truncate text-ellipsis text-xs font-semibold">
+          {{ u.email || '—' }}
+        </p>
       </div>
     </div>
 

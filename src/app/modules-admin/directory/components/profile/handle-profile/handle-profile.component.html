@@ -49,9 +49,34 @@
                             <p class="text-sm text-gray-400">Portrait orientation works best. Max 2MB.</p>
                         </div>
 
+                        <!-- Preview (server URL หรือ blob) -->
+                        <div class="mb-4" *ngIf="avatarSrc; else avatarPlaceholder">
+                            <img [src]="avatarSrc" alt="Avatar"
+                                class="w-full max-h-72 object-cover rounded-xl border border-white/10">
+
+                            <div class="mt-3 flex gap-2">
+                                <button type="button"
+                                    class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"
+                                    (click)="clearLocalAvatar()">
+                                    Remove (Local)
+                                </button>
+                                <button type="button"
+                                    class="rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-1.5 text-xs text-red-200 hover:bg-red-500/20"
+                                    (click)="deleteAvatar()">
+                                    Delete from server
+                                </button>
+                            </div>
+                        </div>
+
+                        <ng-template #avatarPlaceholder>
+                            <!-- ว่างเปล่าหรือโชว์ placeholder ตามที่ต้องการ -->
+                        </ng-template>
+
+                        <!-- Uploader -->
                         <label
                             class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition">
-                            <input type="file" class="hidden" (change)="onPickAvatar($event)" accept="image/*" />
+                            <input type="file" class="hidden" (change)="onPickAvatar($event)"
+                                accept="image/jpeg,image/png,image/webp" />
                             <div class="flex items-center gap-4 p-6 sm:p-8">
                                 <div
                                     class="grid place-items-center rounded-full bg-[#0b0e13] ring-1 ring-white/10 h-20 w-20">
@@ -63,7 +88,7 @@
                                 </div>
                                 <div>
                                     <p class="text-base md:text-lg">Drag & drop or click to upload</p>
-                                    <p class="text-xs text-gray-400">JPG, PNG, GIF, or WEBP up to 2MB</p>
+                                    <p class="text-xs text-gray-400">JPG, PNG, WEBP up to 2MB</p>
                                 </div>
                             </div>
                         </label>
@@ -189,8 +214,9 @@
                                     <input
                                         class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="programmer" [formControl]="form.controls.title" maxlength="50" />
-                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">{{
-                                        form.controls.title.value.length || 0 }}/50</span>
+                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">
+                                        {{ (form.controls.title.value || '').length }}/50
+                                    </span>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Title/Trade/Profession</p>
                             </div>
@@ -206,8 +232,9 @@
                                     <input
                                         class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-sky-500/50 focus:shadow-[0_0_0_3px_rgba(14,165,233,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="Thailand" [formControl]="form.controls.location" maxlength="25" />
-                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">{{
-                                        form.controls.location.value.length || 0 }}/25</span>
+                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">
+                                        {{ (form.controls.location.value || '').length }}/25
+                                    </span>
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Where do you currently live?</p>
                             </div>
@@ -391,8 +418,7 @@
                                     <div class="py-8 text-center">
                                         <div class="text-4xl">⬆️</div>
                                         <div class="mt-2">Drag & drop or click to choose</div>
-                                        <div class="mt-1 text-xs text-gray-400">JPG, PNG, GIF, WEBP, or PDF up to 2MB
-                                        </div>
+                                        <div class="mt-1 text-xs text-gray-400">JPG, PNG, WEBP, or PDF up to 2MB</div>
                                     </div>
                                 </label>
                             </div>
@@ -598,11 +624,11 @@
                         </div>
 
                         <h3 class="text-lg font-semibold mt-8 mb-3">Images</h3>
-                        <p class="text-sm text-gray-400 mb-3">Allowed: jpg, png, gif, heic, webp. ≤ 2MB.</p>
+                        <p class="text-sm text-gray-400 mb-3">Allowed: jpg, png, webp. ≤ 2MB.</p>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <label *ngFor="let i of [0,1,2,3,4,5]"
                                 class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-6 text-center min-h-[220px] hover:border-white/20 transition bg-[#101318]/60">
-                                <input type="file" class="hidden" accept="image/*" />
+                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/webp" />
                                 <div class="grid place-items-center h-full">
                                     <div class="text-center">
                                         <div class="text-4xl">⬆️</div>
@@ -619,7 +645,7 @@
                         <div
                             class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] py-4 px-5 md:px-6 flex justify-end gap-3">
                             <button type="button"
-                                class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">Cancel</button>
+                                class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10" (click)="cancel()">Cancel</button>
                             <button type="button"
                                 class="rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-5 py-2.5 text-emerald-200 hover:bg-emerald-500/30 transition"
                                 (click)="save()">Save Changes</button>

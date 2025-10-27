@@ -1,50 +1,63 @@
 <!-- src/app/layout/navbar/navbar.component.html -->
-<div class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 relative shadow">
-  <div class="mx-auto px-5">
-    <div class="flex items-center justify-between md:justify-start">
-      <!-- Mobile Navigation Menu Button-->
-      <div class="sm:order-1 md:hidden">
+<div
+  class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 text-white shadow border-b border-white/10">
+  <div class="mx-auto max-w-7xl px-3 sm:px-5">
+    <div class="h-14 sm:h-16 flex items-center gap-2">
+
+      <!-- Left: Mobile menu -->
+      <div class="lg:hidden">
         <button (click)="toggleMobileMenu()" type="button"
-          class="bg-muted text-muted-foreground focus:ring-primary hover:bg-muted-foreground hover:text-muted inline-flex items-center justify-center rounded-md p-2 focus:outline-hidden focus:ring-2 focus:ring-inset">
+          class="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30">
           <span class="sr-only">Open menu</span>
           <svg-icon src="assets/icons/heroicons/outline/menu.svg" [svgClass]="'h-6 w-6'"></svg-icon>
         </button>
       </div>
 
-      <!-- Logo -->
-      <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10">
-        <a class="flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
-          <img src="assets/images/logo.png" width="50" />
+      <!-- Center: Logo + Title -->
+      <div class="hidden sm:flex items-center gap-2 sm:gap-3 min-w-0 md:mx-4 ">
+        <a class="rounded-sm p-1 focus:outline-none focus:ring-2 focus:ring-white/30">
+          <img src="assets/images/logo.png" width="28" height="28" class="sm:w-9 sm:h-9" alt="logo" />
         </a>
-        <h1 i18n="@@homeTitle" class="text-white font-bold uppercase">พอร์ทัลผู้ทำบัญชี</h1>
+        <h1 i18n="@@homeTitle"
+          class="font-bold uppercase tracking-wide text-white text-sm sm:text-base md:text-lg truncate">
+          พอร์ทัลผู้ทำบัญชี
+        </h1>
       </div>
 
-      <!-- <div class="flex items-center justify-start gap-3 sm:order-2 ltr:md:mr-10 rtl:md:ml-10 lg:hidden">
-        <a class="bg-primary flex items-center justify-center rounded-sm p-2 focus:outline-hidden focus:ring-1">
-          <svg-icon src="assets/icons/logo.svg"></svg-icon>
-        </a>
-        <b class="text-foreground hidden text-sm font-bold sm:block"> Angular Tailwind </b>
-      </div> -->
+      <!-- Spacer (push right side) -->
+      <div class="flex-1"></div>
 
+      <!-- Right: Language + Profile/Login -->
+      <div class="flex items-center gap-2 sm:gap-3">
 
-      <!-- Right: Navbar menu then Profile / Login -->
-      <div class="sm:order-4 md:flex md:flex-1 lg:w-0 md:ml-auto items-center justify-end space-x-3">
+        <!-- Language chip (glass/pill) -->
+        <div
+          class="hidden xs:flex items-center rounded-2xl bg-white/90 text-gray-900 shadow-md ring-1 ring-black/5 px-2 py-1">
+          <app-language-menu></app-language-menu>
+        </div>
+
+        <!-- Profile or Login -->
         <ng-container *ngIf="(isLoggedIn$ | async); else guest">
-          <app-profile-menu class="order-2 md:ml-4"></app-profile-menu>
+          <app-profile-menu></app-profile-menu>
         </ng-container>
-
         <ng-template #guest>
-          <a (click)="login()" class="order-2 md:ml-4 inline-flex items-center rounded-md border px-4 py-2 text-sm font-medium
-              hover:bg-muted bg-card border-muted text-foreground focus:outline-hidden focus:ring-1">
+          <button (click)="login()"
+            class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-medium hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-white/30">
             <span i18n="@@login">เข้าสู่ระบบ</span>
-          </a>
+          </button>
         </ng-template>
 
-        <app-language-menu class="order-3 md:ml-2"></app-language-menu>
+        <!-- Language chip (mobile – small icon) -->
+        <div class="xs:hidden">
+          <div class="px-1.5 py-1">
+            <app-language-menu></app-language-menu>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Mobile menu -->
+  <!-- Mobile menu dropdown -->
   <app-navbar-mobile></app-navbar-mobile>
 </div>
