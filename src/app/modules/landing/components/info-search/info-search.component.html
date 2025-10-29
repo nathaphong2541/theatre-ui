@@ -1,89 +1,133 @@
 <!-- Member Search (Profile Cards) -->
-<section id="member-search" class="bg-white py-16">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+<section id="member-search" class="bg-white py-10">
+    <div class="mx-auto max-w-7xl px-4 lg:px-8">
 
-        <!-- Header + Filters -->
-        <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <!-- Header -->
+        <header class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <h2 class="text-3xl font-bold tracking-tight text-gray-900">ค้นหาสมาชิก</h2>
-                <p class="mt-2 text-gray-600">ค้นหาด้วยชื่อ, เลขสมาชิก, จังหวัด, หรือสถานะ</p>
+                <h2 class="text-2xl font-bold tracking-tight text-gray-900">ค้นหาสมาชิก</h2>
+                <p class="mt-1 text-gray-600">ค้นหาด้วยชื่อ, เลขสมาชิก, จังหวัด, หรือสถานะ</p>
             </div>
-            <form class="w-full sm:w-auto">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+            <!-- Filters -->
+            <form class="w-full sm:w-auto" (ngSubmit)="onSubmit()">
+                <div class="grid grid-cols-1 gap-2 sm:auto-cols-max sm:grid-flow-col">
                     <div class="relative sm:w-80">
-                        <input type="text" placeholder="ชื่อ/เลขสมาชิก/อีเมล…"
-                            class="w-full rounded-xl border px-4 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                        <input [(ngModel)]="q" name="q" type="text" placeholder="ชื่อ/เลขสมาชิก/อีเมล…"
+                            class="w-full rounded-xl border bg-white/70 px-4 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" />
                         <svg class="pointer-events-none absolute right-3 top-2.5 h-5 w-5 text-gray-400"
-                            viewBox="0 0 20 20" fill="currentColor">
+                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd"
                                 d="M14.293 13.293a8 8 0 1 0-1 1l3.854 3.853a.75.75 0 0 0 1.06-1.06l-3.914-3.793zM8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"
                                 clip-rule="evenodd" />
                         </svg>
                     </div>
-                    <select
-                        class="rounded-xl border px-3 py-2.5 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+
+                    <select [(ngModel)]="status" name="status"
+                        class="rounded-xl border bg-white/70 px-3 py-2.5 text-sm transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
                         <option value="">สถานะ: ทั้งหมด</option>
                         <option value="active">ใช้งาน</option>
                         <option value="inactive">ระงับ</option>
                         <option value="pending">รอตรวจสอบ</option>
                     </select>
-                    <button type="button"
-                        class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-indigo-500">
-                        ค้นหา
-                    </button>
+
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-500 disabled:opacity-50"
+                            [disabled]="loading">
+                            {{ loading ? 'กำลังค้นหา…' : 'ค้นหา' }}
+                        </button>
+                        <button type="button" (click)="clearFilters()"
+                            class="rounded-xl border px-4 py-2.5 text-sm hover:bg-gray-50">
+                            ล้างเงื่อนไข
+                        </button>
+                    </div>
                 </div>
             </form>
+        </header>
+
+        <!-- Result meta -->
+        <div class="mb-4 flex items-center justify-between text-sm text-gray-500" *ngIf="!loading">
+            <div *ngIf="total>0">แสดง {{ startIdx() }}–{{ endIdx() }} จาก {{ total }} รายการ</div>
+            <div *ngIf="total===0">ไม่พบข้อมูลที่ค้นหา</div>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div *ngIf="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div *ngFor="let _ of [1,2,3,4,5,6,7,8]" class="animate-pulse rounded-2xl border bg-white p-5">
+                <div class="mb-4 flex items-start gap-4">
+                    <div class="h-16 w-16 rounded-full bg-gray-200"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="h-4 w-2/3 rounded bg-gray-200"></div>
+                        <div class="h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div class="h-3 w-3/4 rounded bg-gray-200"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 border-t pt-4">
+                    <div class="h-4 rounded bg-gray-200"></div>
+                    <div class="h-4 rounded bg-gray-200"></div>
+                    <div class="h-4 rounded bg-gray-200"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Profile Card Grid -->
-        <!-- *Angular: *ngFor="let m of members" -->
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <!-- Card -->
-            <article class="group overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-lg">
+        <div *ngIf="!loading && members.length"
+            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+            <article *ngFor="let m of members; trackBy: trackById"
+                class="rounded-2xl border bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                 <div class="flex items-start gap-4 p-5">
                     <!-- Avatar -->
-                    <img class="h-16 w-16 flex-none rounded-full object-cover ring-2 ring-gray-100"
-                        src="https://i.pravatar.cc/160?img=12" alt="avatar">
+                    <img [src]="avatar(m)" alt=""
+                        class="h-16 w-16 flex-none rounded-full object-cover ring-2 ring-gray-100" />
 
                     <!-- Main -->
                     <div class="min-w-0 flex-1">
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="truncate text-base font-semibold text-gray-900">
-                                กิตติ ศิริวงศ์
+                                {{ fullName(m) }}
                             </h3>
-                            <!-- Status -->
-                            <span
-                                class="shrink-0 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
-                                ใช้งาน
+
+                            <!-- Status pill -->
+                            <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
+                                [class.bg-green-50]="m.recordStatus==='A'" [class.text-green-700]="m.recordStatus==='A'"
+                                [class.bg-amber-50]="m.recordStatus!=='A'"
+                                [class.text-amber-700]="m.recordStatus!=='A'">
+                                {{ m.recordStatus==='A' ? 'ใช้งาน' : 'ระงับ' }}
                             </span>
                         </div>
+
                         <div class="mt-1 text-sm text-gray-600">
-                            MEM-000123 • เชียงใหม่
+                            {{ memberCode(m) }} • {{ m.location || '—' }}
                         </div>
                         <div class="mt-1 truncate text-sm text-gray-500">
-                            kitti&#64;example.com • 08x-xxx-xxxx
+                            {{ m.email || '—' }} • {{ m.phone || '—' }}
                         </div>
 
                         <!-- Tags -->
                         <div class="mt-3 flex flex-wrap gap-2">
-                            <span
-                                class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">Premium</span>
-                            <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs">ภาคเหนือ</span>
+                            <span *ngIf="m.multiLang"
+                                class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
+                                Multi-Lang
+                            </span>
+                            <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs">
+                                {{ regionTag(m) }}
+                            </span>
                         </div>
 
                         <!-- Actions -->
                         <div class="mt-4 flex items-center gap-2">
-                            <a href="#"
+                            <a [routerLink]="['/profiles', m.id]"
                                 class="inline-flex items-center rounded-xl border px-3 py-2 text-sm hover:bg-gray-50">
                                 ดูโปรไฟล์
                             </a>
-                            <button
-                                class="inline-flex items-center rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-foreground hover:bg-gray-800">
+                            <button type="button"
+                                class="inline-flex items-center rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-800">
                                 ติดต่อ
                             </button>
-                            <button class="ml-auto rounded-xl px-3 py-2 text-sm hover:bg-gray-50">
-                                ⋯
-                            </button>
+                            <button type="button"
+                                class="ml-auto rounded-xl px-3 py-2 text-sm hover:bg-gray-50">⋯</button>
                         </div>
                     </div>
                 </div>
@@ -91,38 +135,53 @@
                 <!-- Footer stats -->
                 <div class="grid grid-cols-3 border-t text-center text-xs text-gray-600">
                     <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">12</div>
+                        <div class="font-semibold text-gray-900">{{ getStat(m,'orders') }}</div>
                         ออร์เดอร์
                     </div>
                     <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">4.8</div>
+                        <div class="font-semibold text-gray-900">{{ getStat(m,'rating') }}</div>
                         เรตติ้ง
                     </div>
                     <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">2025</div>
+                        <div class="font-semibold text-gray-900">
+                            {{ getStat(m,'startedYear') || (m.createdAt?.slice(0,4) || '—') }}
+                        </div>
                         เริ่มใช้งาน
                     </div>
                 </div>
             </article>
-
-            <!-- ทำซ้ำการ์ดตามจำนวนสมาชิก -->
         </div>
 
         <!-- Empty State -->
-        <div class="mt-10 hidden rounded-2xl border border-dashed p-10 text-center text-gray-500" id="empty">
-            ไม่พบสมาชิกที่ตรงเงื่อนไข
+        <div *ngIf="!loading && !members.length" class="mt-10 rounded-2xl border border-dashed p-10 text-center">
+            <div class="mx-auto mb-3 h-10 w-10 rounded-full bg-gray-100"></div>
+            <p class="text-gray-700 font-medium">ไม่พบสมาชิกที่ตรงเงื่อนไข</p>
+            <p class="mt-1 text-sm text-gray-500">ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
+            <button type="button" (click)="clearFilters()"
+                class="mt-4 rounded-xl border px-4 py-2.5 text-sm hover:bg-gray-50">
+                ล้างตัวกรอง
+            </button>
         </div>
 
         <!-- Pagination -->
-        <nav class="mt-10 flex items-center justify-between">
-            <div class="text-sm text-gray-500">แสดง 1–12 จาก 120 รายการ</div>
+        <nav *ngIf="!loading && total>0" class="mt-8 flex items-center justify-between">
+            <div class="text-sm text-gray-500">แสดง {{ startIdx() }}–{{ endIdx() }} จาก {{ total }} รายการ</div>
+
             <div class="flex items-center gap-2">
                 <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40"
-                    disabled>ก่อนหน้า</button>
-                <button class="rounded-lg border px-3 py-2 text-sm bg-gray-900 text-foreground">1</button>
-                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">2</button>
-                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">3</button>
-                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50">ถัดไป</button>
+                    (click)="goto(page-1)" [disabled]="page<=1">ก่อนหน้า</button>
+
+                <!-- แสดงหน้า 1..N แบบย่อ -->
+                <ng-container *ngFor="let p of [].constructor(pageCount()); let i = index">
+                    <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
+                        [class.bg-gray-900]="(i+1)===page" [class.text-white]="(i+1)===page" (click)="goto(i+1)">{{ i+1
+                        }}</button>
+                    <ng-container *ngIf="i===2 && pageCount()>5"> … </ng-container>
+                    <ng-container *ngIf="i>=4 && pageCount()>5"><!-- ไม่แสดงเกิน --></ng-container>
+                </ng-container>
+
+                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" (click)="goto(page+1)"
+                    [disabled]="page>=pageCount()">ถัดไป</button>
             </div>
         </nav>
     </div>
