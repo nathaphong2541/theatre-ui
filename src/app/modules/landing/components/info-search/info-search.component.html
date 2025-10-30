@@ -46,12 +46,6 @@
             </form>
         </header>
 
-        <!-- Result meta -->
-        <div class="mb-4 flex items-center justify-between text-sm text-gray-500" *ngIf="!loading">
-            <div *ngIf="total>0">แสดง {{ startIdx() }}–{{ endIdx() }} จาก {{ total }} รายการ</div>
-            <div *ngIf="total===0">ไม่พบข้อมูลที่ค้นหา</div>
-        </div>
-
         <!-- Loading skeleton -->
         <div *ngIf="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <div *ngFor="let _ of [1,2,3,4,5,6,7,8]" class="animate-pulse rounded-2xl border bg-white p-5">
@@ -72,88 +66,62 @@
         </div>
 
         <!-- Profile Card Grid -->
-        <div *ngIf="!loading && members.length"
-            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <!-- Loading skeleton -->
+        <div *ngIf="loading && results.length === 0"
+            class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div *ngFor="let _ of [1,2,3,4]" class="animate-pulse rounded-2xl border bg-white p-5">
+                <div class="mb-4 flex items-start gap-4">
+                    <div class="h-16 w-16 rounded-full bg-gray-200"></div>
+                    <div class="flex-1 space-y-2">
+                        <div class="h-4 w-2/3 rounded bg-gray-200"></div>
+                        <div class="h-3 w-1/2 rounded bg-gray-200"></div>
+                        <div class="h-3 w-3/4 rounded bg-gray-200"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 border-t pt-4">
+                    <div class="h-4 rounded bg-gray-200"></div>
+                    <div class="h-4 rounded bg-gray-200"></div>
+                    <div class="h-4 rounded bg-gray-200"></div>
+                </div>
+            </div>
+        </div>
 
-            <article *ngFor="let m of members; trackBy: trackById"
+        <!-- Profile Card Grid -->
+        <div *ngIf="!loading || results.length"
+            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <article *ngFor="let m of results; trackBy: trackById"
                 class="rounded-2xl border bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-                <div class="flex items-start gap-4 p-5">
+                <div class="flex items-start gap-4 p-4">
                     <!-- Avatar -->
                     <img [src]="avatar(m)" alt=""
                         class="h-16 w-16 flex-none rounded-full object-cover ring-2 ring-gray-100" />
-
                     <!-- Main -->
                     <div class="min-w-0 flex-1">
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="truncate text-base font-semibold text-gray-900">
                                 {{ fullName(m) }}
                             </h3>
-
-                            <!-- Status pill -->
-                            <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium"
-                                [class.bg-green-50]="m.recordStatus==='A'" [class.text-green-700]="m.recordStatus==='A'"
-                                [class.bg-amber-50]="m.recordStatus!=='A'"
-                                [class.text-amber-700]="m.recordStatus!=='A'">
-                                {{ m.recordStatus==='A' ? 'ใช้งาน' : 'ระงับ' }}
-                            </span>
                         </div>
-
                         <div class="mt-1 text-sm text-gray-600">
-                            {{ memberCode(m) }} • {{ m.location || '—' }}
+                            {{ memberCode(m) }}
                         </div>
                         <div class="mt-1 truncate text-sm text-gray-500">
-                            {{ m.email || '—' }} • {{ m.phone || '—' }}
+                            {{ m.email || '—' }}
                         </div>
-
-                        <!-- Tags -->
-                        <div class="mt-3 flex flex-wrap gap-2">
-                            <span *ngIf="m.multiLang"
-                                class="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
-                                Multi-Lang
-                            </span>
-                            <span class="rounded-full bg-gray-100 px-2.5 py-1 text-xs">
-                                {{ regionTag(m) }}
-                            </span>
-                        </div>
-
                         <!-- Actions -->
-                        <div class="mt-4 flex items-center gap-2">
-                            <a [routerLink]="['/profiles', m.id]"
+                        <div class="mt-4 flex items-center justify-end gap-2">
+                            <a [routerLink]="['en/profiles/', m.userId]"
                                 class="inline-flex items-center rounded-xl border px-3 py-2 text-sm hover:bg-gray-50">
-                                ดูโปรไฟล์
+                                โปรไฟล์
                             </a>
-                            <button type="button"
-                                class="inline-flex items-center rounded-xl bg-gray-900 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-800">
-                                ติดต่อ
-                            </button>
-                            <button type="button"
-                                class="ml-auto rounded-xl px-3 py-2 text-sm hover:bg-gray-50">⋯</button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Footer stats -->
-                <div class="grid grid-cols-3 border-t text-center text-xs text-gray-600">
-                    <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">{{ getStat(m,'orders') }}</div>
-                        ออร์เดอร์
-                    </div>
-                    <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">{{ getStat(m,'rating') }}</div>
-                        เรตติ้ง
-                    </div>
-                    <div class="px-3 py-3">
-                        <div class="font-semibold text-gray-900">
-                            {{ getStat(m,'startedYear') || (m.createdAt?.slice(0,4) || '—') }}
-                        </div>
-                        เริ่มใช้งาน
                     </div>
                 </div>
             </article>
         </div>
 
         <!-- Empty State -->
-        <div *ngIf="!loading && !members.length" class="mt-10 rounded-2xl border border-dashed p-10 text-center">
+        <div *ngIf="!loading && results.length === 0" class="mt-10 rounded-2xl border border-dashed p-10 text-center">
             <div class="mx-auto mb-3 h-10 w-10 rounded-full bg-gray-100"></div>
             <p class="text-gray-700 font-medium">ไม่พบสมาชิกที่ตรงเงื่อนไข</p>
             <p class="mt-1 text-sm text-gray-500">ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
@@ -163,26 +131,17 @@
             </button>
         </div>
 
-        <!-- Pagination -->
-        <nav *ngIf="!loading && total>0" class="mt-8 flex items-center justify-between">
-            <div class="text-sm text-gray-500">แสดง {{ startIdx() }}–{{ endIdx() }} จาก {{ total }} รายการ</div>
-
-            <div class="flex items-center gap-2">
-                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40"
-                    (click)="goto(page-1)" [disabled]="page<=1">ก่อนหน้า</button>
-
-                <!-- แสดงหน้า 1..N แบบย่อ -->
-                <ng-container *ngFor="let p of [].constructor(pageCount()); let i = index">
-                    <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50"
-                        [class.bg-gray-900]="(i+1)===page" [class.text-white]="(i+1)===page" (click)="goto(i+1)">{{ i+1
-                        }}</button>
-                    <ng-container *ngIf="i===2 && pageCount()>5"> … </ng-container>
-                    <ng-container *ngIf="i>=4 && pageCount()>5"><!-- ไม่แสดงเกิน --></ng-container>
-                </ng-container>
-
-                <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" (click)="goto(page+1)"
-                    [disabled]="page>=pageCount()">ถัดไป</button>
+        <!-- Footer: status + Load more -->
+        <div *ngIf="total > 0" class="mt-8 flex items-center justify-between">
+            <div class="text-sm text-gray-500">
+                แสดง {{ results.length }} จาก {{ total }} รายการ
             </div>
-        </nav>
+
+            <button *ngIf="hasMore" type="button" (click)="loadMore()"
+                class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-500 disabled:opacity-50"
+                [disabled]="loading">
+                {{ loading ? 'กำลังโหลด…' : 'ดูเพิ่มเติม' }}
+            </button>
+        </div>
     </div>
 </section>

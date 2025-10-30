@@ -41,7 +41,13 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    anchorScrolling: 'enabled',
+    scrollPositionRestoration: 'enabled',
+    scrollOffset: [0, 80], // เผื่อความสูง navbar (ปรับได้)
+    onSameUrlNavigation: 'reload', // ให้เลื่อนซ้ำได้แม้อยู่หน้าเดิม
+  })],
   exports: [RouterModule],
+
 })
 export class AppRoutingModule { }

@@ -4,50 +4,123 @@
 
         <!-- Heading -->
         <h2 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
-            สนับสนุนเรา 💖
+            สนับสนุนมูลนิธิละครไทย 💖
         </h2>
         <p class="mt-4 text-lg text-gray-600">
-            การสนับสนุนของคุณจะช่วยให้เราพัฒนาบริการและสร้างสรรค์สิ่งดี ๆ ต่อไป
-            ทุกจำนวนเงินมีคุณค่ามากสำหรับเรา
+            ทุกแรงสนับสนุนของคุณช่วยให้เราสืบสานและผลักดันศิลปะการละครไปสู่สังคมที่งดงามยิ่งขึ้น
         </p>
 
         <!-- Amount Options -->
         <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <button
-                class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold text-gray-900 shadow-sm hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200">
-                ฿100
+            <button *ngFor="let a of presetAmounts" (click)="selectAmount(a)" class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold shadow-sm transition
+               hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200"
+                [class.border-indigo-600]="selectedAmount === a && !isCustom"
+                [class.ring-2]="selectedAmount === a && !isCustom"
+                [class.ring-indigo-300]="selectedAmount === a && !isCustom">
+                ฿{{ a | number:'1.0-0' }}
             </button>
-            <button
-                class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold text-gray-900 shadow-sm hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200">
-                ฿300
-            </button>
-            <button
-                class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold text-gray-900 shadow-sm hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200">
-                ฿500
-            </button>
-            <button
-                class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold text-gray-900 shadow-sm hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200">
+            <button (click)="selectCustom()" class="rounded-xl border bg-white px-4 py-6 text-lg font-semibold shadow-sm transition
+               hover:border-indigo-500 hover:ring-2 hover:ring-indigo-200" [class.border-indigo-600]="isCustom"
+                [class.ring-2]="isCustom" [class.ring-indigo-300]="isCustom">
                 กำหนดเอง
             </button>
         </div>
 
         <!-- Custom Input -->
-        <div class="mt-6">
-            <input type="number" placeholder="ระบุจำนวนเงิน (บาท)"
-                class="w-60 rounded-xl border px-4 py-3 text-center text-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" />
+        <div class="mt-6 flex items-center justify-center gap-3">
+            <input type="number" min="10" step="10" placeholder="ระบุจำนวนเงิน (บาท)" class="w-60 rounded-xl border px-4 py-3 text-center text-lg
+               focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" [(ngModel)]="customAmount"
+                (focus)="selectCustom()" (input)="syncCustom()">
+            <span class="text-sm text-gray-500">ขั้นต่ำ 10 บาท</span>
         </div>
+
+        <!-- Payment Methods -->
+        <div class="mt-10">
+            <h3 class="text-left text-sm font-semibold text-gray-700">วิธีชำระเงิน</h3>
+            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <label
+                    class="flex cursor-pointer items-center gap-3 rounded-xl border bg-white p-4 text-left shadow-sm transition hover:border-indigo-500"
+                    [class.border-indigo-600]="paymentMethod==='promptpay'">
+                    <input type="radio" name="pm" class="sr-only" value="promptpay" [(ngModel)]="paymentMethod">
+                    <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">📱</div>
+                    <div>
+                        <div class="font-semibold text-gray-900">PromptPay / โอนผ่านแอป</div>
+                        <div class="text-sm text-gray-600">สแกน QR แล้วอัปโหลดสลิป</div>
+                    </div>
+                </label>
+
+                <label
+                    class="flex cursor-pointer items-center gap-3 rounded-xl border bg-white p-4 text-left shadow-sm transition hover:border-indigo-500"
+                    [class.border-indigo-600]="paymentMethod==='bank'">
+                    <input type="radio" name="pm" class="sr-only" value="bank" [(ngModel)]="paymentMethod">
+                    <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">🏦</div>
+                    <div>
+                        <div class="font-semibold text-gray-900">โอนเข้าบัญชีธนาคาร</div>
+                        <div class="text-sm text-gray-600">ดูเลขบัญชีและแนบสลิป</div>
+                    </div>
+                </label>
+
+                <!-- <label
+                    class="flex cursor-pointer items-center gap-3 rounded-xl border bg-white p-4 text-left shadow-sm transition hover:border-indigo-500"
+                    [class.border-indigo-600]="paymentMethod==='card'">
+                    <input type="radio" name="pm" class="sr-only" value="card" [(ngModel)]="paymentMethod">
+                    <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">💳</div>
+                    <div>
+                        <div class="font-semibold text-gray-900">บัตรเครดิต/เดบิต</div>
+                        <div class="text-sm text-gray-600">ชำระผ่านระบบที่ปลอดภัย</div>
+                    </div>
+                </label> -->
+            </div>
+        </div>
+
+        <!-- Donor info / receipt -->
+        <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <input type="text"
+                class="w-full rounded-xl border bg-white px-4 py-3 text-base focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                placeholder="ชื่อ-นามสกุล (สำหรับใบเสร็จ)" [(ngModel)]="donorName">
+            <input type="email"
+                class="w-full rounded-xl border bg-white px-4 py-3 text-base focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                placeholder="อีเมลสำหรับรับใบเสร็จ (ถ้ามี)" [(ngModel)]="donorEmail">
+        </div>
+
+        <label class="mt-4 inline-flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                [(ngModel)]="needReceipt">
+            ต้องการใบเสร็จอิเล็กทรอนิกส์ (e-receipt)
+        </label>
 
         <!-- Donate Button -->
         <div class="mt-10">
-            <button
-                class="rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-foreground shadow-sm hover:bg-indigo-500">
-                บริจาคเลย
+            <button (click)="donate()" [disabled]="amountToPay <= 0 || !paymentMethod" class="rounded-xl bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm transition
+               hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                บริจาคเลย • ฿{{ amountToPay | number:'1.0-0' }}
             </button>
         </div>
 
-        <!-- Note -->
+        <!-- Helper / Note -->
         <p class="mt-6 text-sm text-gray-500">
-            ขอบคุณที่ร่วมเป็นส่วนหนึ่งในการพัฒนา 💕
+            ขอบคุณที่ร่วมเป็นส่วนหนึ่งในการขับเคลื่อนศิลปะละครไทย 💕
         </p>
+
+        <!-- PromptPay Preview (ตัวอย่างแสดงเมื่อเลือกวิธีชำระนี้) -->
+        <div *ngIf="paymentMethod==='promptpay' && amountToPay>0"
+            class="mx-auto mt-10 max-w-md rounded-2xl border bg-white p-6 shadow">
+            <h4 class="text-left text-base font-semibold text-gray-900">สแกนเพื่อชำระผ่าน PromptPay</h4>
+            <p class="mt-1 text-left text-sm text-gray-600">ยอดเงิน: ฿{{ amountToPay | number:'1.0-0' }}</p>
+            <div class="mt-4 flex items-center justify-center">
+                <img src="assets/images/promptpay-qr-placeholder.png" alt="PromptPay QR"
+                    class="h-48 w-48 rounded-lg border" />
+            </div>
+            <p class="mt-4 text-left text-sm text-gray-500">สแกนแล้วแนบสลิปในขั้นตอนถัดไป</p>
+        </div>
+
+        <!-- Success message (ตัวอย่าง) -->
+        <div *ngIf="donationSuccess"
+            class="mx-auto mt-8 max-w-md rounded-xl border border-green-200 bg-green-50 p-4 text-left">
+            <div class="font-semibold text-green-800">ส่งคำขอบริจาคสำเร็จ</div>
+            <div class="mt-1 text-sm text-green-700">เราจะส่งรายละเอียดการชำระเงิน/ใบเสร็จไปยังอีเมลที่ระบุ (ถ้ามี)
+            </div>
+        </div>
+
     </div>
 </section>

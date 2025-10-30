@@ -13,6 +13,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme {
   --font-*: initial;
   --font-poppins: Poppins, system-ui, sans-serif;

@@ -1,5 +1,15 @@
-<div info-hero-section></div>
-<div info-about></div>
-<div info-news></div>
-<div info-search></div>
-<div info-donet></div>
+<div id="home" info-hero-section></div>
+<div id="about" info-about></div>
+<div id="news" info-news></div>
+<div id="profiles" info-search></div>
+<div id="donate" info-donet></div>
+
+<!-- ปุ่มกลับขึ้นบนสุด -->
+<button *ngIf="showScrollTop" (click)="scrollToTop()" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full
+         bg-indigo-600 text-white shadow-lg transition-all duration-300
+         hover:bg-indigo-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+</button>

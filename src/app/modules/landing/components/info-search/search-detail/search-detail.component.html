@@ -1,0 +1,224 @@
+<section class="bg-gradient-to-b from-white via-white to-gray-50">
+    <!-- Hero / Cover -->
+    <!-- Hero / Cover -->
+    <!-- Hero (no cover image) -->
+    <div
+        class="relative flex flex-col items-center justify-center bg-gradient-to-b from-slate-800 via-slate-700 to-slate-900 px-6 py-16 text-center text-white sm:py-20 lg:py-24">
+
+        <!-- Avatar -->
+        <div class="relative mb-5">
+            <span class="absolute -inset-1 rounded-full bg-white/30 blur-md"></span>
+            <img [src]="avatar()" alt="avatar"
+                class="relative h-28 w-28 rounded-full border-4 border-white object-cover shadow-xl ring-1 ring-black/5 md:h-32 md:w-32" />
+        </div>
+
+        <!-- Name + Info -->
+        <div
+            class="max-w-2xl rounded-2xl border border-white/20 bg-white/10 px-6 py-4 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.3)] ring-1 ring-black/10">
+            <h1
+                class="text-3xl font-bold tracking-tight text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)] md:text-4xl leading-tight">
+                {{ fullName() }}
+            </h1>
+
+            <p class="mt-2 text-sm text-white/90 md:text-base">
+                {{ profile?.title || '—' }}
+                <span class="mx-2 text-white/50">•</span>
+                {{ location() }}
+            </p>
+
+            <!-- Status Tags -->
+            <div class="mt-3 flex flex-wrap justify-center gap-2 text-xs md:text-sm">
+                <span *ngIf="profile?.multiLang"
+                    class="rounded-full bg-black/30 px-3 py-1.5 font-medium text-white ring-1 ring-white/20">Multi-Lang</span>
+                <span *ngIf="profile?.travel"
+                    class="rounded-full bg-black/30 px-3 py-1.5 font-medium text-white ring-1 ring-white/20">เดินทางได้</span>
+                <span *ngIf="profile?.tour"
+                    class="rounded-full bg-black/30 px-3 py-1.5 font-medium text-white ring-1 ring-white/20">พร้อมทัวร์</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div class="mx-auto max-w-7xl px-6 pt-20 lg:px-8 mb-8">
+        <!-- Top actions -->
+        <div class="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="hidden sm:block"></div>
+            <div class="flex gap-2">
+                <a *ngIf="profile?.email" [href]="'mailto:'+profile?.email"
+                    class="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-gray-50 active:translate-y-0">
+                    <svg class="h-4 w-4 opacity-70 transition group-hover:opacity-100" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path
+                            d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" />
+                    </svg>
+                    อีเมล
+                </a>
+                <a *ngIf="profile?.phone" [href]="'tel:'+profile?.phone"
+                    class="group inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-gray-800 active:translate-y-0">
+                    <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 7a1 1 0 0 1 1-1h2.49a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.24 1.01l-2.2 2.21Z" />
+                    </svg>
+                    โทร
+                </a>
+                <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener"
+                    class="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:bg-gray-50 active:translate-y-0">
+                    <svg class="h-4 w-4 opacity-70 transition group-hover:opacity-100" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3Z" />
+                        <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
+                    </svg>
+                    เว็บไซต์
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ring-1 ring-black/5">
+                <div class="text-xs text-gray-500">ออร์เดอร์</div>
+                <div class="mt-1 flex items-baseline gap-2">
+                    <div class="text-2xl font-semibold text-gray-900">{{ getStat('orders') }}</div>
+                    <span class="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700"
+                        *ngIf="getStat('orders') > 0">Active</span>
+                </div>
+            </div>
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ring-1 ring-black/5">
+                <div class="text-xs text-gray-500">เรตติ้ง</div>
+                <div class="mt-1 flex items-center gap-2">
+                    <div class="text-2xl font-semibold text-gray-900">{{ getStat('rating') }}</div>
+                    <svg class="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21 12 17.27Z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm ring-1 ring-black/5">
+                <div class="text-xs text-gray-500">เริ่มใช้งาน</div>
+                <div class="mt-1 text-2xl font-semibold text-gray-900">{{ getStat('startedYear') ||
+                    (profile?.createdAt?.slice(0,4) || '—') }}</div>
+            </div>
+        </div>
+
+        <!-- Content grid -->
+        <div class="mt-8 grid gap-6 lg:grid-cols-3">
+            <!-- Left: About + Videos + Gallery -->
+            <div class="space-y-6 lg:col-span-2">
+                <!-- About -->
+                <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">เกี่ยวกับ</h2>
+                        <span *ngIf="!profile?.about" class="text-xs text-gray-400">ยังไม่มีข้อมูล</span>
+                    </div>
+                    <p class="mt-3 whitespace-pre-line leading-relaxed text-gray-700"
+                        *ngIf="profile?.about; else noAbout">
+                        {{ profile?.about }}
+                    </p>
+                    <ng-template #noAbout>
+                        <div
+                            class="mt-3 rounded-xl border border-dashed border-gray-200 bg-gray-50 p-4 text-sm text-gray-500">
+                            —
+                        </div>
+                    </ng-template>
+                </section>
+
+                <!-- Videos -->
+                <section *ngIf="video1 || video2"
+                    class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                    <h2 class="text-lg font-semibold text-gray-900">วิดีโอผลงาน</h2>
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <div
+                            class="group overflow-hidden rounded-xl border border-gray-200 shadow-sm ring-1 ring-black/5">
+                            <iframe *ngIf="video1" [src]="video1" class="h-56 w-full" allowfullscreen></iframe>
+                        </div>
+                        <div
+                            class="group overflow-hidden rounded-xl border border-gray-200 shadow-sm ring-1 ring-black/5">
+                            <iframe *ngIf="video2" [src]="video2" class="h-56 w-full" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Gallery -->
+                <section *ngIf="gallery().length"
+                    class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">แกลเลอรี</h2>
+                        <span class="text-xs text-gray-500">{{ gallery().length }} ภาพ</span>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                        <div *ngFor="let g of gallery()"
+                            class="group relative overflow-hidden rounded-xl ring-1 ring-gray-100">
+                            <img [src]="g" alt=""
+                                class="aspect-[4/5] w-full object-cover transition duration-300 group-hover:scale-105" />
+                            <div
+                                class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition group-hover:opacity-100">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right: Quick facts (Sticky) -->
+            <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
+                <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                    <h2 class="text-lg font-semibold text-gray-900">ข้อมูลติดต่อ</h2>
+                    <div class="mt-3 space-y-2 text-sm leading-6 text-gray-700">
+                        <div><span class="text-gray-500">อีเมล:</span> {{ profile?.email || '—' }}</div>
+                        <div><span class="text-gray-500">โทร:</span> {{ profile?.phone || '—' }}</div>
+                        <div><span class="text-gray-500">ที่อยู่/จังหวัด:</span> {{ profile?.location || '—' }}</div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-500">เว็บไซต์:</span>
+                            <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener"
+                                class="truncate text-indigo-600 underline">{{ profile?.website }}</a>
+                            <span *ngIf="!profile?.website">—</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                    <h2 class="text-lg font-semibold text-gray-900">คุณสมบัติ</h2>
+                    <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1"
+                            *ngIf="profile?.profileIsCompany">โปรไฟล์บริษัท</span>
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1"
+                            *ngIf="profile?.multiLang">สื่อสารหลายภาษา</span>
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1" *ngIf="profile?.travel">เดินทางได้</span>
+                        <span class="rounded-full bg-gray-100 px-2.5 py-1" *ngIf="profile?.tour">พร้อมทัวร์</span>
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        <!-- Loading / Error -->
+        <div *ngIf="loading" class="mt-8">
+            <div class="grid gap-6 lg:grid-cols-3">
+                <div class="lg:col-span-2 space-y-6">
+                    <div
+                        class="animate-pulse rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
+                        <div class="h-5 w-28 rounded bg-gray-200"></div>
+                        <div class="mt-4 space-y-2">
+                            <div class="h-4 w-full rounded bg-gray-100"></div>
+                            <div class="h-4 w-5/6 rounded bg-gray-100"></div>
+                            <div class="h-4 w-4/6 rounded bg-gray-100"></div>
+                        </div>
+                    </div>
+                    <div
+                        class="animate-pulse rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5 h-64">
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div
+                        class="animate-pulse rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5 h-40">
+                    </div>
+                    <div
+                        class="animate-pulse rounded-2xl border border-gray-200 bg-white p-6 shadow-sm ring-1 ring-black/5 h-40">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="!loading && error" class="mt-8 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            {{ error }}
+        </div>
+    </div>
+</section>

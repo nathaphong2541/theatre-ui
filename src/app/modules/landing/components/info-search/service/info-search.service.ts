@@ -81,4 +81,8 @@ export class InfoSearchService {
       })
     );
   }
+
+  getProfileById(id: number): Observable<Profile> {
+    return this.http.get<Profile>(`${this.api}/${id}`);
+  }
 }
