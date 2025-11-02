@@ -1,82 +1,95 @@
-<!-- About Section -->
-<section id="about" class="relative bg-white py-20">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-        <div class="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-center">
+<!-- About Section (Platform-first, Compact, Dark Theme + Accent) -->
+<section id="about" class="relative bg-[#0b1417] py-12 text-white">
+    <div class="mx-auto max-w-6xl px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
 
             <!-- Left Image -->
-            <div>
-                <img src="assets/images/about.png" class="rounded-2xl shadow-xl w-full h-auto"
-                    alt="Thai Theatre Foundation" />
+            <div class="order-2 lg:order-1">
+                <img [src]="'assets/images/images.png'"
+                    class="w-full h-auto rounded-xl shadow-xl ring-1 ring-white/10 object-cover"
+                    alt="ภาพหน้าจอแพลตฟอร์มหาคนทำงานละคร" referrerpolicy="no-referrer" />
             </div>
 
             <!-- Right Content -->
-            <div>
-                <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-                    เกี่ยวกับมูลนิธิละครไทย
+            <div class="order-1 lg:order-2">
+                <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">
+                    ที่นี่คืออะไร
+                    <span class="block text-[#8aab06] text-xl sm:text-2xl">
+                        พื้นที่ออนไลน์สำหรับ “หาคนทำงาน” และ “หางานละคร”
+                    </span>
                 </h2>
 
-                <p class="mt-6 text-lg leading-8 text-gray-600">
-                    มูลนิธิละครไทยก่อตั้งขึ้นด้วยความตั้งใจที่จะส่งเสริม
-                    และพัฒนา “ศิลปะการละคร” ให้เป็นส่วนหนึ่งของชีวิตและสังคมไทย
-                    เรามุ่งมั่นสร้างพื้นที่ให้ศิลปิน คนรุ่นใหม่ และประชาชนทั่วไป
-                    ได้เรียนรู้ สร้างสรรค์ และใช้ศิลปะเป็นพลังในการเปลี่ยนแปลงสังคมอย่างสร้างสรรค์
+                <p class="mt-4 text-base leading-7 text-white/80">
+                    แพลตฟอร์มนี้ถูกออกแบบมาเพื่อเชื่อมคนทำงานในวงการละครไทยกับผู้ว่าจ้างอย่างรวดเร็วและตรงจุด—
+                    ผ่านระบบโปรไฟล์ผลงาน การค้นหาตามสกิล/สาขา และประกาศงานแบบชัดเจน
                 </p>
 
-                <p class="mt-4 text-lg leading-8 text-gray-600">
-                    ด้วยความเชื่อว่า “ละครคือกระจกสะท้อนชีวิต”
-                    มูลนิธิฯ จึงทำงานอย่างต่อเนื่องทั้งในด้านการผลิตละคร การอบรมเยาวชน
-                    และการผลักดันศิลปะการแสดงให้เข้าถึงผู้คนในวงกว้าง
-                    เพื่อสืบสานวัฒนธรรมและสร้างแรงบันดาลใจให้สังคมไทยก้าวไปข้างหน้าอย่างงดงาม
+                <p class="mt-3 text-base leading-7 text-white/80">
+                    *ข้อมูลเกี่ยวกับมูลนิธิละครไทยแบบเต็ม* ยังมีให้ดูที่เว็บไซต์หลัก
+                    ส่วนที่นี่จะโฟกัส “พื้นที่ทำงาน” เป็นหลัก
+                    เพื่อให้ผู้มาใหม่เข้าใจทันทีว่าควรเริ่มต้นที่ไหนและทำอะไรต่อ
                 </p>
 
-                <!-- Features -->
-                <dl class="mt-10 space-y-6">
-                    <div class="relative pl-9">
-                        <dt class="inline font-semibold text-gray-900">
-                            <svg class="absolute left-0 top-1 h-5 w-5 text-indigo-600" fill="currentColor"
-                                viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.123.094l-4-4a.75.75 0 1 1 1.06-1.06l3.392 3.392 7.47-9.802a.75.75 0 0 1 1.058-.176z"
-                                    clip-rule="evenodd" />
+                <!-- Benefits aligned to platform -->
+                <dl class="mt-6 space-y-4">
+                    <div class="relative pl-8">
+                        <dt class="inline font-semibold text-white text-base">
+                            <svg class="absolute left-0 top-1 h-4 w-4 text-[#8aab06]" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor">
+                                <path d="M3 12h18" stroke-width="2" />
+                                <path d="M12 5v14" stroke-width="2" />
                             </svg>
-                            ส่งเสริมศิลปะการแสดง
+                            หาคนทำงานได้ไวและตรงสกิล
                         </dt>
-                        <dd class="inline text-gray-600">
-                            สนับสนุนกิจกรรมการแสดง ละครเวที และศิลปะร่วมสมัย เพื่อพัฒนาเยาวชนและสังคม
+                        <dd class="inline text-white/70 text-sm">
+                            ค้นหาจากบทบาท/ทักษะ/จังหวัด พร้อมพอร์ตและเครดิตผลงานที่ตรวจสอบได้
                         </dd>
                     </div>
 
-                    <div class="relative pl-9">
-                        <dt class="inline font-semibold text-gray-900">
-                            <svg class="absolute left-0 top-1 h-5 w-5 text-indigo-600" fill="currentColor"
-                                viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.123.094l-4-4a.75.75 0 1 1 1.06-1.06l3.392 3.392 7.47-9.802a.75.75 0 0 1 1.058-.176z"
-                                    clip-rule="evenodd" />
+                    <div class="relative pl-8">
+                        <dt class="inline font-semibold text-white text-base">
+                            <svg class="absolute left-0 top-1 h-4 w-4 text-[#8aab06]" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor">
+                                <rect x="3" y="7" width="18" height="14" rx="2" stroke-width="2" />
+                                <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-width="2" />
                             </svg>
-                            พัฒนาเครือข่ายศิลปิน
+                            ประกาศงานชัดเจน โปร่งใส
                         </dt>
-                        <dd class="inline text-gray-600">
-                            ร่วมมือกับศิลปินและองค์กรทั้งในและต่างประเทศ เพื่อแลกเปลี่ยนองค์ความรู้ทางศิลปะ
+                        <dd class="inline text-white/70 text-sm">
+                            ระบุรายละเอียด บทบาท เงื่อนไข เวลา-สถานที่ ค่าตอบแทน ให้ทีมงานตัดสินใจได้ง่าย
                         </dd>
                     </div>
 
-                    <div class="relative pl-9">
-                        <dt class="inline font-semibold text-gray-900">
-                            <svg class="absolute left-0 top-1 h-5 w-5 text-indigo-600" fill="currentColor"
-                                viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.123.094l-4-4a.75.75 0 1 1 1.06-1.06l3.392 3.392 7.47-9.802a.75.75 0 0 1 1.058-.176z"
-                                    clip-rule="evenodd" />
+                    <div class="relative pl-8">
+                        <dt class="inline font-semibold text-white text-base">
+                            <svg class="absolute left-0 top-1 h-4 w-4 text-[#8aab06]" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor">
+                                <path d="M4 19h16" stroke-width="2" />
+                                <rect x="6" y="4" width="12" height="12" rx="2" stroke-width="2" />
                             </svg>
-                            ผลักดันละครเพื่อสังคม
+                            จัดการพอร์ต—รวมบทละคร
                         </dt>
-                        <dd class="inline text-gray-600">
-                            ใช้ละครเป็นสื่อในการสร้างความเข้าใจ ความเห็นอกเห็นใจ และแรงบันดาลใจในสังคม
+                        <dd class="inline text-white/70 text-sm">
+                            เก็บโปรไฟล์/ไฟล์ผลงาน และหน้า “บทละคร” (อัปโหลด/ค้นหา) เพื่อการคาสติ้ง/ซ้อม/ผลิต
                         </dd>
                     </div>
                 </dl>
+
+                <!-- Small CTAs -->
+                <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                    <a routerLink="/how-it-works"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#8aab06] px-4 py-2 text-sm font-medium text-black hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/60 w-full sm:w-auto">
+                        วิธีใช้งานแพลตฟอร์ม
+                    </a>
+                    <a href="https://(ใส่ลิงก์เว็บหลักมูลนิธิ)" target="_blank" rel="noopener"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 w-full sm:w-auto">
+                        ดูเว็บไซต์หลักของมูลนิธิ
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Divider -->
+    <div class="mt-10 h-px w-full bg-gradient-to-r from-transparent via-[#8aab06]/60 to-transparent"></div>
 </section>

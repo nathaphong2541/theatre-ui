@@ -7,10 +7,10 @@ import { RouterModule } from '@angular/router';
 type NewsItem = {
   title: string;
   summary: string;
-  tag: 'ทั้งหมด' | 'ประกาศ' | 'กิจกรรม' | 'บทความ' | 'อัปเดตระบบ' | string;
+  tag: 'ทั้งหมด' | 'หางาน' | 'หาคนทำงาน' | string; // จำกัดตามคอนเซ็ปต์
   coverUrl: string;
   isoDate: string;      // YYYY-MM-DD
-  displayDate: string;  // แสดงผล เช่น 27 ก.ย. 2568
+  displayDate: string;  // เช่น 27 ก.ย. 2568
   author?: string;
   slug: string;
 };
@@ -25,8 +25,8 @@ type NewsItem = {
 export class InfoNewsComponent implements OnInit {
   // ค้นหา + แท็ก
   q = '';
-  tags = ['ทั้งหมด', 'ประกาศ', 'กิจกรรม', 'บทความ', 'อัปเดตระบบ'];
-  activeTag = 'ทั้งหมด';
+  tags: Array<'ทั้งหมด' | 'หางาน' | 'หาคนทำงาน'> = ['ทั้งหมด', 'หางาน', 'หาคนทำงาน'];
+  activeTag: 'ทั้งหมด' | 'หางาน' | 'หาคนทำงาน' = 'ทั้งหมด';
 
   // สถานะโหลด
   loading = true;
@@ -45,43 +45,52 @@ export class InfoNewsComponent implements OnInit {
     await this.fetchNews();
   }
 
-  // โหลดข่าว (ตอนนี้ mock ไว้ก่อน — เปลี่ยนเป็นเรียก API จริงภายหลังได้)
+  // โหลดข่าว (mock ตัวอย่างตาม 2 ประเภท)
   async fetchNews() {
     this.loading = true;
     try {
       const mock: NewsItem[] = [
         {
-          title: 'เวิร์กช็อปละครเพื่อสังคม รุ่นที่ 3',
-          summary: 'ชวนเยาวชนและผู้สนใจร่วมเวิร์กช็อปละครเพื่อสังคมกับทีมวิทยากรมูลนิธิละครไทย…',
-          tag: 'กิจกรรม',
-          coverUrl: 'assets/images/news-1.jpg',
-          isoDate: '2025-09-27',
-          displayDate: '27 ก.ย. 2568',
-          author: 'ทีมกิจกรรม',
-          slug: 'workshop-social-theatre-3',
+          title: 'เปิดรับนักแสดงหญิง อายุ 20–25 ปี สำหรับละครเวทีฤดูกาลใหม่',
+          summary: 'ต้องการผู้มีประสบการณ์พื้นฐานการแสดง เข้าซ้อมช่วงเย็น วันจันทร์–ศุกร์ ค่าตอบแทนตามรอบการแสดง',
+          tag: 'หางาน',
+          coverUrl: 'assets/images/images.png',
+          isoDate: '2025-10-15',
+          displayDate: '15 ต.ค. 2568',
+          author: 'ฝ่ายคัดเลือกนักแสดง',
+          slug: 'casting-female-20-25-season',
         },
         {
-          title: 'ประกาศทุนสนับสนุนการสร้างสรรค์ละครชุมชน',
-          summary: 'เปิดรับข้อเสนอโครงการเพื่อรับทุนสนับสนุนการผลิตละครชุมชนและพัฒนาศิลปิน…',
-          tag: 'ประกาศ',
-          coverUrl: 'assets/images/news-2.jpg',
-          isoDate: '2025-09-15',
-          displayDate: '15 ก.ย. 2568',
-          author: 'มูลนิธิละครไทย',
-          slug: 'community-theatre-grant-2568',
+          title: 'ประกาศหาทีมช่างไฟและเสียง สำหรับโปรดักชันเดือนพฤศจิกายน',
+          summary: 'ต้องการทีมช่างไฟ/เสียง 2–3 คน มีประสบการณ์งานเวทีจริง อุปกรณ์พร้อมทำงานนอกสถานที่',
+          tag: 'หาคนทำงาน',
+          coverUrl: 'assets/images/images.png',
+          isoDate: '2025-10-10',
+          displayDate: '10 ต.ค. 2568',
+          author: 'โปรดิวเซอร์',
+          slug: 'hiring-light-sound-nov',
         },
         {
-          title: 'โครงการละครเยาวชน “เสียงจากใจเด็ก”',
-          summary: 'รวมพลังเยาวชนกับละครสร้างสรรค์ ถ่ายทอดเรื่องราวและแรงบันดาลใจในสังคม…',
-          tag: 'กิจกรรม',
-          coverUrl: 'assets/images/news-3.jpg',
-          isoDate: '2025-08-01',
-          displayDate: '1 ส.ค. 2568',
-          author: 'ฝ่ายเยาวชน',
-          slug: 'youth-theatre-voice',
+          title: 'รับสมัครผู้ช่วยผู้กำกับ (PA) งานละครชุมชน',
+          summary: 'ร่วมวางแผนตารางซ้อม ประสานงานสถานที่ และสื่อสารกับทีมงาน/ชุมชน ใจรักงานภาคสนาม',
+          tag: 'หางาน',
+          coverUrl: 'assets/images/images.png',
+          isoDate: '2025-09-28',
+          displayDate: '28 ก.ย. 2568',
+          author: 'โครงการละครชุมชน',
+          slug: 'community-pa-opening',
         },
       ];
-      this.allNews = mock;
+
+      // ถ้าเดิมมี tag อื่น ๆ ให้ map เข้ากรุ๊ป 2 ประเภท (กันข้อมูลเก่า)
+      this.allNews = mock.map(n => ({
+        ...n,
+        tag:
+          n.tag === 'หางาน' || n.tag === 'หาคนทำงาน'
+            ? n.tag
+            : (n.title.match(/รับสมัคร|เปิดรับ|รับสมัครงาน|ประกาศรับ/i) ? 'หางาน' : 'หาคนทำงาน'),
+      }));
+
       this.applyFilter();
     } finally {
       this.loading = false;
@@ -95,7 +104,7 @@ export class InfoNewsComponent implements OnInit {
   }
 
   // event เปลี่ยนแท็ก
-  setTag(tag: string) {
+  setTag(tag: 'ทั้งหมด' | 'หางาน' | 'หาคนทำงาน') {
     this.activeTag = tag;
     this.page = 1;
     this.applyFilter();
@@ -104,10 +113,16 @@ export class InfoNewsComponent implements OnInit {
   // กรอง + คำนวณเพจ + slice
   applyFilter() {
     const q = this.q.trim().toLowerCase();
-    let filtered = this.allNews.filter(n =>
-      (this.activeTag === 'ทั้งหมด' || n.tag === this.activeTag) &&
-      (!q || n.title.toLowerCase().includes(q) || n.summary.toLowerCase().includes(q))
-    );
+
+    let filtered = this.allNews.filter(n => {
+      const matchTag = this.activeTag === 'ทั้งหมด' || n.tag === this.activeTag;
+      const matchQ =
+        !q ||
+        n.title.toLowerCase().includes(q) ||
+        n.summary.toLowerCase().includes(q) ||
+        (n.author || '').toLowerCase().includes(q);
+      return matchTag && matchQ;
+    });
 
     this.totalPages = Math.max(1, Math.ceil(filtered.length / this.pageSize));
     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
@@ -125,14 +140,17 @@ export class InfoNewsComponent implements OnInit {
   goPrev() { this.goPage(this.page - 1); }
   goNext() { this.goPage(this.page + 1); }
 
-  // สีกล่องแท็กบนการ์ด
+  // สีกล่องแท็กบนการ์ด (ธีมทึบ + accent #8aab06)
   badgeClass(tag: string) {
     switch (tag) {
-      case 'ประกาศ': return 'bg-indigo-50 text-indigo-700';
-      case 'กิจกรรม': return 'bg-green-50 text-green-700';
-      case 'บทความ': return 'bg-amber-50 text-amber-700';
-      case 'อัปเดตระบบ': return 'bg-sky-50 text-sky-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'หางาน':
+        // ป้ายหลัก: เขียวทึบ ตัวอักษรดำ
+        return 'bg-[#8aab06] text-black';
+      case 'หาคนทำงาน':
+        // ป้ายรอง: โปร่ง + เส้นเขียว
+        return 'bg-[#8aab06]/15 text-[#8aab06] ring-1 ring-[#8aab06]/40';
+      default:
+        return 'bg-white/10 text-white/70';
     }
   }
 }

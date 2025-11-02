@@ -1,17 +1,17 @@
-<!-- News Section -->
-<section id="news" class="bg-white py-16">
+<!-- News Section (Dark + Accent, Platform-first) -->
+<section id="news" class="bg-[#0b1417] py-14 text-white">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
 
         <!-- Header -->
-        <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 class="text-3xl font-bold tracking-tight text-gray-900">ข่าวสารและกิจกรรม</h2>
+        <div class="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+            <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight">ข่าวสารและกิจกรรม</h2>
 
             <!-- Search + Filters -->
             <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <div class="relative sm:w-72">
                     <input type="text" [(ngModel)]="q" (ngModelChange)="onSearchChange()"
-                        placeholder="ค้นหาชื่อข่าว/คำสำคัญ…" class="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none
-                   focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" />
+                        placeholder="ค้นหาชื่อข่าว/คำสำคัญ…"
+                        class="w-full rounded-xl bg-white/95 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 outline-none ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]" />
                     <svg class="pointer-events-none absolute right-3 top-2.5 h-5 w-5 text-gray-400" viewBox="0 0 20 20"
                         fill="currentColor">
                         <path fill-rule="evenodd"
@@ -21,53 +21,58 @@
                 </div>
 
                 <div class="flex flex-wrap gap-2">
-                    <button *ngFor="let t of tags" (click)="setTag(t)" class="rounded-full border px-3 py-1.5 text-sm transition
-                   hover:bg-gray-50" [class.bg-gray-900]="activeTag === t" [class.text-white]="activeTag === t"
-                        [class.border-gray-900]="activeTag === t">
+                    <button *ngFor="let t of tags" (click)="setTag(t)"
+                        class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm text-white transition hover:bg-white/10"
+                        [ngClass]="{
+      'bg-[#8aab06] text-black ring-1 ring-[#8aab06]': activeTag === t && t !== 'ทั้งหมด',
+      'bg-white/15': activeTag === t && t === 'ทั้งหมด'
+    }">
                         {{ t }}
                     </button>
                 </div>
+
             </div>
         </div>
 
         <!-- Loading (skeleton) -->
         <div *ngIf="loading" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div *ngFor="let i of [1,2,3,4,5,6]" class="overflow-hidden rounded-2xl border bg-white shadow-sm">
-                <div class="aspect-[16/9] animate-pulse bg-gray-200"></div>
+            <div *ngFor="let i of [1,2,3,4,5,6]"
+                class="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-sm">
+                <div class="aspect-[16/9] animate-pulse bg-white/10"></div>
                 <div class="p-5 space-y-3">
-                    <div class="h-4 w-28 animate-pulse rounded bg-gray-200"></div>
-                    <div class="h-5 w-3/4 animate-pulse rounded bg-gray-200"></div>
-                    <div class="h-4 w-full animate-pulse rounded bg-gray-200"></div>
-                    <div class="h-4 w-5/6 animate-pulse rounded bg-gray-200"></div>
+                    <div class="h-4 w-28 animate-pulse rounded bg-white/10"></div>
+                    <div class="h-5 w-3/4 animate-pulse rounded bg-white/10"></div>
+                    <div class="h-4 w-full animate-pulse rounded bg-white/10"></div>
+                    <div class="h-4 w-5/6 animate-pulse rounded bg-white/10"></div>
                 </div>
             </div>
         </div>
 
         <!-- Empty state -->
         <div *ngIf="!loading && (!newsList || newsList.length === 0)"
-            class="rounded-2xl border bg-white p-12 text-center">
-            <div class="mx-auto mb-4 h-12 w-12 rounded-full bg-indigo-50 flex items-center justify-center">
-                <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="currentColor">
+            class="rounded-2xl border border-white/10 bg-white/5 p-12 text-center">
+            <div class="mx-auto mb-4 h-12 w-12 rounded-full bg-[#8aab06]/15 flex items-center justify-center">
+                <svg class="h-6 w-6 text-[#8aab06]" viewBox="0 0 24 24" fill="currentColor">
                     <path
                         d="M19 4H5a2 2 0 0 0-2 2v11.5A2.5 2.5 0 0 0 5.5 20H19a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 2v7H5V6h14ZM5 17.5V15h14v3H5.5a.5.5 0 0 1-.5-.5Z" />
                 </svg>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900">ยังไม่พบรายการข่าว</h3>
-            <p class="mt-2 text-gray-600">ลองเปลี่ยนคำค้นหา หรือเลือกแท็ก “ทั้งหมด”</p>
+            <h3 class="text-lg font-semibold text-white">ยังไม่พบรายการข่าว</h3>
+            <p class="mt-2 text-white/70">ลองเปลี่ยนคำค้นหา หรือเลือกแท็ก “ทั้งหมด”</p>
         </div>
 
         <!-- Grid -->
         <div *ngIf="!loading && newsList?.length" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <!-- Card -->
             <article *ngFor="let item of newsList"
-                class="group overflow-hidden rounded-2xl border bg-white shadow-sm transition hover:shadow-lg">
+                class="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-sm transition hover:shadow-lg hover:border-[#8aab06]/60">
                 <div class="aspect-[16/9] overflow-hidden">
                     <img [src]="item.coverUrl" alt="ปกข่าว" referrerpolicy="no-referrer"
                         class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                         (error)="item.coverUrl = 'assets/images/news-placeholder.jpg'" />
                 </div>
                 <div class="p-5">
-                    <div class="mb-2 flex items-center gap-2 text-xs text-gray-500">
+                    <div class="mb-2 flex items-center gap-2 text-xs text-white/60">
                         <span class="rounded-full px-2 py-0.5 font-medium" [ngClass]="badgeClass(item.tag)">
                             {{ item.tag }}
                         </span>
@@ -75,18 +80,18 @@
                         <time [attr.datetime]="item.isoDate">{{ item.displayDate }}</time>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600 line-clamp-2">
+                    <h3 class="text-lg font-semibold text-white group-hover:text-[#8aab06] line-clamp-2">
                         {{ item.title }}
                     </h3>
 
-                    <p class="mt-2 line-clamp-3 text-sm text-gray-600">
+                    <p class="mt-2 line-clamp-3 text-sm text-white/70">
                         {{ item.summary }}
                     </p>
 
                     <div class="mt-4 flex items-center justify-between">
                         <a [routerLink]="['/en/news', item.slug]"
-                            class="text-sm font-semibold text-indigo-600 hover:underline">อ่านต่อ</a>
-                        <div class="text-xs text-gray-500">โดย {{ item.author || 'มูลนิธิละครไทย' }}</div>
+                            class="text-sm font-semibold text-[#8aab06] hover:underline">อ่านต่อ</a>
+                        <div class="text-xs text-white/60">โดย {{ item.author || 'มูลนิธิละครไทย' }}</div>
                     </div>
                 </div>
             </article>
@@ -95,18 +100,23 @@
         <!-- Pagination -->
         <nav *ngIf="!loading && totalPages > 1" class="mt-12 flex items-center justify-center gap-2"
             aria-label="Pagination">
-            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40" (click)="goPrev()"
-                [disabled]="page === 1">ก่อนหน้า</button>
+            <button
+                class="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 disabled:opacity-40"
+                (click)="goPrev()" [disabled]="page === 1">
+                ก่อนหน้า
+            </button>
 
             <button *ngFor="let p of pages" (click)="goPage(p)"
-                class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50" [class.bg-gray-900]="p === page"
-                [class.text-white]="p === page">
+                class="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10"
+                [ngClass]="{ 'bg-[#8aab06] text-black': p === page }">
                 {{ p }}
             </button>
 
-            <button class="rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 disabled:opacity-40" (click)="goNext()"
-                [disabled]="page === totalPages">ถัดไป</button>
+            <button
+                class="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 disabled:opacity-40"
+                (click)="goNext()" [disabled]="page === totalPages">
+                ถัดไป
+            </button>
         </nav>
-
     </div>
 </section>

@@ -1,37 +1,49 @@
-<!-- Hero Section -->
-<div class="relative bg-gradient-to-r from-purple-800 via-indigo-700 to-indigo-600 text-white">
-    <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
+<!-- Hero: Dark + Accent #8aab06 (clean, no emoji) -->
+<section class="relative text-white bg-gradient-to-r from-black via-[#0b1a20] to-[#0b1a20]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:gap-10">
+            <div class="max-w-2xl">
+                <h1 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+                    พื้นที่ของคนละครไทย
+                    <span class="block text-[#8aab06]">หาคนทำงาน — หางานละคร</span>
+                </h1>
+                <p class="mt-4 sm:mt-5 text-base sm:text-lg leading-7 sm:leading-8 text-white/80">
+                    เชื่อมโยงนักแสดง ผู้กำกับ ทีมโปรดักชัน และผู้จัดงานเข้าหากัน เพื่อสร้างโอกาสใหม่ในวงการ
+                </p>
 
-        <!-- Left text content -->
-        <div class="max-w-2xl">
-            <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
-                สืบสานศิลปะละครไทย
-                <span class="block text-yellow-300">เพื่อสังคมที่งดงามและเข้าใจ</span>
-            </h1>
+                <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                    <a routerLink="/talents"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#8aab06] px-5 sm:px-6 py-3 text-base font-semibold text-black shadow hover:brightness-110 transition focus:outline-none focus:ring-2 focus:ring-[#8aab06]/60 w-full sm:w-auto">
+                        <!-- icon: search -->
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="11" cy="11" r="7" stroke-width="2" />
+                            <path d="M20 20l-3.5-3.5" stroke-width="2" />
+                        </svg>
+                        ค้นหาคนทำงาน
+                    </a>
 
-            <p class="mt-6 text-lg leading-8 text-gray-100">
-                มูลนิธิละครไทยมุ่งมั่นในการผลักดันศิลปะการแสดงให้เข้าถึงผู้คนทุกกลุ่ม
-                เราเชื่อว่าพลังของ “ละคร” สามารถสร้างความเข้าใจ ความหวัง และแรงบันดาลใจ
-                เพื่อให้สังคมไทยเติบโตอย่างมีศิลปะและหัวใจที่อ่อนโยน
-            </p>
+                    <a routerLink="/jobs"
+                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-5 sm:px-6 py-3 text-base font-semibold text-white backdrop-blur hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40 w-full sm:w-auto">
+                        <!-- icon: briefcase -->
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 10h18v9H3z" stroke-width="2" />
+                            <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke-width="2" />
+                        </svg>
+                        หางานละคร
+                    </a>
 
-            <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <a href="#donate"
-                    class="rounded-md bg-yellow-400 px-6 py-3 text-base font-semibold text-black shadow-sm hover:bg-yellow-300 transition">
-                    สนับสนุนมูลนิธิ
-                </a>
-                <a href="#about" class="text-base font-semibold leading-6 text-white hover:text-yellow-300 transition">
-                    รู้จักเรามากขึ้น →
-                </a>
+                    <a href="#about"
+                        class="text-center sm:text-left text-base font-medium text-white/80 hover:text-[#8aab06] transition w-full sm:w-auto">
+                        รู้จักเรา →
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-8 lg:mt-0 lg:ml-10">
+                <img class="mx-auto w-full max-w-[420px] rounded-2xl shadow-2xl ring-1 ring-white/10"
+                    src="assets/images/hero.png" alt="Thai theatre platform" loading="lazy" decoding="async" />
             </div>
         </div>
-
-        <!-- Right image -->
-        <div class="mt-12 lg:mt-0 lg:ml-10">
-            <img class="w-[420px] rounded-xl shadow-2xl ring-1 ring-white/10"
-                src="assets/images/hero.png"
-                alt="Thai Theatre Performance" referrerpolicy="no-referrer" />
-        </div>
-
     </div>
-</div>
+    <div class="hidden sm:block h-1 w-full bg-gradient-to-r from-transparent via-[#8aab06] to-transparent"></div>
+</section>
