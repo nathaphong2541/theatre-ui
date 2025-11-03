@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex items-center justify-center p-4">
-  <div class="w-full max-w-xl rounded-2xl border bg-card border-muted shadow p-5 md:p-6">
+<div class="min-h-screen bg-gradient-to-br from-black via-[#0b1a20] to-[#0b1417] flex items-center justify-center p-4">
+  <div class="w-full max-w-xl rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur p-5 md:p-6">
     <div class="flex">
       <div class="flex-grow">
-        <h1 class="text-2xl font-semibold leading-tight" i18n="@@signup_title">สร้างบัญชีผู้ใช้ใหม่</h1>
-        <p class="mt-1 text-sm text-gray-400" i18n="@@signup_subtitle">เริ่มต้นประสบการณ์ใหม่กับเรา</p>
+        <h1 class="text-2xl font-semibold leading-tight text-white" i18n="@@signup_title">สร้างบัญชีผู้ใช้ใหม่</h1>
+        <p class="mt-1 text-sm text-white/70" i18n="@@signup_subtitle">เริ่มต้นประสบการณ์ใหม่กับเรา</p>
       </div>
       <app-language-menu class="order-3 my-3"></app-language-menu>
     </div>
@@ -13,61 +13,58 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- First name -->
         <div>
-          <label for="firstName" class="block text-sm font-medium">
-            <span i18n="@@signup_firstName">ชื่อ</span><span class="text-red-500">*</span>
+          <label for="firstName" class="block text-sm font-medium text-white">
+            <span i18n="@@signup_firstName">ชื่อ</span><span class="text-red-400">*</span>
           </label>
-
           <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name" inputmode="text"
             autocapitalize="off" spellcheck="false" pattern="[A-Za-z ]+" (beforeinput)="onBeforeNameInput($event)"
             (paste)="onPasteName($event, 'firstName')"
-            class="mt-1 w-full rounded-lg border px-3 py-2 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
+            class="mt-1 w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 border-0 ring-1 ring-black/10 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#8aab06]"
             [attr.aria-invalid]="form.get('firstName')?.invalid && form.get('firstName')?.touched" />
-
-          <p *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" class="mt-1 text-sm text-red-500"
+          <p *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched" class="mt-1 text-sm text-red-300"
             role="alert">
             <span *ngIf="form.get('firstName')?.errors?.['required']"
               i18n="@@err_firstName_required">กรุณากรอกชื่อ</span>
             <span *ngIf="form.get('firstName')?.errors?.['maxlength']"
               i18n="@@err_firstName_max">ความยาวชื่อเกินกำหนด</span>
           </p>
-          <div class="text-xs text-red-500" *ngIf="hasErr('firstName','invalidNameChars')">
+          <div class="text-xs text-red-300" *ngIf="hasErr('firstName','invalidNameChars')">
             First name: English letters and spaces only.
           </div>
         </div>
 
         <!-- Last name -->
         <div>
-          <label for="lastName" class="block text-sm font-medium">
-            <span i18n="@@signup_lastName">นามสกุล</span><span class="text-red-500">*</span>
+          <label for="lastName" class="block text-sm font-medium text-white">
+            <span i18n="@@signup_lastName">นามสกุล</span><span class="text-red-400">*</span>
           </label>
-
           <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name" inputmode="text"
             autocapitalize="off" spellcheck="false" pattern="[A-Za-z ]+" (beforeinput)="onBeforeNameInput($event)"
             (paste)="onPasteName($event, 'lastName')"
-            class="mt-1 w-full rounded-lg border px-3 py-2 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
+            class="mt-1 w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 border-0 ring-1 ring-black/10 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#8aab06]"
             [attr.aria-invalid]="form.get('lastName')?.invalid && form.get('lastName')?.touched" />
-
-          <p *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched" class="mt-1 text-sm text-red-500"
+          <p *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched" class="mt-1 text-sm text-red-300"
             role="alert">
             <span *ngIf="form.get('lastName')?.errors?.['required']"
               i18n="@@err_lastName_required">กรุณากรอกนามสกุล</span>
             <span *ngIf="form.get('lastName')?.errors?.['maxlength']"
               i18n="@@err_lastName_max">ความยาวนามสกุลเกินกำหนด</span>
           </p>
-          <div class="text-xs text-red-500" *ngIf="hasErr('lastName','invalidNameChars')">
+          <div class="text-xs text-red-300" *ngIf="hasErr('lastName','invalidNameChars')">
             Last name: English letters and spaces only.
           </div>
         </div>
       </div>
+
       <!-- Email -->
       <div>
-        <label for="email" class="block text-sm font-medium">
-          <span i18n="@@signup_email">อีเมล</span><span class="text-red-500">*</span>
+        <label for="email" class="block text-sm font-medium text-white">
+          <span i18n="@@signup_email">อีเมล</span><span class="text-red-400">*</span>
         </label>
         <input id="email" type="email" formControlName="email" autocomplete="email"
-          class="mt-1 w-full rounded-lg border px-3 py-2 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
+          class="mt-1 w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 border-0 ring-1 ring-black/10 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#8aab06]"
           [attr.aria-invalid]="form.get('email')?.invalid && form.get('email')?.touched" />
-        <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="mt-1 text-sm text-red-500"
+        <p *ngIf="form.get('email')?.invalid && form.get('email')?.touched" class="mt-1 text-sm text-red-300"
           role="alert">
           <span *ngIf="form.get('email')?.errors?.['required']" i18n="@@err_email_required">กรุณากรอกอีเมล</span>
           <span *ngIf="form.get('email')?.errors?.['email']" i18n="@@err_email_format">รูปแบบอีเมลไม่ถูกต้อง</span>
@@ -78,18 +75,16 @@
       <div formGroupName="passwordGroup" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Password -->
         <div class="relative">
-          <label for="password" class="block text-sm font-medium">
-            <span i18n="@@signup_password">รหัสผ่าน</span><span class="text-red-500">*</span>
+          <label for="password" class="block text-sm font-medium text-white">
+            <span i18n="@@signup_password">รหัสผ่าน</span><span class="text-red-400">*</span>
           </label>
-
           <input [type]="showPassword() ? 'text' : 'password'" id="password" formControlName="password"
             autocomplete="new-password"
-            class="mt-1 w-full rounded-lg border px-3 py-2 pr-10 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
+            class="mt-1 w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 border-0 ring-1 ring-black/10 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#8aab06]"
             [attr.aria-invalid]="pw?.invalid && pw?.touched" />
-
           <!-- Eye icon -->
           <button type="button" (click)="togglePassword('pw')" aria-label="Toggle password visibility"
-            class="absolute right-3 top-8 text-gray-400 hover:text-gray-200">
+            class="absolute right-3 top-8 text-white/60 hover:text-white">
             <svg *ngIf="!showPassword()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" class="w-5 h-5">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -97,34 +92,28 @@
             </svg>
             <svg *ngIf="showPassword()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" class="w-5 h-5">
-              <path
-                d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a21.58 21.58 0 014.06-5.94M9.88 9.88A3 3 0 0114.12 14.12M1 1l22 22" />
+              <path d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a21.58 21.58 0 014.06-5.94" />
+              <path d="M9.88 9.88A3 3 0 0114.12 14.12" />
+              <path d="M1 1l22 22" />
             </svg>
           </button>
-
-          <!-- Password strength checklist -->
-          <!-- Password strength checklist -->
-
-          <!-- Required/minlength fallback (ถ้าใส่ Validators อื่นเพิ่มเติม) -->
-          <p *ngIf="pw?.errors?.['required'] && pw?.touched" class="mt-1 text-sm text-red-500" role="alert">
+          <p *ngIf="pw?.errors?.['required'] && pw?.touched" class="mt-1 text-sm text-red-300" role="alert">
             <span i18n="@@err_pw_required">กรุณากรอกรหัสผ่าน</span>
           </p>
         </div>
 
         <!-- Confirm password -->
         <div class="relative">
-          <label for="confirmPassword" class="block text-sm font-medium">
-            <span i18n="@@signup_confirmPassword">ยืนยันรหัสผ่าน</span><span class="text-red-500">*</span>
+          <label for="confirmPassword" class="block text-sm font-medium text-white">
+            <span i18n="@@signup_confirmPassword">ยืนยันรหัสผ่าน</span><span class="text-red-400">*</span>
           </label>
-
           <input [type]="showConfirmPassword() ? 'text' : 'password'" id="confirmPassword"
             formControlName="confirmPassword" autocomplete="new-password"
-            class="mt-1 w-full rounded-lg border px-3 py-2 pr-10 bg-background/50 focus:outline-none focus:ring-2 focus:ring-primary"
+            class="mt-1 w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 border-0 ring-1 ring-black/10 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#8aab06]"
             [attr.aria-invalid]="(cf?.invalid && cf?.touched) || (pwGroup.errors?.['passwordsNotMatch'] && cf?.touched)" />
-
           <!-- Eye icon -->
           <button type="button" (click)="togglePassword('cf')" aria-label="Toggle confirm password visibility"
-            class="absolute right-3 top-8 text-gray-400 hover:text-gray-200">
+            class="absolute right-3 top-8 text-white/60 hover:text-white">
             <svg *ngIf="!showConfirmPassword()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" class="w-5 h-5">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
@@ -132,31 +121,30 @@
             </svg>
             <svg *ngIf="showConfirmPassword()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" class="w-5 h-5">
-              <path
-                d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a21.58 21.58 0 014.06-5.94M9.88 9.88A3 3 0 0114.12 14.12M1 1l22 22" />
+              <path d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a21.58 21.58 0 014.06-5.94" />
+              <path d="M9.88 9.88A3 3 0 0114.12 14.12" />
+              <path d="M1 1l22 22" />
             </svg>
           </button>
 
-          <!-- Confirm errors -->
-          <p *ngIf="cf?.errors?.['required'] && cf?.touched" class="mt-1 text-sm text-red-500" role="alert">
+          <p *ngIf="cf?.errors?.['required'] && cf?.touched" class="mt-1 text-sm text-red-300" role="alert">
             <span i18n="@@err_confirm_required">กรุณายืนยันรหัสผ่าน</span>
           </p>
           <p *ngIf="pwGroup.errors?.['passwordsNotMatch'] && (pw?.touched || cf?.touched)"
-            class="mt-1 text-sm text-red-500" role="alert">
+            class="mt-1 text-sm text-red-300" role="alert">
             <span i18n="@@err_confirm_mismatch">รหัสผ่านไม่ตรงกัน</span>
           </p>
         </div>
       </div>
+
       <!-- Password requirements box -->
-      <div class="mt-3 rounded-xl border p-3 md:p-4 bg-gray-50/80 border-gray-200
-         dark:bg-gray-800/40 dark:border-gray-700/60" role="region" aria-labelledby="pw-req-title">
-        <p id="pw-req-title"
-          class="text-xs md:text-sm mb-2 font-medium flex items-center gap-2 text-gray-700 dark:text-gray-200">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-500 dark:text-yellow-400"
-            fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z" />
-            <path
-              d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.598l.088-.416c.065-.3.09-.364.288-.364h.002c.208 0 .238.084.272.364l.088.416c.144.346.474.598 1.02.598.703 0 1.002-.422.808-1.319l-.738-3.468c-.064-.293-.006-.399.288-.469l.45-.083-.082-.38-2.29-.287zM8 4.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" />
+      <div class="mt-3 rounded-xl border border-white/10 bg-white/5 p-3 md:p-4" role="region"
+        aria-labelledby="pw-req-title">
+        <p id="pw-req-title" class="text-xs md:text-sm mb-2 font-medium flex items-center gap-2 text-white/80">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#8aab06]" fill="currentColor" viewBox="0 0 16 16"
+            aria-hidden="true">
+            <circle cx="8" cy="8" r="7"></circle>
+            <circle cx="8" cy="4.75" r="0.75" fill="#0b1417"></circle>
           </svg>
           <span i18n="@@signup_password_requirements_title">ข้อกำหนดรหัสผ่าน</span>
         </p>
@@ -164,77 +152,60 @@
         <ul class="text-xs grid grid-cols-1 md:grid-cols-2 gap-4">
           <li class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full transition-colors"
-              [ngClass]="haveUpper ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>
-            <span [ngClass]="haveUpper ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'"
-              i18n="@@signup_password_requirements_upper">
-              มีอักษรพิมพ์ใหญ่ (A–Z)
-            </span>
+              [ngClass]="haveUpper ? 'bg-[#8aab06]' : 'bg-white/30'"></span>
+            <span [ngClass]="haveUpper ? 'text-[#8aab06]' : 'text-white/60'"
+              i18n="@@signup_password_requirements_upper">มีอักษรพิมพ์ใหญ่ (A–Z)</span>
           </li>
-
           <li class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full transition-colors"
-              [ngClass]="haveLower ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>
-            <span [ngClass]="haveLower ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'"
-              i18n="@@signup_password_requirements_lower">
-              มีอักษรพิมพ์เล็ก (a–z)
-            </span>
+              [ngClass]="haveLower ? 'bg-[#8aab06]' : 'bg-white/30'"></span>
+            <span [ngClass]="haveLower ? 'text-[#8aab06]' : 'text-white/60'"
+              i18n="@@signup_password_requirements_lower">มีอักษรพิมพ์เล็ก (a–z)</span>
           </li>
-
           <li class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full transition-colors"
-              [ngClass]="haveNumber ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>
-            <span [ngClass]="haveNumber ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'"
-              i18n="@@signup_password_requirements_number">
-              มีตัวเลข (0–9)
-            </span>
+              [ngClass]="haveNumber ? 'bg-[#8aab06]' : 'bg-white/30'"></span>
+            <span [ngClass]="haveNumber ? 'text-[#8aab06]' : 'text-white/60'"
+              i18n="@@signup_password_requirements_number">มีตัวเลข (0–9)</span>
           </li>
-
           <li class="flex items-center gap-2">
             <span class="w-2 h-2 rounded-full transition-colors"
-              [ngClass]="haveSpecial ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>
-            <span [ngClass]="haveSpecial ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'"
-              i18n="@@signup_password_requirements_special">
-              มีอักขระพิเศษ (!&#64;#$…)
-            </span>
-          </li>
-
-          <li class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full transition-colors"
-              [ngClass]="haveMinLen ? 'bg-green-500' : 'bg-gray-400 dark:bg-gray-500'"></span>
-            <span [ngClass]="haveMinLen ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'"
-              i18n="@@signup_password_requirements_minlen">
-              มีความยาวอย่างน้อย 8 ตัวอักษร
-            </span>
+              [ngClass]="haveMinLen ? 'bg-[#8aab06]' : 'bg-white/30'"></span>
+            <span [ngClass]="haveMinLen ? 'text-[#8aab06]' : 'text-white/60'"
+              i18n="@@signup_password_requirements_minlen">มีความยาวอย่างน้อย 8 ตัวอักษร</span>
           </li>
         </ul>
 
-        <!-- Weak password helper -->
-        <p *ngIf="pw?.errors?.['weakPassword'] && pw?.touched"
-          class="mt-2 text-xs md:text-sm text-yellow-600 dark:text-yellow-400" role="alert" i18n="@@err_pw_weak">
+        <p *ngIf="pw?.errors?.['weakPassword'] && pw?.touched" class="mt-2 text-xs md:text-sm text-yellow-300"
+          role="alert" i18n="@@err_pw_weak">
           รหัสผ่านต้องมีตัวพิมพ์ใหญ่ ตัวพิมพ์เล็ก ตัวเลข อักขระพิเศษ และมีความยาวอย่างน้อย 8 ตัว
         </p>
       </div>
 
       <!-- Age 18+ -->
       <div class="flex items-center gap-3">
-        <input id="over18" type="checkbox" formControlName="over18" class="mt-1 size-4 rounded border"
+        <input id="over18" type="checkbox" formControlName="over18"
+          class="mt-1 size-4 rounded border-white/30 bg-white/10 text-[#8aab06] focus:ring-[#8aab06]"
           [attr.aria-invalid]="form.get('over18')?.invalid && form.get('over18')?.touched" />
-        <label for="over18" class="text-sm">
+        <label for="over18" class="text-sm text-white">
           <span i18n="@@signup_over18">ข้าพเจ้ายืนยันว่าอายุ 18 ปีบริบูรณ์ขึ้นไป</span>
-          <span class="text-red-500">*</span>
+          <span class="text-red-400">*</span>
         </label>
       </div>
-      <p *ngIf="form.get('over18')?.invalid && form.get('over18')?.touched" class="text-sm text-red-500" role="alert">
+      <p *ngIf="form.get('over18')?.invalid && form.get('over18')?.touched" class="text-sm text-red-300" role="alert">
         <span i18n="@@err_over18_required">จำเป็นต้องยืนยันอายุ 18 ปีขึ้นไป</span>
       </p>
 
       <!-- Actions -->
       <div class="pt-2 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button type="button" (click)="cancel()"
-          class="inline-flex items-center justify-center rounded-lg border px-4 py-2 text-sm hover:bg-muted"
-          i18n="@@btn_cancel">ยกเลิก</button>
+          class="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10"
+          i18n="@@btn_cancel">
+          ยกเลิก
+        </button>
+
         <button type="submit"
-          class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          class="inline-flex items-center justify-center rounded-lg bg-[#8aab06] px-4 py-2 text-sm font-medium text-black hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#8aab06] disabled:opacity-50"
           [disabled]="form.invalid || submitting()" i18n="@@btn_createAccount">
           สร้างบัญชี
         </button>

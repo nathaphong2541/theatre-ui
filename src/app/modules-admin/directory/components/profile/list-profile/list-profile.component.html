@@ -3,15 +3,18 @@
     <section class="relative">
         <div class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[28px] border-b border-white/10">
             <!-- gradient base -->
-            <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-700"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#0b1417] via-[#0e171b] to-[#122028]"></div>
 
-            <!-- user cover -->
-            <!-- <img *ngIf="coverUrl()" [src]="coverUrl()"
-                class="absolute inset-0 h-full w-full object-cover opacity-60 mix-blend-luminosity" alt="cover" /> -->
+            <!-- optional user cover -->
+            <!--
+      <img *ngIf="coverUrl()" [src]="coverUrl()"
+           class="absolute inset-0 h-full w-full object-cover opacity-50 mix-blend-luminosity" alt="cover" />
+      -->
 
-            <!-- top glow -->
+            <!-- top glow (เขียวเป็นหลัก) -->
             <div
-                class="absolute inset-0 bg-[radial-gradient(60%_40%_at_20%_-10%,rgba(56,189,248,0.18),transparent),radial-gradient(50%_30%_at_80%_-10%,rgba(16,185,129,0.12),transparent)]">
+                class="absolute inset-0
+               bg-[radial-gradient(60%_40%_at_20%_-10%,rgba(138,171,6,0.22),transparent),radial-gradient(50%_30%_at_80%_-10%,rgba(37,150,190,0.12),transparent)]">
             </div>
             <!-- bottom fade -->
             <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b0e13] to-transparent"></div>
@@ -19,10 +22,10 @@
 
         <!-- Edit Button -->
         <div class="absolute top-4 right-4">
-            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 py-2
-                     shadow-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2
+                     shadow-sm hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40"
                 aria-label="Edit profile">
-                <svg-icon src="" [svgClass]="'h-4 w-4'"></svg-icon>
+                <svg-icon src="" [svgClass]="'h-4 w-4 text-white/80'"></svg-icon>
                 <span i18n="@@edit_profile" class="text-sm">Edit profile</span>
             </button>
         </div>
@@ -34,7 +37,7 @@
                     <!-- Avatar -->
                     <div class="relative">
                         <div class="rounded-3xl p-[3px]
-                        bg-[conic-gradient(at_50%_50%,#34d399,45deg,#fb7185,180deg,#60a5fa,315deg,#34d399)]">
+                        bg-[conic-gradient(at_50%_50%,#8aab06,120deg,#2596be,240deg,#8aab06)]">
                             <div class="size-36 md:size-40 rounded-2xl bg-[#0f131a] p-1">
                                 <div
                                     class="size-full rounded-xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center overflow-hidden">
@@ -94,7 +97,7 @@
 
                     <div *ngIf="links()?.length; else noLinks" class="space-y-3">
                         <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener" class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#0f131a]/70 px-4 py-3
-                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-sky-400/30 transition"
+                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30 transition"
                             [attr.aria-label]="l.label + ' ' + l.value">
                             <div class="flex items-center gap-3 min-w-0">
                                 <svg-icon [src]="l.icon"
@@ -112,7 +115,7 @@
                     </ng-template>
                 </div>
 
-                <!-- Stats (ตัวอย่าง mock) -->
+                <!-- Stats -->
                 <div class="mt-6 grid grid-cols-3 gap-3">
                     <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
                         <div class="text-2xl font-semibold">18</div>
@@ -134,19 +137,19 @@
                 <!-- Tabs -->
                 <nav class="mb-4 flex items-center gap-2 overflow-x-auto">
                     <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white/80 hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-sky-400/30" aria-current="page">
+                         bg-white/5 border border-white/10 text-white hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30" aria-current="page">
                         <span i18n="@@about">About</span>
-                        <span class="absolute inset-x-2 -bottom-[1px] h-[2px] rounded bg-sky-400/70"></span>
+                        <span class="absolute inset-x-2 -bottom-[1px] h-[2px] rounded bg-[#8aab06]/80"></span>
                     </button>
                     <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                         bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
                         <span i18n="@@portfolio">Portfolio</span>
                     </button>
                     <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                         bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10
+                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
                         <span i18n="@@reviews">Reviews</span>
                     </button>
                 </nav>
@@ -164,19 +167,20 @@
                             <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@skills">Skills</div>
                             <div class="mt-2 flex flex-wrap gap-2">
                                 <span
-                                    class="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">Angular</span>
+                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Angular</span>
                                 <span
-                                    class="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs text-sky-200">Tailwind</span>
+                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Tailwind</span>
                                 <span
-                                    class="rounded-full border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-1 text-xs text-fuchsia-200">DevExtreme</span>
+                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">DevExtreme</span>
                                 <span
-                                    class="rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs text-amber-200">Spring
+                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Spring
                                     Boot</span>
                                 <span
-                                    class="rounded-full border border-indigo-400/30 bg-indigo-400/10 px-3 py-1 text-xs text-indigo-200">SQL
+                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">SQL
                                     Server</span>
                             </div>
                         </div>
+
                         <div class="rounded-xl border border-white/10 bg-[#0f131a]/70 p-4">
                             <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@services">Services
                             </div>
@@ -189,7 +193,7 @@
                     </div>
                 </div>
 
-                <!-- Portfolio (ตัวอย่าง mock) -->
+                <!-- Portfolio (ตัวอย่าง) -->
                 <div class="mt-6 grid gap-4 md:grid-cols-2">
                     <article
                         class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
@@ -211,11 +215,10 @@
         <section
             class="mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
             <h3 class="text-lg font-semibold flex items-center gap-2">
-                <svg-icon src="" [svgClass]="'h-5 w-5 text-sky-300'"></svg-icon>
+                <svg-icon src="" [svgClass]="'h-5 w-5 text-[#8aab06]'"></svg-icon>
                 Media / Video
             </h3>
-            <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()">
-            </app-video-gallery>
+            <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()"></app-video-gallery>
         </section>
     </main>
 </div>

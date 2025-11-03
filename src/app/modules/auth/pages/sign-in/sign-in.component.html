@@ -1,50 +1,52 @@
-<div class="min-h-screen flex flex-col lg:flex-row bg-background text-foreground">
+<div class="min-h-screen flex flex-col lg:flex-row bg-[#0b1417] text-white">
 
   <!-- Language button (top-right) -->
   <app-language-menu class="absolute top-4 right-4 z-20"></app-language-menu>
 
   <!-- Left brand panel -->
   <aside
-    class="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 p-12 relative overflow-hidden">
-    <div class="relative max-w-md text-center text-gray-100 z-10">
+    class="hidden lg:flex w-1/2 items-center justify-center bg-gradient-to-br from-black via-[#0b1a20] to-[#0b1a20] p-12 relative overflow-hidden">
+    <div class="relative max-w-md text-center text-white/90 z-10">
       <img src="assets/images/logo.png" alt="Thai Theatre Foundation" class="mx-auto mb-6 h-16 w-auto drop-shadow-lg" />
       <h1 class="text-3xl font-semibold tracking-tight text-white">
         <span i18n="@@org_name">มูลนิธิละครไทย</span>
       </h1>
-      <p class="mt-3 text-gray-300 leading-relaxed">
+      <p class="mt-3 leading-relaxed text-white/70">
         <span i18n="@@org_tagline">พื้นที่สร้างสรรค์เพื่อศิลปะการละคร และชุมชนผู้ชม</span>
       </p>
+      <div class="mt-6 h-px w-40 mx-auto bg-gradient-to-r from-transparent via-[#8aab06]/70 to-transparent"></div>
     </div>
   </aside>
 
   <!-- Right form panel -->
   <main
-    class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-gradient-to-b from-white via-gray-50 to-gray-100">
+    class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-gradient-to-b from-[#0b1a20] via-[#0b1417] to-[#0b1417]">
     <div class="w-full max-w-sm sm:max-w-md md:max-w-lg">
-      <div class="bg-card border border-muted rounded-2xl shadow-xl p-6 sm:p-8">
+      <div class="rounded-2xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur p-6 sm:p-8">
         <div class="mb-6 text-center">
-          <h2 class="text-2xl font-semibold">
+          <h2 class="text-2xl font-semibold text-white">
             <span i18n="@@login">เข้าสู่ระบบ</span>
           </h2>
-          <p class="text-muted-foreground mt-1 text-sm sm:text-base">
+          <p class="mt-1 text-sm sm:text-base text-white/70">
             <span i18n="@@login_sub">กรุณากรอกอีเมลและรหัสผ่านเพื่อเข้าสู่ระบบ</span>
           </p>
         </div>
 
         <!-- Server error -->
-        <div *ngIf="serverError" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div *ngIf="serverError"
+          class="mb-4 rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
           {{ serverError }}
         </div>
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
           <!-- Email -->
-          <label class="block text-sm font-medium mb-1" for="email">
+          <label class="block text-sm font-medium mb-1 text-white" for="email">
             <span i18n="@@email">อีเมล</span>
           </label>
-          <input id="email" type="email" formControlName="email" required class="block w-full rounded-lg border border-muted bg-background px-3 py-3 text-sm sm:text-base outline-none
-                   focus:ring-2 focus:ring-primary" placeholder="name@example.com"
-            i18n-placeholder="@@email_placeholder" />
-          <div id="email-error" class="mt-1 text-xs text-red-600 min-h-5">
+          <input id="email" type="email" formControlName="email" required
+            class="block w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 px-3 py-3 text-sm sm:text-base outline-none ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]"
+            placeholder="name@example.com" i18n-placeholder="@@email_placeholder" />
+          <div id="email-error" class="mt-1 min-h-5 text-xs text-red-300">
             <ng-container *ngIf="f.email.touched && f.email.invalid">
               <span *ngIf="f.email.errors?.['required']" i18n="@@err_email_required">กรุณากรอกอีเมล</span>
               <span *ngIf="f.email.errors?.['email']" i18n="@@err_email_format">รูปแบบอีเมลไม่ถูกต้อง</span>
@@ -52,16 +54,16 @@
           </div>
 
           <!-- Password -->
-          <label class="mt-3 block text-sm font-medium mb-1" for="password">
+          <label class="mt-3 block text-sm font-medium mb-1 text-white" for="password">
             <span i18n="@@password">รหัสผ่าน</span>
           </label>
           <div class="relative">
             <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password" required
               autocomplete="current-password"
-              class="block w-full rounded-lg border border-muted bg-background px-3 py-3 pr-12 text-sm sm:text-base outline-none focus:ring-2 focus:ring-primary"
+              class="block w-full rounded-lg bg-white/95 text-gray-900 placeholder-gray-500 px-3 py-3 pr-12 text-sm sm:text-base outline-none ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]"
               placeholder="••••••••" i18n-placeholder="@@password_placeholder" />
             <button type="button" (click)="showPassword.set(!showPassword())"
-              class="absolute inset-y-0 right-0 px-3 text-muted-foreground hover:text-foreground transition-colors">
+              class="absolute inset-y-0 right-0 px-3 text-white/70 hover:text-white transition-colors">
               <svg *ngIf="!showPassword()" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 stroke-width="1.8" stroke="currentColor" class="h-5 w-5">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -78,14 +80,14 @@
 
           <!-- Forgot password -->
           <div class="mt-3 text-right">
-            <a routerLink="/forgot-password" class="text-sm text-primary hover:underline">
+            <a routerLink="/forgot-password" class="text-sm text-[#8aab06] hover:underline">
               <span i18n="@@forgot">ลืมรหัสผ่าน?</span>
             </a>
           </div>
 
           <!-- Login -->
           <button type="submit"
-            class="mt-6 w-full inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+            class="mt-6 w-full inline-flex items-center justify-center rounded-lg bg-[#8aab06] px-4 py-2 font-medium text-black hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#8aab06] disabled:opacity-50"
             [disabled]="form.invalid || loading()">
             <span *ngIf="!loading()" i18n="@@login">เข้าสู่ระบบ</span>
             <span *ngIf="loading()" i18n="@@loading">กำลังเข้าสู่ระบบ…</span>
@@ -93,21 +95,21 @@
 
           <!-- Divider -->
           <div class="mt-6 flex items-center gap-3">
-            <div class="h-px flex-1 bg-muted"></div>
-            <span class="text-xs text-muted-foreground" i18n="@@or">หรือ</span>
-            <div class="h-px flex-1 bg-muted"></div>
+            <div class="h-px flex-1 bg-white/10"></div>
+            <span class="text-xs text-white/60" i18n="@@or">หรือ</span>
+            <div class="h-px flex-1 bg-white/10"></div>
           </div>
 
           <!-- Join Now -->
           <button type="button" (click)="policy()"
-            class="mt-4 w-full inline-flex items-center justify-center rounded-lg border border-muted bg-card px-4 py-2 font-medium hover:bg-muted">
-            <span i18n="@@join_now">เข้าร่วมตอนนี้ (Join Now)</span>
+            class="mt-4 w-full inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2 font-medium text-white hover:bg-white/10">
+            <span i18n="@@join_now">สมัครสมาชิก (ไม่มีค่าใช้จ่าย)</span>
           </button>
         </form>
       </div>
 
       <!-- Footer -->
-      <p class="mt-6 text-center text-xs text-muted-foreground">
+      <p class="mt-6 text-center text-xs text-white/60">
         <span i18n="@@footer_note">© Thai Theatre Foundation — for Performing Arts Education and Development</span>
       </p>
     </div>

@@ -11,7 +11,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: '', pathMatch: 'full' },
       { path: '', component: MainPagesComponent },
-      { path: 'en/profiles/:id', component: SearchDetailComponent },
+      { path: 'profiles/:id', component: SearchDetailComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },

@@ -86,6 +86,16 @@ export class HandleProfileComponent implements OnInit {
   avatarPreviewUrl: string | null = null; // ใช้โชว์ preview (object URL หรือจาก server)
   private serverAvatarUrl: string | null = null;
 
+  // === resume preview state ===
+  resumeFile: File | null = null;
+  resumePreviewUrl: string | null = null;       // ใช้กับ <img> และลิงก์ดาวน์โหลด
+  resumeSafeUrl: SafeResourceUrl | null = null; // ใช้ฝัง <iframe> สำหรับ PDF
+  resumeIsPdf = false;
+
+  // ===== Images (gallery) state =====
+  images: (File | null)[] = Array(6).fill(null);
+  imagePreviewUrls: (string | null)[] = Array(6).fill(null);
+
   get avatarSrc(): string | null {
     return this.avatarPreviewUrl ?? this.serverAvatarUrl ?? null;
   }
@@ -239,13 +249,6 @@ export class HandleProfileComponent implements OnInit {
     }
   }
 
-  // ป้องกัน memory leak จาก object URL
-  ngOnDestroy(): void {
-    if (this.avatarPreviewUrl?.startsWith('blob:')) {
-      URL.revokeObjectURL(this.avatarPreviewUrl);
-    }
-  }
-
   /** ---------- Load & map from API ---------- */
   private loadProfile(): void {
     this.profileService.getProfile().subscribe({
@@ -312,14 +315,68 @@ export class HandleProfileComponent implements OnInit {
     if (!file) return;
 
     const ok = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!ok.includes(file.type)) { this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP'); return; }
-    if (file.size > 2 * 1024 * 1024) { this.toast.warning('ไฟล์ต้องไม่เกิน 2MB'); return; }
+    if (!ok.includes(file.type)) {
+      this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP');
+      return;
+    }
 
-    // พรีวิวทับรูปจากเซิร์ฟเวอร์ทันที
+    // ไม่ block แต่เตือนถ้าไฟล์ใหญ่มาก (เช่น > 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      this.toast.warning('ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน');
+    }
+
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
     this.avatarPreviewUrl = URL.createObjectURL(file);
-    this.avatarFile = file; // ถ้าคุณอัปโหลดตอนกด Save
+    this.avatarFile = file; // เก็บไฟล์ต้นฉบับไว้ (full-res) แล้วค่อยบีบอัดตอน Save
   }
+
+  private loadImageFromFile(file: File): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  private async compressImage(
+    file: File,
+    opts: { maxW?: number; maxH?: number; quality?: number; mime?: 'image/webp' | 'image/jpeg' } = {}
+  ): Promise<File> {
+    const { maxW = 1200, maxH = 1200, quality = 0.8, mime = 'image/webp' } = opts;
+
+    const img = await this.loadImageFromFile(file);
+    const { naturalWidth: w, naturalHeight: h } = img;
+
+    // คำนวณสเกลให้พอดีกับกรอบ maxW x maxH
+    const ratio = Math.min(maxW / w, maxH / h, 1); // ไม่ขยายเกินต้นฉบับ
+    const targetW = Math.round(w * ratio);
+    const targetH = Math.round(h * ratio);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW;
+    canvas.height = targetH;
+    const ctx = canvas.getContext('2d')!;
+    ctx.drawImage(img, 0, 0, targetW, targetH);
+
+    const blob: Blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        b => (b ? resolve(b) : reject(new Error('toBlob failed'))),
+        mime,
+        quality
+      );
+    });
+
+    // ตั้งชื่อไฟล์ใหม่ให้สอดคล้องชนิด
+    const ext = mime === 'image/webp' ? 'webp' : 'jpg';
+    const newName = (file.name || 'avatar').replace(/\.(jpe?g|png|webp)$/i, '') + `.${ext}`;
+    return new File([blob], newName, { type: mime, lastModified: Date.now() });
+  }
+
 
   clearLocalAvatar() {
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
@@ -336,8 +393,6 @@ export class HandleProfileComponent implements OnInit {
       error: () => this.toast.error('ลบรูปไม่สำเร็จ'),
     });
   }
-
-  onPickResume(_e: Event) { }
 
   addConflict() {
     this.toast.warning('หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา', { title: 'Coming soon' });
@@ -377,7 +432,7 @@ export class HandleProfileComponent implements OnInit {
   }
 
   /** ---------- Save payload กลับไปหา API ---------- */
-  save() {
+  async save() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน', { title: 'ข้อมูลไม่ครบ' });
@@ -416,26 +471,48 @@ export class HandleProfileComponent implements OnInit {
       credits: this.credits,
     };
 
-    // ✅ ถ้ามี avatarFile → ใช้ multipart; ถ้าไม่มีก็ยิง JSON ปกติ
-    const isMultipart = !!this.avatarFile;
+    // ✅ ถ้ามีรูป → บีบอัดก่อนอัปโหลด
+    let uploadFile: File | null = null;
+    if (this.avatarFile) {
+      try {
+        // เลือกชนิดไฟล์ปลายทางตามที่ backend รองรับ
+        const targetMime: 'image/webp' | 'image/jpeg' = 'image/webp'; // เปลี่ยนเป็น 'image/jpeg' ถ้าจำเป็น
+        uploadFile = await this.compressImage(this.avatarFile, {
+          maxW: 1200,
+          maxH: 1200,
+          quality: 0.8,
+          mime: targetMime,
+        });
+      } catch (err) {
+        console.error('Compress avatar failed', err);
+        this.toast.warning('บีบอัดรูปไม่สำเร็จ จะอัปโหลดรูปต้นฉบับแทน');
+        uploadFile = this.avatarFile;
+      }
+    }
 
+    const isMultipart = !!uploadFile;
     const req$ = this.isNewProfile
       ? (isMultipart
-        ? this.profileService.saveProfileMultipart(payload, this.avatarFile!) // POST multipart
-        : this.profileService.saveProfile(payload))                           // POST json
+        ? this.profileService.saveProfileMultipart(payload, uploadFile!)  // POST multipart
+        : this.profileService.saveProfile(payload))                        // POST json
       : (this.currentProfile
         ? (isMultipart
-          ? this.profileService.updateProfileMultipart(payload, this.avatarFile!) // PUT multipart
-          : this.profileService.updateProfile(payload))                           // PUT json
+          ? this.profileService.updateProfileMultipart(payload, uploadFile!) // PUT multipart
+          : this.profileService.updateProfile(payload))                      // PUT json
         : (isMultipart
-          ? this.profileService.saveProfileMultipart(payload, this.avatarFile!)   // POST multipart
-          : this.profileService.saveProfile(payload)));                           // POST json
+          ? this.profileService.saveProfileMultipart(payload, uploadFile!)   // POST multipart
+          : this.profileService.saveProfile(payload)));                      // POST json
 
     req$.subscribe({
       next: (res: ProfileDto & { avatarUrl?: string }) => {
         this.currentProfile = res as ProfileDto;
-        if ((res as any).avatarUrl) this.avatarPreviewUrl = (res as any).avatarUrl!;
-        this.avatarFile = null; // เคลียร์ไฟล์หลังบันทึกสำเร็จ
+
+        // ถ้า backend คืน URL ใหม่มา ใช้แสดงต่อทันที
+        if ((res as any).avatarUrl) {
+          // แนะนำให้ map เป็น URL เต็มแบบที่คุณทำใน loadProfile() (ต่อ base url)
+          this.avatarPreviewUrl = (res as any).avatarUrl!;
+        }
+        this.avatarFile = null;
 
         this.toast.success('บันทึกข้อมูลสำเร็จ 🎉', {
           title: 'Saved',
@@ -454,4 +531,102 @@ export class HandleProfileComponent implements OnInit {
   cancel() {
     this.router.navigate(['en/directory/profile']);
   }
+
+  private revokeResumeUrl() {
+    if (this.resumePreviewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.resumePreviewUrl);
+    }
+  }
+
+  // ทำลาย objectURL ทั้งหมดตอนทำลาย component
+  ngOnDestroy(): void {
+    if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
+    this.revokeResumeUrl();
+    this.imagePreviewUrls.forEach(u => { if (u?.startsWith('blob:')) URL.revokeObjectURL(u); });
+  }
+
+  // กำหนดคงที่ไว้บนสุดของคลาส (อ่านง่าย/แก้ทีหลังสะดวก)
+  private readonly MAX_RESUME_SIZE_MB = 50;
+
+  onPickResume(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const ok = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+    if (!ok.includes(file.type)) {
+      this.toast.warning('รองรับเฉพาะ PDF, JPG, PNG, WEBP');
+      input.value = '';
+      return;
+    }
+
+    // ✅ อัปเดตเป็น 50MB
+    const maxBytes = this.MAX_RESUME_SIZE_MB * 1024 * 1024; // 50 * 1024 * 1024
+    if (file.size > maxBytes) {
+      this.toast.warning(`ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`);
+      input.value = '';
+      return;
+    }
+
+    // (ทางเลือก) เตือนถ้าไฟล์ใหญ่มาก เช่น > 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      this.toast.info('ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด');
+    }
+
+    // ล้าง URL เก่า
+    this.revokeResumeUrl();
+
+    const objectUrl = URL.createObjectURL(file);
+    this.resumeFile = file;
+    this.resumeIsPdf = file.type === 'application/pdf';
+    this.resumePreviewUrl = objectUrl;
+    this.resumeSafeUrl = this.resumeIsPdf
+      ? this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
+      : null;
+  }
+
+  clearResume() {
+    this.revokeResumeUrl();
+    this.resumeFile = null;
+    this.resumePreviewUrl = null;
+    this.resumeSafeUrl = null;
+    this.resumeIsPdf = false;
+  }
+
+  // เรียกเมื่อเลือกไฟล์ในช่องที่ i
+  onPickImage(e: Event, i: number) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const ok = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!ok.includes(file.type)) {
+      this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP');
+      input.value = '';
+      return;
+    }
+
+    // ✅ ไม่จำกัดขนาดไฟล์ ณ ตอนเลือก (จะบีบอัดตอน save)
+    // ล้าง URL เก่าเพื่อไม่ให้ memory leak
+    const old = this.imagePreviewUrls[i];
+    if (old?.startsWith('blob:')) URL.revokeObjectURL(old);
+
+    const objectUrl = URL.createObjectURL(file);
+    this.images[i] = file;
+    this.imagePreviewUrls[i] = objectUrl;
+
+    // เคลียร์ค่า input เพื่อให้เลือกไฟล์เดิมซ้ำได้
+    input.value = '';
+  }
+
+  // ลบไฟล์ที่ช่อง i
+  removeImage(i: number) {
+    if (this.imagePreviewUrls[i]?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.imagePreviewUrls[i]!);
+    }
+    this.imagePreviewUrls[i] = null;
+    this.images[i] = null;
+  }
+
+
 }

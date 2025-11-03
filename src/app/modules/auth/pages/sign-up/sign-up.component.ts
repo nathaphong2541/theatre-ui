@@ -21,10 +21,9 @@ function passwordStrengthValidator(control: AbstractControl): ValidationErrors |
   const hasUpper = /[A-Z]/.test(value);
   const hasLower = /[a-z]/.test(value);
   const hasNumber = /\d/.test(value);
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
   const validLength = value.length >= 8;
 
-  const isValid = hasUpper && hasLower && hasNumber && hasSpecial && validLength;
+  const isValid = hasUpper && hasLower && hasNumber && validLength;
   return isValid ? null : { weakPassword: true };
 }
 

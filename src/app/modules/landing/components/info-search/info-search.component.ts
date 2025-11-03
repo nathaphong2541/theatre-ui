@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Profile, InfoSearchService } from './service/info-search.service';
 import { environment } from 'src/environments/environment';
 
@@ -30,7 +30,10 @@ export class InfoSearchComponent implements OnInit {
   total = 0;
   private lastPageCount = 0;
 
-  constructor(private api: InfoSearchService) { }
+  constructor(
+    private router: Router,
+    private api: InfoSearchService
+  ) { }
 
   ngOnInit(): void {
     this.search(true);

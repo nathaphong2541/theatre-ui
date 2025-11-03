@@ -46,6 +46,17 @@ html {
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
+  --color-accent-50: #f6fae9;
+  --color-accent-100: #eaf3cd;
+  --color-accent-200: #d9ef7a;
+  --color-accent-300: #cde07f;
+  --color-accent-400: #b6cf3d;
+  --color-accent-500: #8aab06;
+  --color-accent-600: #6f8b05;
+  --color-accent-700: #566b05;
+  --color-accent-800: #3d4c04;
+  --color-accent-900: #2a3403;
+
   @keyframes wiggle {
 
     0%,
