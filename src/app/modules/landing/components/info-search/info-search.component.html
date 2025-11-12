@@ -1,130 +1,233 @@
-<!-- Member Search (Profile Cards) -->
-<section id="member-search" class="bg-[#0b1417] py-10 text-white">
-    <div class="mx-auto max-w-7xl px-4 lg:px-8">
-
-        <!-- Header -->
-        <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold tracking-tight">ค้นหาสมาชิก</h2>
-                <p class="mt-1 text-white/70">ค้นหาด้วยชื่อ, เลขสมาชิก, จังหวัด, หรือสถานะ</p>
-            </div>
-
-            <!-- Filters -->
-            <form class="w-full sm:w-auto" (ngSubmit)="onSubmit()">
-                <div class="grid grid-cols-1 gap-2 sm:auto-cols-max sm:grid-flow-col">
-                    <!-- q -->
-                    <div class="relative sm:w-80">
-                        <input [(ngModel)]="q" name="q" type="text" placeholder="ชื่อ/เลขสมาชิก/อีเมล…"
-                            class="w-full rounded-xl bg-white/95 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-500 outline-none ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]" />
-                        <svg class="pointer-events-none absolute right-3 top-2.5 h-5 w-5 text-gray-400"
-                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                d="M14.293 13.293a8 8 0 1 0-1 1l3.854 3.853a.75.75 0 0 0 1.06-1.06l-3.914-3.793zM8.5 14a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </div>
-
-                    <!-- status -->
-                    <select [(ngModel)]="status" name="status"
-                        class="rounded-xl bg-white/95 px-3 py-2.5 text-sm text-gray-900 outline-none ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]">
-                        <option value="">สถานะ: ทั้งหมด</option>
-                        <option value="active">ใช้งาน</option>
-                        <option value="inactive">ระงับ</option>
-                        <option value="pending">รอตรวจสอบ</option>
-                    </select>
-
-                    <div class="flex gap-2">
-                        <button type="submit"
-                            class="rounded-xl bg-[#8aab06] px-4 py-2.5 text-sm font-semibold text-black shadow hover:brightness-110 disabled:opacity-50"
-                            [disabled]="loading">
-                            {{ loading ? 'กำลังค้นหา…' : 'ค้นหา' }}
-                        </button>
-                        <button type="button" (click)="clearFilters()"
-                            class="rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white hover:bg-white/10">
-                            ล้างเงื่อนไข
-                        </button>
-                    </div>
-                </div>
-            </form>
+<!-- Member Search (Directory) -->
+<section class="bg-[#0b1417] text-white">
+    <div class="mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
+        <!-- Title -->
+        <header class="mb-6">
+            <h2 class="text-2xl font-semibold tracking-tight">ค้นหาสมาชิก</h2>
+            <p class="mt-1 text-white/70">ค้นหาด้วยชื่อ/เลขสมาชิก พร้อมกรองตามทักษะ สถานที่ และอื่น ๆ</p>
         </header>
 
-        <!-- Loading skeleton -->
-        <div *ngIf="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <div *ngFor="let _ of [1,2,3,4,5,6,7,8]"
-                class="animate-pulse rounded-2xl border border-white/10 bg-white/5 p-5">
-                <div class="mb-4 flex items-start gap-4">
-                    <div class="h-16 w-16 rounded-full bg-white/10"></div>
-                    <div class="flex-1 space-y-2">
-                        <div class="h-4 w-2/3 rounded bg-white/10"></div>
-                        <div class="h-3 w-1/2 rounded bg-white/10"></div>
-                        <div class="h-3 w-3/4 rounded bg-white/10"></div>
+        <!-- Layout -->
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            <!-- Filters (Left) -->
+            <aside class="lg:col-span-4 xl:col-span-3">
+                <div class="sticky top-4 space-y-4">
+                    <!-- Job title combobox -->
+                    <section #jobBox class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <label class="block text-sm font-semibold tracking-wide mb-2">Type a job title to begin.</label>
+
+                        <div class="relative">
+                            <input #jobInput [(ngModel)]="jobQuery" (input)="onJobQueryChange()" (focus)="openJobMenu()"
+                                (blur)="closeJobMenuSoon()" (keydown)="onJobKeydown($event)" type="text"
+                                placeholder="Start typing" class="w-full rounded-xl bg-white/95 px-4 pr-10 py-2.5 text-base text-gray-900
+                placeholder-gray-500 outline-none ring-2 ring-transparent focus:ring-[#8aab06]" />
+
+                            <!-- ปุ่มเคลียร์ -->
+                            <button *ngIf="jobQuery?.length" type="button" aria-label="ล้างข้อความ" title="ล้างข้อความ"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 grid h-8 w-8 place-items-center rounded-full
+                 text-gray-600 hover:text-black hover:bg-white/70 focus:outline-none"
+                                (mousedown)="$event.preventDefault()"
+                                (click)="clearAllFilters(); jobOpen=false; jobInput.focus()">
+                                <!-- ไอคอน X -->
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+                                    <path
+                                        d="M18.3 5.7a1 1 0 0 0-1.4-1.4L12 9.17 7.1 4.3a1 1 0 1 0-1.4 1.4L10.83 12l-5.13 4.9a1 1 0 1 0 1.4 1.4L12 14.83l4.9 4.87a1 1 0 0 0 1.4-1.4L13.17 12l5.13-4.9z" />
+                                </svg>
+                            </button>
+
+                            <div *ngIf="jobOpen && jobFlat.length"
+                                class="absolute z-20 mt-2 max-h-80 w-full overflow-auto rounded-xl border border-white/10 bg-[#0e171a] shadow-2xl">
+                                <ng-container *ngFor="let row of jobFlat; let i = index">
+                                    <!-- header -->
+                                    <div *ngIf="row.type==='header'"
+                                        class="sticky top-0 z-10 border-t first:border-t-0 border-white/10 bg-[#0e171a] px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white/70">
+                                        {{ row.deptName }}
+                                    </div>
+
+                                    <!-- item -->
+                                    <button *ngIf="row.type==='item'" type="button"
+                                        (mousedown)="pickJob(row.deptId, row.posId, row.posName)"
+                                        [class]="['block w-full text-left px-4 py-3 text-[15px]', i===jobActive ? 'bg-white/10 text-white' : 'text-white'].join(' ')"
+                                        (mousemove)="jobActive=i">
+                                        {{ row.posName }}
+                                    </button>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <!-- Selected chips: หลังเลือก Job แล้วค่อยแสดง -->
+                    <div *ngIf="hasJob && activeChipCount()" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div class="mb-2 text-sm font-semibold">ตัวกรองที่เลือก</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button *ngFor="let c of selectedChips()" type="button"
+                                (click)="removeChip(c.group, c.value)"
+                                class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs hover:bg-white/20">
+                                {{ c.label }} ✕
+                            </button>
+                        </div>
+                        <button class="mt-3 text-xs underline text-white/70 hover:text-white"
+                            (click)="clearAllFilters()">ล้างทั้งหมด</button>
+                    </div>
+
+                    <!-- Departments: แสดงเสมอ -->
+                    <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide">หมวดงาน</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button *ngFor="let d of departmentsApi" type="button"
+                                (click)="toggleTag('departments', d.id)"
+                                [class]="chipClass(isSelected('departments', d.id))">
+                                {{ d.nameTh || d.nameEn }}
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Jobs: แสดง แต่ disabled ถ้ายังไม่เลือก department -->
+                    <section class="rounded-2xl border border-white/10 bg-white/5 p-4"
+                        [class.opacity-50]="!hasDepartment" [class.pointer-events-none]="!hasDepartment">
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ตำแหน่งที่ต้องการ</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button *ngFor="let j of jobsFiltered" type="button" (click)="toggleTag('jobs', j.id)"
+                                [class]="chipClass(isSelected('jobs', j.id))">
+                                {{ j.nameTh || j.nameEn }}
+                            </button>
+                        </div>
+                        <p *ngIf="!hasDepartment" class="mt-2 text-xs text-white/50">เลือกหมวดงานก่อน</p>
+                    </section>
+
+                    <!-- Skills + ฟิลเตอร์อื่น ๆ: โผล่หลังเลือก Job แล้ว -->
+                    <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ทักษะ</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button *ngFor="let s of skillsFiltered" type="button" (click)="toggleTag('skills', s.id)"
+                                [class]="chipClass(isSelected('skills', s.id))">
+                                {{ s.nameTh || s.nameEn }}
+                            </button>
+                        </div>
+                    </section>
+
+                    <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ช่วงวันที่</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="date" [(ngModel)]="dateFrom" name="dateFrom"
+                                class="rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-900 ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]">
+                            <input type="date" [(ngModel)]="dateTo" name="dateTo"
+                                class="rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-900 ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]">
+                        </div>
+                    </section>
+
+                    <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5">
+                        <!-- สถานที่ -->
+                        <details class="group border-b border-white/10 p-4" open>
+                            <summary class="flex cursor-pointer list-none items-center justify-between">
+                                <span class="text-sm font-semibold">สถานที่</span>
+                                <span class="text-white/50 group-open:rotate-180 transition">▾</span>
+                            </summary>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button *ngFor="let l of locations" type="button" (click)="toggleTag('locations', l)"
+                                    [class]="chipClass(isSelected('locations', l))">
+                                    {{ l }}
+                                </button>
+                            </div>
+                        </details>
+
+                        <!-- ประสบการณ์ -->
+                        <details class="group border-b border-white/10 p-4">
+                            <summary class="flex cursor-pointer list-none items-center justify-between">
+                                <span class="text-sm font-semibold">ระดับประสบการณ์</span>
+                                <span class="text-white/50 group-open:rotate-180 transition">▾</span>
+                            </summary>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button *ngFor="let e of experiences" type="button"
+                                    (click)="toggleTag('experiences', e)"
+                                    [class]="chipClass(isSelected('experiences', e))">
+                                    {{ e }}
+                                </button>
+                            </div>
+                        </details>
+
+                        <!-- สมาคม -->
+                        <details class="group p-4">
+                            <summary class="flex cursor-pointer list-none items-center justify-between">
+                                <span class="text-sm font-semibold">สหภาพ/สมาคม</span>
+                                <span class="text-white/50 group-open:rotate-180 transition">▾</span>
+                            </summary>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button *ngFor="let u of unions" type="button" (click)="toggleTag('unions', u)"
+                                    [class]="chipClass(isSelected('unions', u))">
+                                    {{ u }}
+                                </button>
+                            </div>
+                        </details>
+                    </section>
+
+
+                </div>
+            </aside>
+
+            <!-- Results (Right) -->
+            <main class="lg:col-span-8 xl:col-span-9">
+                <!-- Loading -->
+                <div *ngIf="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div *ngFor="let _ of [1,2,3,4,5,6]"
+                        class="animate-pulse rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <div class="mb-4 h-5 w-1/3 rounded bg-white/10"></div>
+                        <div class="h-3 w-2/3 rounded bg-white/10"></div>
+                        <div class="mt-4 h-32 rounded bg-white/10"></div>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
-                    <div class="h-4 rounded bg-white/10"></div>
-                    <div class="h-4 rounded bg-white/10"></div>
-                    <div class="h-4 rounded bg-white/10"></div>
+
+                <!-- Cards -->
+                <div *ngIf="!loading && results.length"
+                    class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+                    <article *ngFor="let m of results; trackBy: trackById"
+                        class="rounded-2xl border border-white/10 bg-white/5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:border-[#8aab06]/60">
+                        <div class="p-4">
+                            <div class="flex items-start justify-between gap-3">
+                                <h3 class="truncate text-base font-semibold">{{ fullName(m) }}</h3>
+                                <span class="rounded-full px-2 py-1 text-xs" [ngClass]="{
+                        'bg-emerald-500/20 text-emerald-300': $any(m).status==='active',
+                        'bg-yellow-500/20 text-yellow-300': $any(m).status==='pending',
+                        'bg-red-500/20 text-red-300': $any(m).status==='inactive'
+                      }">{{ statusLabel($any(m).status) }}</span>
+                            </div>
+                            <p class="mt-1 text-sm text-white/70">
+                                {{ memberCode(m) }} • {{ provinceOf(m) }}
+                            </p>
+                            <p class="mt-1 line-clamp-2 text-sm text-white/60">{{ skillsLabel(m) }}</p>
+
+                            <div class="mt-4 flex items-center justify-between">
+                                <a [routerLink]="['/profiles', m.userId]"
+                                    class="inline-flex items-center rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm hover:bg-white/10">
+                                    โปรไฟล์
+                                </a>
+                                <span class="text-xs text-white/50">อัปเดต {{ m.updatedAt | date:'mediumDate' }}</span>
+                            </div>
+                        </div>
+                    </article>
                 </div>
-            </div>
-        </div>
 
-        <!-- Profile Card Grid -->
-        <div *ngIf="!loading && results.length"
-            class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <article *ngFor="let m of results; trackBy: trackById"
-                class="rounded-2xl border border-white/10 bg-white/5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg hover:border-[#8aab06]/60">
-                <div class="flex items-start gap-4 p-4">
-                    <!-- Avatar -->
-                    <img [src]="avatar(m)" alt=""
-                        class="h-16 w-16 flex-none rounded-full object-cover ring-2 ring-white/10" />
-                    <!-- Main -->
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-start justify-between gap-2">
-                            <h3 class="truncate text-base font-semibold text-white">
-                                {{ fullName(m) }}
-                            </h3>
-                        </div>
-                        <div class="mt-1 text-sm text-white/70">
-                            {{ memberCode(m) }}
-                        </div>
-                        <div class="mt-1 truncate text-sm text-white/60">
-                            {{ m.email || '—' }}
-                        </div>
-                        <!-- Actions -->
-                        <div class="mt-4 flex items-center justify-end gap-2">
-                            <a [routerLink]="['profiles', m.userId]"
-                                class="inline-flex items-center rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm text-white hover:bg-white/10">
-                                โปรไฟล์
-                            </a>
-                        </div>
-                    </div>
+                <!-- Empty -->
+                <div *ngIf="!loading && results.length===0"
+                    class="rounded-2xl border border-dashed border-white/15 p-10 text-center">
+                    <div class="mx-auto mb-3 h-10 w-10 rounded-full bg-white/10"></div>
+                    <p class="font-medium text-white">ไม่พบสมาชิกที่ตรงเงื่อนไข</p>
+                    <p class="mt-1 text-sm text-white/70">ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
+                    <button (click)="clearFilters()"
+                        class="mt-4 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">
+                        ล้างตัวกรอง
+                    </button>
                 </div>
-            </article>
-        </div>
 
-        <!-- Empty State -->
-        <div *ngIf="!loading && results.length === 0"
-            class="mt-10 rounded-2xl border border-dashed border-white/15 p-10 text-center">
-            <div class="mx-auto mb-3 h-10 w-10 rounded-full bg-white/10"></div>
-            <p class="font-medium text-white">ไม่พบสมาชิกที่ตรงเงื่อนไข</p>
-            <p class="mt-1 text-sm text-white/70">ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
-            <button type="button" (click)="clearFilters()"
-                class="mt-4 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">
-                ล้างตัวกรอง
-            </button>
-        </div>
-
-        <!-- Footer: status + Load more -->
-        <div *ngIf="!loading && total > 0" class="mt-8 flex items-center justify-between">
-            <div class="text-sm text-white/60">
-                แสดง {{ results.length }} จาก {{ total }} รายการ
-            </div>
-
-            <button *ngIf="hasMore" type="button" (click)="loadMore()"
-                class="rounded-xl bg-[#8aab06] px-4 py-2.5 text-sm font-semibold text-black shadow hover:brightness-110 disabled:opacity-50"
-                [disabled]="loading">
-                {{ loading ? 'กำลังโหลด…' : 'ดูเพิ่มเติม' }}
-            </button>
+                <!-- Load more -->
+                <div *ngIf="!loading && hasMore" class="mt-8 flex justify-center">
+                    <button (click)="loadMore()"
+                        class="rounded-xl bg-[#8aab06] px-5 py-2.5 text-sm font-semibold text-black shadow hover:brightness-110">
+                        ดูเพิ่มเติม
+                    </button>
+                </div>
+            </main>
         </div>
     </div>
 </section>

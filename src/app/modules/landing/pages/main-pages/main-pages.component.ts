@@ -14,7 +14,7 @@ import { InfoDonetComponent } from '../../components/info-donet/info-donet.compo
     InfoAboutComponent,
     InfoNewsComponent,
     InfoSearchComponent,
-    InfoDonetComponent
+    // InfoDonetComponent
   ],
   templateUrl: './main-pages.component.html',
   styleUrl: './main-pages.component.css'
