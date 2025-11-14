@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { LocaleSwitcherService } from './locale-switcher.service';
 
 @Component({
@@ -7,84 +8,102 @@ import { LocaleSwitcherService } from './locale-switcher.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-<div class="relative inline-block text-left">
-  <!-- Trigger -->
+<div class="flex items-center gap-2">
+  <!-- ปุ่มกลับหน้าหลัก -->
   <button
-    type="button"
-    class="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 px-2.5 py-2
+    type="button" *ngIf="!isHome()"
+    class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white/80 p-2
            shadow-sm backdrop-blur transition-all duration-200 hover:bg-white focus:outline-none
            focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
-    (click)="toggle()"
-    [attr.aria-expanded]="open()"
-    aria-haspopup="listbox"
-    aria-controls="lang-menu-listbox">
-    <span class="relative">
-      <span class="absolute -inset-0.5 rounded-md bg-gradient-to-tr from-fuchsia-500/20 via-purple-500/20 to-sky-500/20 blur-sm opacity-0 transition group-hover:opacity-100"></span>
-      <img
-        [src]="currentFlagSrc()"
-        alt=""
-        class="relative h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5"
-        width="20" height="20" />
-    </span>
+    (click)="goHome()"
+    aria-label="กลับหน้าหลัก">
+<svg viewBox="0 0 24 24" class="h-5 w-5 text-gray-700" fill="none" stroke="currentColor" stroke-width="1.8">
+  <path stroke-linecap="round" stroke-linejoin="round"
+    d="M3 12l9-9 9 9M4.5 10.5V21h5.5v-5h4v5h5.5V10.5"/>
+</svg>
 
-    <span class="sr-only">{{ currentLabel() }}</span>
-
-    <!-- caret -->
-    <svg viewBox="0 0 20 20"
-         class="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-gray-800"
-         [class.rotate-180]="open()"
-         aria-hidden="true">
-      <path fill="currentColor" d="M5.5 7.5L10 12l4.5-4.5H5.5z"/>
-    </svg>
   </button>
 
-  <!-- Menu -->
-  <div *ngIf="open()"
-       id="lang-menu-listbox"
-       role="listbox"
-       class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-2xl border border-gray-200
-              bg-white/90 p-1.5 shadow-xl ring-1 ring-black/5 backdrop-blur
-              animate-in fade-in zoom-in-95"
-       (keydown)="onListKeydown($event)">
+  <!-- เมนูภาษาเดิม -->
+  <div class="relative inline-block text-left">
+    <!-- Trigger -->
+    <button
+      type="button"
+      class="group inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white/80 px-2.5 py-2
+             shadow-sm backdrop-blur transition-all duration-200 hover:bg-white focus:outline-none
+             focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2"
+      (click)="toggle()"
+      [attr.aria-expanded]="open()"
+      aria-haspopup="listbox"
+      aria-controls="lang-menu-listbox">
+      <span class="relative">
+        <span class="absolute -inset-0.5 rounded-md bg-gradient-to-tr from-fuchsia-500/20 via-purple-500/20 to-sky-500/20 blur-sm opacity-0 transition group-hover:opacity-100"></span>
+        <img
+          [src]="currentFlagSrc()"
+          alt=""
+          class="relative h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5"
+          width="20" height="20" />
+      </span>
 
-    <!-- Header (optional visual) -->
-    <div class="mx-1 mb-1 rounded-lg bg-gradient-to-r from-fuchsia-500/10 via-purple-500/10 to-sky-500/10 px-3 py-2 text-xs font-medium text-gray-600">
-      Choose language
+      <span class="sr-only">{{ currentLabel() }}</span>
+
+      <!-- caret -->
+      <svg viewBox="0 0 20 20"
+           class="h-4 w-4 text-gray-600 transition-transform duration-200 group-hover:text-gray-800"
+           [class.rotate-180]="open()"
+           aria-hidden="true">
+        <path fill="currentColor" d="M5.5 7.5L10 12l4.5-4.5H5.5z"/>
+      </svg>
+    </button>
+
+    <!-- Menu -->
+    <div *ngIf="open()"
+         id="lang-menu-listbox"
+         role="listbox"
+         class="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-2xl border border-gray-200
+                bg-white/90 p-1.5 shadow-xl ring-1 ring-black/5 backdrop-blur
+                animate-in fade-in zoom-in-95"
+         (keydown)="onListKeydown($event)">
+
+      <!-- Header (optional visual) -->
+      <div class="mx-1 mb-1 rounded-lg bg-gradient-to-r from-fuchsia-500/10 via-purple-500/10 to-sky-500/10 px-3 py-2 text-xs font-medium text-gray-600">
+        Choose language
+      </div>
+
+      <!-- EN -->
+      <button #enBtn role="option"
+              [attr.aria-selected]="isCurrent('en')"
+              [disabled]="isCurrent('en')"
+              class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5
+                     text-sm text-gray-800 transition hover:bg-gray-50
+                     disabled:cursor-default disabled:opacity-60"
+              (click)="pick('en')">
+        <span class="flex items-center gap-2">
+          <img src="assets/flags/flag-en.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
+          <span i18n="@@flagEng">{{ enLabel }}</span>
+        </span>
+        <svg *ngIf="isCurrent('en')" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" aria-hidden="true">
+          <path fill="currentColor" d="M8.143 13.314l-3.39-3.39 1.2-1.2 2.19 2.19 5.302-5.303 1.2 1.2z"/>
+        </svg>
+      </button>
+
+      <!-- TH -->
+      <button #thBtn role="option"
+              [attr.aria-selected]="isCurrent('th')"
+              [disabled]="isCurrent('th')"
+              class="mt-1 flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5
+                     text-sm text-gray-800 transition hover:bg-gray-50
+                     disabled:cursor-default disabled:opacity-60"
+              (click)="pick('th')">
+        <span class="flex items-center gap-2">
+          <img src="assets/flags/flag-th.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
+          <span i18n="@@flagTh">{{ thLabel }}</span>
+        </span>
+        <svg *ngIf="isCurrent('th')" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" aria-hidden="true">
+          <path fill="currentColor" d="M8.143 13.314l-3.39-3.39 1.2-1.2 2.19 2.19 5.302-5.303 1.2 1.2z"/>
+        </svg>
+      </button>
     </div>
-
-    <!-- EN -->
-    <button #enBtn role="option"
-            [attr.aria-selected]="isCurrent('en')"
-            [disabled]="isCurrent('en')"
-            class="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5
-                   text-sm text-gray-800 transition hover:bg-gray-50
-                   disabled:cursor-default disabled:opacity-60"
-            (click)="pick('en')">
-      <span class="flex items-center gap-2">
-        <img src="assets/flags/flag-en.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
-        <span i18n="@@flagEng">{{ enLabel }}</span>
-      </span>
-      <svg *ngIf="isCurrent('en')" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" aria-hidden="true">
-        <path fill="currentColor" d="M8.143 13.314l-3.39-3.39 1.2-1.2 2.19 2.19 5.302-5.303 1.2 1.2z"/>
-      </svg>
-    </button>
-
-    <!-- TH -->
-    <button #thBtn role="option"
-            [attr.aria-selected]="isCurrent('th')"
-            [disabled]="isCurrent('th')"
-            class="mt-1 flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2.5
-                   text-sm text-gray-800 transition hover:bg-gray-50
-                   disabled:cursor-default disabled:opacity-60"
-            (click)="pick('th')">
-      <span class="flex items-center gap-2">
-        <img src="assets/flags/flag-th.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
-        <span i18n="@@flagTh">{{ thLabel }}</span>
-      </span>
-      <svg *ngIf="isCurrent('th')" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" aria-hidden="true">
-        <path fill="currentColor" d="M8.143 13.314l-3.39-3.39 1.2-1.2 2.19 2.19 5.302-5.303 1.2 1.2z"/>
-      </svg>
-    </button>
   </div>
 </div>
 `,
@@ -97,7 +116,27 @@ export class LanguageMenuComponent {
   @ViewChild('thBtn') thBtn!: ElementRef<HTMLButtonElement>;
   @ViewChild('enBtn') enBtn!: ElementRef<HTMLButtonElement>;
 
-  constructor(private ls: LocaleSwitcherService, private el: ElementRef) { }
+  constructor(
+    private ls: LocaleSwitcherService,
+    private el: ElementRef,
+    private router: Router
+  ) { }
+
+  /** ปุ่มบ้าน -> กลับหน้าหลัก */
+  goHome() {
+    const lang = this.ls.currentLocale(); // 'en' หรือ 'th'
+    this.router.navigate(['/', lang]);
+    // ถ้าหน้าหลักคุณเป็นอย่างเช่น '/en/home' ก็เปลี่ยนเป็น:
+    // this.router.navigate(['/', lang, 'home']);
+  }
+
+  /** ซ่อนปุ่มบ้านเมื่ออยู่หน้าหลักของภาษาปัจจุบัน */
+  isHome(): boolean {
+    const lang = this.ls.currentLocale();
+    // ตัด query / fragment ออกก่อน
+    const url = this.router.url.split('?')[0].split('#')[0];
+    return url === `/${lang}`;
+  }
 
   currentLabel() {
     return this.isCurrent('en') ? this.enLabel : this.thLabel;

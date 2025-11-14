@@ -6,6 +6,8 @@ import { ProfileService } from '../../../service/profile.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
+import { forkJoin } from 'rxjs';
 
 type Labeled = { label: string; value: number };
 
@@ -100,14 +102,72 @@ export class HandleProfileComponent implements OnInit {
     return this.avatarPreviewUrl ?? this.serverAvatarUrl ?? null;
   }
 
+  workLocations: Labeled[] = [];
+  unions: Labeled[] = [];
+  experienceLevels: Labeled[] = [];
+  partnerDirectories: Labeled[] = [];
+  genders: Labeled[] = [];
+  races: Labeled[] = [];
+  // additionals: Labeled[] = [];
+
   constructor(
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private profileService: ProfileService,
     private toast: ToastService,
     private router: Router,
+    private publicService: PubilcService,
   ) { }
 
+
+  /** โหลด master data ทั้งหมดจาก PublicService */
+  private loadMasterData(): void {
+    forkJoin({
+      workLocations: this.publicService.getWorkLocaltion(),
+      unions: this.publicService.getUnionMembership(),
+      experienceLevels: this.publicService.getExperienceLevel(),
+      partnerDirectories: this.publicService.getPartnerIdentity(),
+      races: this.publicService.getRacialIdentity(),
+      genders: this.publicService.getGenderIdentity(),
+    }).subscribe({
+      next: (res) => {
+        // เลือก label เป็น EN (หรือใช้ TH ก็ได้แล้วแต่ว่าหน้านี้เป็นภาษาอะไร)
+        this.workLocations = res.workLocations.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,  // หรือ x.nameTh
+          value: x.id,
+        }));
+
+        this.unions = res.unions.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,
+          value: x.id,
+        }));
+
+        this.experienceLevels = res.experienceLevels.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,
+          value: x.id,
+        }));
+
+        this.partnerDirectories = res.partnerDirectories.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,
+          value: x.id,
+        }));
+
+        this.races = res.races.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,
+          value: x.id,
+        }));
+
+        this.genders = res.genders.items.map((x: { nameEn: any; id: any; }) => ({
+          label: x.nameEn,
+          value: x.id,
+        }));
+      },
+      error: (err) => {
+        console.error('Load master data failed', err);
+        this.toast.error('ไม่สามารถโหลดข้อมูลตัวเลือกได้', { title: 'โหลดข้อมูลล้มเหลว' });
+      }
+    });
+  }
   /** ใช้บอกว่าหน้านี้คือหน้า "สร้างโปรไฟล์ใหม่" หรือไม่ */
   private isNewProfile = false;
 
@@ -141,81 +201,6 @@ export class HandleProfileComponent implements OnInit {
     linkedin: new FormControl<string>(''),
   });
 
-  // Option lists
-  workLocations: Labeled[] = [
-    { label: 'Atlanta/Southeast', value: 1 },
-    { label: 'Boston/New England', value: 2 },
-    { label: 'Carolinas', value: 3 },
-    { label: 'Chicago/Midwest', value: 4 },
-    { label: 'D.C./Baltimore/Mid-Atlantic', value: 5 },
-    { label: 'Denver/West', value: 6 },
-    { label: 'LA/Southern California', value: 7 },
-    { label: 'Nashville Area', value: 8 },
-    { label: 'NYC/Tri-State Area', value: 9 },
-    { label: 'San Francisco/Northern California', value: 10 },
-    { label: 'Seattle/Pacific NW', value: 11 },
-    { label: 'Texas/Southwest', value: 12 },
-    { label: 'Upstate NY', value: 13 },
-    { label: 'Regional', value: 14 },
-    { label: 'Touring', value: 15 },
-    { label: 'TV/Film', value: 16 },
-  ];
-
-  unions: Labeled[] = [
-    { label: 'Actors Equity Association (AEA)', value: 1 },
-    { label: 'American Federation of Musicians (AFM)', value: 2 },
-    { label: 'American Guild of Musical Artists (AGMA)', value: 3 },
-    { label: 'American Guild of Variety Artist (AGVA)', value: 4 },
-    { label: 'Association of Theatrical Press Agents & Managers (ATPAM)', value: 5 },
-    { label: 'Casting Society of America (CSA)', value: 6 },
-    { label: 'Dramatists Guild of America (DG)', value: 7 },
-    { label: 'International Union of Operating Engineers (IUOE)', value: 8 },
-    { label: 'Society of American Fight Directors (SAFD)', value: 9 },
-    { label: 'Stage Directors and Choreographers Society (SDC)', value: 10 },
-    { label: 'United Scenic Artists (USA)', value: 11 },
-    { label: 'IATSE', value: 12 },
-  ];
-
-  experienceLevels: Labeled[] = [
-    { label: 'Broadway', value: 1 },
-    { label: 'Community Theatre', value: 2 },
-    { label: 'Educational', value: 3 },
-    { label: 'Fellowship', value: 4 },
-    { label: 'Internship', value: 5 },
-    { label: 'Off Broadway', value: 6 },
-    { label: 'Off Off Broadway', value: 7 },
-    { label: 'Regional', value: 8 },
-    { label: 'Touring', value: 9 },
-    { label: 'TV/Film', value: 10 },
-  ];
-
-  partnerDirectories: Labeled[] = [
-    { label: 'BIPOC Arts', value: 1 },
-    { label: 'Design Action', value: 2 },
-    { label: 'Maestra Music', value: 3 },
-    { label: 'MUSE', value: 4 },
-    { label: 'Parity Productions', value: 5 },
-    { label: 'Ring of Keys', value: 6 },
-  ];
-
-  genders: Labeled[] = [
-    { label: 'Cisgender', value: 1 },
-    { label: 'Female identifying', value: 2 },
-    { label: 'Gender nonconforming', value: 3 },
-    { label: 'Male identifying', value: 4 },
-    { label: 'Nonbinary', value: 5 },
-    { label: 'Transgender', value: 6 },
-  ];
-
-  races: Labeled[] = [
-    { label: 'AAPI (Asian American Pacific Islander)', value: 1 },
-    { label: 'Black or African American', value: 2 },
-    { label: 'Hispanic or Latine/Latinx', value: 3 },
-    { label: 'Indigenous/Native American', value: 4 },
-    { label: 'MENA (Middle Eastern or North African)', value: 5 },
-    { label: 'White or Caucasian', value: 6 },
-  ];
-
   additionals: Labeled[] = [
     { label: 'Disabled', value: 1 },
     { label: 'LGBTQIA+', value: 2 },
@@ -242,11 +227,14 @@ export class HandleProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.isNewProfile = this.router.url.includes('/profile-new');
+
     if (!this.isNewProfile) {
       this.loadProfile();
     } else {
       this.currentProfile = null;
     }
+
+    this.loadMasterData();
   }
 
   /** ---------- Load & map from API ---------- */
