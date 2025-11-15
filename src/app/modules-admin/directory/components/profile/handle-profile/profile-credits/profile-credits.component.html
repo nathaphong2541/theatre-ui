@@ -1,0 +1,110 @@
+<div class="space-y-4">
+    <!-- Header + New Credit -->
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+            <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Credits
+        </h2>
+
+        <button type="button" class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs
+             hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30
+             disabled:opacity-40 disabled:cursor-not-allowed" (click)="addCredit()" [disabled]="!canAddMore">
+            + New Credit
+        </button>
+    </div>
+
+    <p class="text-xs text-white/60 mb-2">
+        Add your 5 best credits here. <span class="italic">You must have at least one credit to be listed in
+            searches!</span>
+    </p>
+
+    <!-- ถ้าไม่มี credit -->
+    <div *ngIf="credits().length === 0"
+        class="rounded-xl border border-dashed border-white/15 bg-white/5 px-4 py-6 text-xs text-white/60">
+        No credits yet. Click <span class="font-semibold">+ New Credit</span> to add your first one.
+    </div>
+
+    <!-- ลิสต์การ์ด credit -->
+    <div *ngFor="let c of credits(); index as i"
+        class="rounded-xl border border-dashed border-white/15 bg-white/5 p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+        <!-- ฝั่งซ้าย: ชื่อเรื่อง / company / venue / location -->
+        <div class="space-y-1 text-sm">
+            <div class="inline-flex items-center gap-2 rounded-lg bg-white/5 px-2.5 py-1 text-xs font-medium">
+                {{ c.jobTitle || 'Untitled role' }}
+            </div>
+
+            <div class="flex items-center gap-2 text-white/80">
+                <span class="inline-flex size-4 items-center justify-center rounded bg-white/5">
+                    <!-- icon กระเป๋า -->
+                    <i class="fa-solid fa-briefcase text-[10px]"></i>
+                </span>
+                <span>{{ c.company || 'Company / Production' }}</span>
+            </div>
+
+            <div class="flex items-center gap-2 text-white/70">
+                <span class="inline-flex size-4 items-center justify-center rounded bg-white/5">
+                    <!-- icon ดาว -->
+                    <i class="fa-regular fa-star text-[10px]"></i>
+                </span>
+                <span>
+                    {{ formatYears(c) || 'Years' }}
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 text-white/70">
+                <span class="inline-flex size-4 items-center justify-center rounded bg-white/5">
+                    <!-- icon location -->
+                    <i class="fa-solid fa-location-dot text-[10px]"></i>
+                </span>
+                <span>{{ c.location || 'Location' }}</span>
+            </div>
+        </div>
+
+        <!-- ฝั่งขวา: แท็ก Dept / Position / Skills -->
+        <div class="flex flex-wrap items-center justify-end gap-2 text-xs">
+            <!-- Departments -->
+            <ng-container *ngFor="let d of c.departments">
+                <span
+                    class="inline-flex items-center rounded-full bg-[#f6d1bf]/20 px-3 py-1 text-[11px] text-[#f6d1bf]">
+                    {{ d }}
+                </span>
+            </ng-container>
+
+            <!-- Positions -->
+            <ng-container *ngFor="let p of c.positions">
+                <span
+                    class="inline-flex items-center rounded-full bg-[#7fd4ff]/20 px-3 py-1 text-[11px] text-[#7fd4ff]">
+                    {{ p }}
+                </span>
+            </ng-container>
+
+            <!-- Skills -->
+            <ng-container *ngFor="let s of c.skills">
+                <span
+                    class="inline-flex items-center rounded-full bg-[#b9f3e2]/20 px-3 py-1 text-[11px] text-[#b9f3e2]">
+                    {{ s }}
+                </span>
+            </ng-container>
+
+            <!-- ปุ่มจัดลำดับ / ลบ -->
+            <div class="flex items-center gap-1 ml-2">
+                <button type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white/5 hover:bg-white/10"
+                    (click)="editCredit(i)">
+                    <i class="fa-regular fa-pen-to-square text-[11px]"></i>
+                </button>
+
+                <button type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-rose-500/10 hover:bg-rose-500/20"
+                    (click)="removeCredit(i)">
+                    <i class="fa-regular fa-trash-can text-[11px] text-rose-300"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Popup (ถ้าใช้ component popup เดิมอยู่แล้ว ให้ผูกแค่ @Output) ===== -->
+<app-credit-modal *ngIf="showCreditModal() && draftCredit()" [model]="draftCredit()!" (cancel)="closeModal()"
+    (save)="saveDraftCredit($event)">
+</app-credit-modal>

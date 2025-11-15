@@ -8,8 +8,25 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
 import { forkJoin } from 'rxjs';
+import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
 
 type Labeled = { label: string; value: number };
+
+export type ProfileCredit = {
+  company: string;
+  title: string;
+  startYear: string;
+  endYear?: string | null;
+  current: boolean;
+  venue: string;
+  jobLocation: string;
+  internship: boolean;
+  fellowship: boolean;
+  // ❗ ตาม backend ล่าสุด: ให้รองรับหลายอัน
+  deptIds: number[];
+  posIds: number[];
+  skillIds: number[];
+};
 
 export type ProfileDto = {
   id: number;
@@ -24,6 +41,10 @@ export type ProfileDto = {
   email: string;
   phone: string;
   website: string;
+  linkedin: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  twitter: string | null;
   multiLang: boolean;
   travel: boolean;
   tour: boolean;
@@ -38,10 +59,12 @@ export type ProfileDto = {
   genders: number[];
   races: number[];
   additionals: number[];
-  credits: number[];
+  credits: ProfileCredit[];
   createdAt: string;
   updatedAt: string;
-  avatarUrl?: string; // 👈 เพิ่ม
+  avatarUrl?: string;
+  resumeUrl?: string;
+  performanceUrls?: string[];
 };
 
 export type ProfilePayload = {
@@ -57,6 +80,10 @@ export type ProfilePayload = {
   email?: string;
   phone?: string;
   website?: string;
+  linkedin?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
   multiLang: boolean;
   travel: boolean;
   tour: boolean;
@@ -71,7 +98,7 @@ export type ProfilePayload = {
   genders: number[];
   races: number[];
   additionals: number[];
-  credits: number[];
+  credits: ProfileCredit[];
 };
 
 @Component({
@@ -83,32 +110,53 @@ export type ProfilePayload = {
 })
 export class HandleProfileComponent implements OnInit {
 
-  // ==== เพิ่ม: จัดการ avatar ====
+  // ==== Avatar ====
   avatarFile: File | null = null;
-  avatarPreviewUrl: string | null = null; // ใช้โชว์ preview (object URL หรือจาก server)
+  avatarPreviewUrl: string | null = null;
   private serverAvatarUrl: string | null = null;
 
-  // === resume preview state ===
+  // ==== Resume ====
   resumeFile: File | null = null;
-  resumePreviewUrl: string | null = null;       // ใช้กับ <img> และลิงก์ดาวน์โหลด
-  resumeSafeUrl: SafeResourceUrl | null = null; // ใช้ฝัง <iframe> สำหรับ PDF
+  resumePreviewUrl: string | null = null;
+  resumeSafeUrl: SafeResourceUrl | null = null;
   resumeIsPdf = false;
 
-  // ===== Images (gallery) state =====
+  // ==== Performance images ====
   images: (File | null)[] = Array(6).fill(null);
   imagePreviewUrls: (string | null)[] = Array(6).fill(null);
+  performanceKinds: ('image' | 'pdf' | 'other' | null)[] = Array(6).fill(null);
 
   get avatarSrc(): string | null {
+    console.log(this.serverAvatarUrl);
     return this.avatarPreviewUrl ?? this.serverAvatarUrl ?? null;
   }
 
+  // master data
   workLocations: Labeled[] = [];
   unions: Labeled[] = [];
   experienceLevels: Labeled[] = [];
   partnerDirectories: Labeled[] = [];
   genders: Labeled[] = [];
   races: Labeled[] = [];
-  // additionals: Labeled[] = [];
+  additionals: Labeled[] = [
+    { label: 'Disabled', value: 1 },
+    { label: 'LGBTQIA+', value: 2 },
+    { label: 'Neurodiverse', value: 3 },
+  ];
+
+  // master ทั้งหมด
+  departmentsApi: any[] = [];
+  positionsApi: any[] = [];
+  skillsApi: any[] = [];
+
+  // ตัวกรองตามที่เลือก
+  filteredPositions: any[] = [];
+  filteredSkills: any[] = [];
+
+  // map เผื่อใช้หา label ทีหลัง
+  deptById = new Map<number, any>();
+  posById = new Map<number, any>();
+  skillById = new Map<number, any>();
 
   constructor(
     private fb: FormBuilder,
@@ -117,8 +165,86 @@ export class HandleProfileComponent implements OnInit {
     private toast: ToastService,
     private router: Router,
     private publicService: PubilcService,
-  ) { }
+    private ls: LocaleSwitcherService,
+  ) {
 
+    // เมื่อเปลี่ยน Department → filter Positions
+    this.creditForm.get('deptId')!.valueChanges.subscribe(deptId => {
+      if (!deptId) {
+        this.filteredPositions = [];
+        this.filteredSkills = [];
+        this.creditForm.patchValue({ posId: null, skillIds: [] }, { emitEvent: false });
+        return;
+      }
+
+      // ใช้ departmentId จาก API
+      this.filteredPositions = this.positionsApi.filter((p: any) => p.departmentId === deptId);
+
+      this.filteredSkills = [];
+      this.creditForm.patchValue({ posId: null, skillIds: [] }, { emitEvent: false });
+    });
+
+    // เมื่อเปลี่ยน Position → filter Skills
+    this.creditForm.get('posId')!.valueChanges.subscribe(posId => {
+      if (!posId) {
+        this.filteredSkills = [];
+        this.creditForm.patchValue({ skillIds: [] }, { emitEvent: false });
+        return;
+      }
+
+      // ใช้ positionId จาก API
+      this.filteredSkills = this.skillsApi.filter((s: any) => s.positionId === posId);
+
+      this.creditForm.patchValue({ skillIds: [] }, { emitEvent: false });
+    });
+  }
+
+
+  private pickLabel(x: { nameTh?: string; nameEn?: string }): string {
+    const lang = this.ls.currentLocale();
+    const isTh = lang === 'th';
+    return isTh
+      ? (x.nameTh || x.nameEn || '')
+      : (x.nameEn || x.nameTh || '');
+  }
+
+  private async loadMaster(): Promise<void> {
+    await Promise.all([
+      new Promise<void>(resolve => {
+        this.publicService.getDepartment().subscribe(res => {
+          this.departmentsApi = res?.items ?? [];
+
+          this.deptById.clear();
+          this.departmentsApi.forEach((d: any) => this.deptById.set(d.id, d));
+
+          resolve();
+        }, _ => resolve());
+      }),
+      new Promise<void>(resolve => {
+        this.publicService.getPosition().subscribe(res => {
+          this.positionsApi = res?.items ?? [];
+
+          this.posById.clear();
+          this.positionsApi.forEach((p: any) => this.posById.set(p.id, p));
+
+          resolve();
+        }, _ => resolve());
+      }),
+      new Promise<void>(resolve => {
+        this.publicService.getSkills().subscribe(res => {
+          this.skillsApi = Array.isArray(res) ? res : (res?.items ?? []);
+
+          this.skillById.clear();
+          this.skillsApi.forEach((s: any) => this.skillById.set(s.id, s));
+
+          resolve();
+        }, _ => resolve());
+      }),
+    ]);
+
+    this.filteredPositions = [];
+    this.filteredSkills = [];
+  }
 
   /** โหลด master data ทั้งหมดจาก PublicService */
   private loadMasterData(): void {
@@ -131,36 +257,47 @@ export class HandleProfileComponent implements OnInit {
       genders: this.publicService.getGenderIdentity(),
     }).subscribe({
       next: (res) => {
-        // เลือก label เป็น EN (หรือใช้ TH ก็ได้แล้วแต่ว่าหน้านี้เป็นภาษาอะไร)
-        this.workLocations = res.workLocations.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,  // หรือ x.nameTh
-          value: x.id,
-        }));
+        this.workLocations = res.workLocations.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
 
-        this.unions = res.unions.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,
-          value: x.id,
-        }));
+        this.unions = res.unions.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
 
-        this.experienceLevels = res.experienceLevels.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,
-          value: x.id,
-        }));
+        this.experienceLevels = res.experienceLevels.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
 
-        this.partnerDirectories = res.partnerDirectories.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,
-          value: x.id,
-        }));
+        this.partnerDirectories = res.partnerDirectories.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
 
-        this.races = res.races.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,
-          value: x.id,
-        }));
+        this.races = res.races.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
 
-        this.genders = res.genders.items.map((x: { nameEn: any; id: any; }) => ({
-          label: x.nameEn,
-          value: x.id,
-        }));
+        this.genders = res.genders.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
       },
       error: (err) => {
         console.error('Load master data failed', err);
@@ -168,11 +305,36 @@ export class HandleProfileComponent implements OnInit {
       }
     });
   }
-  /** ใช้บอกว่าหน้านี้คือหน้า "สร้างโปรไฟล์ใหม่" หรือไม่ */
+
+  /** โปรไฟล์ใหม่? */
   private isNewProfile = false;
 
-  /** เก็บโปรไฟล์ปัจจุบันไว้ใช้ตัดสินใจ POST/PUT */
+  /** โปรไฟล์ปัจจุบัน */
   private currentProfile: ProfileDto | null = null;
+
+  // ใช้แสดงใน list ใต้หัวข้อ Credits
+  creditEntries: string[] = [];
+
+  // เก็บ object จริง ๆ ไว้ส่งเข้า API
+  credits: ProfileCredit[] = [];
+
+  // สถานะ popup
+  creditModalOpen = false;
+
+  creditForm = this.fb.group({
+    company: ['', Validators.required],
+    title: ['', Validators.required],
+    startYear: ['', Validators.required],
+    endYear: [''],
+    current: [false],
+    venue: ['', Validators.required],
+    jobLocation: ['', Validators.required],
+    internship: [false],
+    fellowship: [false],
+    deptId: new FormControl<number | null>(null, { validators: Validators.required }),
+    posId: new FormControl<number | null>(null, { validators: Validators.required }),
+    skillIds: new FormControl<number[]>([], { nonNullable: true }),
+  });
 
   /** ฟอร์มหลัก */
   form = this.fb.group({
@@ -193,19 +355,12 @@ export class HandleProfileComponent implements OnInit {
     education: new FormControl<string>(''),
     video1: new FormControl<string>(''),
     video2: new FormControl<string>(''),
-    // โซเชียลเก็บไว้ใช้ใน UI
     facebook: new FormControl<string>(''),
     instagram: new FormControl<string>(''),
     twitter: new FormControl<string>(''),
     tiktok: new FormControl<string>(''),
     linkedin: new FormControl<string>(''),
   });
-
-  additionals: Labeled[] = [
-    { label: 'Disabled', value: 1 },
-    { label: 'LGBTQIA+', value: 2 },
-    { label: 'Neurodiverse', value: 3 },
-  ];
 
   // selections เป็น number ให้ตรงกับ API
   selectedWorkLocations = new Set<number>();
@@ -215,9 +370,6 @@ export class HandleProfileComponent implements OnInit {
   selectedGenders = new Set<number>();
   selectedRaces = new Set<number>();
   selectedAdds = new Set<number>();
-
-  // API ส่งเป็น number[]
-  credits: number[] = [];
 
   // Embeds
   private _embed1 = signal<SafeResourceUrl | null>(null);
@@ -235,6 +387,7 @@ export class HandleProfileComponent implements OnInit {
     }
 
     this.loadMasterData();
+    this.loadMaster();
   }
 
   /** ---------- Load & map from API ---------- */
@@ -244,23 +397,62 @@ export class HandleProfileComponent implements OnInit {
         this.currentProfile = p;
         this.populateFromProfile(p);
 
-        // ✅ สร้าง URL เต็มจาก avatarUrl
+        const apiBase = environment.apiUrl.replace(/\/api\/?$/, '');
+
+        // Avatar
         if (p.avatarUrl) {
-          // ถ้า backend ส่ง path เริ่มด้วย /files/... ให้ต่อ base จาก environment
-          const apiBase = environment.apiUrl.replace(/\/api\/?$/, ''); // ตัด /api ออก
           this.serverAvatarUrl = p.avatarUrl.startsWith('http')
             ? p.avatarUrl
             : `${apiBase}${p.avatarUrl}`;
         } else {
           this.serverAvatarUrl = null;
         }
+
+        // Resume
+        if (p.resumeUrl) {
+          const full = p.resumeUrl.startsWith('http')
+            ? p.resumeUrl
+            : `${apiBase}${p.resumeUrl}`;
+          this.resumePreviewUrl = full;
+          this.resumeIsPdf = full.toLowerCase().endsWith('.pdf');
+          this.resumeSafeUrl = this.resumeIsPdf
+            ? this.sanitizer.bypassSecurityTrustResourceUrl(full)
+            : null;
+        }
+
+        // Performance images
+        if (p.performanceUrls?.length) {
+          const fullUrls = p.performanceUrls.map(u => {
+            if (!u.startsWith('http')) {
+              const path = u.startsWith('/') ? u : '/' + u;
+              return `${apiBase}${path}`;
+            }
+            return u;
+          });
+
+          fullUrls.slice(0, 6).forEach((url, idx) => {
+            this.imagePreviewUrls[idx] = url;
+            this.images[idx] = null;
+
+            const lower = url.toLowerCase();
+            if (lower.endsWith('.pdf')) {
+              this.performanceKinds[idx] = 'pdf';
+            } else if (/\.(jpe?g|png|webp)$/.test(lower)) {
+              this.performanceKinds[idx] = 'image';
+            } else {
+              this.performanceKinds[idx] = 'other';
+            }
+          });
+        }
       },
-      error: () => this.toast.error('ไม่สามารถดึงข้อมูลโปรไฟล์ได้', { title: 'โหลดข้อมูลล้มเหลว' }),
+      error: () =>
+        this.toast.error('ไม่สามารถดึงข้อมูลโปรไฟล์ได้', {
+          title: 'โหลดข้อมูลล้มเหลว',
+        }),
     });
   }
 
   private populateFromProfile(p: ProfileDto): void {
-    // patch ฟอร์มหลัก
     this.form.patchValue({
       privateProfile: p.privateProfile,
       profileIsCompany: p.profileIsCompany,
@@ -272,6 +464,10 @@ export class HandleProfileComponent implements OnInit {
       email: p.email,
       phone: p.phone,
       website: p.website,
+      linkedin: p.linkedin ?? '',
+      facebook: p.facebook ?? '',
+      instagram: p.instagram ?? '',
+      twitter: p.twitter ?? '',
       multiLang: p.multiLang,
       travel: p.travel,
       tour: p.tour,
@@ -281,7 +477,6 @@ export class HandleProfileComponent implements OnInit {
       video2: p.video2,
     });
 
-    // map array → Set<number>
     this.selectedWorkLocations = new Set(p.workLocations ?? []);
     this.selectedUnions = new Set(p.unions ?? []);
     this.selectedExp = new Set(p.experience ?? []);
@@ -289,11 +484,182 @@ export class HandleProfileComponent implements OnInit {
     this.selectedGenders = new Set(p.genders ?? []);
     this.selectedRaces = new Set(p.races ?? []);
     this.selectedAdds = new Set(p.additionals ?? []);
+
+    // 🔹 เก็บ object credits ทั้งก้อน
     this.credits = [...(p.credits ?? [])];
 
-    // อัปเดตตัวอย่างวิดีโอ
+    // 🔹 สร้าง label สวย ๆ จากข้อมูลจริง
+    this.creditEntries = this.credits.map(c => {
+      const period = c.current
+        ? `${c.startYear} – Present`
+        : c.endYear
+          ? `${c.startYear} – ${c.endYear}`
+          : `${c.startYear}`;
+
+      return `${c.company} — ${c.title} (${period})`;
+    });
+    // เติม creditEntries จาก ids แบบ placeholder (ยังไม่มีของจริงจาก backend)
+    this.creditEntries = this.credits.map(id => `Credit #${id}`);
+
     this.updateEmbed(1);
     this.updateEmbed(2);
+  }
+
+  selectDept(departmentId: number) {
+    const ctrl = this.creditForm.controls.deptId;
+    const current = ctrl.value;
+
+    // ถ้ากดอันเดิมซ้ำ → เคลียร์
+    if (current === departmentId) {
+      ctrl.setValue(null);
+      this.filteredPositions = [];
+      this.filteredSkills = [];
+      this.creditForm.patchValue(
+        { posId: null, skillIds: [] },
+        { emitEvent: false }
+      );
+    } else {
+      // เปลี่ยนเป็น department ใหม่
+      ctrl.setValue(departmentId);
+      // ตรงนี้ไม่ต้องทำอะไรเพิ่ม เพราะ valueChanges(deptId) ข้างบนจะจัดการ filter ให้
+    }
+  }
+
+  selectPos(positionId: number) {
+    const ctrl = this.creditForm.controls.posId;
+    const current = ctrl.value;
+
+    if (current === positionId) {
+      // กดซ้ำ → เคลียร์ position + skills
+      ctrl.setValue(null);
+      this.filteredSkills = [];
+      this.creditForm.patchValue(
+        { skillIds: [] },
+        { emitEvent: false }
+      );
+    } else {
+      ctrl.setValue(positionId);
+      // valueChanges(posId) ที่ constructor จะ filter skills ให้อยู่แล้ว
+    }
+  }
+
+  toggleCreditSkill(skillId: number) {
+    const ctrl = this.creditForm.controls.skillIds;
+    const current = ctrl.value ?? [];
+    if (current.includes(skillId)) {
+      ctrl.setValue(current.filter(id => id !== skillId));
+    } else {
+      ctrl.setValue([...current, skillId]);
+    }
+  }
+
+  // ---------- Credit popup handlers ----------
+  // ---------- Credit popup handlers ----------
+  addCredit() {
+    // เปิด popup + reset form
+    this.creditForm.reset({
+      company: '',
+      title: '',
+      startYear: '',
+      endYear: '',
+      current: false,
+      venue: '',
+      jobLocation: '',
+      internship: false,
+      fellowship: false,
+
+      // 👇 ใช้ฟิลด์ใหม่แทน departments
+      deptId: null,
+      posId: null,
+      skillIds: [],
+    });
+
+    // ล้างตัวกรอง positions / skills ด้วย (กันค่าค้าง)
+    this.filteredPositions = [];
+    this.filteredSkills = [];
+
+    this.creditModalOpen = true;
+  }
+
+  closeCreditModal() {
+    this.creditModalOpen = false;
+  }
+
+  saveCreditFromModal() {
+    console.log('[credit] saveCreditFromModal clicked');
+
+    if (this.creditForm.invalid) {
+      this.creditForm.markAllAsTouched();
+      this.toast.warning('กรุณากรอกข้อมูลเครดิตให้ครบก่อนบันทึก', {
+        title: 'ข้อมูลเครดิตไม่ครบ',
+      });
+      console.warn('[credit] creditForm invalid', this.creditForm.value);
+      return;
+    }
+
+    const v = this.creditForm.getRawValue();
+
+    const period = v.current
+      ? `${v.startYear} – Present`
+      : v.endYear
+        ? `${v.startYear} – ${v.endYear}`
+        : `${v.startYear}`;
+
+    const dept = v.deptId ? this.deptById.get(v.deptId) : null;
+    const pos = v.posId ? this.posById.get(v.posId) : null;
+
+    const deptName = dept ? (dept.nameEn || dept.nameTh) : '';
+    const posName = pos ? (pos.nameEn || pos.nameTh) : '';
+
+    const skillNames = (v.skillIds ?? [])
+      .map(id => this.skillById.get(id))
+      .filter(Boolean)
+      .map((s: any) => s.nameEn || s.nameTh);
+
+    const main = `${v.company} — ${v.title} (${period})`;
+
+    const metaParts = [
+      deptName,
+      posName,
+      skillNames.length ? `Skills: ${skillNames.join(', ')}` : '',
+    ].filter(Boolean);
+
+    const label = metaParts.length
+      ? `${main} · ${metaParts.join(' · ')}`
+      : main;
+
+    // 👇 label ไว้โชว์ในหน้า
+    this.creditEntries.push(label);
+
+    // 👇 object จริงไว้ส่ง backend
+    const credit: ProfileCredit = {
+      company: v.company!,
+      title: v.title!,
+      startYear: v.startYear!,
+      endYear: v.endYear || null,
+      current: !!v.current,
+      venue: v.venue!,
+      jobLocation: v.jobLocation!,
+      internship: !!v.internship,
+      fellowship: !!v.fellowship,
+      deptIds: v.deptId ? [v.deptId] : [],
+      posIds: v.posId ? [v.posId] : [],
+      skillIds: v.skillIds ?? [],
+    };
+
+    console.log("ข้อมูล เครดิต : ", credit);
+
+
+    this.credits.push(credit);
+
+    console.log('[credit] saved credit', credit);
+
+    this.closeCreditModal();
+  }
+
+  removeCredit(i: number) {
+    this.creditEntries.splice(i, 1);
+    this.credits.splice(i, 1);
   }
 
   // ---------- UI helpers ----------
@@ -308,14 +674,13 @@ export class HandleProfileComponent implements OnInit {
       return;
     }
 
-    // ไม่ block แต่เตือนถ้าไฟล์ใหญ่มาก (เช่น > 20MB)
     if (file.size > 20 * 1024 * 1024) {
       this.toast.warning('ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน');
     }
 
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
     this.avatarPreviewUrl = URL.createObjectURL(file);
-    this.avatarFile = file; // เก็บไฟล์ต้นฉบับไว้ (full-res) แล้วค่อยบีบอัดตอน Save
+    this.avatarFile = file;
   }
 
   private loadImageFromFile(file: File): Promise<HTMLImageElement> {
@@ -340,8 +705,7 @@ export class HandleProfileComponent implements OnInit {
     const img = await this.loadImageFromFile(file);
     const { naturalWidth: w, naturalHeight: h } = img;
 
-    // คำนวณสเกลให้พอดีกับกรอบ maxW x maxH
-    const ratio = Math.min(maxW / w, maxH / h, 1); // ไม่ขยายเกินต้นฉบับ
+    const ratio = Math.min(maxW / w, maxH / h, 1);
     const targetW = Math.round(w * ratio);
     const targetH = Math.round(h * ratio);
 
@@ -359,12 +723,10 @@ export class HandleProfileComponent implements OnInit {
       );
     });
 
-    // ตั้งชื่อไฟล์ใหม่ให้สอดคล้องชนิด
     const ext = mime === 'image/webp' ? 'webp' : 'jpg';
     const newName = (file.name || 'avatar').replace(/\.(jpe?g|png|webp)$/i, '') + `.${ext}`;
     return new File([blob], newName, { type: mime, lastModified: Date.now() });
   }
-
 
   clearLocalAvatar() {
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
@@ -375,7 +737,7 @@ export class HandleProfileComponent implements OnInit {
     this.profileService.deleteAvatar().subscribe({
       next: (res: any) => {
         this.clearLocalAvatar();
-        this.serverAvatarUrl = res?.avatarUrl || null; // ส่วนใหญ่จะเป็น null หลังลบ
+        this.serverAvatarUrl = res?.avatarUrl || null;
         this.toast.success('ลบรูปเรียบร้อย');
       },
       error: () => this.toast.error('ลบรูปไม่สำเร็จ'),
@@ -385,9 +747,6 @@ export class HandleProfileComponent implements OnInit {
   addConflict() {
     this.toast.warning('หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา', { title: 'Coming soon' });
   }
-
-  addCredit() { this.credits.push(Date.now()); }
-  removeCredit(i: number) { this.credits.splice(i, 1); }
 
   toggleWorkLocation(v: number) { this.toggleSet(this.selectedWorkLocations, v); }
   toggleUnion(v: number) { this.toggleSet(this.selectedUnions, v); }
@@ -419,7 +778,7 @@ export class HandleProfileComponent implements OnInit {
     } catch { return null; }
   }
 
-  /** ---------- Save payload กลับไปหา API ---------- */
+  /** ---------- Save ---------- */
   async save() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -442,6 +801,10 @@ export class HandleProfileComponent implements OnInit {
       email: base.email ?? '',
       phone: base.phone ?? '',
       website: base.website ?? '',
+      linkedin: base.linkedin ?? '',
+      facebook: base.facebook ?? '',
+      instagram: base.instagram ?? '',
+      twitter: base.twitter ?? '',
       multiLang: !!base.multiLang,
       travel: base.travel ?? false,
       tour: base.tour ?? false,
@@ -459,12 +822,10 @@ export class HandleProfileComponent implements OnInit {
       credits: this.credits,
     };
 
-    // ✅ ถ้ามีรูป → บีบอัดก่อนอัปโหลด
     let uploadFile: File | null = null;
     if (this.avatarFile) {
       try {
-        // เลือกชนิดไฟล์ปลายทางตามที่ backend รองรับ
-        const targetMime: 'image/webp' | 'image/jpeg' = 'image/webp'; // เปลี่ยนเป็น 'image/jpeg' ถ้าจำเป็น
+        const targetMime: 'image/webp' | 'image/jpeg' = 'image/webp';
         uploadFile = await this.compressImage(this.avatarFile, {
           maxW: 1200,
           maxH: 1200,
@@ -481,26 +842,39 @@ export class HandleProfileComponent implements OnInit {
     const isMultipart = !!uploadFile;
     const req$ = this.isNewProfile
       ? (isMultipart
-        ? this.profileService.saveProfileMultipart(payload, uploadFile!)  // POST multipart
-        : this.profileService.saveProfile(payload))                        // POST json
+        ? this.profileService.saveProfileMultipart(payload, uploadFile!)
+        : this.profileService.saveProfile(payload))
       : (this.currentProfile
         ? (isMultipart
-          ? this.profileService.updateProfileMultipart(payload, uploadFile!) // PUT multipart
-          : this.profileService.updateProfile(payload))                      // PUT json
+          ? this.profileService.updateProfileMultipart(payload, uploadFile!)
+          : this.profileService.updateProfile(payload))
         : (isMultipart
-          ? this.profileService.saveProfileMultipart(payload, uploadFile!)   // POST multipart
-          : this.profileService.saveProfile(payload)));                      // POST json
+          ? this.profileService.saveProfileMultipart(payload, uploadFile!)
+          : this.profileService.saveProfile(payload)));
 
     req$.subscribe({
-      next: (res: ProfileDto & { avatarUrl?: string }) => {
+      next: async (res: ProfileDto & { avatarUrl?: string }) => {
         this.currentProfile = res as ProfileDto;
 
-        // ถ้า backend คืน URL ใหม่มา ใช้แสดงต่อทันที
-        if ((res as any).avatarUrl) {
-          // แนะนำให้ map เป็น URL เต็มแบบที่คุณทำใน loadProfile() (ต่อ base url)
-          this.avatarPreviewUrl = (res as any).avatarUrl!;
+        if (res.avatarUrl) {
+          this.serverAvatarUrl = res.avatarUrl;
+          this.avatarPreviewUrl = null;
         }
         this.avatarFile = null;
+
+        try {
+          if (this.resumeFile) {
+            await this.profileService.uploadResume(this.resumeFile).toPromise();
+          }
+
+          const perfFiles = this.images.filter((f): f is File => !!f);
+          if (perfFiles.length) {
+            await this.profileService.uploadPerformances(perfFiles).toPromise();
+          }
+        } catch (e) {
+          console.error('Upload resume/performance failed', e);
+          this.toast.warning('บันทึกข้อมูลหลักสำเร็จ แต่ไฟล์บางส่วนอัปโหลดไม่สำเร็จ');
+        }
 
         this.toast.success('บันทึกข้อมูลสำเร็จ 🎉', {
           title: 'Saved',
@@ -526,14 +900,12 @@ export class HandleProfileComponent implements OnInit {
     }
   }
 
-  // ทำลาย objectURL ทั้งหมดตอนทำลาย component
   ngOnDestroy(): void {
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
     this.revokeResumeUrl();
     this.imagePreviewUrls.forEach(u => { if (u?.startsWith('blob:')) URL.revokeObjectURL(u); });
   }
 
-  // กำหนดคงที่ไว้บนสุดของคลาส (อ่านง่าย/แก้ทีหลังสะดวก)
   private readonly MAX_RESUME_SIZE_MB = 50;
 
   onPickResume(e: Event) {
@@ -548,20 +920,17 @@ export class HandleProfileComponent implements OnInit {
       return;
     }
 
-    // ✅ อัปเดตเป็น 50MB
-    const maxBytes = this.MAX_RESUME_SIZE_MB * 1024 * 1024; // 50 * 1024 * 1024
+    const maxBytes = this.MAX_RESUME_SIZE_MB * 1024 * 1024;
     if (file.size > maxBytes) {
       this.toast.warning(`ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`);
       input.value = '';
       return;
     }
 
-    // (ทางเลือก) เตือนถ้าไฟล์ใหญ่มาก เช่น > 10MB
     if (file.size > 10 * 1024 * 1024) {
       this.toast.info('ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด');
     }
 
-    // ล้าง URL เก่า
     this.revokeResumeUrl();
 
     const objectUrl = URL.createObjectURL(file);
@@ -581,7 +950,6 @@ export class HandleProfileComponent implements OnInit {
     this.resumeIsPdf = false;
   }
 
-  // เรียกเมื่อเลือกไฟล์ในช่องที่ i
   onPickImage(e: Event, i: number) {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -594,20 +962,17 @@ export class HandleProfileComponent implements OnInit {
       return;
     }
 
-    // ✅ ไม่จำกัดขนาดไฟล์ ณ ตอนเลือก (จะบีบอัดตอน save)
-    // ล้าง URL เก่าเพื่อไม่ให้ memory leak
     const old = this.imagePreviewUrls[i];
     if (old?.startsWith('blob:')) URL.revokeObjectURL(old);
 
     const objectUrl = URL.createObjectURL(file);
     this.images[i] = file;
     this.imagePreviewUrls[i] = objectUrl;
+    this.performanceKinds[i] = 'image';
 
-    // เคลียร์ค่า input เพื่อให้เลือกไฟล์เดิมซ้ำได้
     input.value = '';
   }
 
-  // ลบไฟล์ที่ช่อง i
   removeImage(i: number) {
     if (this.imagePreviewUrls[i]?.startsWith('blob:')) {
       URL.revokeObjectURL(this.imagePreviewUrls[i]!);
@@ -615,6 +980,4 @@ export class HandleProfileComponent implements OnInit {
     this.imagePreviewUrls[i] = null;
     this.images[i] = null;
   }
-
-
 }

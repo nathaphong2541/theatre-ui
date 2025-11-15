@@ -36,7 +36,7 @@
         <!-- subtle bg glow -->
         <div aria-hidden="true"
             class="pointer-events-none absolute inset-0
-         bg-[radial-gradient(60%_40%_at_50%_-10%,theme(colors.accent.500)/0.10,transparent),radial-gradient(40%_30%_at_80%_10%,theme(colors.accent.500)/0.06,transparent)]">
+       bg-[radial-gradient(60%_40%_at_50%_-10%,theme(colors.accent.500)/0.10,transparent),radial-gradient(40%_30%_at_80%_10%,theme(colors.accent.500)/0.06,transparent)]">
         </div>
 
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
@@ -53,10 +53,11 @@
                             <p class="text-sm text-gray-400">Portrait orientation works best. Max 2MB.</p>
                         </div>
 
-                        <!-- Preview -->
-                        <div class="mb-4" *ngIf="avatarSrc; else avatarPlaceholder">
+                        <!-- ถ้ามี avatarSrc แล้ว แสดงแค่รูป + ปุ่มลบ / delete -->
+                        <div class="mb-4" *ngIf="avatarSrc; else avatarEmpty">
                             <img [src]="avatarSrc" alt="Avatar"
                                 class="w-full max-h-72 object-cover rounded-xl border border-white/10">
+
                             <div class="mt-3 flex gap-2">
                                 <button type="button"
                                     class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
@@ -71,33 +72,35 @@
                             </div>
                         </div>
 
-                        <ng-template #avatarPlaceholder>
+                        <!-- ถ้าไม่มี avatarSrc: โชว์ placeholder + uploader -->
+                        <ng-template #avatarEmpty>
+                            <!-- Placeholder -->
                             <div
-                                class="grid place-items-center h-40 rounded-xl border border-white/10 bg-white/[0.02] text-sm text-white/50">
+                                class="mb-4 grid place-items-center h-40 rounded-xl border border-white/10 bg-white/[0.02] text-sm text-white/50">
                                 No image selected
                             </div>
-                        </ng-template>
 
-                        <!-- Uploader -->
-                        <label
-                            class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
-                            <input type="file" class="hidden" (change)="onPickAvatar($event)"
-                                accept="image/jpeg,image/png,image/webp" />
-                            <div class="flex items-center gap-4 p-6 sm:p-8">
-                                <div
-                                    class="grid place-items-center rounded-full bg-[#0b0e13] ring-1 ring-white/10 h-20 w-20">
-                                    <svg class="h-10 w-10 text-gray-400" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                                        <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
-                                        <path d="M20 20c0-4-4-6-8-6s-8 2-8 6" />
-                                    </svg>
+                            <!-- Uploader -->
+                            <label
+                                class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
+                                <input type="file" class="hidden" (change)="onPickAvatar($event)"
+                                    accept="image/jpeg,image/png,image/webp" />
+                                <div class="flex items-center gap-4 p-6 sm:p-8">
+                                    <div
+                                        class="grid place-items-center rounded-full bg-[#0b0e13] ring-1 ring-white/10 h-20 w-20">
+                                        <svg class="h-10 w-10 text-gray-400" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                            <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
+                                            <path d="M20 20c0-4-4-6-8-6s-8 2-8 6" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-base md:text-lg">Drag & drop or click to upload</p>
+                                        <p class="text-xs text-gray-400">JPG, PNG, WEBP up to 2MB</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-base md:text-lg">Drag & drop or click to upload</p>
-                                    <p class="text-xs text-gray-400">JPG, PNG, WEBP up to 2MB</p>
-                                </div>
-                            </div>
-                        </label>
+                            </label>
+                        </ng-template>
                     </section>
 
                     <!-- Options -->
@@ -248,6 +251,7 @@
                     </section>
 
                     <!-- Credits + About -->
+                    <!-- Credits + About -->
                     <section id="credits"
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="flex items-center justify-between mb-4">
@@ -258,14 +262,21 @@
                                 class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
                                 (click)="addCredit()">+ New Credit</button>
                         </div>
-                        <ul class="space-y-2 mb-8">
-                            <li *ngFor="let c of credits; let i = index"
+
+                        <ul class="space-y-2 mb-8" *ngIf="creditEntries.length; else noCredits">
+                            <li *ngFor="let label of creditEntries; let i = index"
                                 class="rounded-lg bg-[#12151a] border border-white/10 px-3.5 py-2.5 flex items-center justify-between">
-                                <span class="truncate">{{ c }}</span>
-                                <button class="text-sm text-red-300 hover:text-red-200"
-                                    (click)="removeCredit(i)">Remove</button>
+                                <span class="truncate">{{ label }}</span>
+                                <button type="button" class="text-sm text-red-300 hover:text-red-200"
+                                    (click)="removeCredit(i)">
+                                    Remove
+                                </button>
                             </li>
                         </ul>
+                        <ng-template #noCredits>
+                            <p class="text-sm text-gray-400 mb-8">No credits added yet. Click “+ New Credit” to add your
+                                first one.</p>
+                        </ng-template>
 
                         <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 mb-3">
                             <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>About
@@ -274,6 +285,7 @@
                             class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-48 resize-y"
                             placeholder="Tell us about yourself" [formControl]="form.controls.about"></textarea>
                     </section>
+
 
                     <!-- Contact -->
                     <section
@@ -401,32 +413,39 @@
                                 <h3 class="text-lg font-semibold">Resume</h3>
                                 <p class="text-sm text-gray-300 mb-2">PDF or image</p>
 
-                                <!-- Upload / Drop zone -->
-                                <label
-                                    class="group relative block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition min-h-[180px] focus-within:border-accent-500/50 outline-none"
-                                    tabindex="0" aria-label="Upload resume" (keydown.enter)="resumeInput.click()">
-                                    <input #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
-                                        accept=".pdf,image/*" />
-                                    <div class="py-8 text-center pointer-events-none">
-                                        <!-- ไอคอนเล็ก ๆ -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                            class="mx-auto h-8 w-8 opacity-70">
-                                            <path fill="currentColor"
-                                                d="M5 20h14a2 2 0 0 0 2-2v-5h-2v5H5V7h5V5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2m7-7v3h-2v-3H7l5-5l5 5z" />
-                                        </svg>
+                                <!-- input file ตัวจริง ซ่อน แต่มีอยู่ตลอด -->
+                                <input #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
+                                    accept=".pdf,image/*" />
 
-                                        <div class="mt-3 text-sm">
-                                            <span class="underline decoration-dotted group-hover:no-underline">Click to
-                                                upload</span>
-                                            or drag &amp; drop
-                                        </div>
-                                        <div class="mt-1 text-xs text-gray-400">
-                                            JPG, PNG, WEBP, or PDF up to 2MB
-                                        </div>
-                                    </div>
-                                </label>
+                                <!-- โหมดไม่มี resume: แสดง dropzone -->
+                                <div *ngIf="!resumePreviewUrl">
+                                    <label
+                                        class="group relative block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition min-h-[180px] focus-within:border-accent-500/50 outline-none"
+                                        tabindex="0" aria-label="Upload resume" (click)="resumeInput.click()"
+                                        (keydown.enter)="resumeInput.click()">
 
-                                <!-- Preview -->
+                                        <div class="py-8 text-center pointer-events-none">
+                                            <!-- ไอคอนเล็ก ๆ -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                                class="mx-auto h-8 w-8 opacity-70">
+                                                <path fill="currentColor"
+                                                    d="M5 20h14a2 2 0 0 0 2-2v-5h-2v5H5V7h5V5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2m7-7v3h-2v-3H7l5-5l5 5z" />
+                                            </svg>
+
+                                            <div class="mt-3 text-sm">
+                                                <span class="underline decoration-dotted group-hover:no-underline">
+                                                    Click to upload
+                                                </span>
+                                                or drag &amp; drop
+                                            </div>
+                                            <div class="mt-1 text-xs text-gray-400">
+                                                JPG, PNG, WEBP, or PDF up to 2MB
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <!-- โหมดมี resume: แสดง preview / ปุ่มต่าง ๆ, ไม่มี dropzone -->
                                 <div *ngIf="resumePreviewUrl"
                                     class="mt-4 rounded-xl border border-white/10 bg-[#101318]/60 p-3">
                                     <div class="flex items-center justify-between gap-3">
@@ -464,7 +483,8 @@
                                         <ng-template #pdfTpl>
                                             <iframe [src]="resumeSafeUrl" class="w-full h-80 rounded-lg"></iframe>
                                             <p class="mt-2 text-xs text-gray-400">
-                                                ถ้า PDF ไม่แสดงผล <a [href]="resumePreviewUrl" target="_blank"
+                                                ถ้า PDF ไม่แสดงผล
+                                                <a [href]="resumePreviewUrl" target="_blank"
                                                     class="underline">เปิดในแท็บใหม่</a>
                                             </p>
                                         </ng-template>
@@ -473,7 +493,6 @@
                             </div>
                         </div>
                     </section>
-
 
                     <!-- Unions -->
                     <section
@@ -655,15 +674,41 @@
                             <label *ngFor="let i of [0,1,2,3,4,5]"
                                 class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-0 overflow-hidden min-h-[220px] bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
 
-                                <!-- input file -->
                                 <input type="file" class="hidden" accept="image/jpeg,image/png,image/webp"
                                     (change)="onPickImage($event, i)" />
 
-                                <!-- ถ้ามีรูปแล้ว -> แสดงพรีวิว + ปุ่มลบ -->
-                                <div *ngIf="imagePreviewUrls[i]; else emptySlot" class="relative group">
-                                    <img [src]="imagePreviewUrls[i]!" alt="preview" class="w-full h-56 object-cover" />
+                                <div *ngIf="imagePreviewUrls[i]; else emptySlot" class="relative group h-56">
 
-                                    <!-- แถบ action บนภาพ -->
+                                    <!-- เลือก UI ตามชนิดไฟล์ -->
+                                    <ng-container [ngSwitch]="performanceKinds[i]">
+
+                                        <!-- รูปภาพ -->
+                                        <img *ngSwitchCase="'image'" [src]="imagePreviewUrls[i]!" alt="preview"
+                                            class="w-full h-full object-cover" />
+
+                                        <!-- PDF -->
+                                        <div *ngSwitchCase="'pdf'"
+                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
+                                            <div class="mb-2">PDF file</div>
+                                            <a [href]="imagePreviewUrls[i]" target="_blank"
+                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10">
+                                                Open PDF
+                                            </a>
+                                        </div>
+
+                                        <!-- อื่น ๆ -->
+                                        <div *ngSwitchDefault
+                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
+                                            <div class="mb-2">File</div>
+                                            <a [href]="imagePreviewUrls[i]" target="_blank"
+                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10">
+                                                Download
+                                            </a>
+                                        </div>
+
+                                    </ng-container>
+
+                                    <!-- แถบ action บนสุด -->
                                     <div
                                         class="absolute inset-x-0 top-0 p-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
                                         <button type="button" (click)="removeImage(i); $event.preventDefault()"
@@ -673,14 +718,14 @@
                                     </div>
                                 </div>
 
-                                <!-- ช่องว่าง (ยังไม่เลือกไฟล์) -->
                                 <ng-template #emptySlot>
                                     <div class="grid place-items-center h-56">
                                         <div class="text-center px-4">
                                             <div class="text-sm">Upload image</div>
                                             <div class="mt-1 text-xs text-gray-400">JPG/PNG/WebP</div>
-                                            <div class="mt-1 text-xs text-gray-500">ขนาดเท่าไหร่ก็ได้
-                                                (จะบีบอัดตอนบันทึก)</div>
+                                            <div class="mt-1 text-xs text-gray-500">
+                                                ขนาดเท่าไหร่ก็ได้ (จะบีบอัดตอนบันทึก)
+                                            </div>
                                         </div>
                                     </div>
                                 </ng-template>
@@ -724,4 +769,196 @@
             </div>
         </div>
     </main>
+
+
+    <!-- Credit Modal -->
+    <div *ngIf="creditModalOpen" class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 py-10">
+        <div class="relative w-full max-w-4xl rounded-2xl bg-[#15181d] border border-white/10 shadow-2xl"
+            (click)="$event.stopPropagation()">
+
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                <h2 class="text-2xl font-semibold tracking-tight">Edit Credit</h2>
+                <div class="flex items-center gap-2">
+                    <button type="button"
+                        class="inline-flex items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-200 px-3 py-1.5 border border-emerald-400/40 hover:bg-emerald-500/25"
+                        (click)="saveCreditFromModal()">
+                        ✓
+                    </button>
+                    <button type="button"
+                        class="inline-flex items-center justify-center rounded-lg bg-red-500/15 text-red-200 px-3 py-1.5 border border-red-400/40 hover:bg-red-500/25"
+                        (click)="closeCreditModal()">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
+                <!-- First row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                            placeholder="Company/Production Name" formControlName="company" />
+                        <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
+                    </div>
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                            placeholder="Job/Position Title" formControlName="title" />
+                        <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
+                    </div>
+                </div>
+
+                <!-- Years + current -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="2020" formControlName="startYear" />
+                        <p class="mt-1 text-xs text-gray-400">Start year *</p>
+                    </div>
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="2022" formControlName="endYear"
+                            [disabled]="creditForm.controls.current.value === true" />
+                        <p class="mt-1 text-xs text-gray-400">End year</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
+                        <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                            <button type="button" (click)="creditForm.controls.current.setValue(true)"
+                                [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                class="px-3 py-1.5">
+                                Yes
+                            </button>
+                            <button type="button" (click)="creditForm.controls.current.setValue(false)"
+                                [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                class="px-3 py-1.5">
+                                No
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue + Location -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="Venue" formControlName="venue" />
+                        <p class="mt-1 text-xs text-gray-400">Venue *</p>
+                    </div>
+                    <div>
+                        <input
+                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="Job Location" formControlName="jobLocation" />
+                        <p class="mt-1 text-xs text-gray-400">Job Location *</p>
+                    </div>
+                </div>
+
+                <!-- Internship / fellowship -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400">This was an internship</span>
+                            <div
+                                class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                                <button type="button" (click)="creditForm.controls.internship.setValue(true)"
+                                    [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    Yes
+                                </button>
+                                <button type="button" (click)="creditForm.controls.internship.setValue(false)"
+                                    [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    No
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400">This was a fellowship</span>
+                            <div
+                                class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                                <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
+                                    [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    Yes
+                                </button>
+                                <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
+                                    [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    No
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Department -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-medium text-gray-100">
+                        Department <span class="text-red-400">*</span>
+                    </h3>
+                    <p class="text-xs text-gray-400">
+                        เลือก department ที่คุณทำงานใน position นี้
+                    </p>
+
+                    <div class="flex flex-wrap gap-2.5 mt-1">
+                        <button type="button" *ngFor="let d of departmentsApi" (click)="selectDept(d.id)"
+                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.deptId.value === d.id
+        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
+        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
+                            {{ d.nameEn || d.nameTh }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="space-y-2 mt-4">
+                    <h3 class="text-sm font-medium text-gray-100">
+                        Position <span class="text-red-400">*</span>
+                    </h3>
+                    <p class="text-xs text-gray-400">
+                        เลือกตำแหน่งภายใต้ department ที่เลือก
+                    </p>
+
+                    <div *ngIf="filteredPositions.length" class="flex flex-wrap gap-2.5 mt-1">
+                        <button type="button" *ngFor="let p of filteredPositions" (click)="selectPos(p.id)"
+                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.posId.value === p.id
+        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
+        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
+                            {{ p.nameEn || p.nameTh }}
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- Skills -->
+                <div class="space-y-2">
+                    <h3 class="text-sm font-medium text-gray-100">
+                        Skills
+                    </h3>
+                    <p class="text-xs text-gray-400">
+                        เลือกทักษะที่เกี่ยวข้องกับ position นี้ (เลือกได้หลายข้อ)
+                    </p>
+
+                    <div class="flex flex-wrap gap-2.5" *ngIf="filteredSkills.length">
+                        <button type="button" *ngFor="let s of filteredSkills" (click)="toggleCreditSkill(s.id)"
+                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.skillIds.value.includes(s.id)
+        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
+        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
+                            {{ s.nameEn || s.nameTh }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- คลิกที่ backdrop เพื่อปิด -->
+        <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
+    </div>
 </div>

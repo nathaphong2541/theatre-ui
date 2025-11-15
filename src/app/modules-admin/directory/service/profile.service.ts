@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+// ถ้าอยากใช้ type จริง ให้ import มาจากที่ประกาศ ProfileDto / ProfilePayload
+// import { ProfileDto, ProfilePayload } from '...';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -10,7 +12,7 @@ export class ProfileService {
   constructor(private http: HttpClient) { }
 
   /** ดึงโปรไฟล์ของผู้ใช้ปัจจุบัน */
-  getProfile(): Observable<any /* ProfileDto & { avatarUrl?: string } */> {
+  getProfile(): Observable<any /* ProfileDto */> {
     return this.http.get(`${this.api}/me`);
   }
 
@@ -51,6 +53,38 @@ export class ProfileService {
     return this.http.delete(`${this.api}/avatar`);
   }
 
+  // ---------- RESUME ----------
+  /**
+   * อัปโหลด / แทนที่ resume
+   * รองรับ PDF, JPG, PNG, WEBP (ตามที่ backend เช็ค)
+   */
+  uploadResume(file: File): Observable<any /* ProfileDto */> {
+    const fd = new FormData();
+    fd.append('file', file);
+    return this.http.post(`${this.api}/resume`, fd);
+  }
+
+  /** ลบ resume */
+  deleteResume(): Observable<any /* ProfileDto */> {
+    return this.http.delete(`${this.api}/resume`);
+  }
+
+  // ---------- PERFORMANCE IMAGES ----------
+  /**
+   * อัปโหลด performance images (สูงสุด 6 รูป / profile)
+   * รองรับ JPG, PNG, GIF, WEBP (backend จะเช็คให้)
+   */
+  uploadPerformances(files: File[]): Observable<any /* ProfileDto */> {
+    const fd = new FormData();
+    files.forEach(f => fd.append('files', f));
+    return this.http.post(`${this.api}/performances`, fd);
+  }
+
+  /** ลบ performance รูปเดียวตาม id */
+  deletePerformance(id: number): Observable<any /* ProfileDto */> {
+    return this.http.delete(`${this.api}/performances/${id}`);
+  }
+
   // ---------- Helper ----------
   private buildMultipart(profileData: any, avatarFile?: File): FormData {
     const fd = new FormData();
@@ -60,7 +94,7 @@ export class ProfileService {
   }
 
   /**
-   * ทางเลือก: เมธอดเดียวจบ (จะเลือก JSON หรือ Multipart ให้อัตโนมัติ)
+   * เมธอดเดียวจบ (จะเลือก JSON หรือ Multipart ให้อัตโนมัติ)
    * @param isNew true = POST /save, false = PUT /me
    */
   saveOrUpdate(profileData: any, avatarFile?: File, isNew: boolean = false): Observable<any> {
