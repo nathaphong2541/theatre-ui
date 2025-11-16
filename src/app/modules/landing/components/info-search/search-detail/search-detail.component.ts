@@ -32,9 +32,9 @@ function toEmbedUrl(raw?: string | null): string | null {
 
 type StatKey = 'orders' | 'rating' | 'startedYear';
 
-
 @Component({
   selector: 'app-search-detail',
+  standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './search-detail.component.html',
   styleUrl: './search-detail.component.css'
@@ -48,6 +48,12 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
   // วิดีโอ embed (safe)
   video1?: SafeResourceUrl | null;
   video2?: SafeResourceUrl | null;
+
+  // Resume / Performance
+  resumePreviewUrl: string | null = null;
+  resumeIsPdf = false;
+  resumeSafeUrl?: SafeResourceUrl | null;
+  performanceImages: string[] = [];
 
   private sub?: Subscription;
 
@@ -71,6 +77,7 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
       next: (p) => {
         this.profile = p;
         this.prepareVideos(p);
+        this.prepareAssets(p);
         this.loading = false;
       },
       error: () => {
@@ -87,28 +94,48 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
     this.video2 = e2 ? this.sanitizer.bypassSecurityTrustResourceUrl(e2) : null;
   }
 
+  private prepareAssets(p: Profile) {
+    // Resume
+    const r = toAbsolute((p as any).resumeUrl);
+    if (r) {
+      this.resumePreviewUrl = r;
+      this.resumeIsPdf = r.toLowerCase().endsWith('.pdf');
+      this.resumeSafeUrl = this.resumeIsPdf
+        ? this.sanitizer.bypassSecurityTrustResourceUrl(r)
+        : null;
+    } else {
+      this.resumePreviewUrl = null;
+      this.resumeIsPdf = false;
+      this.resumeSafeUrl = null;
+    }
+
+    // Performance images / gallery
+    this.performanceImages = ((p as any).performanceUrls || [])
+      .map((x: string) => toAbsolute(x))
+      .filter(Boolean) as string[];
+  }
+
   // ===== View helpers =====
   avatar(): string {
-    return toAbsolute(this.profile?.avatarUrl) || 'https://i.pravatar.cc/160?img=12';
+    return toAbsolute((this.profile as any)?.avatarUrl) || 'https://i.pravatar.cc/160?img=12';
   }
+
   cover(): string | null {
-    return toAbsolute(this.profile?.coverUrl);
+    return toAbsolute((this.profile as any)?.coverUrl);
   }
+
   fullName(): string {
-    const p = this.profile;
+    const p = this.profile as any;
     return [p?.firstName, p?.lastName].filter(Boolean).join(' ') || '—';
   }
-  location(): string {
-    return this.profile?.location || '—';
+
+  locationText(): string {
+    return (this.profile as any)?.location || '—';
   }
-  statusText(): string {
-    return this.profile?.recordStatus === 'A' ? 'ใช้งาน' : 'ระงับ';
-  }
-  isActive(): boolean {
-    return this.profile?.recordStatus === 'A';
-  }
+
   gallery(): string[] {
-    return (this.profile?.galleryUrls || []).map(toAbsolute).filter(Boolean) as string[];
+    // ใช้ performanceUrls เป็นแกลเลอรี
+    return this.performanceImages;
   }
 
   getStat(key: 'orders'): number;
@@ -116,7 +143,6 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
   getStat(key: 'startedYear'): number;
 
   getStat(key: StatKey): number {
-    // ใช้ any เฉพาะตรงนี้เพื่ออ่านฟิลด์ที่อาจอยู่ต่างที่ เช่น profile.stats.orders หรือ profile.orders
     const p: any = this.profile;
 
     function toNumber(v: unknown, fallback = 0): number {
@@ -129,19 +155,15 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
 
     switch (key) {
       case 'orders':
-        // รองรับทั้ง profile.orders และ profile.stats.orders
         return toNumber(p?.orders ?? p?.stats?.orders);
 
       case 'rating':
-        // รองรับทั้ง profile.rating และ profile.stats.rating
         return toNumber(p?.rating ?? p?.stats?.rating);
 
       case 'startedYear': {
-        // 1) ใช้ค่า startedYear ถ้ามี
         const y1 = toNumber(p?.startedYear ?? p?.stats?.startedYear, NaN);
         if (Number.isFinite(y1)) return y1;
 
-        // 2) fallback จาก createdAt: "YYYY-..." -> YYYY
         const y2 =
           typeof p?.createdAt === 'string'
             ? parseInt(p.createdAt.slice(0, 4), 10)

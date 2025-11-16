@@ -1,50 +1,56 @@
-<div class="min-h-screen bg-[#0b0e13] text-[#e9edf1]">
+<div class="min-h-screen bg-[#05070b] text-[#e9edf1]">
     <!-- Banner / Cover -->
     <section class="relative">
-        <div class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[28px] border-b border-white/10">
+        <div
+            class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[32px] border-b border-white/10 shadow-[0_40px_120px_-60px_rgba(0,0,0,0.9)]">
             <!-- gradient base -->
-            <div class="absolute inset-0 bg-gradient-to-br from-[#0b1417] via-[#0e171b] to-[#122028]"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-[#05070b] via-[#0b141b] to-[#111827]"></div>
 
-            <!-- optional user cover -->
-            <!--
-      <img *ngIf="coverUrl()" [src]="coverUrl()"
-           class="absolute inset-0 h-full w-full object-cover opacity-50 mix-blend-luminosity" alt="cover" />
-      -->
-
-            <!-- top glow (เขียวเป็นหลัก) -->
+            <!-- soft color glows -->
             <div
-                class="absolute inset-0
-               bg-[radial-gradient(60%_40%_at_20%_-10%,rgba(138,171,6,0.22),transparent),radial-gradient(50%_30%_at_80%_-10%,rgba(37,150,190,0.12),transparent)]">
+                class="absolute inset-0 opacity-90
+               bg-[radial-gradient(70%_50%_at_10%_-10%,rgba(138,171,6,0.35),transparent),radial-gradient(55%_40%_at_80%_-15%,rgba(37,150,190,0.35),transparent)]">
             </div>
+
+            <!-- subtle noise -->
+            <div class="absolute inset-0 mix-blend-soft-light opacity-40 bg-[url('/assets/images/noise.png')]"></div>
+
             <!-- bottom fade -->
-            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b0e13] to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#05070b] to-transparent"></div>
         </div>
 
         <!-- Edit Button -->
-        <div class="absolute top-4 right-4">
-            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2
-                     shadow-sm hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40"
-                aria-label="Edit profile">
-                <svg-icon src="" [svgClass]="'h-4 w-4 text-white/80'"></svg-icon>
-                <span i18n="@@edit_profile" class="text-sm">Edit profile</span>
+        <div class="absolute top-4 right-4 flex items-center gap-2">
+            <span *ngIf="isPrivateProfile()"
+                class="hidden sm:inline-flex items-center gap-1 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-2.5 py-1 text-[11px] text-yellow-100">
+                <svg-icon src="assets/icons/heroicons/outline/lock-closed.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                Private profile
+            </span>
+            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-1.5
+               text-xs sm:text-sm shadow-[0_12px_40px_rgba(0,0,0,0.8)]
+               hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40">
+                <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg" [svgClass]="'h-4 w-4 text-white/80'">
+                </svg-icon>
+                <span i18n="@@edit_profile">Edit profile</span>
             </button>
         </div>
 
-        <!-- Avatar Card -->
+        <!-- Avatar + headline -->
         <div class="absolute inset-x-0 -bottom-16">
             <div class="mx-auto max-w-6xl px-4">
-                <div class="flex items-end gap-6">
+                <div class="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
                     <!-- Avatar -->
                     <div class="relative">
-                        <div class="rounded-3xl p-[3px]
-                        bg-[conic-gradient(at_50%_50%,#8aab06,120deg,#2596be,240deg,#8aab06)]">
-                            <div class="size-36 md:size-40 rounded-2xl bg-[#0f131a] p-1">
-                                <div
-                                    class="size-full rounded-xl bg-white/5 ring-1 ring-white/10 flex items-center justify-center overflow-hidden">
+                        <div class="rounded-[28px] p-[1px]
+                     bg-[conic-gradient(at_10%_0%,#8aab06,120deg,#2596be,240deg,#8aab06)]
+                     shadow-[0_18px_60px_rgba(0,0,0,0.9)]">
+                            <div class="size-32 md:size-40 rounded-[24px] bg-[#05070b] p-1">
+                                <div class="size-full rounded-2xl bg-gradient-to-br from-white/10 to-white/[0.02]
+                         ring-1 ring-white/15 flex items-center justify-center overflow-hidden">
                                     <img *ngIf="hasAvatar()" [src]="avatarUrl()" class="h-full w-full object-cover"
                                         alt="profile avatar" />
-                                    <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24" class="h-20 w-20 opacity-60"
-                                        aria-hidden="true">
+                                    <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24"
+                                        class="h-16 w-16 md:h-20 md:w-20 opacity-70" aria-hidden="true">
                                         <path fill="currentColor"
                                             d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5Z" />
                                     </svg>
@@ -54,25 +60,36 @@
                     </div>
 
                     <!-- Headline -->
-                    <div class="pb-2 min-w-0">
-                        <h1 class="text-3xl md:text-4xl font-semibold tracking-tight uppercase drop-shadow-sm truncate">
-                            {{ displayName() || '—' }}
-                        </h1>
+                    <div class="pb-2 min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h1
+                                class="text-2xl md:text-4xl font-semibold tracking-tight uppercase drop-shadow-sm truncate max-w-full">
+                                {{ displayName() || '—' }}
+                            </h1>
+
+                            <span *ngIf="pronouns()" class="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5
+                       text-[11px] uppercase tracking-wide text-white/80">
+                                {{ pronouns() }}
+                            </span>
+                        </div>
+
                         <p *ngIf="headline()" class="mt-1 text-sm md:text-base text-white/80 truncate">
                             {{ headline() }}
                         </p>
 
                         <!-- Meta -->
-                        <div class="mt-6 flex flex-wrap items-center gap-2.5 text-sm">
+                        <div class="mt-4 flex flex-wrap items-center gap-2.5 text-sm">
                             <span *ngIf="location()"
-                                class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                                <svg-icon src=".svg" [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
+                                class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5">
+                                <svg-icon src="assets/icons/heroicons/outline/map-pin.svg"
+                                    [svgClass]="'h-4 w-4 text-white/70'">
+                                </svg-icon>
                                 {{ location() }}
                             </span>
 
                             <ng-container *ngIf="tags()?.length">
                                 <span *ngFor="let t of tags()"
-                                    class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
+                                    class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5">
                                     <svg-icon *ngIf="t.icon" [src]="t.icon"
                                         [svgClass]="'h-4 w-4 text-white/70'"></svg-icon>
                                     {{ t.label }}
@@ -88,26 +105,39 @@
     <!-- Body -->
     <main class="mx-auto max-w-6xl px-4 pt-24 pb-16">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Left: contact + stats -->
-            <aside class="lg:col-span-1">
-                <!-- Contact -->
-                <div
-                    class="rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                    <h2 class="text-xs font-semibold tracking-wider text-white/60 mb-3" i18n="@@contact">Contact</h2>
+            <!-- LEFT COLUMN -->
+            <aside class="lg:col-span-1 space-y-6">
+                <!-- Contact card -->
+                <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02]
+                 backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase" i18n="@@contact">
+                            Contact
+                        </h2>
+                        <span *ngIf="profileIsCompany()"
+                            class="inline-flex items-center gap-1 rounded-full border border-sky-400/40 bg-sky-400/10 px-2 py-0.5 text-[10px] text-sky-100">
+                            <svg-icon src="assets/icons/heroicons/outline/building-office.svg"
+                                [svgClass]="'h-3.5 w-3.5'">
+                            </svg-icon>
+                            Company
+                        </span>
+                    </div>
 
                     <div *ngIf="links()?.length; else noLinks" class="space-y-3">
-                        <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener" class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#0f131a]/70 px-4 py-3
-                      hover:bg-[#0f131a]/90 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30 transition"
-                            [attr.aria-label]="l.label + ' ' + l.value">
+                        <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener"
+                            class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#05070b]/80 px-4 py-3
+                     hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30 transition">
                             <div class="flex items-center gap-3 min-w-0">
                                 <svg-icon [src]="l.icon"
-                                    [svgClass]="'h-5 w-5 text-white/70 group-hover:text-white'"></svg-icon>
+                                    [svgClass]="'h-5 w-5 text-white/70 group-hover:text-[#cde07f]'">
+                                </svg-icon>
                                 <div class="leading-tight truncate">
                                     <div class="text-sm font-medium truncate">{{ l.label }}</div>
                                     <div class="text-xs text-white/60 truncate">{{ l.value }}</div>
                                 </div>
                             </div>
-                            <svg-icon src="" [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/70'"></svg-icon>
+                            <svg-icon src="assets/icons/heroicons/outline/arrow-up-right.svg"
+                                [svgClass]="'h-4 w-4 text-white/50 group-hover:text-white/80'"></svg-icon>
                         </a>
                     </div>
                     <ng-template #noLinks>
@@ -115,76 +145,200 @@
                     </ng-template>
                 </div>
 
+                <!-- Resume card -->
+                <div *ngIf="resumeUrlAbs()" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
+                 backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
+                            Resume
+                        </h2>
+                        <span class="text-[10px] text-white/40">
+                            {{ getFileName(resumeUrlAbs()!) }}
+                        </span>
+                    </div>
+
+                    <!-- Preview ถ้าเป็นรูป -->
+                    <div *ngIf="resumeIsImage()" class="relative rounded-xl overflow-hidden ring-1 ring-white/10 mb-3">
+                        <img [src]="resumeUrlAbs()!" class="w-full max-h-60 object-cover" alt="Resume preview" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent
+                     opacity-0 hover:opacity-100 transition flex items-end">
+                            <div class="w-full flex justify-between items-center px-3 py-2 text-xs text-white">
+                                <span class="font-medium truncate">Preview</span>
+                                <div class="flex gap-2">
+                                    <a [href]="resumeUrlAbs()!" target="_blank" rel="noopener"
+                                        class="inline-flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 hover:bg-white/25">
+                                        <svg-icon src="assets/icons/heroicons/outline/eye.svg"
+                                            [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                        View
+                                    </a>
+                                    <a [href]="resumeUrlAbs()!" download
+                                        class="inline-flex items-center gap-1 rounded-lg bg-[#8aab06]/80 px-2 py-1 text-[#111827] text-[11px] font-semibold hover:bg-[#a9c739]">
+                                        <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
+                                            [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ถ้าเป็น pdf หรือไฟล์อื่น แสดงเป็น card -->
+                    <div *ngIf="!resumeIsImage()"
+                        class="rounded-xl border border-dashed border-white/20 bg-black/30 p-3 mb-3">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="h-8 w-8 rounded-lg bg-[#8aab06]/15 flex items-center justify-center ring-1 ring-[#8aab06]/40">
+                                <svg-icon
+                                    [src]="resumeIsPdf() ? 'assets/icons/heroicons/outline/document-text.svg' : 'assets/icons/heroicons/outline/document.svg'"
+                                    [svgClass]="'h-4 w-4 text-[#cde07f]'"></svg-icon>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="text-xs font-medium truncate">
+                                    {{ getFileName(resumeUrlAbs()!) }}
+                                </div>
+                                <div class="text-[11px] text-white/50">
+                                    {{ resumeIsPdf() ? 'PDF document' : 'Document file' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 justify-end text-xs">
+                        <a [href]="resumeUrlAbs()!" target="_blank" rel="noopener"
+                            class="inline-flex items-center gap-1 rounded-lg border border-white/20 bg-white/5 px-2.5 py-1 hover:bg-white/10">
+                            <svg-icon src="assets/icons/heroicons/outline/eye.svg"
+                                [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                            View
+                        </a>
+                        <a [href]="resumeUrlAbs()!" download
+                            class="inline-flex items-center gap-1 rounded-lg bg-[#8aab06]/80 px-2.5 py-1 text-[#111827] font-semibold hover:bg-[#a9c739]">
+                            <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
+                                [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                            Download
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Stats -->
-                <div class="mt-6 grid grid-cols-3 gap-3">
-                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
-                        <div class="text-2xl font-semibold">18</div>
-                        <div class="text-[11px] text-white/60" i18n="@@projects">Projects</div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div
+                        class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 text-center">
+                        <div class="text-xs text-white/50 mb-1">Credits</div>
+                        <div class="text-2xl font-semibold">{{ creditsCount() }}</div>
                     </div>
-                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
-                        <div class="text-2xl font-semibold">4.9</div>
-                        <div class="text-[11px] text-white/60" i18n="@@rating">Rating</div>
+                    <div
+                        class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 text-center">
+                        <div class="text-xs text-white/50 mb-1">Media</div>
+                        <div class="text-2xl font-semibold">{{ mediaCount() }}</div>
                     </div>
-                    <div class="rounded-xl border border-white/10 bg-white/[0.06] p-4 text-center">
-                        <div class="text-2xl font-semibold">7yr</div>
-                        <div class="text-[11px] text-white/60" i18n="@@experience">Experience</div>
+                    <div
+                        class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 text-center">
+                        <div class="text-xs text-white/50 mb-1" i18n="@@videos">Videos</div>
+                        <div class="text-2xl font-semibold">
+                            {{ videoSources().length }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance images -->
+                <div *ngIf="performanceUrls()?.length" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
+                 p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
+                            Performance Stills
+                        </h3>
+                        <span class="text-[10px] text-white/40">
+                            {{ performanceUrls().length }} files
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2">
+                        <div *ngFor="let img of performanceUrls()" class="group relative aspect-[4/3]">
+                            <img [src]="img"
+                                class="h-full w-full rounded-lg object-cover ring-1 ring-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.8)]"
+                                loading="lazy" alt="performance image" />
+                            <div
+                                class="absolute inset-0 rounded-lg bg-black/65 opacity-0 group-hover:opacity-100 transition flex flex-col justify-center items-center gap-1 text-[11px]">
+                                <a [href]="img" target="_blank" rel="noopener"
+                                    class="inline-flex items-center gap-1 rounded-md bg-white/15 px-2 py-1 hover:bg-white/25">
+                                    <svg-icon src="assets/icons/heroicons/outline/eye.svg"
+                                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                    View
+                                </a>
+                                <a [href]="img" [download]="getFileName(img)"
+                                    class="inline-flex items-center gap-1 rounded-md bg-[#8aab06]/85 px-2 py-1 text-[#111827] font-semibold hover:bg-[#a9c739]">
+                                    <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
+                                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                    Download
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </aside>
 
-            <!-- Right: tabs + content -->
-            <section class="lg:col-span-2">
-                <!-- Tabs -->
-                <nav class="mb-4 flex items-center gap-2 overflow-x-auto">
-                    <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30" aria-current="page">
+            <!-- RIGHT COLUMN -->
+            <section class="lg:col-span-2 space-y-6">
+                <!-- Tabs (UI only) -->
+                <nav class="flex items-center gap-2 overflow-x-auto">
+                    <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm
+                   bg-white/8 border border-white/15 text-white hover:bg-white/10
+                   focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30" aria-current="page">
                         <span i18n="@@about">About</span>
-                        <span class="absolute inset-x-2 -bottom-[1px] h-[2px] rounded bg-[#8aab06]/80"></span>
+                        <span class="absolute inset-x-3 -bottom-[1px] h-[2px] rounded bg-[#8aab06]/90"></span>
                     </button>
-                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
+                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-xs sm:text-sm
+                   bg-white/3 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
+                   focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
                         <span i18n="@@portfolio">Portfolio</span>
                     </button>
-                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-sm
-                         bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10
-                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
+                    <button class="inline-flex items-center rounded-xl px-3.5 py-2 text-xs sm:text-sm
+                   bg-white/3 border border-white/10 text-white/70 hover:text-white hover:bg-white/10
+                   focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30">
                         <span i18n="@@reviews">Reviews</span>
                     </button>
                 </nav>
 
-                <!-- About card -->
-                <div
-                    class="rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                    <h3 class="text-base font-semibold mb-2" i18n="@@bio">Bio</h3>
-                    <p class="text-sm text-white/70 leading-relaxed whitespace-pre-line">
-                        {{ about() || ('(No bio provided)' | i18nSelect:{'': ''}) }}
-                    </p>
+                <!-- About -->
+                <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02]
+                 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)] space-y-6">
+                    <!-- Bio -->
+                    <div>
+                        <h3 class="text-sm font-semibold mb-2 flex items-center gap-2" i18n="@@bio">
+                            <svg-icon src="assets/icons/heroicons/outline/user-circle.svg"
+                                [svgClass]="'h-4 w-4 text-[#8aab06]'">
+                            </svg-icon>
+                            Bio
+                        </h3>
+                        <p class="text-sm text-white/75 leading-relaxed whitespace-pre-line">
+                            {{ about() || '(No bio provided)' }}
+                        </p>
+                    </div>
 
-                    <div class="mt-6 grid gap-4 md:grid-cols-2">
-                        <div class="rounded-xl border border-white/10 bg-[#0f131a]/70 p-4">
-                            <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@skills">Skills</div>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                <span
-                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Angular</span>
-                                <span
-                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Tailwind</span>
-                                <span
-                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">DevExtreme</span>
-                                <span
-                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">Spring
-                                    Boot</span>
-                                <span
-                                    class="rounded-full border border-[#8aab06]/30 bg-[#8aab06]/10 px-3 py-1 text-xs text-[#cde07f]">SQL
-                                    Server</span>
+                    <!-- Education + Services -->
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div class="rounded-xl border border-white/10 bg-[#05070b]/80 p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60" i18n="@@education">
+                                    Education
+                                </div>
+                                <svg-icon src="assets/icons/heroicons/outline/book-open.svg"
+                                    [svgClass]="'h-4 w-4 text-white/50'"></svg-icon>
                             </div>
+                            <p class="mt-2 text-sm text-white/80 whitespace-pre-line">
+                                {{ education() || '-' }}
+                            </p>
                         </div>
 
-                        <div class="rounded-xl border border-white/10 bg-[#0f131a]/70 p-4">
-                            <div class="text-[11px] uppercase tracking-wider text-white/60" i18n="@@services">Services
+                        <div class="rounded-xl border border-white/10 bg-[#05070b]/80 p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60" i18n="@@services">
+                                    Services
+                                </div>
+                                <svg-icon src="assets/icons/heroicons/outline/sparkles.svg"
+                                    [svgClass]="'h-4 w-4 text-white/50'"></svg-icon>
                             </div>
-                            <ul class="mt-2 list-disc pl-5 text-sm text-white/80">
+                            <ul class="mt-2 list-disc pl-5 text-sm text-white/80 space-y-1">
                                 <li>UX/UI &amp; Frontend Engineering</li>
                                 <li>API &amp; Auth (JWT/Refresh Token)</li>
                                 <li>Mobile App (React Native)</li>
@@ -193,32 +347,95 @@
                     </div>
                 </div>
 
-                <!-- Portfolio (ตัวอย่าง) -->
-                <div class="mt-6 grid gap-4 md:grid-cols-2">
-                    <article
-                        class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
-                        <div class="aspect-video w-full rounded-xl bg-white/5 ring-1 ring-white/10"></div>
-                        <div class="mt-3 text-sm font-medium">e-Accountant Portal</div>
-                        <p class="text-xs text-white/60">Angular + DevExtreme + JWT</p>
-                    </article>
-                    <article
-                        class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 hover:bg-white/[0.08] transition">
-                        <div class="aspect-video w-full rounded-xl bg-white/5 ring-1 ring-white/10"></div>
-                        <div class="mt-3 text-sm font-medium">Custom Shirt Designer</div>
-                        <p class="text-xs text-white/60">Angular + Canvas + Spring Boot</p>
-                    </article>
-                </div>
+                <!-- Credits -->
+                <section *ngIf="credits()?.length">
+                    <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
+                   p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-sm font-semibold flex items-center gap-2">
+                                <svg-icon src="assets/icons/heroicons/outline/briefcase.svg"
+                                    [svgClass]="'h-5 w-5 text-[#8aab06]'">
+                                </svg-icon>
+                                <span>Credits</span>
+                            </h3>
+                            <span class="text-xs text-white/50">
+                                {{ creditsCount() }} entries
+                            </span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <article *ngFor="let c of credits()"
+                                class="rounded-xl border border-white/10 bg-black/40 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.8)]">
+                                <div class="flex flex-wrap items-baseline justify-between gap-2">
+                                    <div>
+                                        <div class="text-sm font-semibold">
+                                            {{ c.title || '—' }}
+                                        </div>
+                                        <div class="text-xs text-white/60">
+                                            {{ c.company || '—' }}
+                                        </div>
+                                    </div>
+                                    <div class="text-xs text-white/60">
+                                        <ng-container *ngIf="c.current; else dateRange">
+                                            {{ c.startYear || '—' }} – Present
+                                        </ng-container>
+                                        <ng-template #dateRange>
+                                            {{ c.startYear || '—' }} – {{ c.endYear || '—' }}
+                                        </ng-template>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 flex flex-wrap gap-1.5 text-[11px] text-white/75">
+                                    <span *ngIf="c.venue"
+                                        class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-0.5">
+                                        <svg-icon src="assets/icons/heroicons/outline/building-office-2.svg"
+                                            [svgClass]="'h-3.5 w-3.5 text-white/70'"></svg-icon>
+                                        <span>{{ c.venue }}</span>
+                                    </span>
+                                    <span *ngIf="c.jobLocation"
+                                        class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-2 py-0.5">
+                                        <svg-icon src="assets/icons/heroicons/outline/map-pin.svg"
+                                            [svgClass]="'h-3.5 w-3.5 text-white/70'"></svg-icon>
+                                        <span>{{ c.jobLocation }}</span>
+                                    </span>
+                                    <span *ngIf="c.internship"
+                                        class="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-emerald-200">
+                                        Internship
+                                    </span>
+                                    <span *ngIf="c.fellowship"
+                                        class="inline-flex items-center gap-1 rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-sky-200">
+                                        Fellowship
+                                    </span>
+                                </div>
+
+                                <!-- ids (โชว์เลขไปก่อน ถ้ามี master data เดี๋ยวค่อย map ชื่อจริง) -->
+                                <div class="mt-2 flex flex-wrap gap-2 text-[11px] text-white/60">
+                                    <span *ngIf="c.deptIds?.length">
+                                        Dept: {{ c.deptIds.join(', ') }}
+                                    </span>
+                                    <span *ngIf="c.posIds?.length">
+                                        Pos: {{ c.posIds.join(', ') }}
+                                    </span>
+                                    <span *ngIf="c.skillIds?.length">
+                                        Skills: {{ c.skillIds.join(', ') }}
+                                    </span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Media / Video -->
+                <section class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01]
+                 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                    <h3 class="text-sm font-semibold flex items-center gap-2 mb-3">
+                        <svg-icon src="assets/icons/heroicons/outline/play-circle.svg"
+                            [svgClass]="'h-5 w-5 text-[#8aab06]'"></svg-icon>
+                        Media / Video
+                    </h3>
+                    <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()"></app-video-gallery>
+                </section>
             </section>
         </div>
-
-        <!-- Media -->
-        <section
-            class="mt-10 rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-            <h3 class="text-lg font-semibold flex items-center gap-2">
-                <svg-icon src="" [svgClass]="'h-5 w-5 text-[#8aab06]'"></svg-icon>
-                Media / Video
-            </h3>
-            <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()"></app-video-gallery>
-        </section>
     </main>
 </div>

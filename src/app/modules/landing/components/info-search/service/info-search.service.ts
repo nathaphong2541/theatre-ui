@@ -3,6 +3,21 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
+export interface CreditItem {
+  company: string;
+  title: string;
+  startYear: string;
+  endYear: string;
+  current: boolean;
+  venue: string;
+  jobLocation: string;
+  internship: boolean;
+  fellowship: boolean;
+  deptIds: number[];
+  posIds: number[];
+  skillIds: number[];
+}
+
 export interface Profile {
   id?: number;
   userId?: number;
@@ -30,7 +45,7 @@ export interface Profile {
   genders?: number[];
   races?: number[];
   additionals?: number[];
-  credits?: number[];
+  credits: CreditItem[];
   avatarUrl?: string;
   coverUrl?: string;
   galleryUrls?: string[];
@@ -38,6 +53,13 @@ export interface Profile {
   updatedAt?: string;
   recordStatus?: 'A' | 'I';
   delFlag?: 'Y' | 'N';
+
+  // ⭐ เพิ่มพวก social ให้ตรง JSON
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+
   // memberCode?: string;
   // rating?: number; orders?: number; startedYear?: number;
 }

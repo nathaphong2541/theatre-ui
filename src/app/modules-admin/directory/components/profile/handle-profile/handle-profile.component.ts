@@ -313,10 +313,12 @@ export class HandleProfileComponent implements OnInit {
   private currentProfile: ProfileDto | null = null;
 
   // ใช้แสดงใน list ใต้หัวข้อ Credits
-  creditEntries: string[] = [];
+  // creditEntries: string[] = [];
 
   // เก็บ object จริง ๆ ไว้ส่งเข้า API
   credits: ProfileCredit[] = [];
+
+  editingCreditIndex: number | null = null;
 
   // สถานะ popup
   creditModalOpen = false;
@@ -388,6 +390,16 @@ export class HandleProfileComponent implements OnInit {
 
     this.loadMasterData();
     this.loadMaster();
+  }
+
+  private buildCreditLabel(c: ProfileCredit): string {
+    const period = c.current
+      ? `${c.startYear} – Present`
+      : c.endYear
+        ? `${c.startYear} – ${c.endYear}`
+        : `${c.startYear}`;
+
+    return `${c.company} — ${c.title} (${period})`;
   }
 
   /** ---------- Load & map from API ---------- */
@@ -487,22 +499,27 @@ export class HandleProfileComponent implements OnInit {
 
     // 🔹 เก็บ object credits ทั้งก้อน
     this.credits = [...(p.credits ?? [])];
+  }
 
-    // 🔹 สร้าง label สวย ๆ จากข้อมูลจริง
-    this.creditEntries = this.credits.map(c => {
-      const period = c.current
-        ? `${c.startYear} – Present`
-        : c.endYear
-          ? `${c.startYear} – ${c.endYear}`
-          : `${c.startYear}`;
+  getDeptNames(c: ProfileCredit): string[] {
+    return (c.deptIds || [])
+      .map(id => this.deptById.get(id))
+      .filter(Boolean)
+      .map((d: any) => this.pickLabel(d));
+  }
 
-      return `${c.company} — ${c.title} (${period})`;
-    });
-    // เติม creditEntries จาก ids แบบ placeholder (ยังไม่มีของจริงจาก backend)
-    this.creditEntries = this.credits.map(id => `Credit #${id}`);
+  getPosNames(c: ProfileCredit): string[] {
+    return (c.posIds || [])
+      .map(id => this.posById.get(id))
+      .filter(Boolean)
+      .map((p: any) => this.pickLabel(p));
+  }
 
-    this.updateEmbed(1);
-    this.updateEmbed(2);
+  getSkillNames(c: ProfileCredit): string[] {
+    return (c.skillIds || [])
+      .map(id => this.skillById.get(id))
+      .filter(Boolean)
+      .map((s: any) => this.pickLabel(s));
   }
 
   selectDept(departmentId: number) {
@@ -556,7 +573,9 @@ export class HandleProfileComponent implements OnInit {
   // ---------- Credit popup handlers ----------
   // ---------- Credit popup handlers ----------
   addCredit() {
-    // เปิด popup + reset form
+    // กด + New Credit = สร้างใหม่ ไม่ใช่แก้ของเก่า
+    this.editingCreditIndex = null;
+
     this.creditForm.reset({
       company: '',
       title: '',
@@ -567,16 +586,52 @@ export class HandleProfileComponent implements OnInit {
       jobLocation: '',
       internship: false,
       fellowship: false,
-
-      // 👇 ใช้ฟิลด์ใหม่แทน departments
       deptId: null,
       posId: null,
       skillIds: [],
     });
 
-    // ล้างตัวกรอง positions / skills ด้วย (กันค่าค้าง)
     this.filteredPositions = [];
     this.filteredSkills = [];
+
+    this.creditModalOpen = true;
+  }
+
+  editCredit(index: number) {
+    const c = this.credits[index];
+    if (!c) return;
+
+    this.editingCreditIndex = index;
+
+    const deptId = c.deptIds?.[0] ?? null;
+    const posId = c.posIds?.[0] ?? null;
+
+    this.creditForm.patchValue({
+      company: c.company,
+      title: c.title,
+      startYear: c.startYear,
+      endYear: c.endYear ?? '',
+      current: c.current,
+      venue: c.venue,
+      jobLocation: c.jobLocation,
+      internship: c.internship,
+      fellowship: c.fellowship,
+      deptId,
+      posId,
+      skillIds: [...(c.skillIds ?? [])],
+    }, { emitEvent: false });
+
+    if (deptId) {
+      this.filteredPositions = this.positionsApi.filter((p: any) => p.departmentId === deptId);
+    } else {
+      this.filteredPositions = [];
+    }
+
+    if (posId) {
+      this.filteredSkills = this.skillsApi.filter((s: any) => s.positionId === posId);
+    } else {
+      this.filteredSkills = [];
+    }
 
     this.creditModalOpen = true;
   }
@@ -599,39 +654,6 @@ export class HandleProfileComponent implements OnInit {
 
     const v = this.creditForm.getRawValue();
 
-    const period = v.current
-      ? `${v.startYear} – Present`
-      : v.endYear
-        ? `${v.startYear} – ${v.endYear}`
-        : `${v.startYear}`;
-
-    const dept = v.deptId ? this.deptById.get(v.deptId) : null;
-    const pos = v.posId ? this.posById.get(v.posId) : null;
-
-    const deptName = dept ? (dept.nameEn || dept.nameTh) : '';
-    const posName = pos ? (pos.nameEn || pos.nameTh) : '';
-
-    const skillNames = (v.skillIds ?? [])
-      .map(id => this.skillById.get(id))
-      .filter(Boolean)
-      .map((s: any) => s.nameEn || s.nameTh);
-
-    const main = `${v.company} — ${v.title} (${period})`;
-
-    const metaParts = [
-      deptName,
-      posName,
-      skillNames.length ? `Skills: ${skillNames.join(', ')}` : '',
-    ].filter(Boolean);
-
-    const label = metaParts.length
-      ? `${main} · ${metaParts.join(' · ')}`
-      : main;
-
-    // 👇 label ไว้โชว์ในหน้า
-    this.creditEntries.push(label);
-
-    // 👇 object จริงไว้ส่ง backend
     const credit: ProfileCredit = {
       company: v.company!,
       title: v.title!,
@@ -647,18 +669,21 @@ export class HandleProfileComponent implements OnInit {
       skillIds: v.skillIds ?? [],
     };
 
-    console.log("ข้อมูล เครดิต : ", credit);
+    if (this.editingCreditIndex !== null) {
+      // แก้ไขรายการเดิม
+      this.credits[this.editingCreditIndex] = credit;
+      console.log('[credit] updated credit at', this.editingCreditIndex, credit);
+    } else {
+      // เพิ่มใหม่
+      this.credits.push(credit);
+      console.log('[credit] created new credit', credit);
+    }
 
-
-    this.credits.push(credit);
-
-    console.log('[credit] saved credit', credit);
-
+    this.editingCreditIndex = null;
     this.closeCreditModal();
   }
 
   removeCredit(i: number) {
-    this.creditEntries.splice(i, 1);
     this.credits.splice(i, 1);
   }
 

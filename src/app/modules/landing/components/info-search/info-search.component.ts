@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Profile, InfoSearchService } from './service/info-search.service';
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
@@ -96,6 +96,7 @@ export class InfoSearchComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private api: InfoSearchService,
     private publicService: PubilcService
   ) { }
@@ -133,6 +134,20 @@ export class InfoSearchComponent implements OnInit {
         }, _ => resolve());
       }),
     ]);
+  }
+
+  goProfile(m: Profile) {
+    const anyM = m as any;
+    const id = anyM.userId ?? anyM.id;
+
+    console.log('goProfile -> m =', m, 'id =', id);
+
+    if (!id) {
+      console.warn('❗ ไม่มี id สำหรับ profile นี้');
+      return;
+    }
+
+    this.router.navigate(['profiles', id], { relativeTo: this.route });
   }
 
   // ===== State =====
