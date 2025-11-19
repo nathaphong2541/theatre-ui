@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Profile, InfoSearchService } from './service/info-search.service';
+import { Profile, InfoSearchService, ProfileSearchOptions } from './service/info-search.service';
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
 
@@ -224,31 +224,26 @@ export class InfoSearchComponent implements OnInit {
 
     this.loading = true;
 
-    // ✅ แยก helper ชัดเจนตามชนิด
     const pickIds = (k: 'departments' | 'jobs' | 'skills') =>
       Array.from(this.selected[k] as Set<number>);
 
     const pickStrs = (k: 'locations' | 'experiences' | 'unions') =>
       Array.from(this.selected[k] as Set<string>);
 
-    this.api.searchProfiles({
+
+    const payload: ProfileSearchOptions = {
       q: this.q?.trim(),
-      status: this.status,
       page: this.page,
       limit: this.limit,
       dateFrom: this.dateFrom || undefined,
       dateTo: this.dateTo || undefined,
+      creditDeptIds: pickIds('departments'),
+      creditPosIds: pickIds('jobs'),
+      creditSkillIds: pickIds('skills'),
+      // ถ้า backend ยังไม่รองรับ locations/experiences/unions จะยังไม่ต้องส่งก็ได้
+    };
 
-      // ✅ ส่งเป็น id lists
-      departmentIds: pickIds('departments'),
-      positionIds: pickIds('jobs'),
-      skillIds: pickIds('skills'),
-
-      // ✅ กลุ่ม string
-      locations: pickStrs('locations'),
-      experiences: pickStrs('experiences'),
-      unions: pickStrs('unions'),
-    } as any).subscribe({
+    this.api.searchProfiles(payload).subscribe({
       next: (res) => {
         const items = res.items ?? [];
         this.lastPageCount = items.length;
@@ -281,6 +276,7 @@ export class InfoSearchComponent implements OnInit {
       default: return '—';
     }
   }
+
   statusClass(m: Profile) {
     const s = this.statusOf(m);
     return {
@@ -289,6 +285,7 @@ export class InfoSearchComponent implements OnInit {
       'bg-red-500/20 text-red-300': s === 'inactive',
     };
   }
+
 
   provinceOf(m: Profile): string {
     const anyM = m as any;
