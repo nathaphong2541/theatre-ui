@@ -1,5 +1,5 @@
 {
-  "homeTitle": "กำหนดชื่อระบบของคุณ",
+  "homeTitle": "มูลนิธิละครไทย",
   "org_name": "มูลนิธิละครไทย",
   "org_tagline": "พื้นที่สร้างสรรค์เพื่อศิลปะการละคร และชุมชนผู้ชม",
   "login": "เข้าสู่ระบบ",
@@ -25,6 +25,7 @@
   "footer_activities": "กิจกรรม",
   "footer_contact": "ติดต่อเรา",
   "footer_followUs": "ติดตามเรา",
+  "footer_search": "ค้นหาสมาชิก",
   "footer_privacyPolicy": "นโยบายความเป็นส่วนตัว (PDPA) และเงื่อนไขการให้ข้อมูล",
   "footer_termsOfService": "ข้อตกลงการใช้งาน",
   "footer_allRights": "สงวนลิขสิทธิ์ทั้งหมด",
@@ -108,4 +109,21 @@
   "landing_about_text_8": "จัดการพอร์ต—รวมบทละคร",
   "landing_about_text_9": "เก็บโปรไฟล์ ไฟล์ผลงาน และหน้า “บทละคร” (อัปโหลด / ค้นหา) เพื่อใช้ในการคาสติ้ง ซ้อม และผลิตงาน",
   "landing_about_text_10": "วิธีใช้งานแพลตฟอร์ม",
-  "landing_about_text_11": "ดูเว็บไซต์หลักของมูลนิธิ"
+  "landing_about_text_11": "ดูเว็บไซต์หลักของมูลนิธิ",
+  "landing_search_text_1": "ค้นหามูลนิธิละครไทย",
+  "landing_search_text_2": "ค้นหาไดเรกทอรี่เพื่อค้นหาผู้สมัครที่ตรงกับเกณฑ์ของคุณ",
+  "landing_search_text_input_1": "พิมพ์ตำแหน่งงานเพื่อเริ่มต้น",
+  "landing_search_text_long_input_1": "ตัวกรองเริ่มต้นของคุณจะถูกเลือกโดยอัตโนมัติ และคุณสามารถปรับเปลี่ยนได้ตามที่คุณต้องการ",
+  "landing_search_text_input_2": "หรือเรียกดูด้วยตนเองตามแผนก:",
+  "landing_search_text_input_3": "คุณกำลังมองหางานอะไรที่จะเติมเต็ม?",
+  "landing_search_text_input_4": "คุณกำลังมองหาทักษะอะไร?",
+  "landing_search_text_input_5": "คุณกำลังจ้างงานในวันที่ระบุหรือไม่?",
+  "landing_search_text_input_6": "และตัวกรองเพิ่มเติมบางส่วนเพื่อปรับแต่งการค้นหาของคุณ:",
+  "landing_search_text_input_7": "สถานที่",
+  "landing_search_text_input_8": "สหภาพ/สมาคม",
+  "landing_search_text_input_9": "ระดับประสบการณ์",
+  "landing_search_text_input_10": "อัตลักษณ์ทางเพศ",
+  "landing_search_text_input_11": "ไม่พบสมาชิกที่ตรงเงื่อนไข",
+  "landing_search_text_input_12": "ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น",
+  "landing_search_text_input_13": "ล้างตัวกรอง"
+}

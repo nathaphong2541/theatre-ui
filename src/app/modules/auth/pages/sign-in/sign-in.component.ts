@@ -10,6 +10,12 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
 
+declare global {
+  interface Window {
+    onTurnstileSuccess: (token: string) => void;
+  }
+}
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
@@ -21,35 +27,39 @@ import { ToastService } from 'src/app/shared/components/toast/toast.service';
     ReactiveFormsModule,
     RouterLink,
     AngularSvgIconModule,
-    LanguageMenuComponent
+    LanguageMenuComponent,
   ],
 })
 export class SignInComponent implements OnInit {
 
-  serverError?: string; // เผื่อ template เดิมยังใช้แสดงข้อความใต้ฟอร์ม
+  turnstileToken?: string;
+
+  serverError?: string;
   loading = signal(false);
   showPassword = signal(false);
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    remember: [true]
+    remember: [true],
   });
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private auth: AuthService,
-    private toast: ToastService, // ✅ inject toast
-  ) { }
+    private toast: ToastService,
+  ) {
+    // callback จาก Cloudflare Turnstile (ชื่อเดียวกับ data-callback ใน HTML)
+    window.onTurnstileSuccess = (token: string) => {
+      this.turnstileToken = token;
+      // console.log('Turnstile token =', token);
+    };
+  }
 
   ngOnInit(): void { }
 
   get f() { return this.form.controls; }
-
-  togglePw() {
-    this.showPassword.set(!this.showPassword());
-  }
 
   async onSubmit() {
     if (this.form.invalid) {
@@ -61,6 +71,15 @@ export class SignInComponent implements OnInit {
       return;
     }
 
+    // // ต้องผ่าน Turnstile ก่อน
+    // if (!this.turnstileToken) {
+    //   this.toast.warning('กรุณายืนยันความปลอดภัยก่อนเข้าสู่ระบบ', {
+    //     title: 'ยังไม่ได้ตรวจสอบ',
+    //     duration: 3000,
+    //   });
+    //   return;
+    // }
+
     this.loading.set(true);
     this.serverError = undefined;
 
@@ -69,23 +88,25 @@ export class SignInComponent implements OnInit {
     try {
       await firstValueFrom(this.auth.login(email!, password!, !!remember));
 
-      // ✅ แจ้งเตือนสำเร็จ + redirect อัตโนมัติเมื่อหลอดหมดเวลา
       this.toast.success('เข้าสู่ระบบสำเร็จ', {
         title: 'ยินดีต้อนรับ 👋',
         duration: 2000,
-        onTimeout: () => this.router.navigate(['/']), // ⬅ redirect ทันทีที่ progress หมด
+        onTimeout: () => this.router.navigate(['/en']), // ปรับ path ตามที่คุณใช้จริง
       });
 
-      // หากต้องการนำทางทันที (ไม่รอหลอด): uncomment บรรทัดนี้
-      // this.router.navigate(['/']);
+      // ถ้าอยาก redirect ทันที ไม่รอ toast:
+      // this.router.navigate(['/en']);
     } catch (err: any) {
-      const msg = err?.error?.message || err?.message || 'ไม่สามารถเข้าสู่ระบบได้';
+      const msg =
+        err?.error?.message ||
+        err?.message ||
+        'ไม่สามารถเข้าสู่ระบบได้ในขณะนี้';
       this.serverError = msg;
 
       this.toast.error(msg, {
         title: 'เข้าสู่ระบบไม่สำเร็จ',
         actionText: 'ลืมรหัสผ่าน?',
-        onAction: () => this.router.navigate(['/auth/forgot-password']),
+        onAction: () => this.router.navigate(['/en/auth/forgot-password']),
         duration: 5000,
       });
     } finally {

@@ -67,27 +67,67 @@
       </div>
 
       <!-- Template เมนู -->
-      <ng-template #navLinks>
-        <li class="snap-start">
-          <a routerLink="/en" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">หน้าหลัก</a>
-        </li>
-        <li class="snap-start">
-          <a routerLink="/en" fragment="about" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">เกี่ยวกับเรา</a>
-        </li>
-        <li class="snap-start">
-          <a routerLink="/en" fragment="news" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">กิจกรรม</a>
-        <li class="snap-start">
-          <a routerLink="/en" fragment="profiles" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">ค้นหาสมาชิก</a>
-        </li>
-        <!-- <li class="snap-start">
-          <a routerLink="/en" fragment="donate" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">สนับสนุนเรา</a>
-        </li> -->
-      </ng-template>
+      <ul class="hidden md:flex items-center gap-3 lg:gap-5 text-sm">
+        <ng-template #navLinks>
+
+          <li class="snap-start">
+            <a routerLink="/en" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="nav-link-active"
+              (click)="closeMobileMenu()" class="
+          inline-flex items-center
+          px-3 py-2
+          rounded-lg
+          font-medium
+          text-gray-300
+
+          hover:text-white
+          hover:bg-white/10
+          hover:shadow hover:shadow-white/5
+
+          transition-all duration-200
+        " i18n="@@footer_home">
+              หน้าหลัก
+            </a>
+          </li>
+
+          <li class="snap-start">
+            <a routerLink="/en" fragment="about" routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
+          inline-flex items-center
+          px-3 py-2
+          rounded-lg
+          font-medium
+          text-gray-300
+
+          hover:text-white
+          hover:bg-white/10
+          hover:shadow hover:shadow-white/5
+
+          transition-all duration-200
+        " i18n="@@footer_about">
+              เกี่ยวกับเรา
+            </a>
+          </li>
+
+          <li class="snap-start">
+            <a routerLink="/en" fragment="profiles" routerLinkActive="nav-link-active" (click)="closeMobileMenu()"
+              class="
+          inline-flex items-center
+          px-3 py-2
+          rounded-lg
+          font-medium
+          text-gray-300
+
+          hover:text-white
+          hover:bg-white/10
+          hover:shadow hover:shadow-white/5
+
+          transition-all duration-200
+        " i18n="@@footer_search">
+              ค้นหาสมาชิก
+            </a>
+          </li>
+
+        </ng-template>
+      </ul>
 
 
       <!-- Mobile nav -->

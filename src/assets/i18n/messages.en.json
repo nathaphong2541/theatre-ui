@@ -1,5 +1,5 @@
 {
-  "homeTitle": "Name your system",
+  "homeTitle": "thai theatre foundation",
   "org_name": "Thai Theatre Foundation",
   "org_tagline": "A creative space for performing arts and audiences",
   "login": "Login",
@@ -25,6 +25,7 @@
   "footer_activities": "Activities",
   "footer_contact": "Contact",
   "footer_followUs": "Follow Us",
+  "footer_search": "Search Member",
   "footer_privacyPolicy": "Privacy Policy (PDPA) and Data Disclosure Terms",
   "footer_termsOfService": "Terms of Service",
   "footer_allRights": "All rights reserved.",
@@ -108,5 +109,21 @@
   "landing_about_text_8": "Manage Portfolios & Script Library",
   "landing_about_text_9": "Maintain profiles, upload work files, and access the “Script Library” for casting, rehearsals, and production workflows.",
   "landing_about_text_10": "How to Use This Platform",
-  "landing_about_text_11": "Visit the Foundation’s Main Website"
+  "landing_about_text_11": "Visit the Foundation’s Main Website",
+  "landing_search_text_1": "Search Thai Theatre",
+  "landing_search_text_2": "Search directory to find candidates that match your criteria",
+  "landing_search_text_input_1": "Type a job title to begin",
+  "landing_search_text_long_input_1": "ตัวกรองเริ่มต้นของคุณจะถูกเลือกโดยอัตโนมัติ และคุณสามารถปรับเปลี่ยนได้ตามที่คุณต้องการ",
+  "landing_search_text_input_2": "Or, browse manually by department:",
+  "landing_search_text_input_3": "What jobs are you looking to fill?",
+  "landing_search_text_input_4": "What skills are you looking for?",
+  "landing_search_text_input_5": "Are you hiring for a particular date?",
+  "landing_search_text_input_6": "And some additional filters to refine your search:",
+  "landing_search_text_input_7": "Locations",
+  "landing_search_text_input_8": "Unions",
+  "landing_search_text_input_9": "Experience Levels",
+  "landing_search_text_input_10": "Gender Identity",
+  "landing_search_text_input_11": "No matching members found",
+  "landing_search_text_input_12": "Try adjusting your search or choosing different filters",
+  "landing_search_text_input_13": "Clear filters"
 }

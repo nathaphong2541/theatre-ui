@@ -3,8 +3,10 @@
     <div class="mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
         <!-- Title -->
         <header class="mb-6">
-            <h2 class="text-2xl font-semibold tracking-tight">ค้นหาสมาชิก</h2>
-            <p class="mt-1 text-white/70">ค้นหาด้วยชื่อ/เลขสมาชิก พร้อมกรองตามทักษะ สถานที่ และอื่น ๆ</p>
+            <h2 class="text-2xl font-semibold tracking-tight" i18n="@@landing_search_text_1">
+                มูลนิธิละครไทยค้นหา</h2>
+            <p class="mt-1 text-white/70" i18n="@@landing_search_text_2">
+                ค้นหาไดเรกทอรี่เพื่อค้นหาผู้สมัครที่ตรงกับเกณฑ์ของคุณ</p>
         </header>
 
         <!-- Layout -->
@@ -14,7 +16,12 @@
                 <div class="sticky top-4 space-y-4">
                     <!-- Job title combobox -->
                     <section #jobBox class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <label class="block text-sm font-semibold tracking-wide mb-2">Type a job title to begin.</label>
+                        <div class="flex items-center justify-between">
+                            <label class="block text-sm font-semibold tracking-wide mb-2"
+                                i18n="@@landing_search_text_input_1">พิมพ์ตำแหน่งงานเพื่อเริ่มต้น</label>
+                            <button class="mb-2 text-xs underline text-white/70 hover:text-white"
+                                (click)="clearAllFilters()" *ngIf="hasJob && activeChipCount()">ล้างทั้งหมด</button>
+                        </div>
 
                         <div class="relative">
                             <input #jobInput [(ngModel)]="jobQuery" (input)="onJobQueryChange()" (focus)="openJobMenu()"
@@ -56,9 +63,7 @@
                         </div>
                     </section>
 
-
-                    <!-- Selected chips: หลังเลือก Job แล้วค่อยแสดง -->
-                    <div *ngIf="hasJob && activeChipCount()" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <!-- <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                         <div class="mb-2 text-sm font-semibold">ตัวกรองที่เลือก</div>
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let c of selectedChips()" type="button"
@@ -67,18 +72,17 @@
                                 {{ c.label }} ✕
                             </button>
                         </div>
-                        <button class="mt-3 text-xs underline text-white/70 hover:text-white"
-                            (click)="clearAllFilters()">ล้างทั้งหมด</button>
-                    </div>
+                    </div> -->
 
                     <!-- Departments: แสดงเสมอ -->
                     <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide">หมวดงาน</h3>
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_2">
+                            หรือเรียกดูด้วยตนเองตามแผนก</h3>
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let d of departmentsApi" type="button"
                                 (click)="toggleTag('departments', d.id)"
                                 [class]="chipClass(isSelected('departments', d.id))">
-                                {{ d.nameTh || d.nameEn }}
+                                {{ labelDept(d) }}
                             </button>
                         </div>
                     </section>
@@ -86,29 +90,32 @@
                     <!-- Jobs: แสดง แต่ disabled ถ้ายังไม่เลือก department -->
                     <section class="rounded-2xl border border-white/10 bg-white/5 p-4"
                         [class.opacity-50]="!hasDepartment" [class.pointer-events-none]="!hasDepartment">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ตำแหน่งที่ต้องการ</h3>
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_3">
+                            คุณกำลังมองหางานอะไรที่จะเติมเต็ม</h3>
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let j of jobsFiltered" type="button" (click)="toggleTag('jobs', j.id)"
                                 [class]="chipClass(isSelected('jobs', j.id))">
-                                {{ j.nameTh || j.nameEn }}
+                                {{ labelPos(j) }}
                             </button>
                         </div>
-                        <p *ngIf="!hasDepartment" class="mt-2 text-xs text-white/50">เลือกหมวดงานก่อน</p>
+                        <!-- <p *ngIf="!hasDepartment" class="mt-2 text-xs text-white/50">เลือกหมวดงานก่อน</p> -->
                     </section>
 
                     <!-- Skills + ฟิลเตอร์อื่น ๆ: โผล่หลังเลือก Job แล้ว -->
                     <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ทักษะ</h3>
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_4">
+                            คุณกำลังมองหาทักษะอะไร?</h3>
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let s of skillsFiltered" type="button" (click)="toggleTag('skills', s.id)"
                                 [class]="chipClass(isSelected('skills', s.id))">
-                                {{ s.nameTh || s.nameEn }}
+                                {{ labelSkill(s) }}
                             </button>
                         </div>
                     </section>
 
                     <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide">ช่วงวันที่</h3>
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_5">
+                            คุณกำลังจ้างงานในวันที่ระบุหรือไม่?</h3>
                         <div class="grid grid-cols-2 gap-2">
                             <input type="date" [(ngModel)]="dateFrom" name="dateFrom"
                                 class="rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-900 ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]">
@@ -118,16 +125,34 @@
                     </section>
 
                     <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5">
-                        <!-- สถานที่ -->
-                        <details class="group border-b border-white/10 p-4" open>
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide  px-4 pt-4"
+                            i18n="@@landing_search_text_input_6">
+                            และตัวกรองเพิ่มเติมบางส่วนเพื่อปรับแต่งการค้นหาของคุณ:</h3>
+                        <details class="group border-b border-white/10 p-4">
                             <summary class="flex cursor-pointer list-none items-center justify-between">
-                                <span class="text-sm font-semibold">สถานที่</span>
+                                <span class="text-sm font-semibold" i18n="@@landing_search_text_input_7">สถานที่</span>
                                 <span class="text-white/50 group-open:rotate-180 transition">▾</span>
                             </summary>
                             <div class="mt-3 flex flex-wrap gap-2">
-                                <button *ngFor="let l of locations" type="button" (click)="toggleTag('locations', l)"
-                                    [class]="chipClass(isSelected('locations', l))">
-                                    {{ l }}
+                                <button *ngFor="let l of workLocationsApi" type="button"
+                                    (click)="toggleTag('locations', l.id)"
+                                    [class]="chipClass(isSelected('locations', l.id))">
+                                    {{ labelWorkLocation(l) }}
+                                </button>
+                            </div>
+                        </details>
+
+                        <!-- สมาคม -->
+                        <details class="group border-b border-white/10 p-4">
+                            <summary class="flex cursor-pointer list-none items-center justify-between">
+                                <span class="text-sm font-semibold"
+                                    i18n="@@landing_search_text_input_8">สหภาพ/สมาคม</span>
+                                <span class="text-white/50 group-open:rotate-180 transition">▾</span>
+                            </summary>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                <button *ngFor="let u of unionsApi" type="button" (click)="toggleTag('unions', u.id)"
+                                    [class]="chipClass(isSelected('unions', u.id))">
+                                    {{ labelUnion(u) }}
                                 </button>
                             </div>
                         </details>
@@ -135,34 +160,33 @@
                         <!-- ประสบการณ์ -->
                         <details class="group border-b border-white/10 p-4">
                             <summary class="flex cursor-pointer list-none items-center justify-between">
-                                <span class="text-sm font-semibold">ระดับประสบการณ์</span>
+                                <span class="text-sm font-semibold"
+                                    i18n="@@landing_search_text_input_9">ระดับประสบการณ์</span>
                                 <span class="text-white/50 group-open:rotate-180 transition">▾</span>
                             </summary>
                             <div class="mt-3 flex flex-wrap gap-2">
-                                <button *ngFor="let e of experiences" type="button"
-                                    (click)="toggleTag('experiences', e)"
-                                    [class]="chipClass(isSelected('experiences', e))">
-                                    {{ e }}
+                                <button *ngFor="let e of experiencesApi" type="button"
+                                    (click)="toggleTag('experiences', e.id)"
+                                    [class]="chipClass(isSelected('experiences', e.id))">
+                                    {{ labelExperience(e) }}
                                 </button>
                             </div>
                         </details>
 
-                        <!-- สมาคม -->
-                        <details class="group p-4">
+                        <!-- เพศ -->
+                        <details class="group border-b border-white/10 p-4">
                             <summary class="flex cursor-pointer list-none items-center justify-between">
-                                <span class="text-sm font-semibold">สหภาพ/สมาคม</span>
+                                <span class="text-sm font-semibold" i18n="@@landing_search_text_input_10">เพศ</span>
                                 <span class="text-white/50 group-open:rotate-180 transition">▾</span>
                             </summary>
                             <div class="mt-3 flex flex-wrap gap-2">
-                                <button *ngFor="let u of unions" type="button" (click)="toggleTag('unions', u)"
-                                    [class]="chipClass(isSelected('unions', u))">
-                                    {{ u }}
+                                <button *ngFor="let g of gendersApi" type="button" (click)="toggleTag('genders', g.id)"
+                                    [class]="chipClass(isSelected('genders', g.id))">
+                                    {{ labelGender(g) }}
                                 </button>
                             </div>
                         </details>
                     </section>
-
-
                 </div>
             </aside>
 
@@ -253,13 +277,14 @@
                     </article>
                 </div>
 
-                <!-- Empty -->
-                <div *ngIf="!loading && results.length===0"
+                <div *ngIf="!loading && results.length===0 && hasJob && activeChipCount()"
                     class="rounded-2xl border border-dashed border-white/15 p-10 text-center">
                     <div class="mx-auto mb-3 h-10 w-10 rounded-full bg-white/10"></div>
-                    <p class="font-medium text-white">ไม่พบสมาชิกที่ตรงเงื่อนไข</p>
-                    <p class="mt-1 text-sm text-white/70">ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
-                    <button (click)="clearFilters()"
+                    <p class="font-medium text-white" i18n="@@landing_search_text_input_11">ไม่พบสมาชิกที่ตรงเงื่อนไข
+                    </p>
+                    <p class="mt-1 text-sm text-white/70" i18n="@@landing_search_text_input_12">
+                        ลองเปลี่ยนคำค้นหรือเลือกตัวกรองอื่น</p>
+                    <button (click)="clearFilters()" i18n="@@landing_search_text_input_13"
                         class="mt-4 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10">
                         ล้างตัวกรอง
                     </button>

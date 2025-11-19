@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Profile, InfoSearchService, ProfileSearchOptions } from './service/info-search.service';
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
+import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
 
 function toAbsolute(url?: string | null): string | null {
   if (!url) return null;
@@ -14,25 +15,34 @@ function toAbsolute(url?: string | null): string | null {
 }
 
 type SelectedMap = {
-  departments: Set<number>; // ✅ ใช้ ID
-  jobs: Set<number>;        // ✅ ใช้ ID (position)
-  skills: Set<number>;      // ✅ ใช้ ID
-  locations: Set<string>;
-  experiences: Set<string>;
-  unions: Set<string>;
+  departments: Set<number>;
+  jobs: Set<number>;
+  skills: Set<number>;
+  locations: Set<number>;     // ✅ เปลี่ยนเป็น number (id)
+  experiences: Set<number>;   // ✅
+  unions: Set<number>;        // ✅
+  genders: Set<number>;       // ✅ ใหม่
 };
+
 type SelectedGroup = keyof SelectedMap;
 
 // API models (ตาม payload ที่ให้มา)
 type Department = { id: number; nameTh: string; nameEn: string; description?: string };
+
 type Position = {
   id: number; nameTh: string; nameEn: string; description?: string;
   departmentId: number; departmentNameTh: string; departmentNameEn: string;
 };
+
 type Skill = {
   id: number; nameTh: string; nameEn: string; description?: string;
   positionId: number; positionNameTh: string; positionNameEn: string;
 };
+
+type WorkLocation = { id: number; nameTh: string; nameEn: string; description?: string };
+type UnionMembership = { id: number; nameTh: string; nameEn: string; description?: string };
+type ExperienceLevel = { id: number; nameTh: string; nameEn: string; description?: string };
+type GenderIdentity = { id: number; nameTh: string; nameEn: string; description?: string };
 
 @Component({
   selector: '[info-search]',
@@ -52,8 +62,15 @@ export class InfoSearchComponent implements OnInit {
   departmentsApi: Department[] = [];
   positionsApi: Position[] = [];
   skillsApi: Skill[] = [];
+  workLocationsApi: WorkLocation[] = [];
+  unionsApi: UnionMembership[] = [];
+  experiencesApi: ExperienceLevel[] = [];
+  gendersApi: GenderIdentity[] = [];
 
-  // index แบบเร็ว (id -> obj)
+  workLocationById = new Map<number, WorkLocation>();
+  unionById = new Map<number, UnionMembership>();
+  experienceById = new Map<number, ExperienceLevel>();
+  genderById = new Map<number, GenderIdentity>();
   deptById = new Map<number, Department>();
   posById = new Map<number, Position>();
   skillById = new Map<number, Skill>();
@@ -74,7 +91,7 @@ export class InfoSearchComponent implements OnInit {
   > = [];
 
   readonly selectedKeys: SelectedGroup[] = [
-    'departments', 'jobs', 'skills', 'locations', 'experiences', 'unions'
+    'departments', 'jobs', 'skills', 'locations', 'experiences', 'unions', 'genders'
   ];
 
   selected: SelectedMap = {
@@ -84,6 +101,7 @@ export class InfoSearchComponent implements OnInit {
     locations: new Set(),
     experiences: new Set(),
     unions: new Set(),
+    genders: new Set(),
   };
 
   // หน้า/โหลด
@@ -98,7 +116,8 @@ export class InfoSearchComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private api: InfoSearchService,
-    private publicService: PubilcService
+    private publicService: PubilcService,
+    private ls: LocaleSwitcherService,
   ) { }
 
   ngOnInit(): void {
@@ -106,9 +125,26 @@ export class InfoSearchComponent implements OnInit {
     this.loadMaster().then(() => this.search(true));
   }
 
+  get isThai(): boolean {
+    // ให้เหมือน HandleProfileComponent
+    return this.ls.currentLocale() === 'th';
+  }
+
+  private pickLabel(th?: string, en?: string): string {
+    const lang = this.ls.currentLocale();   // อ่านจาก URL / service
+    const isTh = lang === 'th';
+
+    if (isTh) {
+      return (th && th.trim()) || (en && en.trim()) || '';
+    } else {
+      return (en && en.trim()) || (th && th.trim()) || '';
+    }
+  }
+
   // ===== Load master data =====
   private async loadMaster(): Promise<void> {
     await Promise.all([
+      // Department
       new Promise<void>(resolve => {
         this.publicService.getDepartment().subscribe(res => {
           this.departmentsApi = res?.items ?? [];
@@ -117,6 +153,7 @@ export class InfoSearchComponent implements OnInit {
           resolve();
         }, _ => resolve());
       }),
+      // Position
       new Promise<void>(resolve => {
         this.publicService.getPosition().subscribe(res => {
           this.positionsApi = res?.items ?? [];
@@ -125,6 +162,7 @@ export class InfoSearchComponent implements OnInit {
           resolve();
         }, _ => resolve());
       }),
+      // Skills
       new Promise<void>(resolve => {
         this.publicService.getSkills().subscribe(res => {
           this.skillsApi = Array.isArray(res) ? res : (res?.items ?? []);
@@ -133,8 +171,53 @@ export class InfoSearchComponent implements OnInit {
           resolve();
         }, _ => resolve());
       }),
+
+      // ✅ Work location
+      new Promise<void>(resolve => {
+        this.publicService.getWorkLocaltion().subscribe(res => {
+          const items = Array.isArray(res) ? res : (res?.items ?? []);
+          this.workLocationsApi = items;
+          this.workLocationById.clear();
+          this.workLocationsApi.forEach(w => this.workLocationById.set(w.id, w));
+          resolve();
+        }, _ => resolve());
+      }),
+
+      // ✅ Union membership
+      new Promise<void>(resolve => {
+        this.publicService.getUnionMembership().subscribe(res => {
+          const items = Array.isArray(res) ? res : (res?.items ?? []);
+          this.unionsApi = items;
+          this.unionById.clear();
+          this.unionsApi.forEach(u => this.unionById.set(u.id, u));
+          resolve();
+        }, _ => resolve());
+      }),
+
+      // ✅ Experience level
+      new Promise<void>(resolve => {
+        this.publicService.getExperienceLevel().subscribe(res => {
+          const items = Array.isArray(res) ? res : (res?.items ?? []);
+          this.experiencesApi = items;
+          this.experienceById.clear();
+          this.experiencesApi.forEach(e => this.experienceById.set(e.id, e));
+          resolve();
+        }, _ => resolve());
+      }),
+
+      // ✅ Gender identity
+      new Promise<void>(resolve => {
+        this.publicService.getGenderIdentity().subscribe(res => {
+          const items = Array.isArray(res) ? res : (res?.items ?? []);
+          this.gendersApi = items;
+          this.genderById.clear();
+          this.gendersApi.forEach(g => this.genderById.set(g.id, g));
+          resolve();
+        }, _ => resolve());
+      }),
     ]);
   }
+
 
   goProfile(m: Profile) {
     const anyM = m as any;
@@ -159,10 +242,17 @@ export class InfoSearchComponent implements OnInit {
     const deptId = [...this.selected.departments][0];
     return deptId ? this.positionsApi.filter(p => p.departmentId === deptId) : [];
   }
+  
   get skillsFiltered(): Skill[] {
-    const posId = [...this.selected.jobs][0];
-    return posId ? this.skillsApi.filter(s => s.positionId === posId) : [];
+    // เอา id ของ jobs ที่เลือกทั้งหมดออกมา
+    const posIds = Array.from(this.selected.jobs) as number[];
+
+    if (!posIds.length) return [];
+
+    const posSet = new Set(posIds);
+    return this.skillsApi.filter(s => posSet.has(s.positionId));
   }
+
 
   // ===== Actions =====
   onSubmit(): void {
@@ -226,10 +316,6 @@ export class InfoSearchComponent implements OnInit {
 
     const pickIds = (k: 'departments' | 'jobs' | 'skills') =>
       Array.from(this.selected[k] as Set<number>);
-
-    const pickStrs = (k: 'locations' | 'experiences' | 'unions') =>
-      Array.from(this.selected[k] as Set<string>);
-
 
     const payload: ProfileSearchOptions = {
       q: this.q?.trim(),
@@ -340,24 +426,35 @@ export class InfoSearchComponent implements OnInit {
     const set = this.selected[group] as Set<number | string>;
     if (!set) return;
 
-    if (group === 'departments' || group === 'jobs') {
-      // single-select
+    if (group === 'departments') {
+      // 🔹 department ยังเป็น single-select
       set.clear();
       set.add(value);
-      this.resetDownstream(group);
+      this.resetDownstream('departments'); // ล้าง jobs + skills
     } else {
-      set.has(value) ? set.delete(value) : set.add(value);
+      // 🔹 อื่น ๆ รวมทั้ง jobs = multi-select
+      if (set.has(value)) {
+        set.delete(value);
+      } else {
+        set.add(value);
+      }
+
+      // ถ้าเปลี่ยน jobs ให้ล้าง skills ทุกครั้ง (เพราะผูกกับ position)
+      if (group === 'jobs') {
+        this.resetDownstream('jobs'); // ล้าง skills อย่างเดียว
+      }
     }
 
     if (this.hasDepartment && this.hasJob) {
       this.onSubmit();
     } else {
-      // ยังไม่ครบเงื่อนไข -> ไม่ยิงค้นหา
+      // ยังไม่มี department/job ครบคู่ -> ไม่ค้นหา
       this.results = [];
       this.total = 0;
       this.lastPageCount = 0;
     }
   }
+
 
   removeChip(group: SelectedGroup, value: number | string): void {
     const set = this.selected[group] as Set<number | string>;
@@ -387,25 +484,100 @@ export class InfoSearchComponent implements OnInit {
 
     // departments
     for (const id of this.selected.departments) {
-      out.push({ group: 'departments', value: id, label: this.deptById.get(id)?.nameTh ?? `Dept #${id}` });
+      const d = this.deptById.get(id);
+      out.push({
+        group: 'departments',
+        value: id,
+        label: this.pickLabel(d?.nameTh, d?.nameEn) || `Dept #${id}`,
+      });
     }
+
     // jobs
     for (const id of this.selected.jobs) {
       const p = this.posById.get(id);
-      out.push({ group: 'jobs', value: id, label: p?.nameTh ?? `Position #${id}` });
+      out.push({
+        group: 'jobs',
+        value: id,
+        label: this.pickLabel(p?.nameTh, p?.nameEn) || `Position #${id}`,
+      });
     }
+
     // skills
     for (const id of this.selected.skills) {
       const s = this.skillById.get(id);
-      out.push({ group: 'skills', value: id, label: s?.nameTh ?? `Skill #${id}` });
+      out.push({
+        group: 'skills',
+        value: id,
+        label: this.pickLabel(s?.nameTh, s?.nameEn) || `Skill #${id}`,
+      });
     }
-    // others
-    for (const v of this.selected.locations) out.push({ group: 'locations', value: v, label: v });
-    for (const v of this.selected.experiences) out.push({ group: 'experiences', value: v, label: v });
-    for (const v of this.selected.unions) out.push({ group: 'unions', value: v, label: v });
+
+    // ✅ locations
+    for (const id of this.selected.locations) {
+      const w = this.workLocationById.get(id);
+      out.push({
+        group: 'locations',
+        value: id,
+        label: w ? this.labelWorkLocation(w) : `Location #${id}`,
+      });
+    }
+
+    // ✅ experiences
+    for (const id of this.selected.experiences) {
+      const e = this.experienceById.get(id);
+      out.push({
+        group: 'experiences',
+        value: id,
+        label: e ? this.labelExperience(e) : `Experience #${id}`,
+      });
+    }
+
+    // ✅ unions
+    for (const id of this.selected.unions) {
+      const u = this.unionById.get(id);
+      out.push({
+        group: 'unions',
+        value: id,
+        label: u ? this.labelUnion(u) : `Union #${id}`,
+      });
+    }
+
+    // ✅ genders
+    for (const id of this.selected.genders) {
+      const g = this.genderById.get(id);
+      out.push({
+        group: 'genders',
+        value: id,
+        label: g ? this.labelGender(g) : `Gender #${id}`,
+      });
+    }
 
     return out;
   }
+
+  labelDept(d: Department): string {
+    return this.pickLabel(d.nameTh, d.nameEn);
+  }
+  labelPos(p: Position): string {
+    return this.pickLabel(p.nameTh, p.nameEn);
+  }
+  labelSkill(s: Skill): string {
+    return this.pickLabel(s.nameTh, s.nameEn);
+  }
+  labelWorkLocation(w: WorkLocation): string {
+    return this.pickLabel(w.nameTh, w.nameEn);
+  }
+  labelUnion(u: UnionMembership): string {
+    return this.pickLabel(u.nameTh, u.nameEn);
+  }
+  labelExperience(e: ExperienceLevel): string {
+    return this.pickLabel(e.nameTh, e.nameEn);
+  }
+  labelGender(g: GenderIdentity): string {
+    return this.pickLabel(g.nameTh, g.nameEn);
+  }
+
+
   activeChipCount(): number { return this.selectedChips().length; }
 
   // ===== Combobox =====
@@ -422,20 +594,26 @@ export class InfoSearchComponent implements OnInit {
     const q = this.jobQuery.trim().toLowerCase();
     const out: typeof this.jobFlat = [];
 
-    // group positions by department
     const group = new Map<number, Position[]>();
+
     for (const p of this.positionsApi) {
-      if (q && !(`${p.nameTh} ${p.nameEn}`.toLowerCase().includes(q))) continue;
+      const searchBlob = `${p.nameTh} ${p.nameEn}`.toLowerCase();
+      if (q && !searchBlob.includes(q)) continue;
+
       const arr = group.get(p.departmentId) ?? [];
       arr.push(p);
       group.set(p.departmentId, arr);
     }
 
     for (const [deptId, items] of group) {
-      const deptName = this.deptById.get(deptId)?.nameTh ?? `Dept #${deptId}`;
+      const dept = this.deptById.get(deptId);
+      const deptName = this.pickLabel(dept?.nameTh, dept?.nameEn) || `Dept #${deptId}`;
+
       out.push({ type: 'header', deptName });
+
       for (const j of items) {
-        out.push({ type: 'item', deptId, posId: j.id, posName: j.nameTh || j.nameEn });
+        const posName = this.pickLabel(j.nameTh, j.nameEn) || `Position #${j.id}`;
+        out.push({ type: 'item', deptId, posId: j.id, posName });
       }
     }
 
@@ -448,6 +626,7 @@ export class InfoSearchComponent implements OnInit {
     this.jobOpen = true;
     this.rebuildJobMenu();
   }
+
   closeJobMenuSoon() { setTimeout(() => (this.jobOpen = false), 80); }
   onJobQueryChange() { this.openJobMenu(); }
 
@@ -480,7 +659,7 @@ export class InfoSearchComponent implements OnInit {
   }
 
   // เลือกจากเมนู: set department + job ด้วย ID
-  pickJob(deptId: number, posId: number, posName: string) {
+  pickJob(deptId: number, posId: number, posNameFromMenu: string) {
     this.selected.departments.clear();
     this.selected.departments.add(deptId);
     this.resetDownstream('departments');
@@ -489,10 +668,12 @@ export class InfoSearchComponent implements OnInit {
     this.selected.jobs.add(posId);
     this.resetDownstream('jobs');
 
-    // อัปเดต query + ปิดเมนู + ยิงค้นหา
-    this.jobQuery = posName || this.posById.get(posId)?.nameTh || '';
+    const pos = this.posById.get(posId);
+    this.jobQuery = posNameFromMenu || this.pickLabel(pos?.nameTh, pos?.nameEn);
+
     this.jobOpen = false;
 
     if (this.hasDepartment && this.hasJob) this.onSubmit();
   }
+
 }
