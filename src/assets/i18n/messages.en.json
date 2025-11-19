@@ -19,7 +19,6 @@
   "or": "or",
   "join_now": "Apply for membership (no charge)",
   "footer_note": "© Thai Theatre Foundation — for Performing Arts Education and Development",
-
   "footer_quickLinks": "Quick Links",
   "footer_home": "Home",
   "footer_about": "About",
@@ -29,7 +28,6 @@
   "footer_privacyPolicy": "Privacy Policy (PDPA) and Data Disclosure Terms",
   "footer_termsOfService": "Terms of Service",
   "footer_allRights": "All rights reserved.",
-
   "policy_title": "Privacy Policy (PDPA) and Data Disclosure Terms",
   "policy_readHint": "Please read thoroughly. Scroll to the bottom to enable acceptance.",
   "policy_version": "Version : ",
@@ -66,7 +64,6 @@
   "policy_scrollToEnable": "You must scroll to the end before you can accept.",
   "policy_back": "Back",
   "policy_next": "Next",
-
   "signup_title": "Create a New Account",
   "signup_subtitle": "Fill in your information to get started",
   "signup_firstName": "First Name",
@@ -94,5 +91,22 @@
   "err_lastName_max": "Last name is too long",
   "err_confirm_required": "Please confirm your password",
   "err_confirm_mismatch": "Passwords do not match",
-  "err_over18_required": "You must confirm that you are at least 18 years old"
+  "err_over18_required": "You must confirm that you are at least 18 years old",
+  "landing_hero_text_1": "THAI PERFORMING ARTISTS HUB",
+  "landing_hero_text_2": "SPACE FOR THAI PERFORMING ARTISTS",
+  "landing_hero_text_3": "Connecting Thai Artists together, Fostering collaboration, Creating opportunity to work!",
+  "landing_hero_button_1": "Artists",
+  "landing_hero_button_2": "Opportunity",
+  "landing_about_text_main": "PLATFORM FOR THEATRE WORK",
+  "landing_about_text_1": "A connecting platform for “Finding Performing Artists” and “Casting Opportunities.”",
+  "landing_about_text_2": "This platform is designed to seamlessly connect professionals in the Thai theatre industry with employers—quickly and accurately. It features comprehensive portfolio profiles, skill- and discipline-based search capabilities, and clear, well-organized casting and job postings.",
+  "landing_about_text_3": "The full information about the Thai Theatre Foundation is available on the main website. Here, the focus is on the “work-related space”, allowing newcomers to immediately understand where to begin and what to do next.",
+  "landing_about_text_4": "Find the Right Talent Quickly and Accurately",
+  "landing_about_text_5": "Search by role, skill set, or location—complete with verifiable portfolios and professional credits.",
+  "landing_about_text_6": "Clear and Transparent Job Listings",
+  "landing_about_text_7": "Provide detailed information on roles, requirements, schedules, locations, and compensation to help performers and crew make informed decisions.",
+  "landing_about_text_8": "Manage Portfolios & Script Library",
+  "landing_about_text_9": "Maintain profiles, upload work files, and access the “Script Library” for casting, rehearsals, and production workflows.",
+  "landing_about_text_10": "How to Use This Platform",
+  "landing_about_text_11": "Visit the Foundation’s Main Website"
 }

@@ -20,8 +20,9 @@
 
         <!-- Center: Logo + Title -->
         <div class="flex min-w-0 items-center gap-2 md:mx-4 sm:gap-3">
-          <a routerLink="/en" class="rounded-sm p-1 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
-            <img src="assets/images/logo.png" width="28" height="28" class="h-7 w-7 sm:h-9 sm:w-9" alt="โลโก้" />
+          <a routerLink="/en"
+            class="flex shrink-0 items-center rounded-sm p-1 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+            <img src="assets/images/logo.png" class="h-12 w-h-12 sm:h-12 sm:w-12 object-contain" alt="โลโก้" />
           </a>
           <h1 i18n="@@homeTitle"
             class="truncate font-bold uppercase tracking-wide text-sm text-white sm:text-base md:text-lg">
@@ -77,15 +78,15 @@
         </li>
         <li class="snap-start">
           <a routerLink="/en" fragment="news" routerLinkActive="is-active" class="nav-link"
-            (click)="closeMobileMenu()">ข่าวสาร</a>
+            (click)="closeMobileMenu()">กิจกรรม</a>
         <li class="snap-start">
           <a routerLink="/en" fragment="profiles" routerLinkActive="is-active" class="nav-link"
             (click)="closeMobileMenu()">ค้นหาสมาชิก</a>
         </li>
-        <li class="snap-start">
+        <!-- <li class="snap-start">
           <a routerLink="/en" fragment="donate" routerLinkActive="is-active" class="nav-link"
             (click)="closeMobileMenu()">สนับสนุนเรา</a>
-        </li>
+        </li> -->
       </ng-template>
 
 

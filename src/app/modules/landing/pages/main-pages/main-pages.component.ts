@@ -12,7 +12,7 @@ import { InfoDonetComponent } from '../../components/info-donet/info-donet.compo
     CommonModule,
     InfoHeroSectionComponent,
     InfoAboutComponent,
-    InfoNewsComponent,
+    // InfoNewsComponent,
     InfoSearchComponent,
     // InfoDonetComponent
   ],

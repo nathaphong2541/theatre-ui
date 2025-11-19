@@ -3,12 +3,13 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:gap-10">
             <div class="max-w-2xl">
-                <h1 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-                    พื้นที่ของคนละครไทย
-                    <span class="block text-[#8aab06]">หาคนทำงาน — หางานละคร</span>
+                <h1 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl leading-12"
+                    i18n="@@landing_hero_text_1">
+                    ศูนย์รวมศิลปินการแสดงไทย
                 </h1>
-                <p class="mt-4 sm:mt-5 text-base sm:text-lg leading-7 sm:leading-8 text-white/80">
-                    เชื่อมโยงนักแสดง ผู้กำกับ ทีมโปรดักชัน และผู้จัดงานเข้าหากัน เพื่อสร้างโอกาสใหม่ในวงการ
+                <p i18n="@@landing_hero_text_3"
+                    class="mt-4 sm:mt-5 text-base sm:text-lg leading-7 sm:leading-8 text-[#8aab06]">
+                    พื้นที่สำหรับศิลปินนักแสดงชาวไทย
                 </p>
 
                 <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
@@ -19,7 +20,7 @@
                             <circle cx="11" cy="11" r="7" stroke-width="2" />
                             <path d="M20 20l-3.5-3.5" stroke-width="2" />
                         </svg>
-                        ค้นหาคนทำงาน
+                        <label for="" i18n="@@landing_hero_button_1">ศิลปิน</label>
                     </a>
 
                     <a routerLink="/jobs"
@@ -29,18 +30,13 @@
                             <path d="M3 10h18v9H3z" stroke-width="2" />
                             <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke-width="2" />
                         </svg>
-                        หางานละคร
-                    </a>
-
-                    <a href="#about"
-                        class="text-center sm:text-left text-base font-medium text-white/80 hover:text-[#8aab06] transition w-full sm:w-auto">
-                        รู้จักเรา →
+                        <label for="" i18n="@@landing_hero_button_2">โอกาส</label>
                     </a>
                 </div>
             </div>
 
-            <div class="mt-8 lg:mt-0 lg:ml-10">
-                <img class="mx-auto w-full max-w-[420px] rounded-2xl shadow-2xl ring-1 ring-white/10"
+            <div class="mt-8 lg:mt-0 lg:ml-10 flex lg:justify-end justify-center">
+                <img class="w-full max-w-[325px] rounded-2xl shadow-2xl ring-1 ring-white/10"
                     src="assets/images/hero.png" alt="Thai theatre platform" loading="lazy" decoding="async" />
             </div>
         </div>
