@@ -133,7 +133,7 @@
                                 </svg-icon>
                                 <div class="leading-tight truncate">
                                     <div class="text-sm font-medium truncate">{{ l.label }}</div>
-                                    <!-- <div class="text-xs text-white/60 truncate">{{ l.value }}</div> -->
+                                    <div class="text-xs text-white/60 truncate">{{ l.value }}</div>
                                 </div>
                             </div>
                             <svg-icon src="assets/icons/heroicons/outline/arrow-up-right.svg"
@@ -452,14 +452,14 @@
 
                                 <!-- ids (โชว์เลขไปก่อน ถ้ามี master data เดี๋ยวค่อย map ชื่อจริง) -->
                                 <div class="mt-2 flex flex-wrap gap-2 text-[11px] text-white/60">
-                                    <span *ngIf="c.deptIds?.length">
-                                        Dept: {{ c.deptIds.join(', ') }}
+                                    <span *ngIf="deptNames(c).length">
+                                        Dept: {{ deptNames(c).join(', ') }}
                                     </span>
-                                    <span *ngIf="c.posIds?.length">
-                                        Pos: {{ c.posIds.join(', ') }}
+                                    <span *ngIf="posNames(c).length">
+                                        Pos: {{ posNames(c).join(', ') }}
                                     </span>
-                                    <span *ngIf="c.skillIds?.length">
-                                        Skills: {{ c.skillIds.join(', ') }}
+                                    <span *ngIf="skillNames(c).length">
+                                        Skills: {{ skillNames(c).join(', ') }}
                                     </span>
                                 </div>
                             </article>

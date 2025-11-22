@@ -5,6 +5,8 @@ import { VideoGalleryComponent } from '../video-gallery/video-gallery.component'
 import { Router } from '@angular/router';
 import { ProfileService } from '../../../service/profile.service';
 import { environment } from 'src/environments/environment';
+import { MasterItem, PubilcService } from 'src/app/shared/service/public/pubilc.service';
+import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
 
 type Tag = { label: string; icon?: string };
 type Link = { type: 'email' | 'phone' | 'link'; label: string; value: string; href: string; icon: string };
@@ -115,18 +117,80 @@ export class ListProfileComponent implements OnInit {
 
   hasAvatar = computed(() => !!this.avatarUrl());
 
+  private deptMap = new Map<number, MasterItem>();
+  private posMap = new Map<number, MasterItem>();
+  private skillMap = new Map<number, MasterItem>();
+
+
   constructor(
     private router: Router,
     private profileService: ProfileService,
+    private publicService: PubilcService,        // ✅ เพิ่ม
+    private ls: LocaleSwitcherService,          // ✅ เพิ่ม
   ) { }
+
+
+  private getLangPrefix(): string | null {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean); // ตัด '' ออก
+    return segments.length > 0 ? segments[0] : null;
+  }
+
+  // เลือกชื่อ th/en ตาม locale ปัจจุบัน
+  private pickLabel(item?: MasterItem | null, fallback: string = ''): string {
+    if (!item) return fallback;
+
+    let lang = 'th';
+    try {
+      lang = this.ls.currentLocale();           // เหมือนที่ใช้ใน HandleProfileComponent
+    } catch {
+      lang = 'th';
+    }
+
+    const isTh = lang === 'th';
+
+    return isTh
+      ? (item.nameTh || item.nameEn || fallback || `${item.id}`)
+      : (item.nameEn || item.nameTh || fallback || `${item.id}`);
+  }
+
+  // helper แปลง Credit → ชื่อจริง
+  deptNames(c: Credit): string[] {
+    return (c.deptIds || [])
+      .map(id => this.deptMap.get(id))
+      .filter((x): x is MasterItem => !!x)
+      .map(x => this.pickLabel(x));
+  }
+
+  posNames(c: Credit): string[] {
+    return (c.posIds || [])
+      .map(id => this.posMap.get(id))
+      .filter((x): x is MasterItem => !!x)
+      .map(x => this.pickLabel(x));
+  }
+
+  skillNames(c: Credit): string[] {
+    return (c.skillIds || [])
+      .map(id => this.skillMap.get(id))
+      .filter((x): x is MasterItem => !!x)
+      .map(x => this.pickLabel(x));
+  }
 
   ngOnInit() {
     this.isLoading.set(true);
 
     this.profileService.getProfile().subscribe({
       next: (p: ProfileDto | any) => {
+        this.profile = p;   // ✅ สำคัญมาก เพื่อให้ *ngIf="profile?.facebook" ใช้ได้
+
         const first = (p?.firstName ?? '').trim();
         const last = (p?.lastName ?? '').trim();
+
+        const credits = Array.isArray(p?.credits) ? p.credits : [];
+        this.credits.set(credits);
+
+        // ✅ โหลด master data สำหรับ credits (dept/pos/skill)
+        this.loadCreditMasters(credits);
 
         // basic text
         this.displayName.set([first, last].filter(Boolean).join(' '));
@@ -226,18 +290,19 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'Website',
-            value: p.website,
+            value: this.normalizeUrl(p.website),  // หรือจะแสดงเต็มก็ได้
             href: this.normalizeUrl(p.website),
             icon: 'assets/icons/heroicons/outline/link.svg',
           });
         }
 
+        // ⭐⭐ ตรงนี้คือส่วนที่ปรับ ⭐⭐
         if (p?.linkedin) {
           links.push({
             type: 'link',
             label: 'LinkedIn',
-            value: p.linkedin,
-            href: this.normalizeUrl(p.linkedin),
+            value: this.socialHandle('linkedin', p.linkedin),   // << แสดงเฉพาะ slug
+            href: this.socialUrl('linkedin', p.linkedin),       // << ยังลิงก์ถูกเหมือนเดิม
             icon: 'assets/icons/social/linkedin.svg',
           });
         }
@@ -246,8 +311,8 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'Facebook',
-            value: p.facebook,
-            href: this.normalizeUrl(p.facebook),
+            value: this.socialHandle('facebook', p.facebook),
+            href: this.socialUrl('facebook', p.facebook),
             icon: 'assets/icons/social/facebook.svg',
           });
         }
@@ -256,8 +321,8 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'Instagram',
-            value: p.instagram,
-            href: this.normalizeUrl(p.instagram),
+            value: this.socialHandle('instagram', p.instagram),
+            href: this.socialUrl('instagram', p.instagram),
             icon: 'assets/icons/social/instagram.svg',
           });
         }
@@ -266,8 +331,8 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'Twitter / X',
-            value: p.twitter,
-            href: this.normalizeUrl(p.twitter),
+            value: this.socialHandle('twitter', p.twitter),
+            href: this.socialUrl('twitter', p.twitter),
             icon: 'assets/icons/social/twitter.svg',
           });
         }
@@ -303,6 +368,133 @@ export class ListProfileComponent implements OnInit {
         this.isError.set(true);
       },
     });
+  }
+
+  private loadCreditMasters(credits: Credit[]): void {
+    if (!credits || !credits.length) return;
+
+    const deptIds = new Set<number>();
+    const posIds = new Set<number>();
+    const skillIds = new Set<number>();
+
+    credits.forEach(c => {
+      (c.deptIds || []).forEach(id => deptIds.add(id));
+      (c.posIds || []).forEach(id => posIds.add(id));
+      (c.skillIds || []).forEach(id => skillIds.add(id));
+    });
+
+    // ถ้าไม่มี id อะไรเลยก็ไม่ต้องโหลด
+    if (!deptIds.size && !posIds.size && !skillIds.size) return;
+
+    // 🟢 โหลด department ทั้งหมดแล้วเก็บเฉพาะที่ใช้
+    this.publicService.getDepartment().subscribe({
+      next: res => {
+        const items: MasterItem[] = res?.items ?? [];
+        items.forEach(item => {
+          if (deptIds.has(item.id)) this.deptMap.set(item.id, item);
+        });
+      },
+      error: err => console.error('load departments failed', err),
+    });
+
+    // 🟢 โหลด position ทั้งหมดแล้วเก็บเฉพาะที่ใช้
+    this.publicService.getPosition().subscribe({
+      next: res => {
+        const items: MasterItem[] = res?.items ?? [];
+        items.forEach(item => {
+          if (posIds.has(item.id)) this.posMap.set(item.id, item);
+        });
+      },
+      error: err => console.error('load positions failed', err),
+    });
+
+    // 🟢 โหลด skills (อาจเป็น array ตรงๆ หรือมี items)
+    this.publicService.getSkills().subscribe({
+      next: res => {
+        const items: MasterItem[] = Array.isArray(res) ? res : (res?.items ?? []);
+        items.forEach(item => {
+          if (skillIds.has(item.id)) this.skillMap.set(item.id, item);
+        });
+      },
+      error: err => console.error('load skills failed', err),
+    });
+  }
+
+  socialUrl(
+    platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin',
+    raw: string
+  ): string {
+    const trimmed = (raw || '').trim();
+    if (!trimmed) return '#';
+
+    // ถ้าเป็น url อยู่แล้ว
+    if (/^https?:\/\//i.test(trimmed)) {
+      return trimmed;
+    }
+
+    switch (platform) {
+      case 'facebook':
+        if (/^facebook\.com/i.test(trimmed)) {
+          return 'https://' + trimmed;
+        }
+        return `https://www.facebook.com/${trimmed}`;
+      case 'instagram':
+        if (/^instagram\.com/i.test(trimmed)) {
+          return 'https://' + trimmed;
+        }
+        return `https://www.instagram.com/${trimmed}`;
+      case 'twitter':
+        if (/^(x\.com|twitter\.com)/i.test(trimmed)) {
+          return 'https://' + trimmed;
+        }
+        return `https://x.com/${trimmed}`;
+      case 'linkedin':
+        if (/^linkedin\.com/i.test(trimmed)) {
+          return 'https://' + trimmed;
+        }
+        return `https://www.linkedin.com/in/${trimmed}`;
+      default:
+        return this.normalizeUrl(trimmed);
+    }
+  }
+
+  /** ตัดเอาเฉพาะ handle/slug ไว้แสดง */
+  socialHandle(
+    platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin',
+    raw: string
+  ): string {
+    const trimmed = (raw || '').trim();
+    if (!trimmed) return '';
+
+    // ถ้า user ใส่แค่ username เช่น "nathaphong.i" ก็คืนเลย
+    if (!/^https?:\/\//i.test(trimmed) && !trimmed.includes('.com/')) {
+      return trimmed;
+    }
+
+    // ตัด protocol + query/hash ออก
+    let s = trimmed.replace(/^https?:\/\//i, '');
+    s = s.split(/[?#]/)[0];
+
+    // split เป็น segment
+    const parts = s.split('/').filter(Boolean);
+    if (!parts.length) return trimmed;
+
+    switch (platform) {
+      case 'linkedin': {
+        // รูปแบบปกติ: linkedin.com/in/<slug>
+        const inIdx = parts.indexOf('in');
+        if (inIdx !== -1 && inIdx < parts.length - 1) {
+          return parts[inIdx + 1];
+        }
+        return parts[parts.length - 1];
+      }
+      case 'facebook':
+      case 'instagram':
+      case 'twitter':
+      default:
+        // ส่วนใหญ่ handle จะเป็น segment สุดท้าย
+        return parts[parts.length - 1];
+    }
   }
 
   toAbsolute(url?: string | null): string | null {
@@ -351,10 +543,20 @@ export class ListProfileComponent implements OnInit {
   }
 
   editProfile() {
-    if (!this.userId) {
-      this.router.navigate(['/en/directory/profile-new/']);
+    const lang = this.getLangPrefix(); // เช่น 'en' หรือ 'th'
+    const base: any[] = [];
+
+    if (lang) {
+      base.push('/', lang, 'directory');
     } else {
-      this.router.navigate(['/en/directory/profile/', this.userId]);
+      // fallback กรณีไม่มี lang ใน url
+      base.push('/directory');
+    }
+
+    if (!this.userId) {
+      this.router.navigate([...base, 'profile-new']);
+    } else {
+      this.router.navigate([...base, 'profile', this.userId]);
     }
   }
 }

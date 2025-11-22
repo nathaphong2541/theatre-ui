@@ -19,7 +19,14 @@ export class PolicyConsentComponent implements OnInit {
   // --- Configs you may tweak ---
   policyVersion = '1.0.0';
   policyUpdatedAt = '24 ตุลาคม 2025';
-  nextRoute = '/en/auth/sign-up';
+
+  /**
+   * ถ้าตั้งค่าเป็น string จะใช้ path นี้ตรง ๆ (navigateByUrl)
+   * ถ้าเป็น null จะใช้ path ตามภาษาจาก URL ปัจจุบัน เช่น:
+   * - /en/auth/sign-up
+   * - /th/auth/sign-up
+   */
+  nextRoute: string | null = null;
   backRoute: string | null = null;
 
   // --- State (signals) ---
@@ -33,8 +40,6 @@ export class PolicyConsentComponent implements OnInit {
     // ✅ รีเซ็ตสถานะหน้าจอ
     this.accepted.set(false);
     this.atEnd.set(false);
-
-    // (ถ้ายังอยากรองรับกรณี “ไม่ลบ” ก็แค่ลบ removeItem ด้านบนออก)
   }
 
   onScroll(evt: Event) {
@@ -48,8 +53,15 @@ export class PolicyConsentComponent implements OnInit {
     this.accepted.set(checked);
   }
 
+  private getLangPrefix(): string | null {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean);
+    return segments.length > 0 ? segments[0] : null;
+  }
+
   onNext() {
     if (!this.accepted()) return;
+
     const receipt = {
       accepted: true,
       version: this.policyVersion,
@@ -57,14 +69,35 @@ export class PolicyConsentComponent implements OnInit {
       venue: 'Bangkok, Thailand',
     } as const;
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(receipt));
-    this.router.navigateByUrl(this.nextRoute);
+
+    // ถ้ามี nextRoute กำหนดไว้ ใช้อันนั้นเลย
+    if (this.nextRoute) {
+      this.router.navigateByUrl(this.nextRoute);
+      return;
+    }
+
+    // ถ้าไม่กำหนด nextRoute → ใช้ภาษาจาก URL ปัจจุบัน
+    const lang = this.getLangPrefix();
+    if (lang) {
+      this.router.navigate(['/', lang, 'auth', 'sign-up']);
+    } else {
+      this.router.navigate(['/auth/sign-up']);
+    }
   }
 
   onBack() {
+    // ถ้าตั้ง backRoute ไว้ ใช้ตามนั้น (เช่น redirect กลับจาก flow พิเศษ)
     if (this.backRoute) {
       this.router.navigateByUrl(this.backRoute);
+      return;
+    }
+
+    // ไม่ตั้ง backRoute → ใช้ภาษาจาก URL ปัจจุบัน
+    const lang = this.getLangPrefix();
+    if (lang) {
+      this.router.navigate(['/', lang, 'auth', 'sign-in']);
     } else {
-      this.router.navigateByUrl('/en/auth/sign-in');
+      this.router.navigate(['/auth/sign-in']);
     }
   }
 }

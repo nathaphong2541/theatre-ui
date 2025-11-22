@@ -1,15 +1,15 @@
-import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -21,11 +21,10 @@ import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 })
 export class SignInComponent implements OnInit {
 
-  serverError?: string = undefined; // ตั้งค่าจาก response ของ backend เมื่อ login fail
+  serverError?: string = undefined;
 
   loading = signal(false);
   showPassword = signal(false);
-
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -38,11 +37,9 @@ export class SignInComponent implements OnInit {
     private fb: FormBuilder
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   get f() { return this.form.controls; }
-
 
   async onSubmit() {
     if (this.form.invalid) {
@@ -51,17 +48,26 @@ export class SignInComponent implements OnInit {
     }
     this.loading.set(true);
 
-
     // TODO: Replace with your AuthService
     await new Promise(r => setTimeout(r, 800));
 
-
     this.loading.set(false);
-    // Example: navigate to dashboard
     this.router.navigate(['/']);
   }
 
+  private getLangPrefix(): string | null {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean); // ตัดช่องว่างออก
+    return segments.length > 0 ? segments[0] : null;
+  }
+
   policy() {
-    this.router.navigate(['/en/auth/policy']);
+    const lang = this.getLangPrefix();
+
+    if (lang) {
+      this.router.navigate(['/', lang, 'auth', 'policy']);
+    } else {
+      this.router.navigate(['/auth/policy']);
+    }
   }
 }

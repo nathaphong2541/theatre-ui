@@ -15,7 +15,7 @@
 
       <!-- Center: Logo + Title -->
       <div class="flex min-w-0 items-center gap-2 md:mx-4 sm:gap-3">
-        <a routerLink="/en"
+        <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
           class="flex shrink-0 items-center rounded-sm p-1 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
           <img src="assets/images/logo.png" class="h-12 w-h-12 sm:h-12 sm:w-12 object-contain" alt="โลโก้" />
         </a>

@@ -80,7 +80,26 @@ export class NavbarComponent implements OnInit {
     }
   }
 
+  /** helper ภายใน: ดึง prefix แรกจาก URL เช่น /en/... -> 'en' */
+  private getLangPrefix(): string | null {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean);
+    return segments.length > 0 ? segments[0] : null;
+  }
+
+  /** ถ้าอยากใช้ใน template ภายหลังก็เรียกตัวนี้ได้ */
+  public langPrefix(): string | null {
+    return this.getLangPrefix();
+  }
+
+  /** login: ไม่ fix /en แล้ว วิ่งตามภาษาปัจจุบัน */
   public login(): void {
-    this.router.navigate(['/en/auth/sign-in']);
+    const lang = this.getLangPrefix();
+
+    if (lang) {
+      this.router.navigate(['/', lang, 'auth', 'sign-in']);
+    } else {
+      this.router.navigate(['/auth/sign-in']);
+    }
   }
 }

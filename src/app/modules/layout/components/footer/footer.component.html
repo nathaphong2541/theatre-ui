@@ -20,19 +20,19 @@
         </h3>
 
         <!-- หน้าแรก -->
-        <a routerLink="/en" routerLinkActive="text-green-300 font-semibold" [routerLinkActiveOptions]="{ exact: true }"
-          class="hover:text-green-300 transition">
+        <a [routerLink]="homeLink()" routerLinkActive="text-green-300 font-semibold"
+          [routerLinkActiveOptions]="{ exact: true }" class="hover:text-green-300 transition">
           <span i18n="@@footer_home">หน้าแรก</span>
         </a>
 
         <!-- เกี่ยวกับเรา -->
-        <a routerLink="/en" fragment="about" routerLinkActive="text-green-300 font-semibold"
-          class="hover:text-green-300 transition">
+        <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
+          routerLinkActive="text-green-300 font-semibold" class="hover:text-green-300 transition">
           <span i18n="@@footer_about">เกี่ยวกับเรา</span>
         </a>
 
-        <a routerLink="/en" fragment="about" routerLinkActive="text-green-300 font-semibold"
-          class="hover:text-green-300 transition">
+        <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
+          routerLinkActive="text-green-300 font-semibold" class="hover:text-green-300 transition">
           <span i18n="@@footer_search">ค้นหาสมาชิก</span>
         </a>
 

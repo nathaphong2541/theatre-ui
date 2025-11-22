@@ -122,12 +122,9 @@ export class LanguageMenuComponent {
     private router: Router
   ) { }
 
-  /** ปุ่มบ้าน -> กลับหน้าหลัก */
   goHome() {
     const lang = this.ls.currentLocale(); // 'en' หรือ 'th'
     this.router.navigate(['/', lang]);
-    // ถ้าหน้าหลักคุณเป็นอย่างเช่น '/en/home' ก็เปลี่ยนเป็น:
-    // this.router.navigate(['/', lang, 'home']);
   }
 
   /** ซ่อนปุ่มบ้านเมื่ออยู่หน้าหลักของภาษาปัจจุบัน */
