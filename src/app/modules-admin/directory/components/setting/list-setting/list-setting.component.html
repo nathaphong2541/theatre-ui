@@ -7,12 +7,11 @@
         </header>
 
         <!-- Options -->
-        <section class="mb-8">
+        <!-- <section class="mb-8">
             <h2 class="text-2xl font-semibold mb-3">Options</h2>
 
             <div
                 class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                <!-- Row: Private Profile -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
                     <div class="flex items-start gap-4">
                         <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
@@ -22,7 +21,6 @@
                             <div class="flex items-center gap-3">
                                 <h3 class="text-lg font-semibold">Private Profile: <span>{{ privateProfile() ? 'On' :
                                         'Off' }}</span></h3>
-                                <!-- toggle -->
                                 <button type="button" (click)="togglePrivate()" class="relative inline-flex h-6 w-11 rounded-full transition
                                border border-white/10" [class.bg-emerald-500]="privateProfile()"
                                     [class.bg-gray-600]="!privateProfile()">
@@ -48,75 +46,8 @@
                 </div>
 
                 <div class="h-px my-3 bg-white/10"></div>
-
-                <!-- Row: Profile Type -->
-                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
-                    <div class="flex items-start gap-4">
-                        <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
-                            <span class="text-xl">👤</span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-3">
-                                <h3 class="text-lg font-semibold">
-                                    Profile type: <span>{{ isCompany() ? 'Company' : 'Personal' }}</span>
-                                </h3>
-                                <button type="button" (click)="toggleProfileType()"
-                                    class="relative inline-flex h-6 w-11 rounded-full transition border border-white/10"
-                                    [class.bg-sky-500]="isCompany()" [class.bg-gray-600]="!isCompany()">
-                                    <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition"
-                                        [class.translate-x-5]="isCompany()"></span>
-                                </button>
-                            </div>
-                            <p class="text-sm text-white/70 mt-1">
-                                This is a
-                                <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
-                                    {{ isCompany() ? 'company' : 'personal' }}
-                                </span>
-                                profile
-                            </p>
-                        </div>
-                    </div>
-
-                    <p class="text-sm text-white/80">
-                        Your account can represent an individual or an organization. Only individuals appear in search
-                        results.
-                    </p>
-                </div>
-
-                <div class="h-px my-3 bg-white/10"></div> -->
-
-                <!-- Row: Theme -->
-                <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-3">
-                    <div class="flex items-start gap-4">
-                        <div class="grid place-items-center size-10 rounded-lg bg-white/10 border border-white/10">
-                            <span class="text-xl">🌙</span>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-3">
-                                <h3 class="text-lg font-semibold">Dark/Light Theme</h3>
-                                <button type="button" (click)="toggleTheme()"
-                                    class="relative inline-flex h-6 w-11 rounded-full transition border border-white/10"
-                                    [class.bg-indigo-500]="themeDark()" [class.bg-gray-600]="!themeDark()">
-                                    <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition"
-                                        [class.translate-x-5]="themeDark()"></span>
-                                </button>
-                            </div>
-                            <p class="text-sm text-white/70 mt-1">
-                                <span
-                                    class="inline-flex items-center gap-1 rounded bg-lime-300/20 px-2 py-0.5 text-lime-200">
-                                    {{ themeDark() ? 'Dark' : 'Light' }}
-                                </span>
-                                mode
-                            </p>
-                        </div>
-                    </div>
-
-                    <p class="text-sm text-white/80">
-                        Change the Directory's color mode to light or dark.
-                    </p>
-                </div> -->
             </div>
-        </section>
+        </section> -->
 
         <!-- Account -->
         <section class="mb-8">

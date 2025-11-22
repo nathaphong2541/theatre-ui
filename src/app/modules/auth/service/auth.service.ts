@@ -107,6 +107,32 @@ export class AuthService {
     return this.http
       .post<void>(`${this.api}/register`, data, { headers, withCredentials: true })
       .pipe(
-      );
+    );
+  }
+
+  forgotPassword(email: string): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post<void>(
+      `${this.api}/forgot-password`,
+      { email },
+      { headers, withCredentials: true }
+    );
+  }
+
+  resetPassword(token: string, newPassword: string, email?: string): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    const body: any = { token, newPassword }; // ✅ ชื่อฟิลด์ตรงกับ backend
+
+    if (email) {
+      body.email = email; // ถ้าอยากส่ง email ไปด้วยก็ได้ (ตอนนี้ service handle ได้แล้ว)
+    }
+
+    return this.http.post<void>(
+      `${this.api}/reset-password`,
+      body,
+      { headers, withCredentials: true }
+    );
   }
 }

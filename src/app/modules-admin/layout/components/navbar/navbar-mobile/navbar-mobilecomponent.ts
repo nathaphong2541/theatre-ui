@@ -3,13 +3,13 @@ import { MenuService } from '../../../services/menu.service';
 import { NavbarMobileMenuComponent } from './navbar-mobile-menu/navbar-mobile-menu.component';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { NgClass } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-mobile',
   templateUrl: './navbar-mobile.component.html',
   styleUrls: ['./navbar-mobile.component.css'],
-  imports: [NgClass, AngularSvgIconModule, NavbarMobileMenuComponent],
+  imports: [NgClass, AngularSvgIconModule, NavbarMobileMenuComponent, RouterLink],
 })
 export class NavbarMobileComponent implements OnInit {
   constructor(
