@@ -90,6 +90,8 @@ export class ListProfileComponent implements OnInit {
   tags = signal<Tag[]>([]);
   links = signal<Link[]>([]);
 
+  profile: any | null = null;
+
   // resume + performance
   resumeUrlAbs = signal<string | null>(null);
   resumeIsImage = signal<boolean>(false);
@@ -115,13 +117,13 @@ export class ListProfileComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private profile: ProfileService
+    private profileService: ProfileService,
   ) { }
 
   ngOnInit() {
     this.isLoading.set(true);
 
-    this.profile.getProfile().subscribe({
+    this.profileService.getProfile().subscribe({
       next: (p: ProfileDto | any) => {
         const first = (p?.firstName ?? '').trim();
         const last = (p?.lastName ?? '').trim();
