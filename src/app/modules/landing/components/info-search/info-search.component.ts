@@ -223,8 +223,6 @@ export class InfoSearchComponent implements OnInit {
     const anyM = m as any;
     const id = anyM.userId ?? anyM.id;
 
-    console.log('goProfile -> m =', m, 'id =', id);
-
     if (!id) {
       console.warn('❗ ไม่มี id สำหรับ profile นี้');
       return;

@@ -127,7 +127,6 @@ export class HandleProfileComponent implements OnInit {
   performanceKinds: ('image' | 'pdf' | 'other' | null)[] = Array(6).fill(null);
 
   get avatarSrc(): string | null {
-    console.log(this.serverAvatarUrl);
     return this.avatarPreviewUrl ?? this.serverAvatarUrl ?? null;
   }
 
@@ -641,7 +640,6 @@ export class HandleProfileComponent implements OnInit {
   }
 
   saveCreditFromModal() {
-    console.log('[credit] saveCreditFromModal clicked');
 
     if (this.creditForm.invalid) {
       this.creditForm.markAllAsTouched();
@@ -672,11 +670,9 @@ export class HandleProfileComponent implements OnInit {
     if (this.editingCreditIndex !== null) {
       // แก้ไขรายการเดิม
       this.credits[this.editingCreditIndex] = credit;
-      console.log('[credit] updated credit at', this.editingCreditIndex, credit);
     } else {
       // เพิ่มใหม่
       this.credits.push(credit);
-      console.log('[credit] created new credit', credit);
     }
 
     this.editingCreditIndex = null;
