@@ -97,10 +97,6 @@ export class AuthService {
     );
   }
 
-  get isLoggedIn(): boolean {
-    return this._isLoggedIn$.value === true;
-  }
-
   register(data: RegisterRequest, autoLogin = true): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -134,5 +130,63 @@ export class AuthService {
       body,
       { headers, withCredentials: true }
     );
+  }
+
+
+  /** เปลี่ยนอีเมล (ต้อง login + มี cookie JWT) */
+  changeEmail(newEmail: string, currentPassword: string): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http
+      .post<{ message: string; user?: MeResponse }>(
+        `${this.api}/change-email`,
+        { newEmail, currentPassword },
+        { headers, withCredentials: true }
+      )
+      .pipe(
+        tap((res) => {
+          if (res.user) {
+            // อัปเดต user ใน state ให้ email ใหม่สะท้อนใน UI
+            this._user$.next(res.user);
+          }
+        }),
+        map(() => void 0)
+      );
+  }
+
+  /** เปลี่ยนรหัสผ่าน (ต้อง login) */
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http
+      .post<void>(
+        `${this.api}/change-password`,
+        { currentPassword, newPassword },
+        { headers, withCredentials: true }
+      )
+      .pipe(map(() => void 0));
+  }
+
+  /** ลบบัญชี (soft delete + clear session) */
+  deleteAccount(): Observable<void> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http
+      .post<void>(`${this.api}/delete-account`, {}, { headers, withCredentials: true })
+      .pipe(
+        tap(() => {
+          // เคลียร์สถานะฝั่ง FE เหมือน logout
+          this._isLoggedIn$.next(false);
+          this._user$.next(null);
+          sessionStorage.removeItem('hasAppSession');
+          this._sessionChecked = false;
+          this._sessionCheck$ = undefined;
+        }),
+        map(() => void 0)
+      );
+  }
+
+  get isLoggedIn(): boolean {
+    return this._isLoggedIn$.value === true;
   }
 }
