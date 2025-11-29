@@ -2,10 +2,10 @@
     <!-- Header -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-semibold text-white drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+            <h1 i18n="@@my_scripts" class="text-2xl font-semibold text-white drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
                 บทละครของฉัน
             </h1>
-            <p class="text-sm text-white/60">
+            <p i18n="@@my_scripts_subtext" class="text-sm text-white/60">
                 จัดการบทละครที่คุณอัปโหลดไว้ – เพิ่ม, แก้ไข, ดูตัวอย่าง และลบ
             </p>
         </div>
@@ -14,7 +14,7 @@
              text-white bg-[#6F9106] shadow 
              hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
             <span class="mr-2 text-lg">＋</span>
-            สร้างบทละครใหม่
+            <label for="" i18n="@@create_new_script">สร้างบทละครใหม่</label>
         </button>
     </div>
 
@@ -26,13 +26,14 @@
                focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
                 placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก" [ngModel]="search()"
                 (ngModelChange)="search.set($event)" />
-            <span class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
+            <span i18n="@@search" class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
                 ค้นหา
             </span>
         </div>
 
         <div class="text-xs text-white/60">
-            ทั้งหมด {{ filteredDramas().length }} เรื่อง
+            <label for="" i18n="@@all">ทั้งหมด</label> {{ filteredDramas().length }} <label for=""
+                i18n="@@scripts">เรื่อง</label>
         </div>
     </div>
 
@@ -49,10 +50,11 @@
     <!-- Empty State -->
     <div *ngIf="!loading() && filteredDramas().length === 0"
         class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
-        <p class="mb-2 text-base font-medium text-white">ยังไม่มีบทละครที่คุณอัปโหลด</p>
-        <p class="mb-4 text-sm text-white/60">เริ่มต้นสร้างบทละครเรื่องแรกของคุณได้เลย</p>
+        <p class="mb-2 text-base font-medium text-white" i18n="@@no_uploaded_scripts">ยังไม่มีบทละครที่คุณอัปโหลด</p>
+        <p class="mb-4 text-sm text-white/60" i18n="@@start_creating_first_script">
+            เริ่มต้นสร้างบทละครเรื่องแรกของคุณได้เลย</p>
 
-        <button type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg bg-[#6F9106] px-4 py-2 text-sm font-medium text-black 
+        <button i18n="@@create_new_script" type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg bg-[#6F9106] px-4 py-2 text-sm font-medium text-black 
              hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
             สร้างบทละครใหม่
         </button>
@@ -130,17 +132,17 @@
                     </div>
 
                     <div class="flex gap-2">
-                        <button type="button" (click)="onView(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
+                        <button i18n="@@preview" type="button" (click)="onView(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
                      hover:bg-[#6F9106]/20 hover:border-[#6F9106]">
                             ดูตัวอย่าง
                         </button>
 
-                        <button type="button" (click)="onEdit(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
+                        <button i18n="@@edit" type="button" (click)="onEdit(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
                      hover:bg-[#6F9106]/20 hover:border-[#6F9106]">
                             แก้ไข
                         </button>
 
-                        <button type="button" (click)="confirmDelete(d.id)" class="rounded-lg bg-red-700/40 border border-red-700 px-2 py-1 text-[11px] text-red-300
+                        <button i18n="@@delete" type="button" (click)="confirmDelete(d.id)" class="rounded-lg bg-red-700/40 border border-red-700 px-2 py-1 text-[11px] text-red-300
                      hover:bg-red-700/60">
                             ลบ
                         </button>

@@ -42,56 +42,30 @@ export class Menu {
     //   ],
     // },
     {
-      group: 'Directory',
+      group: $localize`:@@menu_group_directory:Directory`,
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/download.svg',
-          label: 'Dashboard',
+          label: $localize`:@@menu_directory_dashboard:Dashboard`,
           route: '/en/directory/dashboard',
         },
         {
           icon: 'assets/icons/heroicons/outline/gift.svg',
-          label: 'Profle',
+          label: $localize`:@@menu_directory_profile:Profile`,
           route: '/en/directory/profile',
         },
         {
           icon: 'assets/icons/heroicons/outline/gift.svg',
-          label: 'Script',
+          label: $localize`:@@menu_directory_script:Script`,
           route: '/en/directory/script',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Setting',
+          label: $localize`:@@menu_directory_setting:Setting`,
           route: '/en/directory/setting',
         },
       ],
     },
-    // {
-    //   group: 'Config',
-    //   separator: false,
-    //   items: [
-    //     {
-    //       icon: 'assets/icons/heroicons/outline/cog.svg',
-    //       label: 'Settings',
-    //       route: '/settings',
-    //     },
-    //     {
-    //       icon: 'assets/icons/heroicons/outline/bell.svg',
-    //       label: 'Notifications',
-    //       route: '/gift',
-    //     },
-    //     {
-    //       icon: 'assets/icons/heroicons/outline/folder.svg',
-    //       label: 'Folders',
-    //       route: '/folders',
-    //       children: [
-    //         { label: 'Current Files', route: '/folders/current-files' },
-    //         { label: 'Downloads', route: '/folders/download' },
-    //         { label: 'Trash', route: '/folders/trash' },
-    //       ],
-    //     },
-    //   ],
-    // },
   ];
 }

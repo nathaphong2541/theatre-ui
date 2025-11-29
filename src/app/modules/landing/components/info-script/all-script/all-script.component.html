@@ -3,15 +3,16 @@
         <!-- Header -->
         <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                <h1 i18n="@@all_scripts_header"
+                    class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
                     รวมบทละครทั้งหมด
                 </h1>
-                <p class="text-sm text-white/60">
+                <p i18n="@@all_scripts_subtext" class="text-sm text-white/60">
                     ดูบทละครทั้งหมดที่เปิดให้สาธารณะ สามารถค้นหาและกรองตามแท็กได้
                 </p>
             </div>
 
-            <a routerLink="/"
+            <a routerLink="/" i18n="@@back_to_home"
                 class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white hover:bg-[#6F9106]/15 hover:border-[#6F9106] transition">
                 กลับหน้าแรก
             </a>
@@ -25,29 +26,29 @@
                     <input type="text" [(ngModel)]="search"
                         class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-[#6F9106]/40 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
                         placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก" />
-                    <span class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
+                    <span i18n="@@search" class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
                         ค้นหา
                     </span>
                 </div>
 
                 <div class="text-xs text-white/60">
-                    พบทั้งหมด
+                    <label for="" i18n="@@found_total">พบทั้งหมด</label>
                     <span class="text-[#d9f99d] font-semibold">
                         {{ filteredScripts.length }}
                     </span>
-                    เรื่อง
+                    <label for="" i18n="@@scripts">เรื่อง</label>
                 </div>
             </div>
 
             <!-- Tag filters -->
             <div *ngIf="allTags.length > 0" class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] text-white/50">กรองตามแท็ก:</span>
+                <span class="text-[11px] text-white/50" i18n="@@filter_by_tags">กรองตามแท็ก:</span>
 
                 <!-- ปุ่ม "ทั้งหมด" -->
                 <button type="button" class="rounded-full border px-3 py-0.5 text-[11px]" [ngClass]="{
             'border-[#6F9106] bg-[#6F9106]/20 text:white': !selectedTag,
             'border-[#3f4d1f] text-white/70': selectedTag
-          }" (click)="clearTag()">
+          }" (click)="clearTag()" i18n="@@all">
                     ทั้งหมด
                 </button>
 
@@ -63,7 +64,7 @@
         </div>
 
         <!-- Loading -->
-        <div *ngIf="loading" class="py-10 text-center text-white/60 text-sm">
+        <div i18n="@@loading_scripts" *ngIf="loading" class="py-10 text-center text-white/60 text-sm">
             กำลังโหลดข้อมูลบทละคร...
         </div>
 
@@ -76,10 +77,10 @@
         <!-- Empty -->
         <div *ngIf="!loading && !error && filteredScripts.length === 0"
             class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
-            <p class="mb-2 text-base font-medium text-white">
+            <p i18n="@@no_scripts_found" class="mb-2 text-base font-medium text-white">
                 ยังไม่พบบทละครที่ตรงกับเงื่อนไข
             </p>
-            <p class="mb-4 text-sm text-white/60">
+            <p i18n="@@try_adjust_filters" class="mb-4 text-sm text-white/60">
                 ลองลบตัวกรองหรือเปลี่ยนคำค้นหาใหม่อีกครั้ง
             </p>
         </div>
@@ -125,20 +126,20 @@
                     <!-- Footer + CreatedBy -->
                     <div class="mt-auto space-y-1">
                         <div class="flex items-center justify-between text-[11px]">
-                            <button type="button"
+                            <button type="button" i18n="@@view_details"
                                 class="rounded-lg border border-[#3f4d1f] px-3 py-1 text-white/80 hover:border-[#6F9106] hover:bg-[#6F9106]/20">
                                 ดูรายละเอียด
                             </button>
 
-                            <button *ngIf="s.pdfPath" type="button" (click)="openPdf(s, $event)"
+                            <button i18n="@@open_pdf" *ngIf="s.pdfPath" type="button" (click)="openPdf(s, $event)"
                                 class="rounded-full border border-[#6F9106]/60 px-3 py-1 text-[#bbf7d0] hover:bg-[#6F9106]/20">
                                 เปิด PDF
                             </button>
                         </div>
 
                         <!-- ผู้สร้าง: ด้านล่างสุดของการ์ด -->
-                        <p *ngIf="s.createdByName" class="text-[10px] text-white/40 text-right">
-                            โดย {{ s.createdByName }}
+                        <p *ngIf="s.createdByName" class="text-[10px] mt-4 text-white/40 text-right">
+                            <label i18n="@@by">โดย</label> {{ s.createdByName }}
                         </p>
                     </div>
                 </div>
