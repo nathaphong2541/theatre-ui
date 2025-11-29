@@ -56,6 +56,11 @@ export class Menu {
           route: '/en/directory/profile',
         },
         {
+          icon: 'assets/icons/heroicons/outline/gift.svg',
+          label: 'Script',
+          route: '/en/directory/script',
+        },
+        {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Setting',
           route: '/en/directory/setting',

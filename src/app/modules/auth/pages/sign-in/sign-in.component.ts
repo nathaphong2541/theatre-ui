@@ -51,10 +51,10 @@ export class SignInComponent implements OnInit {
     private toast: ToastService,
   ) {
     // callback จาก Cloudflare Turnstile (ชื่อเดียวกับ data-callback ใน HTML)
-    window.onTurnstileSuccess = (token: string) => {
-      this.turnstileToken = token;
-      // console.log('Turnstile token =', token);
-    };
+    // window.onTurnstileSuccess = (token: string) => {
+    //   this.turnstileToken = token;
+    //   // console.log('Turnstile token =', token);
+    // };
   }
 
   ngOnInit(): void { }

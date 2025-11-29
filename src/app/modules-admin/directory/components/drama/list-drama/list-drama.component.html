@@ -1,0 +1,175 @@
+<div class="mx-auto max-w-6xl px-4 py-8 bg-[#05070b] min-h-screen text-white">
+    <!-- Header -->
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-semibold text-white drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                บทละครของฉัน
+            </h1>
+            <p class="text-sm text-white/60">
+                จัดการบทละครที่คุณอัปโหลดไว้ – เพิ่ม, แก้ไข, ดูตัวอย่าง และลบ
+            </p>
+        </div>
+
+        <button type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium 
+             text-white bg-[#6F9106] shadow 
+             hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
+            <span class="mr-2 text-lg">＋</span>
+            สร้างบทละครใหม่
+        </button>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-3">
+        <div class="relative flex-1 min-w-[200px]">
+            <input type="text" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm 
+               text-white placeholder-[#6F9106]/40
+               focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก" [ngModel]="search()"
+                (ngModelChange)="search.set($event)" />
+            <span class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
+                ค้นหา
+            </span>
+        </div>
+
+        <div class="text-xs text-white/60">
+            ทั้งหมด {{ filteredDramas().length }} เรื่อง
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading()" class="py-10 text-center text-white/60 text-sm">
+        กำลังโหลดข้อมูล...
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error()" class="mb-4 rounded-md bg-red-800/20 border border-red-600 px-4 py-3 text-sm text-red-300">
+        {{ error() }}
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading() && filteredDramas().length === 0"
+        class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
+        <p class="mb-2 text-base font-medium text-white">ยังไม่มีบทละครที่คุณอัปโหลด</p>
+        <p class="mb-4 text-sm text-white/60">เริ่มต้นสร้างบทละครเรื่องแรกของคุณได้เลย</p>
+
+        <button type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg bg-[#6F9106] px-4 py-2 text-sm font-medium text-black 
+             hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
+            สร้างบทละครใหม่
+        </button>
+    </div>
+
+    <!-- List -->
+    <div *ngIf="!loading() && filteredDramas().length > 0" class="grid gap-4 md:grid-cols-2">
+        <article *ngFor="let d of filteredDramas()" class="group flex overflow-hidden rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow shadow-black/60
+             hover:border-[#6F9106] hover:shadow-[0_0_12px_rgba(111,145,6,0.3)] transition">
+            <!-- Thumbnail -->
+            <div class="relative hidden w-32 shrink-0 bg-[#0f1a0b] md:block">
+                <img *ngIf="getFirstImage(d) as img" [src]="img" alt="poster"
+                    class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition" />
+
+                <div *ngIf="!getFirstImage(d)"
+                    class="flex h-full w-full items-center justify-center text-xs text-white/50">
+                    ไม่มีรูป
+                </div>
+
+                <div class="absolute bottom-2 left-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] text-[#6F9106] shadow-lg"
+                    *ngIf="d.images?.length">
+                    {{ d.images?.length }} รูป
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="flex flex-1 flex-col p-4">
+                <div class="mb-1 flex items-start justify-between gap-3">
+                    <h2 class="line-clamp-2 text-sm font-semibold text-white group-hover:text-[#6F9106]
+                   drop-shadow-[0_0_6px_rgba(111,145,6,0.3)] transition">
+                        {{ d.title }}
+                    </h2>
+
+                    <div class="flex flex-col items-end gap-1">
+                        <span
+                            class="whitespace-nowrap rounded-full bg-[#6F9106]/20 px-2 py-0.5 text-[10px] text-[#6F9106]">
+                            {{ d.createdAt | date: 'dd/MM/yyyy' }}
+                        </span>
+
+                        <!-- badge บอกจำนวน PDF version -->
+                        <span *ngIf="getPdfCount(d) > 0"
+                            class="whitespace-nowrap rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-white/80">
+                            PDF {{ getPdfCount(d) }} เวอร์ชัน
+                        </span>
+                    </div>
+                </div>
+
+                <p class="mb-2 line-clamp-2 text-xs text-white/60">
+                    {{ d.description || 'ยังไม่มีคำอธิบาย' }}
+                </p>
+
+                <!-- Tags -->
+                <div class="mb-3 flex flex-wrap gap-1">
+                    <span *ngFor="let tag of getTagList(d)"
+                        class="rounded-full bg-[#6F9106]/20 border border-[#6F9106]/40 px-2 py-0.5 text-[10px] text-white">
+                        #{{ tag }}
+                    </span>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-auto flex items-center justify-between text-[11px] text-white/50">
+                    <div class="flex flex-col gap-1">
+                        <span>
+                            อัปเดตล่าสุด:
+                            <span class="text-white ml-1">
+                                {{ d.updatedAt ? (d.updatedAt | date: 'dd/MM/yyyy HH:mm') : '-' }}
+                            </span>
+                        </span>
+
+                        <!-- ปุ่มโหลด PDF ล่าสุด -->
+                        <button *ngIf="getPdfCount(d) > 0" type="button" (click)="downloadLatestPdf(d)" class="inline-flex items-center w-max rounded-full border border-[#6F9106]/60 px-2 py-0.5 text-[10px] text-[#6F9106]
+                     hover:bg-[#6F9106]/20">
+                            โหลด PDF ล่าสุด
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="button" (click)="onView(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
+                     hover:bg-[#6F9106]/20 hover:border-[#6F9106]">
+                            ดูตัวอย่าง
+                        </button>
+
+                        <button type="button" (click)="onEdit(d)" class="rounded-lg border border-[#3f4d1f] px-2 py-1 text-[11px] text-white
+                     hover:bg-[#6F9106]/20 hover:border-[#6F9106]">
+                            แก้ไข
+                        </button>
+
+                        <button type="button" (click)="confirmDelete(d.id)" class="rounded-lg bg-red-700/40 border border-red-700 px-2 py-1 text-[11px] text-red-300
+                     hover:bg-red-700/60">
+                            ลบ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Confirm Delete -->
+    <div *ngIf="deletingId() !== null"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div class="w-full max-w-sm rounded-2xl bg-[#0a0f13] p-5 border border-[#3f4d1f] shadow-lg">
+            <h3 class="mb-2 text-sm font-semibold text-white">ยืนยันการลบ</h3>
+            <p class="mb-4 text-xs text-white/60">
+                คุณต้องการลบบทละครนี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </p>
+
+            <div class="flex justify-end gap-2">
+                <button type="button" (click)="cancelDelete()" class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white 
+                 hover:bg-[#6F9106]/20 hover:border-[#6F9106]">
+                    ยกเลิก
+                </button>
+
+                <button type="button" (click)="deleteConfirmed()"
+                    class="rounded-lg bg-red-600 px-3 py-1.5 text-xs text-white hover:bg-red-700">
+                    ลบ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
