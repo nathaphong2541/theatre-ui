@@ -1,0 +1,148 @@
+<div class="min-h-screen bg-[#05070b] text-white">
+    <div class="mx-auto max-w-6xl px-4 py-8">
+        <!-- Header -->
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                    รวมบทละครทั้งหมด
+                </h1>
+                <p class="text-sm text-white/60">
+                    ดูบทละครทั้งหมดที่เปิดให้สาธารณะ สามารถค้นหาและกรองตามแท็กได้
+                </p>
+            </div>
+
+            <a routerLink="/"
+                class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white hover:bg-[#6F9106]/15 hover:border-[#6F9106] transition">
+                กลับหน้าแรก
+            </a>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="mb-6 flex flex-col gap-3 rounded-xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-3">
+            <div class="flex flex-wrap items-center gap-3">
+                <!-- Search -->
+                <div class="relative flex-1 min-w-[220px]">
+                    <input type="text" [(ngModel)]="search"
+                        class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-[#6F9106]/40 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                        placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก" />
+                    <span class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
+                        ค้นหา
+                    </span>
+                </div>
+
+                <div class="text-xs text-white/60">
+                    พบทั้งหมด
+                    <span class="text-[#d9f99d] font-semibold">
+                        {{ filteredScripts.length }}
+                    </span>
+                    เรื่อง
+                </div>
+            </div>
+
+            <!-- Tag filters -->
+            <div *ngIf="allTags.length > 0" class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] text-white/50">กรองตามแท็ก:</span>
+
+                <!-- ปุ่ม "ทั้งหมด" -->
+                <button type="button" class="rounded-full border px-3 py-0.5 text-[11px]" [ngClass]="{
+            'border-[#6F9106] bg-[#6F9106]/20 text:white': !selectedTag,
+            'border-[#3f4d1f] text-white/70': selectedTag
+          }" (click)="clearTag()">
+                    ทั้งหมด
+                </button>
+
+                <!-- ปุ่มแท็กแต่ละอัน -->
+                <button *ngFor="let tag of allTags" type="button" class="rounded-full border px-3 py-0.5 text-[11px]"
+                    [ngClass]="{
+            'border-[#6F9106] bg-[#6F9106]/30 text-[#e5f5a3]': selectedTag === tag,
+            'border-[#3f4d1f] text-white/70': selectedTag !== tag
+          }" (click)="selectedTag = tag">
+                    #{{ tag }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="py-10 text-center text-white/60 text-sm">
+            กำลังโหลดข้อมูลบทละคร...
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="!loading && error"
+            class="mb-4 rounded-md bg-red-800/20 border border-red-600 px-4 py-3 text-sm text-red-300">
+            {{ error }}
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="!loading && !error && filteredScripts.length === 0"
+            class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
+            <p class="mb-2 text-base font-medium text-white">
+                ยังไม่พบบทละครที่ตรงกับเงื่อนไข
+            </p>
+            <p class="mb-4 text-sm text-white/60">
+                ลองลบตัวกรองหรือเปลี่ยนคำค้นหาใหม่อีกครั้ง
+            </p>
+        </div>
+
+        <!-- List -->
+        <div *ngIf="!loading && !error && filteredScripts.length > 0" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <article *ngFor="let s of filteredScripts"
+                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow shadow-black/60 hover:border-[#6F9106] hover:shadow-[0_0_12px_rgba(111,145,6,0.3)] transition"
+                (click)="onViewDetail(s)">
+                <!-- Thumb -->
+                <div class="relative h-40 w-full bg-[#0f1a0b]">
+                    <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
+                        class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition" />
+                    <div *ngIf="!getCover(s)"
+                        class="flex h-full w-full items-center justify-center text-xs text-white/50">
+                        ไม่มีรูปปก
+                    </div>
+
+                    <span *ngIf="s.createdAt"
+                        class="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] text-[#d9f99d]">
+                        {{ s.createdAt | date: 'dd/MM/yyyy' }}
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="flex flex-1 flex-col p-4">
+                    <h2
+                        class="mb-1 line-clamp-2 text-sm font-semibold text-white group-hover:text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.3)] transition">
+                        {{ s.title }}
+                    </h2>
+
+                    <p class="mb-2 line-clamp-3 text-xs text-white/70">
+                        {{ s.description || 'ยังไม่มีคำอธิบายสำหรับบทละครนี้' }}
+                    </p>
+
+                    <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
+                        <span *ngFor="let tag of getTagList(s)"
+                            class="rounded-full bg-[#6F9106]/20 border border-[#6F9106]/40 px-2 py-0.5 text-[10px] text-white">
+                            #{{ tag }}
+                        </span>
+                    </div>
+
+                    <!-- Footer + CreatedBy -->
+                    <div class="mt-auto space-y-1">
+                        <div class="flex items-center justify-between text-[11px]">
+                            <button type="button"
+                                class="rounded-lg border border-[#3f4d1f] px-3 py-1 text-white/80 hover:border-[#6F9106] hover:bg-[#6F9106]/20">
+                                ดูรายละเอียด
+                            </button>
+
+                            <button *ngIf="s.pdfPath" type="button" (click)="openPdf(s, $event)"
+                                class="rounded-full border border-[#6F9106]/60 px-3 py-1 text-[#bbf7d0] hover:bg-[#6F9106]/20">
+                                เปิด PDF
+                            </button>
+                        </div>
+
+                        <!-- ผู้สร้าง: ด้านล่างสุดของการ์ด -->
+                        <p *ngIf="s.createdByName" class="text-[10px] text-white/40 text-right">
+                            โดย {{ s.createdByName }}
+                        </p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>

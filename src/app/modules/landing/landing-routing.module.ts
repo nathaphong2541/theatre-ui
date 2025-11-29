@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing.component';
 import { MainPagesComponent } from './pages/main-pages/main-pages.component';
 import { SearchDetailComponent } from './components/info-search/search-detail/search-detail.component';
+import { AllScriptComponent } from './components/info-script/all-script/all-script.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,7 @@ const routes: Routes = [
       { path: '', redirectTo: '', pathMatch: 'full' },
       { path: '', component: MainPagesComponent },
       { path: 'profiles/:id', component: SearchDetailComponent },
+      { path: 'theatre-library', component: AllScriptComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },

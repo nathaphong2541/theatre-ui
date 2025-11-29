@@ -21,6 +21,7 @@ const routes: Routes = [
       { path: 'script', component: ListDramaComponent },
       { path: 'script/new', component: HandleDramaComponent },
       { path: 'script/:id', component: HandleDramaComponent },
+      { path: 'script/view/:id', component: HandleDramaComponent },
       { path: 'setting', component: SettingComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],

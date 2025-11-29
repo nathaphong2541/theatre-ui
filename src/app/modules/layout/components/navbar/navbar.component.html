@@ -90,7 +90,7 @@
           </li>
 
           <li class="snap-start">
-            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
+            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="script"
               routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
           inline-flex items-center
           px-3 py-2
@@ -103,10 +103,11 @@
           hover:shadow hover:shadow-white/5
 
           transition-all duration-200
-        " i18n="@@footer_about">
-              เกี่ยวกับเรา
+        " i18n="@@footer_script">
+              ห้องสมุดละคร
             </a>
           </li>
+
 
           <li class="snap-start">
             <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="profiles"
@@ -124,6 +125,25 @@
           transition-all duration-200
         " i18n="@@footer_search">
               ค้นหาสมาชิก
+            </a>
+          </li>
+
+          <li class="snap-start">
+            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
+              routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
+          inline-flex items-center
+          px-3 py-2
+          rounded-lg
+          font-medium
+          text-gray-300
+
+          hover:text-white
+          hover:bg-white/10
+          hover:shadow hover:shadow-white/5
+
+          transition-all duration-200
+        " i18n="@@footer_about">
+              เกี่ยวกับเรา
             </a>
           </li>
 

@@ -1,0 +1,97 @@
+<section class="bg-[#0b1417] text-white px-4 py-5 md:px-6 md:py-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+    <!-- Header -->
+    <div class="mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h2 class="text-lg md:text-xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                    บทละครใหม่ล่าสุด
+                </h2>
+                <p class="text-xs md:text-sm text-white/60">
+                    แสดงบทละครสาธารณะใหม่ล่าสุดสูงสุด 5 เรื่อง หากต้องการดูทั้งหมด กดปุ่มด้านขวา
+                </p>
+            </div>
+
+            <button type="button" (click)="onViewAll()" class="inline-flex items-center rounded-full border border-[#6F9106]/70 bg-[#111827] px-4 py-1.5 text-xs md:text-sm font-medium text-[#e5f5a3]
+             hover:bg-[#6F9106] hover:text-black hover:shadow-[0_0_12px_rgba(111,145,6,0.9)] transition">
+                ดูบทละครทั้งหมด
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="mt-3 text-xs md:text-sm text-white/60">
+            กำลังโหลดบทละคร...
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="!loading && error" class="mt-3 text-xs md:text-sm text-red-300">
+            {{ error }}
+        </div>
+
+        <!-- Empty -->
+        <div *ngIf="!loading && !error && scripts.length === 0"
+            class="mt-3 rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-6 text-center text-xs md:text-sm text-white/60">
+            ยังไม่มีบทละครสาธารณะให้แสดง
+        </div>
+
+        <!-- List: การ์ด 5 ใบ แถวเดียว เลื่อนข้างได้ -->
+        <div *ngIf="!loading && !error && scripts.length > 0" class="mt-4 -mx-4 md:mx-0">
+            <div class="flex gap-3 overflow-x-auto px-4 md:px-0 pb-3
+             snap-x snap-mandatory">
+                <article *ngFor="let s of scripts" class="group flex snap-start flex-col rounded-2xl border border-[#3f4d1f] bg-[#060a0d] p-3 md:p-4
+               hover:border-[#6F9106] hover:shadow-[0_0_18px_rgba(111,145,6,0.45)] transition
+               min-w-[220px] sm:min-w-[240px] lg:min-w-[260px] max-w-[260px]">
+                    <!-- Thumbnail -->
+                    <div class="relative mb-3 h-32 w-full overflow-hidden rounded-2xl bg-[#0b1610]">
+                        <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
+                            class="h-full w-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition" />
+                        <div *ngIf="!getCover(s)"
+                            class="flex h-full w-full items-center justify-center px-3 text-center text-[11px] text-white/50">
+                            ไม่มีรูปปก
+                        </div>
+
+                        <!-- Date badge -->
+                        <span *ngIf="s.createdAt"
+                            class="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] text-[#e5f5a3] backdrop-blur">
+                            {{ s.createdAt | date: 'dd/MM/yyyy' }}
+                        </span>
+                    </div>
+
+                    <!-- Title & description -->
+                    <div class="flex min-h-0 flex-1 flex-col">
+                        <h3
+                            class="line-clamp-2 text-sm md:text-[15px] font-semibold text-white group-hover:text-[#e5f5a3]">
+                            {{ s.title }}
+                        </h3>
+
+
+                        <div class="mt-2 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
+                            <span
+                                class="rounded-full border border-[#6F9106]/40 bg-[#6F9106]/10 px-2 py-0.5 text-[10px] text-[#e5f5a3]"
+                                *ngFor="let tag of getTagList(s)">
+                                #{{ tag }}
+                            </span>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="mt-3 flex items-center justify-between gap-2">
+                            <button type="button" (click)="onViewDetail(s)" class="rounded-full bg-[#6F9106] px-3 py-1.5 text-[11px] font-medium text-black
+                     hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
+                                ดูรายละเอียด
+                            </button>
+
+                            <a *ngIf="getPdfUrl(s) as pdfUrl" [href]="pdfUrl" target="_blank" rel="noopener noreferrer"
+                                class="text-[11px] text-[#a5f3fc] hover:text-[#e0f2fe] hover:underline">
+                                เปิด PDF
+                            </a>
+                        </div>
+
+
+                        <p *ngIf="s.createdByName" class="text-[10px] mt-4 md:text-[11px] text-white/40 text-right">
+                            โดย {{ s.createdByName }}
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>

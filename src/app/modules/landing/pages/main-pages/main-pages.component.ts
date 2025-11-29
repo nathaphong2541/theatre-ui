@@ -5,6 +5,7 @@ import { InfoAboutComponent } from '../../components/info-about/info-about.compo
 import { InfoNewsComponent } from '../../components/info-news/info-news.component';
 import { InfoSearchComponent } from '../../components/info-search/info-search.component';
 import { InfoDonetComponent } from '../../components/info-donet/info-donet.component';
+import { InfoScriptComponent } from '../../components/info-script/info-script.component';
 
 @Component({
   selector: 'app-main-pages',
@@ -14,6 +15,7 @@ import { InfoDonetComponent } from '../../components/info-donet/info-donet.compo
     InfoAboutComponent,
     // InfoNewsComponent,
     InfoSearchComponent,
+    InfoScriptComponent
     // InfoDonetComponent
   ],
   templateUrl: './main-pages.component.html',

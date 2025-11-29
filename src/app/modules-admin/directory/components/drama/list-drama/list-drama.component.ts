@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Drama } from '../../../pages/drama/models/drama.model';
 import { DramaService } from '../../../pages/drama/service/drama.service';
 import { FormsModule } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-list-drama',
@@ -15,6 +16,8 @@ export class ListDramaComponent implements OnInit {
   dramas = signal<Drama[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
+
+  private baseUrl = `${environment.apiUrl}/scripts`;
 
   search = signal('');
   tagFilter = signal<string | null>(null);
@@ -98,7 +101,7 @@ export class ListDramaComponent implements OnInit {
       base.push('/directory');
     }
 
-    this.router.navigate([...base, 'script', d.id, 'edit']);
+    this.router.navigate([...base, 'script', d.id]);
   }
 
   onView(d: Drama) {
@@ -112,7 +115,7 @@ export class ListDramaComponent implements OnInit {
     }
 
     // ✅ แก้จาก 'drama' เป็น 'script'
-    this.router.navigate([...base, 'script', d.id]);
+    this.router.navigate([...base, 'script', 'view', d.id]);
   }
 
   // ───────────────── delete ─────────────────
@@ -142,10 +145,15 @@ export class ListDramaComponent implements OnInit {
   }
 
   // ───────────────── helpers ─────────────────
+  private fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
   getFirstImage(drama: Drama): string | null {
-    return drama.images && drama.images.length > 0
-      ? drama.images[0].filePath
-      : null;
+    if (!drama.images || drama.images.length === 0) return null;
+
+    const rawPath = drama.images[0].filePath || '';       // "uploads\\scripts\\xxxx.jpg"
+    const normalized = rawPath.replace(/\\/g, '/');       // "uploads/scripts/xxxx.jpg"
+
+    // รูปจะถูกโหลดจาก http://localhost:8080/uploads/...
+    return `${this.fileBase}/${normalized}`;
   }
 
   getTagList(d: Drama): string[] {
