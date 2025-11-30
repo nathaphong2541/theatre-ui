@@ -15,8 +15,8 @@ import { InfoScriptComponent } from '../../components/info-script/info-script.co
     InfoAboutComponent,
     // InfoNewsComponent,
     InfoSearchComponent,
-    InfoScriptComponent
-    // InfoDonetComponent
+    InfoScriptComponent,
+    InfoDonetComponent
   ],
   templateUrl: './main-pages.component.html',
   styleUrl: './main-pages.component.css'

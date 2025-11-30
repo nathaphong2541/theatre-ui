@@ -2,11 +2,24 @@
 <section class="bg-[#0b1417] text-white">
     <div class="mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
         <!-- Title -->
-        <header class="mb-6">
-            <h2 class="text-2xl font-semibold tracking-tight" i18n="@@landing_search_text_1">
-                มูลนิธิละครไทยค้นหา</h2>
-            <p class="mt-1 text-white/70" i18n="@@landing_search_text_2">
-                ค้นหาไดเรกทอรี่เพื่อค้นหาผู้สมัครที่ตรงกับเกณฑ์ของคุณ</p>
+        <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <!-- ซ้าย: ข้อความ -->
+            <div>
+                <h2 class="text-2xl font-semibold tracking-tight" i18n="@@landing_search_text_1">
+                    มูลนิธิละครไทยค้นหา
+                </h2>
+                <p class="mt-1 text-white/70" i18n="@@landing_search_text_2">
+                    ค้นหาไดเรกทอรี่เพื่อค้นหาผู้สมัครที่ตรงกับเกณฑ์ของคุณ
+                </p>
+            </div>
+
+            <!-- ขวา: ปุ่ม “ค้นหาทั้งหมด” -->
+            <button *ngIf="showAllSearch" type="button" class="inline-flex items-center justify-center rounded-full border border-[#8aab06]/70
+           px-4 py-2 text-sm font-medium text-[#e5f5a3] bg-transparent
+           hover:bg-[#111827] hover:border-[#a3e635] hover:text-[#f7ffb8] transition" (click)="goFullSearch()"
+                i18n="@@landing_search_view_all_button">
+                ค้นหาทั้งหมด
+            </button>
         </header>
 
         <!-- Layout -->

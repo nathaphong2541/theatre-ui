@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Profile, InfoSearchService, ProfileSearchOptions } from './service/info-search.service';
@@ -58,6 +58,7 @@ export class InfoSearchComponent implements OnInit {
   dateFrom: string | null = null;
   dateTo: string | null = null;
 
+  @Input() showAllSearch: boolean = true; // default = เปิด auto width
   // ===== Data from API =====
   departmentsApi: Department[] = [];
   positionsApi: Position[] = [];
@@ -140,6 +141,7 @@ export class InfoSearchComponent implements OnInit {
       return (en && en.trim()) || (th && th.trim()) || '';
     }
   }
+
 
   // ===== Load master data =====
   private async loadMaster(): Promise<void> {
@@ -240,7 +242,7 @@ export class InfoSearchComponent implements OnInit {
     const deptId = [...this.selected.departments][0];
     return deptId ? this.positionsApi.filter(p => p.departmentId === deptId) : [];
   }
-  
+
   get skillsFiltered(): Skill[] {
     // เอา id ของ jobs ที่เลือกทั้งหมดออกมา
     const posIds = Array.from(this.selected.jobs) as number[];
@@ -672,6 +674,18 @@ export class InfoSearchComponent implements OnInit {
     this.jobOpen = false;
 
     if (this.hasDepartment && this.hasJob) this.onSubmit();
+  }
+  // helper หา lang จาก URL ปัจจุบัน
+  private getLangPrefix(): string | null {
+    const segments = this.router.url.split('/').filter(Boolean);
+    const supported = ['th', 'en'];
+    return supported.includes(segments[0]) ? segments[0] : null;
+  }
+
+  goFullSearch() {
+    const lang = this.getLangPrefix();
+    const base = lang ? ['/', lang] : ['/'];
+    this.router.navigate([...base, 'member']);
   }
 
 }

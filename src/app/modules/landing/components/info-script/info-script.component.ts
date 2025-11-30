@@ -109,6 +109,6 @@ export class InfoScriptComponent implements OnInit {
   onViewDetail(script: ScriptPublic) {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang] : ['/'];
-    this.router.navigate([...base, 'theatre-library', script.id]);
+    this.router.navigate([...base, 'theatre-library-detail', script.id]);
   }
 }
