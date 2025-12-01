@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-export type MeResponse = { firstName: string; lastName: string, email: string };
+export type MeResponse = { firstName: string; lastName: string; email: string };
 export type RegisterRequest = {
   policyConfirm: boolean;
   firstName: string;
@@ -29,6 +29,16 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  /** ✅ ใช้ใน Guard / Component แบบ sync ได้ */
+  isLoggedInSync(): boolean {
+    return this._isLoggedIn$.value === true;
+  }
+
+  /** getter เดิม (เอาไว้ใช้ใน template ถ้าชอบเขียนแบบ property) */
+  get isLoggedIn(): boolean {
+    return this._isLoggedIn$.value === true;
+  }
+
   /** เรียกครั้งแรกของแอป/หลังรีเฟรช — จะเรียก /me เฉพาะกรณีมี flag จากการ login แล้วเท่านั้น */
   checkSession(force = false): Observable<MeResponse | null> {
     // ไม่มี flag ก็ไม่ต้องยิง /me
@@ -40,48 +50,53 @@ export class AuthService {
     if (!force && this._sessionChecked && this._sessionCheck$) return this._sessionCheck$;
 
     this._sessionChecked = true;
-    this._sessionCheck$ = this.http.get<MeResponse>(`${this.api}/me`, { withCredentials: true }).pipe(
-      tap(me => {
-        this._isLoggedIn$.next(true);
-        this._user$.next(me);
-      }),
-      catchError(() => {
-        this._isLoggedIn$.next(false);
-        this._user$.next(null);
-        // ถ้า cookie หมดอายุ ให้ลบ flag ด้วย
-        sessionStorage.removeItem('hasAppSession');
-        return of(null);
-      }),
-      shareReplay(1)
-    );
+    this._sessionCheck$ = this.http
+      .get<MeResponse>(`${this.api}/me`, { withCredentials: true })
+      .pipe(
+        tap((me) => {
+          this._isLoggedIn$.next(true);
+          this._user$.next(me);
+        }),
+        catchError(() => {
+          this._isLoggedIn$.next(false);
+          this._user$.next(null);
+          // ถ้า cookie หมดอายุ ให้ลบ flag ด้วย
+          sessionStorage.removeItem('hasAppSession');
+          return of(null);
+        }),
+        shareReplay(1)
+      );
     return this._sessionCheck$;
   }
 
   login(email: string, password: string, remember = true): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<{ user?: MeResponse }>(
-      `${this.api}/login`,
-      { email, password, remember },
-      { headers, withCredentials: true }
-    ).pipe(
-      tap(() => {
-        // ตั้ง flag ให้รู้ว่า login สำเร็จ
-        sessionStorage.setItem('hasAppSession', '1');
-        this._isLoggedIn$.next(true);
-        this._sessionChecked = false; // รีเซ็ตให้ /me ยิงได้
-        this._sessionCheck$ = undefined;
-      }),
-      // ✅ ยิง /me หลังจาก login เสร็จเท่านั้น
-      // เพื่อให้ข้อมูลจาก backend ล่าสุด
-      switchMap(() => this.checkSession(true).pipe(
-        catchError(() => of(null)),
-        tap(me => {
-          if (me) this._user$.next(me);
+    return this.http
+      .post<{ user?: MeResponse }>(
+        `${this.api}/login`,
+        { email, password, remember },
+        { headers, withCredentials: true }
+      )
+      .pipe(
+        tap(() => {
+          // ตั้ง flag ให้รู้ว่า login สำเร็จ
+          sessionStorage.setItem('hasAppSession', '1');
+          this._isLoggedIn$.next(true);
+          this._sessionChecked = false; // รีเซ็ตให้ /me ยิงได้
+          this._sessionCheck$ = undefined;
         }),
-        map(() => void 0)
-      ))
-    );
+        // ✅ ยิง /me หลังจาก login เสร็จเท่านั้น
+        switchMap(() =>
+          this.checkSession(true).pipe(
+            catchError(() => of(null)),
+            tap((me) => {
+              if (me) this._user$.next(me);
+            }),
+            map(() => void 0)
+          )
+        )
+      );
   }
 
   logout(): Observable<void> {
@@ -103,7 +118,9 @@ export class AuthService {
     return this.http
       .post<void>(`${this.api}/register`, data, { headers, withCredentials: true })
       .pipe(
-    );
+        // ถ้าต้องการ autoLogin หลังสมัคร สามารถต่อยอด logic ตรงนี้ทีหลังได้
+        map(() => void 0)
+      );
   }
 
   forgotPassword(email: string): Observable<void> {
@@ -119,21 +136,18 @@ export class AuthService {
   resetPassword(token: string, newPassword: string, email?: string): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    const body: any = { token, newPassword }; // ✅ ชื่อฟิลด์ตรงกับ backend
+    const body: any = { token, newPassword };
 
     if (email) {
-      body.email = email; // ถ้าอยากส่ง email ไปด้วยก็ได้ (ตอนนี้ service handle ได้แล้ว)
+      body.email = email;
     }
 
-    return this.http.post<void>(
-      `${this.api}/reset-password`,
-      body,
-      { headers, withCredentials: true }
-    );
+    return this.http.post<void>(`${this.api}/reset-password`, body, {
+      headers,
+      withCredentials: true
+    });
   }
 
-
-  /** เปลี่ยนอีเมล (ต้อง login + มี cookie JWT) */
   changeEmail(newEmail: string, currentPassword: string): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -146,7 +160,6 @@ export class AuthService {
       .pipe(
         tap((res) => {
           if (res.user) {
-            // อัปเดต user ใน state ให้ email ใหม่สะท้อนใน UI
             this._user$.next(res.user);
           }
         }),
@@ -154,7 +167,6 @@ export class AuthService {
       );
   }
 
-  /** เปลี่ยนรหัสผ่าน (ต้อง login) */
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -167,7 +179,6 @@ export class AuthService {
       .pipe(map(() => void 0));
   }
 
-  /** ลบบัญชี (soft delete + clear session) */
   deleteAccount(): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -175,7 +186,6 @@ export class AuthService {
       .post<void>(`${this.api}/delete-account`, {}, { headers, withCredentials: true })
       .pipe(
         tap(() => {
-          // เคลียร์สถานะฝั่ง FE เหมือน logout
           this._isLoggedIn$.next(false);
           this._user$.next(null);
           sessionStorage.removeItem('hasAppSession');
@@ -184,9 +194,5 @@ export class AuthService {
         }),
         map(() => void 0)
       );
-  }
-
-  get isLoggedIn(): boolean {
-    return this._isLoggedIn$.value === true;
   }
 }

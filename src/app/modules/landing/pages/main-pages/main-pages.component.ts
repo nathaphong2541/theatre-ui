@@ -1,19 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+
 import { InfoHeroSectionComponent } from '../../components/info-hero-section/info-hero-section.component';
 import { InfoAboutComponent } from '../../components/info-about/info-about.component';
 import { InfoNewsComponent } from '../../components/info-news/info-news.component';
 import { InfoSearchComponent } from '../../components/info-search/info-search.component';
 import { InfoDonetComponent } from '../../components/info-donet/info-donet.component';
 import { InfoScriptComponent } from '../../components/info-script/info-script.component';
+import { Observable, startWith } from 'rxjs';
+import { AuthService } from 'src/app/modules/auth/service/auth.service';
 
 @Component({
   selector: 'app-main-pages',
+  standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     InfoHeroSectionComponent,
     InfoAboutComponent,
-    // InfoNewsComponent,
     InfoSearchComponent,
     InfoScriptComponent,
     InfoDonetComponent
@@ -21,21 +27,78 @@ import { InfoScriptComponent } from '../../components/info-script/info-script.co
   templateUrl: './main-pages.component.html',
   styleUrl: './main-pages.component.css'
 })
-export class MainPagesComponent {
+export class MainPagesComponent implements OnInit {
 
-  /** ควบคุมการแสดงปุ่มขึ้นบนสุด */
   showScrollTop = false;
 
-  // ฟัง event scroll ของ window
+  showProfilePopup = false;
+  dontShowAgain = false;
+
+  isLoggedIn$!: Observable<boolean>;
+
+  private readonly DISMISS_KEY = 'tht_profile_onboarding_dismissed';
+
+  constructor(private router: Router, private auth: AuthService) { }
+
+  ngOnInit(): void {
+    const dismissed = localStorage.getItem(this.DISMISS_KEY) === 'true';
+
+    // subscribe เพื่อตรวจสอบว่า login อยู่หรือไม่
+    this.isLoggedIn$ = this.auth.isLoggedIn$.pipe(
+      startWith(false)
+    );
+
+    this.isLoggedIn$.subscribe(isLogged => {
+      if (isLogged) {
+        // ถ้า login แล้ว → ไม่ต้องขึ้น popup
+        this.showProfilePopup = false;
+        return;
+      }
+
+      // ยังไม่ login → เช็ก dismiss
+      if (!dismissed) {
+        this.showProfilePopup = true;
+      }
+    });
+  }
+
+
+  /** helper: ดึง prefix แรกจาก URL เช่น /en/... -> 'en' */
+  private getLangPrefix(): string | null {
+    const path = this.router.url.split('?')[0].split('#')[0];
+    const segments = path.split('/').filter(Boolean);
+    return segments.length > 0 ? segments[0] : null;
+  }
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const yOffset = window.scrollY || document.documentElement.scrollTop;
-    this.showScrollTop = yOffset > 300; // แสดงเมื่อเลื่อนเกิน 300px
+    this.showScrollTop = yOffset > 300;
   }
 
-  /** เลื่อนกลับไปบนสุด */
   scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /** กดปุ่ม “ลงทะเบียน” */
+  onGoRegister(): void {
+    this.showProfilePopup = false;
+
+    const lang = this.getLangPrefix();
+
+    if (lang) {
+      // URL: /en/auth/sign-in
+      this.router.navigate(['/', lang, 'auth', 'sign-in']);
+    } else {
+      // URL: /auth/sign-in
+      this.router.navigate(['/auth', 'sign-in']);
+    }
+  }
+
+  onCloseProfilePopup(): void {
+    if (this.dontShowAgain) {
+      localStorage.setItem(this.DISMISS_KEY, 'true');
+    }
+    this.showProfilePopup = false;
+  }
 }

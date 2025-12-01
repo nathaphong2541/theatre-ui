@@ -2,15 +2,60 @@
 <div id="profiles" info-search></div>
 <div id="script" info-script></div>
 <div id="about" info-about></div>
-<!-- <div id="news" info-news></div> -->
 <div id="donate" info-donet></div>
 
-<!-- ปุ่มกลับขึ้นบนสุด -->
-<button *ngIf="showScrollTop" (click)="scrollToTop()" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full
-         bg-indigo-600 text-white shadow-lg transition-all duration-300
-         hover:bg-indigo-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300">
+<!-- ปุ่มกลับขึ้นบนสุด (เหมือนเดิม) -->
+<button *ngIf="showScrollTop" (click)="scrollToTop()" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full
+               bg-indigo-600 text-white shadow-lg transition-all duration-300
+               hover:bg-indigo-700 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-300">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"
         stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
     </svg>
 </button>
+
+<!-- Popup ชวน “ลงทะเบียน” -->
+    <div *ngIf="showProfilePopup"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 popup-backdrop">
+
+        <div class="mx-4 max-w-lg rounded-2xl bg-[#05070b] px-6 py-5
+              shadow-[0_18px_60px_rgba(0,0,0,0.85)] border border-white/10 popup-animate">
+
+            <h2 class="text-lg md:text-xl font-semibold text-[#e5f5a3] mb-2">
+                ยินดีต้อนรับสู่แพลตฟอร์มมูลนิธิละครไทย 🎭
+            </h2>
+
+            <p class="text-sm text-white/80 mb-3">
+                เพื่อใช้งานแพลตฟอร์มได้เต็มรูปแบบ เช่น
+                <span class="font-semibold text-[#c9ff6a]">สร้างโปรไฟล์</span> และ
+                <span class="font-semibold text-[#c9ff6a]">ลงบทละคร</span>
+                คุณจำเป็นต้อง <span class="font-semibold">ลงทะเบียนเป็นสมาชิก</span> ก่อน
+            </p>
+
+            <ul class="mb-4 list-disc space-y-1 pl-5 text-sm text-white/75">
+                <li>ลงทะเบียนเพื่อสร้างบัญชีผู้ใช้งานของคุณ</li>
+                <li>หลังลงทะเบียน คุณสามารถสร้างโปรไฟล์เพื่อหางานหรือร่วมโปรเจกต์ได้</li>
+                <li>และสามารถอัปโหลดบทละครของคุณให้คนอื่นค้นหาและอ่านได้</li>
+            </ul>
+
+            <label class="mb-4 flex items-center gap-2 text-xs text-white/60">
+                <input type="checkbox" class="h-4 w-4 rounded border-white/30 bg-transparent"
+                    [(ngModel)]="dontShowAgain" />
+                ไม่ต้องเตือนเรื่องการลงทะเบียนอีก
+            </label>
+
+            <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button type="button" (click)="onCloseProfilePopup()" class="inline-flex items-center justify-center rounded-full border border-white/40
+                     px-4 py-1.5 text-xs md:text-sm font-medium text-white/80
+                     hover:bg-white/10 transition-colors">
+                    ยังไม่ตอนนี้
+                </button>
+
+                <button type="button" (click)="onGoRegister()" class="inline-flex items-center justify-center rounded-full bg-[#8aab06]
+                     px-4 py-1.5 text-xs md:text-sm font-semibold text-black
+                     hover:bg-[#a3c316] transition-colors">
+                    ลงทะเบียน
+                </button>
+            </div>
+        </div>
+    </div>

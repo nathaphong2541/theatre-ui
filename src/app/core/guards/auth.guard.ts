@@ -10,8 +10,9 @@ export class AuthGuard implements CanMatch {
 
     canMatch(route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> {
         return this.auth.isLoggedIn$.pipe(
-            map(loggedIn => {
+            map((loggedIn) => {
                 if (loggedIn) return true;
+
                 const lang = segments.length > 0 ? segments[0].path : 'en';
                 return this.router.parseUrl(`/${lang}/auth/sign-in`);
             })
