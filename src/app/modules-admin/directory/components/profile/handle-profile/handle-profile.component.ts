@@ -138,9 +138,9 @@ export class HandleProfileComponent implements OnInit {
   genders: Labeled[] = [];
   races: Labeled[] = [];
   additionals: Labeled[] = [
-    { label: 'Disabled', value: 1 },
-    { label: 'LGBTQIA+', value: 2 },
-    { label: 'Neurodiverse', value: 3 },
+    { label: $localize`:@@profile_additional_disabled:Disabled`, value: 1 },
+    { label: $localize`:@@profile_additional_lgbtqia:LGBTQIA+`, value: 2 },
+    { label: $localize`:@@profile_additional_neurodiverse:Neurodiverse`, value: 3 },
   ];
 
   // master ทั้งหมด
@@ -298,10 +298,13 @@ export class HandleProfileComponent implements OnInit {
           })
         );
       },
-      error: (err) => {
-        console.error('Load master data failed', err);
-        this.toast.error('ไม่สามารถโหลดข้อมูลตัวเลือกได้', { title: 'โหลดข้อมูลล้มเหลว' });
-      }
+      error: () =>
+        this.toast.error(
+          $localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`,
+          {
+            title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
+          }
+        ),
     });
   }
 
@@ -392,8 +395,10 @@ export class HandleProfileComponent implements OnInit {
   }
 
   private buildCreditLabel(c: ProfileCredit): string {
+    const presentLabel = $localize`:@@profile_credit_present:Present`;
+
     const period = c.current
-      ? `${c.startYear} – Present`
+      ? `${c.startYear} – ${presentLabel}`
       : c.endYear
         ? `${c.startYear} – ${c.endYear}`
         : `${c.startYear}`;
@@ -457,9 +462,12 @@ export class HandleProfileComponent implements OnInit {
         }
       },
       error: () =>
-        this.toast.error('ไม่สามารถดึงข้อมูลโปรไฟล์ได้', {
-          title: 'โหลดข้อมูลล้มเหลว',
-        }),
+        this.toast.error(
+          $localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`,
+          {
+            title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
+          }
+        ),
     });
   }
 
@@ -643,9 +651,12 @@ export class HandleProfileComponent implements OnInit {
 
     if (this.creditForm.invalid) {
       this.creditForm.markAllAsTouched();
-      this.toast.warning('กรุณากรอกข้อมูลเครดิตให้ครบก่อนบันทึก', {
-        title: 'ข้อมูลเครดิตไม่ครบ',
-      });
+      this.toast.warning(
+        $localize`:@@profile_toast_credit_incomplete_msg:กรุณากรอกข้อมูลเครดิตให้ครบก่อนบันทึก`,
+        {
+          title: $localize`:@@profile_toast_credit_incomplete_title:ข้อมูลเครดิตไม่ครบ`,
+        }
+      );
       console.warn('[credit] creditForm invalid', this.creditForm.value);
       return;
     }
@@ -690,13 +701,18 @@ export class HandleProfileComponent implements OnInit {
     if (!file) return;
 
     const ok = ['image/jpeg', 'image/png', 'image/webp'];
+    // avatar
     if (!ok.includes(file.type)) {
-      this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP');
+      this.toast.warning(
+        $localize`:@@profile_toast_avatar_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`
+      );
       return;
     }
 
     if (file.size > 20 * 1024 * 1024) {
-      this.toast.warning('ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน');
+      this.toast.warning(
+        $localize`:@@profile_toast_avatar_large_warning:ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน`
+      );
     }
 
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
@@ -759,14 +775,22 @@ export class HandleProfileComponent implements OnInit {
       next: (res: any) => {
         this.clearLocalAvatar();
         this.serverAvatarUrl = res?.avatarUrl || null;
-        this.toast.success('ลบรูปเรียบร้อย');
+        this.toast.success(
+          $localize`:@@profile_toast_avatar_delete_success:ลบรูปเรียบร้อย`
+        );
       },
-      error: () => this.toast.error('ลบรูปไม่สำเร็จ'),
+      error: () =>
+        this.toast.error(
+          $localize`:@@profile_toast_avatar_delete_error:ลบรูปไม่สำเร็จ`
+        ),
     });
   }
 
   addConflict() {
-    this.toast.warning('หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา', { title: 'Coming soon' });
+    this.toast.warning(
+      $localize`:@@profile_toast_conflict_coming_soon_msg:หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา`,
+      { title: $localize`:@@profile_toast_conflict_coming_soon_title:Coming soon` }
+    );
   }
 
   toggleWorkLocation(v: number) { this.toggleSet(this.selectedWorkLocations, v); }
@@ -803,7 +827,10 @@ export class HandleProfileComponent implements OnInit {
   async save() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน', { title: 'ข้อมูลไม่ครบ' });
+      this.toast.warning(
+        $localize`:@@profile_toast_form_incomplete_msg:กรุณากรอกข้อมูลให้ครบถ้วน`,
+        { title: $localize`:@@profile_toast_form_incomplete_title:ข้อมูลไม่ครบ` }
+      );
       return;
     }
 
@@ -855,7 +882,9 @@ export class HandleProfileComponent implements OnInit {
         });
       } catch (err) {
         console.error('Compress avatar failed', err);
-        this.toast.warning('บีบอัดรูปไม่สำเร็จ จะอัปโหลดรูปต้นฉบับแทน');
+        this.toast.warning(
+          $localize`:@@profile_toast_avatar_compress_warning:บีบอัดรูปไม่สำเร็จ จะอัปโหลดรูปต้นฉบับแทน`
+        );
         uploadFile = this.avatarFile;
       }
     }
@@ -894,19 +923,30 @@ export class HandleProfileComponent implements OnInit {
           }
         } catch (e) {
           console.error('Upload resume/performance failed', e);
-          this.toast.warning('บันทึกข้อมูลหลักสำเร็จ แต่ไฟล์บางส่วนอัปโหลดไม่สำเร็จ');
+          this.toast.warning(
+            $localize`:@@profile_toast_partial_files_warning:บันทึกข้อมูลหลักสำเร็จ แต่ไฟล์บางส่วนอัปโหลดไม่สำเร็จ`
+          );
         }
 
-        this.toast.success('บันทึกข้อมูลสำเร็จ 🎉', {
-          title: 'Saved',
-          duration: 3000,
-          onTimeout: () => this.router.navigate(['en/directory/profile']),
-        });
+        this.toast.success(
+          $localize`:@@profile_toast_save_success_msg:บันทึกข้อมูลสำเร็จ`,
+          {
+            title: $localize`:@@profile_toast_save_success_title:Saved`,
+            duration: 3000,
+          }
+        );
+
+        // ไม่ต้องรอ timeout ให้ redirect เลย
+        this.router.navigate(['en/directory/profile']);
       },
       error: (err) => {
         console.error('Save profile failed', err);
-        const msg = err?.error?.message || 'เกิดข้อผิดพลาดในการบันทึกข้อมูล';
-        this.toast.error(msg, { title: 'เกิดข้อผิดพลาด' });
+        const msg =
+          err?.error?.message ||
+          $localize`:@@profile_toast_save_error_default_msg:เกิดข้อผิดพลาดในการบันทึกข้อมูล`;
+        this.toast.error(msg, {
+          title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด`,
+        });
       }
     });
   }
@@ -933,23 +973,30 @@ export class HandleProfileComponent implements OnInit {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
-
+    const maxBytes = this.MAX_RESUME_SIZE_MB * 1024 * 1024;
     const ok = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
+    // resume
     if (!ok.includes(file.type)) {
-      this.toast.warning('รองรับเฉพาะ PDF, JPG, PNG, WEBP');
+      this.toast.warning(
+        $localize`:@@profile_toast_resume_type_warning:รองรับเฉพาะ PDF, JPG, PNG, WEBP`
+      );
       input.value = '';
       return;
     }
 
-    const maxBytes = this.MAX_RESUME_SIZE_MB * 1024 * 1024;
     if (file.size > maxBytes) {
-      this.toast.warning(`ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`);
+      this.toast.warning(
+        $localize`:@@profile_toast_resume_size_warning:ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`
+      );
       input.value = '';
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      this.toast.info('ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด');
+      this.toast.info(
+        $localize`:@@profile_toast_resume_large_info:ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด`
+      );
     }
 
     this.revokeResumeUrl();
@@ -977,8 +1024,11 @@ export class HandleProfileComponent implements OnInit {
     if (!file) return;
 
     const ok = ['image/jpeg', 'image/png', 'image/webp'];
+    // performance image
     if (!ok.includes(file.type)) {
-      this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP');
+      this.toast.warning(
+        $localize`:@@profile_toast_perf_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`
+      );
       input.value = '';
       return;
     }

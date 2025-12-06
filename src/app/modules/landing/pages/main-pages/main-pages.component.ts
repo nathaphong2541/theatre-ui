@@ -11,6 +11,7 @@ import { InfoDonetComponent } from '../../components/info-donet/info-donet.compo
 import { InfoScriptComponent } from '../../components/info-script/info-script.component';
 import { Observable, startWith } from 'rxjs';
 import { AuthService } from 'src/app/modules/auth/service/auth.service';
+import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 
 @Component({
   selector: 'app-main-pages',
@@ -22,7 +23,8 @@ import { AuthService } from 'src/app/modules/auth/service/auth.service';
     InfoAboutComponent,
     InfoSearchComponent,
     InfoScriptComponent,
-    InfoDonetComponent
+    InfoDonetComponent,
+    LanguageMenuComponent
   ],
   templateUrl: './main-pages.component.html',
   styleUrl: './main-pages.component.css'

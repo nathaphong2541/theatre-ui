@@ -1,45 +1,111 @@
-<!-- Hero: Dark + Accent #8aab06 (clean, no emoji) -->
-<section class="relative text-white bg-gradient-to-r from-black via-[#0b1a20] to-[#0b1a20]">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 sm:py-16 lg:py-20">
-        <div class="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:gap-10">
-            <div class="max-w-2xl">
-                <h1 class="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl leading-12"
-                    i18n="@@landing_hero_text_1">
-                    ศูนย์รวมศิลปินการแสดงไทย
-                </h1>
-                <p i18n="@@landing_hero_text_3"
-                    class="mt-4 sm:mt-5 text-base sm:text-lg leading-7 sm:leading-8 text-[#8aab06]">
-                    พื้นที่สำหรับศิลปินนักแสดงชาวไทย
-                </p>
+<!-- Hero: Background image + dark overlay + accent strips -->
+<section class="relative overflow-hidden text-white">
 
-                <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3">
-                    <a routerLink="/talents"
-                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#8aab06] px-5 sm:px-6 py-3 text-base font-semibold text-black shadow hover:brightness-110 transition focus:outline-none focus:ring-2 focus:ring-[#8aab06]/60 w-full sm:w-auto">
-                        <!-- icon: search -->
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="11" cy="11" r="7" stroke-width="2" />
-                            <path d="M20 20l-3.5-3.5" stroke-width="2" />
-                        </svg>
-                        <label for="" i18n="@@landing_hero_button_1">ศิลปิน</label>
-                    </a>
+    <!-- BG image + overlay -->
+    <div class="absolute inset-0">
+        <img src="assets/images/bg-hero.jpg" alt="Thai theatre platform" class="h-full w-full object-cover"
+            loading="lazy" decoding="async" />
+        <!-- <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/30"></div> -->
+    </div>
 
-                    <a routerLink="/jobs"
-                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-5 sm:px-6 py-3 text-base font-semibold text-white backdrop-blur hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-white/40 w-full sm:w-auto">
-                        <!-- icon: briefcase -->
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M3 10h18v9H3z" stroke-width="2" />
-                            <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke-width="2" />
-                        </svg>
-                        <label for="" i18n="@@landing_hero_button_2">โอกาส</label>
-                    </a>
+    <!-- Accent strips left / right -->
+    <div class="pointer-events-none absolute inset-y-0 left-0 w-4 sm:w-6 bg-[#8aab06] hidden sm:block "></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 w-3 sm:w-4 bg-[#8aab06] hidden sm:block"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
+        <div class="flex flex-col gap-5">
+            <!-- Title -->
+            <div class="w-full max-w-2xl bg-black/85 border border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.85)]
+               px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
+                <div class="flex flex-col gap-0.5 text-left">
+                    <label class="font-extrabold tracking-tight leading-tight
+                   text-3xl sm:text-4xl md:text-[56px]" i18n="@@landing_hero_text_1">
+                        ศิลปะการแสดงไทย
+                    </label>
+
+                    <label class="font-extrabold tracking-tight leading-16
+                   text-4xl sm:text-5xl md:text-[5rem] text-[#8aab06]" i18n="@@landing_hero_text_2">
+                        ศูนย์รวมศิลปินการแสดง
+                    </label>
                 </div>
             </div>
+            <div class="w-full max-w-2xl bg-black/85 border border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.85)]
+               px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
+                <!-- Bullet List -->
+                <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2
+                 text-[#c9ff6a] text-sm sm:text-base font-medium">
+                    <span i18n="@@landing_hero_bullet_1">ค้นหาศิลปิน</span>
+                    <span>•</span>
+                    <span i18n="@@landing_hero_bullet_2">สร้างการเชื่อมต่อ</span>
+                    <span>•</span>
+                    <span i18n="@@landing_hero_bullet_3">เปิดประตูสู่โอกาสใหม่</span>
+                </div>
 
-            <div class="mt-8 lg:mt-0 lg:ml-10 flex lg:justify-end justify-center">
-                <img class="w-full max-w-[325px] rounded-2xl shadow-2xl ring-1 ring-white/10"
-                    src="assets/images/hero.png" alt="Thai theatre platform" loading="lazy" decoding="async" />
+                <!-- Paragraph Section -->
+                <div class="mt-4 space-y-1.5 text-xs sm:text-sm md:text-base
+                 leading-6 sm:leading-7 text-white/90">
+                    <p class="m-0" i18n="@@landing_hero_para_1">
+                        พื้นที่เล็ก ๆ ที่รวบรวมศิลปินจากทุกมุมมาพบกัน
+                    </p>
+                    <p class="m-0" i18n="@@landing_hero_para_2">
+                        เราจะเป็นประตูที่เปิดรับคุณเสมอ ไม่ว่าคุณจะเป็นใคร
+                    </p>
+
+                    <div class="h-1"></div>
+
+                    <p class="m-0" i18n="@@landing_hero_para_3">
+                        พร้อมความตั้งใจให้ที่แห่งนี้ เป็นศูนย์กลางอันอบอุ่น
+                    </p>
+                    <p class="m-0" i18n="@@landing_hero_para_4">
+                        มอบแรงบันดาลใจ และเติบโตได้ไปพร้อม ๆ กัน
+                    </p>
+                </div>
+            </div>
+            <div class="w-full max-w-2xl 
+               ">
+                <div class="mt-6 sm:mt-7 flex flex-col justify-end sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
+                    <!-- Find Talent (white button) -->
+                    <button type="button" (click)="goToMember()" class="inline-flex items-center justify-center gap-2 rounded-lg
+                   bg-white text-black px-6 sm:px-6 py-2.5 sm:py-3
+                   text-sm sm:text-base font-semibold shadow-lg
+                   hover:bg-white/90 transition
+                   w-full sm:w-auto">
+                        <span
+                            class="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-black/5">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="11" cy="11" r="7" stroke-width="2" />
+                                <path d="M20 20l-3.5-3.5" stroke-width="2" />
+                            </svg>
+                        </span>
+                        <span i18n="@@landing_hero_button_1">ค้นหาศิลปิน</span>
+                    </button>
+
+                    <!-- Create Profile (green button) -->
+                    <button type="button" (click)="onClickOpportunity()" class="inline-flex items-center justify-center gap-2 rounded-lg
+                   bg-[#8aab06] text-black px-5 sm:px-6 py-2.5 sm:py-3
+                   text-sm sm:text-base font-semibold shadow-lg
+                   hover:brightness-110 transition
+                   w-full sm:w-auto">
+                        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-black/10">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M3 10h18v9H3z" stroke-width="2" />
+                                <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke-width="2" />
+                            </svg>
+                        </span>
+                        <!-- แค่ตัวอย่าง: เปลี่ยนข้อความตามสถานะ -->
+                        <ng-container *ngIf="isLoggedIn$ | async; else notLogin">
+                            <label for="" i18n="@@landing_hero_button_3">โปรไฟล์ของคุณ</label>
+                        </ng-container>
+                        <ng-template #notLogin>
+                            <label for="" i18n="@@landing_hero_button_2">สร้างโปรไฟล์</label>
+                        </ng-template>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- Bottom accent line -->
     <div class="hidden sm:block h-1 w-full bg-gradient-to-r from-transparent via-[#8aab06] to-transparent"></div>
 </section>

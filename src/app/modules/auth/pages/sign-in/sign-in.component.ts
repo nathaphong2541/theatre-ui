@@ -9,6 +9,7 @@ import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 declare global {
   interface Window {
@@ -28,6 +29,7 @@ declare global {
     RouterLink,
     AngularSvgIconModule,
     LanguageMenuComponent,
+    TranslateModule
   ],
 })
 export class SignInComponent implements OnInit {
@@ -64,21 +66,15 @@ export class SignInComponent implements OnInit {
   async onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toast.warning('กรุณากรอกอีเมลและรหัสผ่านให้ถูกต้อง', {
-        title: 'ข้อมูลไม่ครบ',
-        duration: 3000,
-      });
+      this.toast.warning(
+        $localize`:@@auth_invalid_form:กรุณากรอกอีเมลและรหัสผ่านให้ถูกต้อง`,
+        {
+          title: $localize`:@@auth_invalid_form_title:ข้อมูลไม่ครบ`,
+          duration: 3000,
+        },
+      );
       return;
     }
-
-    // // ต้องผ่าน Turnstile ก่อน
-    // if (!this.turnstileToken) {
-    //   this.toast.warning('กรุณายืนยันความปลอดภัยก่อนเข้าสู่ระบบ', {
-    //     title: 'ยังไม่ได้ตรวจสอบ',
-    //     duration: 3000,
-    //   });
-    //   return;
-    // }
 
     this.loading.set(true);
     this.serverError = undefined;
@@ -88,24 +84,30 @@ export class SignInComponent implements OnInit {
     try {
       await firstValueFrom(this.auth.login(email!, password!, !!remember));
 
-      this.toast.success('เข้าสู่ระบบสำเร็จ', {
-        title: 'ยินดีต้อนรับ 👋',
-        duration: 2000,
-        onTimeout: () => this.router.navigate(['/en']), // ปรับ path ตามที่คุณใช้จริง
-      });
+      this.toast.success(
+        $localize`:@@alert_login_success:เข้าสู่ระบบสำเร็จ`,
+        {
+          title: $localize`:@@alert_login_welcome:ยินดีต้อนรับ`,
+          duration: 2000,
+        },
+      );
 
-      // ถ้าอยาก redirect ทันที ไม่รอ toast:
-      // this.router.navigate(['/en']);
+      // เด้งทันทีไม่ต้องรอ toast หมดเวลา
+      this.router.navigate(['/en']);
+
     } catch (err: any) {
+      console.log('LOGIN ERROR = ', err);
+
       const msg =
         err?.error?.message ||
         err?.message ||
-        'ไม่สามารถเข้าสู่ระบบได้ในขณะนี้';
+        $localize`:@@auth_login_failed:ไม่สามารถเข้าสู่ระบบได้ในขณะนี้`;
+
       this.serverError = msg;
 
       this.toast.error(msg, {
-        title: 'เข้าสู่ระบบไม่สำเร็จ',
-        actionText: 'ลืมรหัสผ่าน?',
+        title: $localize`:@@auth_login_failed_title:เข้าสู่ระบบไม่สำเร็จ`,
+        actionText: $localize`:@@auth_forgot_password_link:ลืมรหัสผ่าน?`,
         onAction: () => this.router.navigate(['/en/auth/forgot-password']),
         duration: 5000,
       });
