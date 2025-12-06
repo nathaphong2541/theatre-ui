@@ -157,6 +157,7 @@
   "all_scripts_subtext": "ดูบทละครทั้งหมดที่เปิดให้สาธารณะ สามารถค้นหาและกรองตามแท็กได้",
   "back_to_home": "กลับหน้าแรก",
   "search": "ค้นหา",
+  "search_all": "ดูบทละครทั้งหมด",
   "found_total": "พบทั้งหมด",
   "scripts": "เรื่อง",
   "filter_by_tags": "กรองตามแท็ก",
@@ -211,5 +212,17 @@
   "profile_toast_resume_type_warning": "รองรับเฉพาะ PDF, JPG, PNG, WEBP",
   "profile_toast_resume_size_warning": "ไฟล์ต้องไม่เกิน {{max}}MB",
   "profile_toast_resume_large_info": "ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด",
-  "profile_toast_perf_type_warning": "รองรับเฉพาะ JPG, PNG, WEBP"
+  "profile_toast_perf_type_warning": "รองรับเฉพาะ JPG, PNG, WEBP",
+  "donate_title": "สนับสนุนศูนย์รวมศิลปินการแสดงไทย",
+  "donate_subtitle": "แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้ต่อเนื่อง",
+  "donate_promptpay_title": "PromptPay / โอนผ่านแอป",
+  "donate_promptpay_desc": "สแกน QR แล้วอัปโหลดสลิป",
+  "donate_bank_title": "โอนเข้าบัญชีธนาคาร",
+  "donate_bank_desc": "ดูเลขบัญชีและแนบสลิป",
+  "donate_thankyou": "ขอบคุณที่ร่วมสนับสนุนการทำงานของเรา",
+  "donate_promptpay_preview_title": "สแกนเพื่อชำระผ่าน PromptPay",
+  "donate_promptpay_qr_alt": "QR PromptPay สำหรับการชำระเงิน",
+  "donate_promptpay_preview_note": "สแกนแล้วแนบสลิปในขั้นตอนถัดไป",
+  "donate_success_title": "ส่งคำขอบริจาคสำเร็จ",
+  "donate_success_body": "เราจะส่งรายละเอียดการชำระเงิน/ใบเสร็จไปยังอีเมลที่ระบุ (ถ้ามี)"
 }

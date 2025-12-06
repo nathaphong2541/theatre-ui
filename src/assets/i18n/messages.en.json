@@ -157,6 +157,7 @@
   "all_scripts_subtext": "Browse all publicly available scripts. You may search and filter by tags.",
   "back_to_home": "Back to Home",
   "search": "Search",
+  "search_all": "Search All",
   "found_total": "Found Total",
   "scripts": "Scripts",
   "filter_by_tags": "Filter by Tags",
@@ -211,5 +212,17 @@
   "profile_toast_resume_type_warning": "Only PDF, JPG, PNG, and WEBP files are supported.",
   "profile_toast_resume_size_warning": "File size must not exceed {{max}}MB.",
   "profile_toast_resume_large_info": "The file is quite large and may take time to preview or upload.",
-  "profile_toast_perf_type_warning": "Only JPG, PNG, and WEBP files are supported."
+  "profile_toast_perf_type_warning": "Only JPG, PNG, and WEBP files are supported.",
+  "donate_title": "Support the Thai Performing Arts Hub",
+  "donate_subtitle": "Your contribution helps us sustain and expand theatre and live performance in Thai society.",
+  "donate_promptpay_title": "PromptPay / Mobile transfer",
+  "donate_promptpay_desc": "Scan the QR code and upload your payment slip.",
+  "donate_bank_title": "Bank transfer",
+  "donate_bank_desc": "View bank account details and upload your slip.",
+  "donate_thankyou": "Thank you for supporting our work.",
+  "donate_promptpay_preview_title": "Scan to pay via PromptPay",
+  "donate_promptpay_qr_alt": "PromptPay QR code for payment",
+  "donate_promptpay_preview_note": "After scanning, please upload your payment slip in the next step.",
+  "donate_success_title": "Donation request submitted",
+  "donate_success_body": "We will send payment details and/or a receipt to the email address you provided (if any)."
 }
