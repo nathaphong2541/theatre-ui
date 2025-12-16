@@ -5,8 +5,8 @@
         <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <!-- ซ้าย: ข้อความ -->
             <div>
-                <h2 class="text-2xl font-semibold tracking-tight" i18n="@@landing_search_text_1">
-                    ศูนย์รวมศิลปินการแสดงไทยค้นหา
+                <h2 class="text-3xl font-semibold tracking-tight text-[#8aab06]" i18n="@@landing_search_text_1">
+                    ค้นหาศิลปิน
                 </h2>
                 <p class="mt-1 text-white/70" i18n="@@landing_search_text_2">
                     ค้นหาไดเรกทอรี่เพื่อค้นหาผู้สมัครที่ตรงกับเกณฑ์ของคุณ
@@ -17,8 +17,8 @@
             <button *ngIf="showAllSearch" type="button" class="inline-flex items-center justify-center rounded-full border border-[#8aab06]/70
            px-4 py-2 text-sm font-medium text-[#e5f5a3] bg-transparent
            hover:bg-[#111827] hover:border-[#a3e635] hover:text-[#f7ffb8] transition" (click)="goFullSearch()"
-                i18n="@@search_all">
-                ค้นหาทั้งหมด
+                i18n="@@view_all">
+                ดูทั้งหมด
             </button>
         </header>
 
@@ -31,7 +31,7 @@
                     <section #jobBox class="rounded-2xl border border-white/10 bg-white/5 p-4">
                         <div class="flex items-center justify-between">
                             <label class="block text-sm font-semibold tracking-wide mb-2"
-                                i18n="@@landing_search_text_input_1">พิมพ์ตำแหน่งงานเพื่อเริ่มต้น</label>
+                                i18n="@@landing_search_text_input_1">คุณกำลังมองหาบทบาทไหนอยู่?</label>
                             <button class="mb-2 text-xs underline text-white/70 hover:text-white"
                                 (click)="clearAllFilters()" *ngIf="hasJob && activeChipCount()">ล้างทั้งหมด</button>
                         </div>
@@ -39,8 +39,8 @@
                         <div class="relative">
                             <input #jobInput [(ngModel)]="jobQuery" (input)="onJobQueryChange()" (focus)="openJobMenu()"
                                 (blur)="closeJobMenuSoon()" (keydown)="onJobKeydown($event)" type="text"
-                                placeholder="Start typing" class="w-full rounded-xl bg-white/95 px-4 pr-10 py-2.5 text-base text-gray-900
-                placeholder-gray-500 outline-none ring-2 ring-transparent focus:ring-[#8aab06]" />
+                                placeholder="Start typing" i18n-placeholder="@@placeholder_search" class="w-full rounded-xl bg-white/95 px-4 pr-10 py-2.5 text-base text-gray-900
+         placeholder-gray-500 outline-none ring-2 ring-transparent focus:ring-[#8aab06]" />
 
                             <!-- ปุ่มเคลียร์ -->
                             <button *ngIf="jobQuery?.length" type="button" aria-label="ล้างข้อความ" title="ล้างข้อความ"
@@ -103,7 +103,7 @@
                     <!-- Jobs: แสดง แต่ disabled ถ้ายังไม่เลือก department -->
                     <section class="rounded-2xl border border-white/10 bg-white/5 p-4"
                         [class.opacity-50]="!hasDepartment" [class.pointer-events-none]="!hasDepartment">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_3">
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_4">
                             คุณกำลังมองหางานอะไรที่จะเติมเต็ม</h3>
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let j of jobsFiltered" type="button" (click)="toggleTag('jobs', j.id)"
@@ -115,7 +115,7 @@
                     </section>
 
                     <!-- Skills + ฟิลเตอร์อื่น ๆ: โผล่หลังเลือก Job แล้ว -->
-                    <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <!-- <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
                         <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_4">
                             คุณกำลังมองหาทักษะอะไร?</h3>
                         <div class="flex flex-wrap gap-2">
@@ -124,9 +124,9 @@
                                 {{ labelSkill(s) }}
                             </button>
                         </div>
-                    </section>
+                    </section> -->
 
-                    <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <!-- <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5 p-4">
                         <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_5">
                             คุณกำลังจ้างงานในวันที่ระบุหรือไม่?</h3>
                         <div class="grid grid-cols-2 gap-2">
@@ -135,7 +135,7 @@
                             <input type="date" [(ngModel)]="dateTo" name="dateTo"
                                 class="rounded-xl bg-white/95 px-3 py-2 text-sm text-gray-900 ring-1 ring-black/10 focus:ring-2 focus:ring-[#8aab06]">
                         </div>
-                    </section>
+                    </section> -->
 
                     <section *ngIf="hasJob" class="rounded-2xl border border-white/10 bg-white/5">
                         <h3 class="mb-3 text-sm font-semibold tracking-wide  px-4 pt-4"
@@ -171,7 +171,7 @@
                         </details>
 
                         <!-- ประสบการณ์ -->
-                        <details class="group border-b border-white/10 p-4">
+                        <!-- <details class="group border-b border-white/10 p-4">
                             <summary class="flex cursor-pointer list-none items-center justify-between">
                                 <span class="text-sm font-semibold"
                                     i18n="@@landing_search_text_input_9">ระดับประสบการณ์</span>
@@ -184,10 +184,10 @@
                                     {{ labelExperience(e) }}
                                 </button>
                             </div>
-                        </details>
+                        </details> -->
 
                         <!-- เพศ -->
-                        <details class="group border-b border-white/10 p-4">
+                        <!-- <details class="group border-b border-white/10 p-4">
                             <summary class="flex cursor-pointer list-none items-center justify-between">
                                 <span class="text-sm font-semibold" i18n="@@landing_search_text_input_10">เพศ</span>
                                 <span class="text-white/50 group-open:rotate-180 transition">▾</span>
@@ -198,7 +198,7 @@
                                     {{ labelGender(g) }}
                                 </button>
                             </div>
-                        </details>
+                        </details> -->
                     </section>
                 </div>
             </aside>

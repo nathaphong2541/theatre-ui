@@ -9,14 +9,18 @@
     </div>
 
     <!-- Accent strips left / right -->
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-4 sm:w-6 bg-[#8aab06] hidden sm:block "></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-3 sm:w-4 bg-[#8aab06] hidden sm:block"></div>
+    <div
+        class="pointer-events-none h-72 absolute inset-y-0 left-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-[#8aab06] hidden sm:block ">
+    </div>
+    <div
+        class="pointer-events-none h-96 absolute inset-y-96 right-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-[#8aab06] hidden sm:block">
+    </div>
 
     <!-- Content -->
-    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
+    <div class="relative z-10 max-w-7xl px-4 sm:px-8 lg:px-9 py-10 sm:py-14 lg:py-20">
         <div class="flex flex-col gap-5">
             <!-- Title -->
-            <div class="w-full max-w-2xl bg-black/85 border border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.85)]
+            <div class="w-full max-w-2xl bg-black/85 border border-white/10
                px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
                 <div class="flex flex-col gap-0.5 text-left">
                     <label class="font-extrabold tracking-tight leading-tight
@@ -30,11 +34,11 @@
                     </label>
                 </div>
             </div>
-            <div class="w-full max-w-2xl bg-black/85 border border-white/10 shadow-[0_18px_60px_rgba(0,0,0,0.85)]
+            <div class="w-full max-w-2xl bg-black/85 border border-white/10 
                px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
                 <!-- Bullet List -->
                 <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2
-                 text-[#c9ff6a] text-sm sm:text-base font-medium">
+                 text-[#8aab06] text-sm sm:text-base font-medium">
                     <span i18n="@@landing_hero_bullet_1">ค้นหาศิลปิน</span>
                     <span>•</span>
                     <span i18n="@@landing_hero_bullet_2">สร้างการเชื่อมต่อ</span>
@@ -67,31 +71,24 @@
                 <div class="mt-6 sm:mt-7 flex flex-col justify-end sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
                     <!-- Find Talent (white button) -->
                     <button type="button" (click)="goToMember()" class="inline-flex items-center justify-center gap-2 rounded-lg
-                   bg-white text-black px-6 sm:px-6 py-2.5 sm:py-3
+                   bg-white text-black px-5 sm:px-5 py-2
                    text-sm sm:text-base font-semibold shadow-lg
                    hover:bg-white/90 transition
                    w-full sm:w-auto">
-                        <span
-                            class="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-black/5">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="11" cy="11" r="7" stroke-width="2" />
-                                <path d="M20 20l-3.5-3.5" stroke-width="2" />
-                            </svg>
+                        <span class="flex items-center justify-center">
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
                         <span i18n="@@landing_hero_button_1">ค้นหาศิลปิน</span>
                     </button>
 
                     <!-- Create Profile (green button) -->
                     <button type="button" (click)="onClickOpportunity()" class="inline-flex items-center justify-center gap-2 rounded-lg
-                   bg-[#8aab06] text-black px-5 sm:px-6 py-2.5 sm:py-3
+                   bg-[#8aab06] text-black px-4 sm:px-5 py-2
                    text-sm sm:text-base font-semibold shadow-lg
                    hover:brightness-110 transition
                    w-full sm:w-auto">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-black/10">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M3 10h18v9H3z" stroke-width="2" />
-                                <path d="M8 10V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3" stroke-width="2" />
-                            </svg>
+                        <span class="flex items-center justify-center">
+                            <i class="fa-solid fa-user"></i>
                         </span>
                         <!-- แค่ตัวอย่าง: เปลี่ยนข้อความตามสถานะ -->
                         <ng-container *ngIf="isLoggedIn$ | async; else notLogin">
