@@ -168,6 +168,7 @@ export class HandleProfileComponent implements OnInit {
   ) {
 
     // เมื่อเปลี่ยน Department → filter Positions
+    // ✅ ใหม่: เลือก Department แล้วไปดึง Position จาก backend
     this.creditForm.get('deptId')!.valueChanges.subscribe(deptId => {
       if (!deptId) {
         this.filteredPositions = [];
@@ -176,12 +177,10 @@ export class HandleProfileComponent implements OnInit {
         return;
       }
 
-      // ใช้ departmentId จาก API
-      this.filteredPositions = this.positionsApi.filter((p: any) => p.departmentId === deptId);
-
-      this.filteredSkills = [];
-      this.creditForm.patchValue({ posId: null, skillIds: [] }, { emitEvent: false });
+      // ✅ ไปโหลดตำแหน่งตาม departmentId
+      this.loadPositionsByDepartment(deptId);
     });
+
 
     // เมื่อเปลี่ยน Position → filter Skills
     this.creditForm.get('posId')!.valueChanges.subscribe(posId => {
@@ -529,23 +528,42 @@ export class HandleProfileComponent implements OnInit {
       .map((s: any) => this.pickLabel(s));
   }
 
+  private loadPositionsByDepartment(deptId: number): Promise<void> {
+    this.filteredPositions = [];
+    this.filteredSkills = [];
+    this.creditForm.patchValue({ posId: null, skillIds: [] }, { emitEvent: false });
+
+    return new Promise<void>((resolve) => {
+      this.publicService.listByDepartment(deptId, 0, 500).subscribe({
+        next: (res) => {
+          const items = res?.items ?? [];
+
+          // ✅ เก็บเป็น positionsApi เฉพาะ dept นี้ (หรือจะเก็บแค่ filteredPositions ก็ได้)
+          this.positionsApi = items;
+
+          // ✅ map ไว้ใช้ getPosNames ทีหลัง
+          this.posById.clear();
+          for (const p of items) {
+            if (typeof p?.id === 'number') this.posById.set(p.id, p);
+          }
+
+          // ✅ ตัวที่โชว์ใน UI
+          this.filteredPositions = items;
+          resolve();
+        },
+        error: () => resolve(),
+      });
+    });
+  }
+
   selectDept(departmentId: number) {
     const ctrl = this.creditForm.controls.deptId;
     const current = ctrl.value;
 
-    // ถ้ากดอันเดิมซ้ำ → เคลียร์
     if (current === departmentId) {
-      ctrl.setValue(null);
-      this.filteredPositions = [];
-      this.filteredSkills = [];
-      this.creditForm.patchValue(
-        { posId: null, skillIds: [] },
-        { emitEvent: false }
-      );
+      ctrl.setValue(null);      // ✅ valueChanges จะเคลียร์ให้เอง
     } else {
-      // เปลี่ยนเป็น department ใหม่
-      ctrl.setValue(departmentId);
-      // ตรงนี้ไม่ต้องทำอะไรเพิ่ม เพราะ valueChanges(deptId) ข้างบนจะจัดการ filter ให้
+      ctrl.setValue(departmentId); // ✅ valueChanges จะไปโหลด positions
     }
   }
 
@@ -604,7 +622,7 @@ export class HandleProfileComponent implements OnInit {
     this.creditModalOpen = true;
   }
 
-  editCredit(index: number) {
+  async editCredit(index: number) {
     const c = this.credits[index];
     if (!c) return;
 
@@ -613,6 +631,7 @@ export class HandleProfileComponent implements OnInit {
     const deptId = c.deptIds?.[0] ?? null;
     const posId = c.posIds?.[0] ?? null;
 
+    // 1) set dept ก่อน
     this.creditForm.patchValue({
       company: c.company,
       title: c.title,
@@ -624,20 +643,22 @@ export class HandleProfileComponent implements OnInit {
       internship: c.internship,
       fellowship: c.fellowship,
       deptId,
-      posId,
-      skillIds: [...(c.skillIds ?? [])],
+      posId: null,
+      skillIds: [],
     }, { emitEvent: false });
 
-    if (deptId) {
-      this.filteredPositions = this.positionsApi.filter((p: any) => p.departmentId === deptId);
-    } else {
-      this.filteredPositions = [];
-    }
+    this.filteredPositions = [];
+    this.filteredSkills = [];
 
-    if (posId) {
-      this.filteredSkills = this.skillsApi.filter((s: any) => s.positionId === posId);
-    } else {
-      this.filteredSkills = [];
+    // 2) โหลด positions ตาม dept
+    if (deptId) {
+      await this.loadPositionsByDepartment(deptId);
+
+      // 3) set pos แล้วให้ valueChanges ไป filter skills
+      this.creditForm.patchValue({ posId }, { emitEvent: true });
+
+      // 4) set skills ทีหลัง (ไม่ต้อง emit)
+      this.creditForm.patchValue({ skillIds: [...(c.skillIds ?? [])] }, { emitEvent: false });
     }
 
     this.creditModalOpen = true;

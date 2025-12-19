@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -14,6 +14,23 @@ export type MasterResponse = {
   items: MasterItem[];
   total: number;
 };
+
+export interface Position {
+  id?: number;
+  nameTh: string;
+  nameEn: string;
+  description?: string;
+  departmentId: number;
+}
+
+export interface PageResponse<T> {
+  items: T[];
+  total: number;
+  page?: number;
+  size?: number;
+  totalPages?: number;
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +55,17 @@ export class PubilcService {
   }
   getPositionById(id: number): Observable<MasterItem> {
     return this.http.get<MasterItem>(`${this.api}/positions/${id}`);
+  }
+
+  listByDepartment(departmentId: number, page: number, size: number): Observable<PageResponse<Position>> {
+    const params = new HttpParams()
+      .set('page', String(page))
+      .set('size', String(size));
+
+    return this.http.get<PageResponse<Position>>(
+      `${this.api}/positions/by-department/${departmentId}`,
+      { params }
+    );
   }
 
   /** --------------------- Skills --------------------- */

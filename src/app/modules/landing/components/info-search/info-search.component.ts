@@ -81,6 +81,13 @@ export class InfoSearchComponent implements OnInit {
   experiences = ['Junior', 'Mid', 'Senior', 'Lead'];
   unions = ['สมาคม A', 'สมาคม B', 'สมาคม C'];
 
+  // ✅ position pagination สำหรับ master ของ dept
+  posPage = 0;
+  posSize = 500; // เอาเยอะๆ เพื่อใช้เป็น master filter
+  posTotalPages = 0;
+
+  loadingPositions = false;
+
   // Combobox งาน
   jobQuery = '';
   jobOpen = false;
@@ -131,6 +138,45 @@ export class InfoSearchComponent implements OnInit {
     return this.ls.currentLocale() === 'th';
   }
 
+  private loadPositionsByDepartment(deptId: number): Promise<void> {
+    this.loadingPositions = true;
+
+    // reset positions ก่อนโหลดใหม่ (กัน UI เก่าค้าง)
+    this.positionsApi = [];
+    this.posById.clear();
+
+    return new Promise<void>((resolve) => {
+      this.publicService.listByDepartment(deptId, 0, this.posSize).subscribe({
+        next: (res) => {
+
+          const items = res?.items ?? [];
+
+          this.positionsApi = items
+            .filter((p: any): p is { id: number } => typeof p?.id === 'number') // ✅ กัน id undefined
+            .map((p: any) => ({
+              id: p.id, // ตอนนี้เป็น number แน่นอน
+              nameTh: p.nameTh ?? '',
+              nameEn: p.nameEn ?? '',
+              description: p.description,
+              departmentId: Number(p.departmentId ?? deptId),
+              departmentNameTh: this.deptById.get(Number(p.departmentId ?? deptId))?.nameTh ?? '',
+              departmentNameEn: this.deptById.get(Number(p.departmentId ?? deptId))?.nameEn ?? '',
+            }));
+
+          this.posById.clear();
+          this.positionsApi.forEach(x => this.posById.set(x.id, x));
+
+          this.loadingPositions = false;
+          resolve();
+        },
+        error: () => {
+          this.loadingPositions = false;
+          resolve();
+        }
+      });
+    });
+  }
+
   private pickLabel(th?: string, en?: string): string {
     const lang = this.ls.currentLocale();   // อ่านจาก URL / service
     const isTh = lang === 'th';
@@ -152,15 +198,6 @@ export class InfoSearchComponent implements OnInit {
           this.departmentsApi = res?.items ?? [];
           this.deptById.clear();
           this.departmentsApi.forEach(d => this.deptById.set(d.id, d));
-          resolve();
-        }, _ => resolve());
-      }),
-      // Position
-      new Promise<void>(resolve => {
-        this.publicService.getPosition().subscribe(res => {
-          this.positionsApi = res?.items ?? [];
-          this.posById.clear();
-          this.positionsApi.forEach(p => this.posById.set(p.id, p));
           resolve();
         }, _ => resolve());
       }),
@@ -422,39 +459,48 @@ export class InfoSearchComponent implements OnInit {
     return set?.has(value) ?? false;
   }
 
-  toggleTag(group: SelectedGroup, value: number | string): void {
+  async toggleTag(group: SelectedGroup, value: number | string): Promise<void> {
     const set = this.selected[group] as Set<number | string>;
     if (!set) return;
 
     if (group === 'departments') {
-      // 🔹 department ยังเป็น single-select
+      // ✅ single-select department
       set.clear();
       set.add(value);
-      this.resetDownstream('departments'); // ล้าง jobs + skills
-    } else {
-      // 🔹 อื่น ๆ รวมทั้ง jobs = multi-select
-      if (set.has(value)) {
-        set.delete(value);
-      } else {
-        set.add(value);
+
+      // ✅ เคลียร์ downstream
+      this.resetDownstream('departments');
+      this.jobQuery = ''; // (optional) เคลียร์ช่องค้นหางาน
+
+      // ✅ โหลด position ตาม department ที่เลือก
+      const deptId = Number(value);
+      if (!Number.isNaN(deptId)) {
+        await this.loadPositionsByDepartment(deptId);
+
+        // ✅ กัน user เลือก job ค้างจาก dept เก่า
+        this.selected.jobs.clear();
+        this.selected.skills.clear();
       }
 
-      // ถ้าเปลี่ยน jobs ให้ล้าง skills ทุกครั้ง (เพราะผูกกับ position)
+    } else {
+      // multi-select groups (jobs/skills/...)
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+
       if (group === 'jobs') {
-        this.resetDownstream('jobs'); // ล้าง skills อย่างเดียว
+        this.resetDownstream('jobs'); // ล้าง skills ทุกครั้งที่ jobs เปลี่ยน
       }
     }
 
+    // trigger search เฉพาะเมื่อครบคู่ dept + job
     if (this.hasDepartment && this.hasJob) {
       this.onSubmit();
     } else {
-      // ยังไม่มี department/job ครบคู่ -> ไม่ค้นหา
       this.results = [];
       this.total = 0;
       this.lastPageCount = 0;
     }
   }
-
 
   removeChip(group: SelectedGroup, value: number | string): void {
     const set = this.selected[group] as Set<number | string>;
