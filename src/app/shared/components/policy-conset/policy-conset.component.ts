@@ -18,7 +18,14 @@ export class PolicyConsentComponent implements OnInit {
 
   // --- Configs you may tweak ---
   policyVersion = '1.0.0';
-  policyUpdatedAt = '24 ตุลาคม 2025';
+
+  policyUpdatedAt = '';
+
+  private readonly POLICY_UPDATED_AT: Record<string, string> = {
+    th: '24 ตุลาคม 2566',
+    en: '24 October 2025',
+  };
+
 
   /**
    * ถ้าตั้งค่าเป็น string จะใช้ path นี้ตรง ๆ (navigateByUrl)
@@ -40,6 +47,11 @@ export class PolicyConsentComponent implements OnInit {
     // ✅ รีเซ็ตสถานะหน้าจอ
     this.accepted.set(false);
     this.atEnd.set(false);
+
+    // ✅ ตั้งวันที่ตามภาษาใน URL
+    const lang = this.getLangPrefix();
+    this.policyUpdatedAt =
+      this.POLICY_UPDATED_AT[lang ?? 'th'] ?? this.POLICY_UPDATED_AT['th'];
   }
 
   onScroll(evt: Event) {

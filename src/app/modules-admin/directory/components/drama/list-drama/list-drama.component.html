@@ -10,16 +10,16 @@
             </p>
         </div>
 
-        <button type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium 
-             text-white bg-[#6F9106] shadow 
+        <button type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white bg-[#6F9106] shadow 
              hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
             <span class="mr-2 text-lg">＋</span>
-            <label for="" i18n="@@create_new_script">สร้างบทละครใหม่</label>
+            <span i18n="@@create_new_script">สร้างบทละครใหม่</span>
         </button>
     </div>
 
     <!-- Filter bar -->
     <div class="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-3">
+        <!-- Search -->
         <div class="relative flex-1 min-w-[200px]">
             <input type="text" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm 
                text-white placeholder-[#6F9106]/40
@@ -31,9 +31,23 @@
             </span>
         </div>
 
-        <div class="text-xs text-white/60">
-            <label for="" i18n="@@all">ทั้งหมด</label> {{ filteredDramas().length }} <label for=""
-                i18n="@@scripts">เรื่อง</label>
+        <!-- Tag filter -->
+        <div class="min-w-[170px]">
+            <select class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white
+               focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40" [ngModel]="tagFilter()"
+                (ngModelChange)="tagFilter.set($event || null)">
+                <option [ngValue]="null" i18n="@@all_tags">แท็กทั้งหมด</option>
+                <option *ngFor="let t of uniqueTags()" [ngValue]="t">
+                    #{{ t }}
+                </option>
+            </select>
+        </div>
+
+        <!-- Count -->
+        <div class="text-xs text-white/60 whitespace-nowrap">
+            <span i18n="@@all">ทั้งหมด</span>
+            {{ filteredDramas().length }}
+            <span i18n="@@scripts">เรื่อง</span>
         </div>
     </div>
 
@@ -52,7 +66,8 @@
         class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
         <p class="mb-2 text-base font-medium text-white" i18n="@@no_uploaded_scripts">ยังไม่มีบทละครที่คุณอัปโหลด</p>
         <p class="mb-4 text-sm text-white/60" i18n="@@start_creating_first_script">
-            เริ่มต้นสร้างบทละครเรื่องแรกของคุณได้เลย</p>
+            เริ่มต้นสร้างบทละครเรื่องแรกของคุณได้เลย
+        </p>
 
         <button i18n="@@create_new_script" type="button" (click)="onCreate()" class="inline-flex items-center rounded-lg bg-[#6F9106] px-4 py-2 text-sm font-medium text-black 
              hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
@@ -62,8 +77,9 @@
 
     <!-- List -->
     <div *ngIf="!loading() && filteredDramas().length > 0" class="grid gap-4 md:grid-cols-2">
-        <article *ngFor="let d of filteredDramas()" class="group flex overflow-hidden rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow shadow-black/60
+        <article *ngFor="let d of filteredDramas(); trackBy: trackByDramaId" class="group flex overflow-hidden rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow shadow-black/60
              hover:border-[#6F9106] hover:shadow-[0_0_12px_rgba(111,145,6,0.3)] transition">
+
             <!-- Thumbnail -->
             <div class="relative hidden w-32 shrink-0 bg-[#0f1a0b] md:block">
                 <img *ngIf="getFirstImage(d) as img" [src]="img" alt="poster"
@@ -85,7 +101,7 @@
                 <div class="mb-1 flex items-start justify-between gap-3">
                     <h2 class="line-clamp-2 text-sm font-semibold text-white group-hover:text-[#6F9106]
                    drop-shadow-[0_0_6px_rgba(111,145,6,0.3)] transition">
-                        {{ d.title }}
+                        {{ d.title || '-' }}
                     </h2>
 
                     <div class="flex flex-col items-end gap-1">
@@ -94,7 +110,6 @@
                             {{ d.createdAt | date: 'dd/MM/yyyy' }}
                         </span>
 
-                        <!-- badge บอกจำนวน PDF version -->
                         <span *ngIf="getPdfCount(d) > 0"
                             class="whitespace-nowrap rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-white/80">
                             PDF {{ getPdfCount(d) }} เวอร์ชัน
@@ -107,12 +122,15 @@
                 </p>
 
                 <!-- Tags -->
-                <div class="mb-3 flex flex-wrap gap-1">
+                <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(d).length > 0; else noTags">
                     <span *ngFor="let tag of getTagList(d)"
                         class="rounded-full bg-[#6F9106]/20 border border-[#6F9106]/40 px-2 py-0.5 text-[10px] text-white">
                         #{{ tag }}
                     </span>
                 </div>
+                <ng-template #noTags>
+                    <div class="mb-3 text-[10px] text-white/40">ไม่มีแท็ก</div>
+                </ng-template>
 
                 <!-- Footer -->
                 <div class="mt-auto flex items-center justify-between text-[11px] text-white/50">

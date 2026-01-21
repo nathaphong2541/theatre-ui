@@ -79,7 +79,7 @@ import { LocaleSwitcherService } from './locale-switcher.service';
                      disabled:cursor-default disabled:opacity-60"
               (click)="pick('en')">
         <span class="flex items-center gap-2">
-          <img src="assets/flags/flag-en.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
+          <img src="assets/flags/flag-usa.svg" alt="" class="h-5 w-5 rounded-[6px] object-cover ring-1 ring-black/5" width="20" height="20" />
           <span i18n="@@flagEng">{{ enLabel }}</span>
         </span>
         <svg *ngIf="isCurrent('en')" class="h-4 w-4 text-emerald-600" viewBox="0 0 20 20" aria-hidden="true">
@@ -141,7 +141,7 @@ export class LanguageMenuComponent {
 
   currentFlagSrc() {
     return this.isCurrent('en')
-      ? 'assets/flags/flag-en.svg'
+      ? 'assets/flags/flag-usa.svg'
       : 'assets/flags/flag-th.svg';
   }
 

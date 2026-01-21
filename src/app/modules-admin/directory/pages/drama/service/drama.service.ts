@@ -36,6 +36,21 @@ export class DramaService {
         return this.http.get<Drama>(`${this.baseUrl}/${id}`);
     }
 
+    getMyDramasMe(): Observable<Drama[]> {
+        return this.http.get<Drama[]>(
+            `${this.baseUrl}/me`,
+            { withCredentials: true }
+        );
+    }
+
+    // ================= GET (owner-only) =================
+    getMyDramaById(id: number): Observable<Drama> {
+        return this.http.get<Drama>(
+            `${this.baseUrl}/me/${id}`,
+            { withCredentials: true }
+        );
+    }
+
     /**
      * อัปเดตบทละคร (ใช้ FormData เหมือน create)
      * รองรับการส่ง pdf ใหม่ + รูปใหม่

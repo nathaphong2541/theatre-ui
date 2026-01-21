@@ -17,25 +17,31 @@ export class ListDramaComponent implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
 
-  private baseUrl = `${environment.apiUrl}/scripts`;
-
   search = signal('');
   tagFilter = signal<string | null>(null);
   deletingId = signal<number | null>(null);
+
+  // ✅ รวม tag ทั้งหมดไว้ทำ filter dropdown
+  uniqueTags = computed(() => {
+    const set = new Set<string>();
+    this.dramas().forEach(d => this.getTagList(d).forEach(t => set.add(t)));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  });
 
   filteredDramas = computed(() => {
     const q = this.search().toLowerCase().trim();
     const tag = this.tagFilter();
 
     return this.dramas().filter(d => {
+      const title = (d.title ?? '').toLowerCase();
+      const desc = (d.description ?? '').toLowerCase();
+      const tags = (d.tags ?? '').toLowerCase();
+
       const matchText =
-        !q ||
-        d.title.toLowerCase().includes(q) ||
-        (d.description ?? '').toLowerCase().includes(q) ||
-        (d.tags ?? '').toLowerCase().includes(q);
+        !q || title.includes(q) || desc.includes(q) || tags.includes(q);
 
       const matchTag =
-        !tag || (d.tags ?? '').split(',').map(t => t.trim()).includes(tag);
+        !tag || this.getTagList(d).includes(tag);
 
       return matchText && matchTag;
     });
@@ -54,9 +60,10 @@ export class ListDramaComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.dramaService.getMyDramas().subscribe({
+    // ✅ สำคัญ: ต้องเป็น endpoint ของฉันเท่านั้น (/scripts/me)
+    this.dramaService.getMyDramasMe().subscribe({
       next: res => {
-        this.dramas.set(res);
+        this.dramas.set(res ?? []);
         this.loading.set(false);
       },
       error: err => {
@@ -69,52 +76,27 @@ export class ListDramaComponent implements OnInit {
 
   // ───────────────── helper: ดึง lang จาก URL ─────────────────
   private getLangPrefix(): string | null {
-    const url = this.router.url; // เช่น "/th/directory/script/list"
-    const segments = url.split('/').filter(Boolean);
+    const segments = this.router.url.split('/').filter(Boolean);
     const first = segments[0];
-    const supportedLangs = ['th', 'en'];
-
-    return supportedLangs.includes(first) ? first : null;
+    return (first === 'th' || first === 'en') ? first : null;
   }
 
   // ───────────────── navigation ─────────────────
   onCreate() {
     const lang = this.getLangPrefix();
-    const base: any[] = [];
-
-    if (lang) {
-      base.push('/', lang, 'directory');
-    } else {
-      base.push('/directory');
-    }
-
+    const base: any[] = lang ? ['/', lang, 'directory'] : ['/directory'];
     this.router.navigate([...base, 'script', 'new']);
   }
 
   onEdit(d: Drama) {
     const lang = this.getLangPrefix();
-    const base: any[] = [];
-
-    if (lang) {
-      base.push('/', lang, 'directory');
-    } else {
-      base.push('/directory');
-    }
-
-    this.router.navigate([...base, 'script', d.id]);
+    const base: any[] = lang ? ['/', lang, 'directory'] : ['/directory'];
+    this.router.navigate([...base, 'script', d.id]); // หน้า edit ของคุณ
   }
 
   onView(d: Drama) {
     const lang = this.getLangPrefix();
-    const base: any[] = [];
-
-    if (lang) {
-      base.push('/', lang, 'directory');
-    } else {
-      base.push('/directory');
-    }
-
-    // ✅ แก้จาก 'drama' เป็น 'script'
+    const base: any[] = lang ? ['/', lang, 'directory'] : ['/directory'];
     this.router.navigate([...base, 'script', 'view', d.id]);
   }
 
@@ -146,13 +128,16 @@ export class ListDramaComponent implements OnInit {
 
   // ───────────────── helpers ─────────────────
   private fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
+
+  trackByDramaId = (_: number, d: Drama) => d.id;
+
   getFirstImage(drama: Drama): string | null {
-    if (!drama.images || drama.images.length === 0) return null;
+    if (!drama.images?.length) return null;
 
-    const rawPath = drama.images[0].filePath || '';       // "uploads\\scripts\\xxxx.jpg"
-    const normalized = rawPath.replace(/\\/g, '/');       // "uploads/scripts/xxxx.jpg"
+    const rawPath = drama.images[0]?.filePath ?? '';
+    if (!rawPath) return null;
 
-    // รูปจะถูกโหลดจาก http://localhost:8080/uploads/...
+    const normalized = rawPath.replace(/\\/g, '/'); // uploads/scripts/xxx.jpg
     return `${this.fileBase}/${normalized}`;
   }
 
@@ -164,15 +149,16 @@ export class ListDramaComponent implements OnInit {
   }
 
   getPdfCount(d: Drama): number {
-    // สมมติว่า Drama มี field pdfs
-    // ถ้ายังไม่มี ให้เพิ่มใน interface ด้วย
-    // pdfs?: { id: number; versionNo: number; versionName?: string; filePath: string; createdAt: string }[];
-    return (d as any).pdfs ? (d as any).pdfs.length : 0;
+    return Array.isArray((d as any).pdfs) ? (d as any).pdfs.length : 0;
   }
 
   downloadLatestPdf(d: Drama) {
-    // เรียก API download ล่าสุด: GET /api/scripts/{id}/pdf
-    const url = `/api/scripts/${d.id}/pdf`;
+    // ✅ แนะนำให้ backend ทำ endpoint owner-only: GET /api/scripts/me/{id}/pdf
+    // เพื่อกันคนอื่นดาวน์โหลด
+    const apiBase = environment.apiUrl; // http://localhost:8080/api
+    const url = `${apiBase}/scripts/me/${d.id}/pdf`;
+
+    // หมายเหตุ: ถ้า cookie เป็น cross-site ต้องมี sameSite/secure ถูกต้อง
     window.open(url, '_blank');
   }
 }

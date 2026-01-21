@@ -31,17 +31,16 @@
           <span i18n="@@footer_script">ห้องสมุด</span>
         </a>
 
-        <!-- เกี่ยวกับเรา -->
-        <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
-          routerLinkActive="text-green-300 font-semibold" class="hover:text-green-300 transition">
-          <span i18n="@@footer_about">เกี่ยวกับเรา</span>
-        </a>
-
         <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="profiles"
           routerLinkActive="text-green-300 font-semibold" class="hover:text-green-300 transition">
           <span i18n="@@footer_search">ค้นหาสมาชิก</span>
         </a>
 
+        <!-- เกี่ยวกับเรา -->
+        <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
+          routerLinkActive="text-green-300 font-semibold" class="hover:text-green-300 transition">
+          <span i18n="@@footer_about">เกี่ยวกับเรา</span>
+        </a>
 
         <!-- ติดต่อเรา (ถ้าบนหน้าเดียวกันสมมติ fragment="contact") -->
         <!-- <a routerLink="/en" fragment="contact" routerLinkActive="text-green-300 font-semibold"

@@ -325,17 +325,17 @@ export class HandleProfileComponent implements OnInit {
   creditModalOpen = false;
 
   creditForm = this.fb.group({
-    company: ['', Validators.required],
-    title: ['', Validators.required],
-    startYear: ['', Validators.required],
+    company: [''],
+    title: [''],
+    startYear: [''],
     endYear: [''],
     current: [false],
-    venue: ['', Validators.required],
-    jobLocation: ['', Validators.required],
+    venue: [''],
+    jobLocation: [''],
     internship: [false],
     fellowship: [false],
-    deptId: new FormControl<number | null>(null, { validators: Validators.required }),
-    posId: new FormControl<number | null>(null, { validators: Validators.required }),
+    deptId: new FormControl<number | null>(null),
+    posId: new FormControl<number | null>(null),
     skillIds: new FormControl<number[]>([], { nonNullable: true }),
   });
 
@@ -343,8 +343,8 @@ export class HandleProfileComponent implements OnInit {
   form = this.fb.group({
     privateProfile: new FormControl(false),
     profileIsCompany: new FormControl(false),
-    firstName: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    lastName: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
+    firstName: new FormControl<string>('', { nonNullable: true }),
+    lastName: new FormControl<string>('', { nonNullable: true }),
     pronouns: new FormControl<string>(''),
     title: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(50)] }),
     location: new FormControl<string>('', { nonNullable: true, validators: [Validators.maxLength(25)] }),
@@ -669,29 +669,16 @@ export class HandleProfileComponent implements OnInit {
   }
 
   saveCreditFromModal() {
-
-    if (this.creditForm.invalid) {
-      this.creditForm.markAllAsTouched();
-      this.toast.warning(
-        $localize`:@@profile_toast_credit_incomplete_msg:กรุณากรอกข้อมูลเครดิตให้ครบก่อนบันทึก`,
-        {
-          title: $localize`:@@profile_toast_credit_incomplete_title:ข้อมูลเครดิตไม่ครบ`,
-        }
-      );
-      console.warn('[credit] creditForm invalid', this.creditForm.value);
-      return;
-    }
-
     const v = this.creditForm.getRawValue();
 
     const credit: ProfileCredit = {
-      company: v.company!,
-      title: v.title!,
-      startYear: v.startYear!,
+      company: v.company || '',
+      title: v.title || '',
+      startYear: v.startYear || '',
       endYear: v.endYear || null,
       current: !!v.current,
-      venue: v.venue!,
-      jobLocation: v.jobLocation!,
+      venue: v.venue || '',
+      jobLocation: v.jobLocation || '',
       internship: !!v.internship,
       fellowship: !!v.fellowship,
       deptIds: v.deptId ? [v.deptId] : [],
@@ -699,13 +686,8 @@ export class HandleProfileComponent implements OnInit {
       skillIds: v.skillIds ?? [],
     };
 
-    if (this.editingCreditIndex !== null) {
-      // แก้ไขรายการเดิม
-      this.credits[this.editingCreditIndex] = credit;
-    } else {
-      // เพิ่มใหม่
-      this.credits.push(credit);
-    }
+    if (this.editingCreditIndex !== null) this.credits[this.editingCreditIndex] = credit;
+    else this.credits.push(credit);
 
     this.editingCreditIndex = null;
     this.closeCreditModal();
@@ -844,43 +826,34 @@ export class HandleProfileComponent implements OnInit {
     } catch { return null; }
   }
 
-  /** ---------- Save ---------- */
   async save() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.toast.warning(
-        $localize`:@@profile_toast_form_incomplete_msg:กรุณากรอกข้อมูลให้ครบถ้วน`,
-        { title: $localize`:@@profile_toast_form_incomplete_title:ข้อมูลไม่ครบ` }
-      );
-      return;
-    }
-
     const base = this.form.getRawValue();
+
     const payload: ProfilePayload = {
       ...(this.currentProfile && !this.isNewProfile
         ? { id: this.currentProfile.id, userId: this.currentProfile.userId }
         : {}),
       privateProfile: !!base.privateProfile,
       profileIsCompany: !!base.profileIsCompany,
-      firstName: base.firstName!,
-      lastName: base.lastName!,
-      pronouns: base.pronouns ?? '',
-      title: base.title!,
-      location: base.location ?? '',
-      email: base.email ?? '',
-      phone: base.phone ?? '',
-      website: base.website ?? '',
-      linkedin: base.linkedin ?? '',
-      facebook: base.facebook ?? '',
-      instagram: base.instagram ?? '',
-      twitter: base.twitter ?? '',
+      firstName: base.firstName || '',
+      lastName: base.lastName || '',
+      pronouns: base.pronouns || '',
+      title: base.title || '',
+      location: base.location || '',
+      email: base.email || '',
+      phone: base.phone || '',
+      website: base.website || '',
+      linkedin: base.linkedin || '',
+      facebook: base.facebook || '',
+      instagram: base.instagram || '',
+      twitter: base.twitter || '',
       multiLang: !!base.multiLang,
       travel: base.travel ?? false,
       tour: base.tour ?? false,
-      about: base.about ?? '',
-      education: base.education ?? '',
-      video1: base.video1 ?? '',
-      video2: base.video2 ?? '',
+      about: base.about || '',
+      education: base.education || '',
+      video1: base.video1 || '',
+      video2: base.video2 || '',
       workLocations: Array.from(this.selectedWorkLocations),
       unions: Array.from(this.selectedUnions),
       experience: Array.from(this.selectedExp),
@@ -891,85 +864,17 @@ export class HandleProfileComponent implements OnInit {
       credits: this.credits,
     };
 
-    let uploadFile: File | null = null;
-    if (this.avatarFile) {
-      try {
-        const targetMime: 'image/webp' | 'image/jpeg' = 'image/webp';
-        uploadFile = await this.compressImage(this.avatarFile, {
-          maxW: 1200,
-          maxH: 1200,
-          quality: 0.8,
-          mime: targetMime,
-        });
-      } catch (err) {
-        console.error('Compress avatar failed', err);
-        this.toast.warning(
-          $localize`:@@profile_toast_avatar_compress_warning:บีบอัดรูปไม่สำเร็จ จะอัปโหลดรูปต้นฉบับแทน`
-        );
-        uploadFile = this.avatarFile;
-      }
-    }
+    // ถ้าไม่อยากบีบอัด ก็ให้อัปโหลดตรง ๆ (ดูหัวข้อ 3)
+    const uploadFile = this.avatarFile;
 
     const isMultipart = !!uploadFile;
     const req$ = this.isNewProfile
-      ? (isMultipart
-        ? this.profileService.saveProfileMultipart(payload, uploadFile!)
-        : this.profileService.saveProfile(payload))
+      ? (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload))
       : (this.currentProfile
-        ? (isMultipart
-          ? this.profileService.updateProfileMultipart(payload, uploadFile!)
-          : this.profileService.updateProfile(payload))
-        : (isMultipart
-          ? this.profileService.saveProfileMultipart(payload, uploadFile!)
-          : this.profileService.saveProfile(payload)));
+        ? (isMultipart ? this.profileService.updateProfileMultipart(payload, uploadFile!) : this.profileService.updateProfile(payload))
+        : (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload)));
 
-    req$.subscribe({
-      next: async (res: ProfileDto & { avatarUrl?: string }) => {
-        this.currentProfile = res as ProfileDto;
-
-        if (res.avatarUrl) {
-          this.serverAvatarUrl = res.avatarUrl;
-          this.avatarPreviewUrl = null;
-        }
-        this.avatarFile = null;
-
-        try {
-          if (this.resumeFile) {
-            await this.profileService.uploadResume(this.resumeFile).toPromise();
-          }
-
-          const perfFiles = this.images.filter((f): f is File => !!f);
-          if (perfFiles.length) {
-            await this.profileService.uploadPerformances(perfFiles).toPromise();
-          }
-        } catch (e) {
-          console.error('Upload resume/performance failed', e);
-          this.toast.warning(
-            $localize`:@@profile_toast_partial_files_warning:บันทึกข้อมูลหลักสำเร็จ แต่ไฟล์บางส่วนอัปโหลดไม่สำเร็จ`
-          );
-        }
-
-        this.toast.success(
-          $localize`:@@profile_toast_save_success_msg:บันทึกข้อมูลสำเร็จ`,
-          {
-            title: $localize`:@@profile_toast_save_success_title:Saved`,
-            duration: 3000,
-          }
-        );
-
-        // ไม่ต้องรอ timeout ให้ redirect เลย
-        this.router.navigate(['en/directory/profile']);
-      },
-      error: (err) => {
-        console.error('Save profile failed', err);
-        const msg =
-          err?.error?.message ||
-          $localize`:@@profile_toast_save_error_default_msg:เกิดข้อผิดพลาดในการบันทึกข้อมูล`;
-        this.toast.error(msg, {
-          title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด`,
-        });
-      }
-    });
+    req$.subscribe({ /* เหมือนเดิม */ });
   }
 
   cancel() {

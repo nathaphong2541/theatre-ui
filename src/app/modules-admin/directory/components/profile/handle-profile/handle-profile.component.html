@@ -212,24 +212,6 @@
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Title/Trade/Profession</p>
                             </div>
-                            <div>
-                                <div class="relative">
-                                    <span
-                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">
-                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="1.5" aria-hidden="true">
-                                            <path d="M3 7h18M3 12h18M3 17h18" />
-                                        </svg>
-                                    </span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="Thailand" [formControl]="form.controls.location" maxlength="25" />
-                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">
-                                        {{ (form.controls.location.value || '').length }}/25
-                                    </span>
-                                </div>
-                                <p class="mt-1 text-xs text-gray-400">Where do you currently live?</p>
-                            </div>
                         </div>
                     </section>
 
@@ -694,7 +676,7 @@
                                 </div>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold mb-2">Race/Ethnicity</h3>
+                                <h3 class="text-lg font-semibold mb-2">How do you identify in relation to Thai culture?</h3>
                                 <div class="flex flex-wrap gap-2.5">
                                     <label *ngFor="let r of races"
                                         class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
