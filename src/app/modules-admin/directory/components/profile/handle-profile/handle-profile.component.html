@@ -481,8 +481,6 @@
                         </div>
                     </section>
 
-
-                    <!-- Work Locations -->
                     <section
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-2">
@@ -491,13 +489,58 @@
                             </h2>
                             <p class="text-sm text-gray-400">Select any areas in which you're a local hire.</p>
                         </div>
-                        <div class="flex flex-wrap gap-2.5">
-                            <label *ngFor="let wl of workLocations"
-                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedWorkLocations.has(wl.value)}"
-                                (click)="toggleWorkLocation(wl.value)">
-                                <span>{{ wl.label }}</span>
-                            </label>
+
+                        <div class="relative" data-ddwrap="work">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'work')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedWorkLocations, workLocations) || 'Select work
+                                            locations...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedWorkLocations.size }} selected
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['work']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['work']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(workLocations, ddSearch['work'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedWorkLocations.has(it.value)"
+                                            (change)="toggleSet(selectedWorkLocations, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedWorkLocations); $event.stopPropagation()">
+                                        Clear
+                                    </button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['work']=false; $event.stopPropagation()">
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
@@ -600,13 +643,65 @@
                             </h2>
                             <p class="text-sm text-gray-400">We employ members of the following unions or guilds:</p>
                         </div>
-                        <div class="flex flex-wrap gap-2.5">
-                            <label *ngFor="let u of unions"
-                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedUnions.has(u.value)}"
-                                (click)="toggleUnion(u.value)">
-                                <span>{{ u.label }}</span>
-                            </label>
+
+                        <div class="relative" data-ddwrap="unions">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'unions')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedUnions, unions) || 'Select unions...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedUnions.size }} selected</div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['unions']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['unions']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(unions, ddSearch['unions'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedUnions.has(it.value)"
+                                            (change)="toggleSet(selectedUnions, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedUnions); $event.stopPropagation()">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['unions']=false; $event.stopPropagation()">Done</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="isUnionStudentAcademicSelected" class="mt-3">
+                            <label class="text-xs text-gray-400">Student / Academic Member</label>
+                            <input class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.unionStudentAcademicText"
+                                placeholder="Type your membership status..." />
+                        </div>
+
+                        <div *ngIf="isUnionOtherSelected" class="mt-3">
+                            <label class="text-xs text-gray-400">Other</label>
+                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.unionOtherText" placeholder="Please specify..." />
                         </div>
                     </section>
 
@@ -620,14 +715,60 @@
                             </h2>
                             <p class="text-sm text-gray-400">At what levels have you worked?</p>
                         </div>
-                        <div class="flex flex-wrap gap-2.5">
-                            <label *ngFor="let e of experienceLevels"
-                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedExp.has(e.value)}"
-                                (click)="toggleExp(e.value)">
-                                <span>{{ e.label }}</span>
-                            </label>
+
+                        <div class="relative" data-ddwrap="exp">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'exp')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedExp, experienceLevels) || 'Select experience
+                                            levels...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedExp.size }} selected</div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['exp']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['exp']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(experienceLevels, ddSearch['exp'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedExp.has(it.value)"
+                                            (change)="toggleSet(selectedExp, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedExp); $event.stopPropagation()">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['exp']=false; $event.stopPropagation()">Done</button>
+                                </div>
+                            </div>
                         </div>
+                        <div *ngIf="isExpOtherSelected" class="mt-3">
+                            <label class="text-xs text-gray-400">Other</label>
+                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5  text-black text-sm outline-none
+                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.experienceOtherText" placeholder="Please specify..." />
+                        </div>
+
                     </section>
 
                     <!-- Partners -->
@@ -640,65 +781,204 @@
                             </h2>
                             <p class="text-sm text-gray-400">Are you a member of one of our partner organizations?</p>
                         </div>
-                        <div class="flex flex-wrap gap-2.5">
-                            <label *ngFor="let p of partnerDirectories"
-                                class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedPartners.has(p.value)}"
-                                (click)="togglePartner(p.value)">
-                                <span>{{ p.label }}</span>
-                            </label>
+
+                        <div class="relative" data-ddwrap="partners">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'partners')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedPartners, partnerDirectories) || 'Select
+                                            partner
+                                            directories...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedPartners.size }} selected
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['partners']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['partners']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(partnerDirectories, ddSearch['partners'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedPartners.has(it.value)"
+                                            (change)="toggleSet(selectedPartners, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedPartners); $event.stopPropagation()">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['partners']=false; $event.stopPropagation()">Done</button>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngFor="let pid of partnerNeedsNameIds()">
+                            <div *ngIf="selectedPartners.has(pid)" class="mt-3">
+                                <label class="text-xs text-gray-400">
+                                    {{ getPartnerLabel(pid) }} : Name
+                                </label>
+
+                                <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    [ngModel]="form.controls.partnerDetailById.value[pid]"
+                                    (ngModelChange)="setPartnerDetail(pid, $event)"
+                                    placeholder="Type organization name..." />
+                            </div>
+                        </ng-container>
+
+                        <div *ngIf="partnerOtherValue != null && selectedPartners.has(partnerOtherValue)" class="mt-3">
+                            <label class="text-xs text-gray-400">Other</label>
+                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.partnerOtherText" placeholder="Please specify..." />
                         </div>
                     </section>
 
                     <!-- Identity -->
                     <section
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-4">
+                        <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Identity
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Gender
                             </h2>
-                            <p class="text-sm text-gray-400">
-                                The following optional fields will be <span class="underline">searchable</span>, but
-                                <i>will not appear</i> on your public profile.
-                            </p>
+                            <p class="text-sm text-gray-400">Optional. Searchable but not shown publicly.</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">Gender</h3>
-                                <div class="flex flex-wrap gap-2.5">
-                                    <label *ngFor="let g of genders"
-                                        class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                        [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedGenders.has(g.value)}"
-                                        (click)="toggleGender(g.value)">
-                                        <span>{{ g.label }}</span>
+                        <div class="relative" data-ddwrap="genders">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'genders')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedGenders, genders) || 'Select gender(s)...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedGenders.size }} selected</div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['genders']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['genders']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(genders, ddSearch['genders'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedGenders.has(it.value)"
+                                            (change)="toggleSet(selectedGenders, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
                                     </label>
                                 </div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">How do you identify in relation to Thai culture?</h3>
-                                <div class="flex flex-wrap gap-2.5">
-                                    <label *ngFor="let r of races"
-                                        class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                        [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedRaces.has(r.value)}"
-                                        (click)="toggleRace(r.value)">
-                                        <span>{{ r.label }}</span>
-                                    </label>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedGenders); $event.stopPropagation()">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['genders']=false; $event.stopPropagation()">Done</button>
                                 </div>
                             </div>
                         </div>
+                        <div *ngIf="isGenderSelfDescribeSelected" class="mt-3">
+                            <label class="text-xs text-gray-400">Please describe</label>
+                            <input class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.genderSelfDescribeText" placeholder="Type here..." />
+                            <p *ngIf="form.controls.genderSelfDescribeText.touched && form.controls.genderSelfDescribeText.invalid"
+                                class="mt-1 text-xs text-red-400">Required</p>
+                        </div>
+                    </section>
 
-                        <!-- <div class="mt-6">
-                            <h3 class="text-lg font-semibold mb-2">Additional</h3>
-                            <div class="flex flex-wrap gap-2.5">
-                                <label *ngFor="let a of additionals"
-                                    class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-3.5 py-2 text-sm text-gray-200 hover:border-white/20 hover:bg-white/5 cursor-pointer transition"
-                                    [ngClass]="{'border-accent-500/50 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.12)]': selectedAdds.has(a.value)}"
-                                    (click)="toggleAdd(a.value)">
-                                    <span>{{ a.label }}</span>
-                                </label>
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Thai Culture
+                                Identity
+                            </h2>
+                            <p class="text-sm text-gray-400">Optional. Searchable but not shown publicly.</p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="races">
+                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'races')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedRaces, races) || 'Select identity...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedRaces.size }} selected</div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['races']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input
+                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['races']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(races, ddSearch['races'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedRaces.has(it.value)"
+                                            (change)="toggleSet(selectedRaces, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedRaces); $event.stopPropagation()">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['races']=false; $event.stopPropagation()">Done</button>
+                                </div>
                             </div>
-                        </div> -->
+                        </div>
+                        <div class="mt-3" *ngIf="(form.controls.races.value || []).includes(999)">
+                            <input class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none
+           focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                placeholder="Please specify..." [formControl]="form.controls.racialIdentityOtherText" />
+                            <p class="mt-1 text-xs text-gray-400">Other (please specify)</p>
+                        </div>
                     </section>
 
                     <!-- Education -->
@@ -852,196 +1132,285 @@
             </div>
         </div>
     </main>
+</div>
 
+<!-- Credit Modal -->
+<div *ngIf="creditModalOpen" class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 py-10">
+    <div class="relative w-full max-w-4xl rounded-2xl bg-[#15181d] border border-white/10 shadow-2xl"
+        (click)="$event.stopPropagation()">
 
-    <!-- Credit Modal -->
-    <div *ngIf="creditModalOpen" class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 py-10">
-        <div class="relative w-full max-w-4xl rounded-2xl bg-[#15181d] border border-white/10 shadow-2xl"
-            (click)="$event.stopPropagation()">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+            <h2 class="text-2xl font-semibold tracking-tight text-white">Edit Credit</h2>
+            <div class="flex items-center gap-2">
+                <button type="button"
+                    class="inline-flex items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-200 px-3 py-1.5 border border-emerald-400/40 hover:bg-emerald-500/25"
+                    (click)="saveCreditFromModal()">
+                    ✓
+                </button>
+                <button type="button"
+                    class="inline-flex items-center justify-center rounded-lg bg-red-500/15 text-red-200 px-3 py-1.5 border border-red-400/40 hover:bg-red-500/25"
+                    (click)="closeCreditModal()">
+                    ✕
+                </button>
+            </div>
+        </div>
 
-            <!-- Header -->
-            <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h2 class="text-2xl font-semibold tracking-tight">Edit Credit</h2>
-                <div class="flex items-center gap-2">
-                    <button type="button"
-                        class="inline-flex items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-200 px-3 py-1.5 border border-emerald-400/40 hover:bg-emerald-500/25"
-                        (click)="saveCreditFromModal()">
-                        ✓
-                    </button>
-                    <button type="button"
-                        class="inline-flex items-center justify-center rounded-lg bg-red-500/15 text-red-200 px-3 py-1.5 border border-red-400/40 hover:bg-red-500/25"
-                        (click)="closeCreditModal()">
-                        ✕
-                    </button>
+        <!-- Body -->
+        <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
+            <!-- First row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                        placeholder="Company/Production Name" formControlName="company" />
+                    <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
+                </div>
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                        placeholder="Job/Position Title" formControlName="title" />
+                    <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
                 </div>
             </div>
 
-            <!-- Body -->
-            <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
-                <!-- First row -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                            placeholder="Company/Production Name" formControlName="company" />
-                        <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
-                    </div>
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                            placeholder="Job/Position Title" formControlName="title" />
-                        <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
+            <!-- Years + current -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                        placeholder="2020" formControlName="startYear" />
+                    <p class="mt-1 text-xs text-gray-400">Start year *</p>
+                </div>
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                        placeholder="2022" formControlName="endYear"
+                        [disabled]="creditForm.controls.current.value === true" />
+                    <p class="mt-1 text-xs text-gray-400">End year</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
+                    <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                        <button type="button" (click)="creditForm.controls.current.setValue(true)"
+                            [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            class="px-3 py-1.5">
+                            Yes
+                        </button>
+                        <button type="button" (click)="creditForm.controls.current.setValue(false)"
+                            [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            class="px-3 py-1.5">
+                            No
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Years + current -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="2020" formControlName="startYear" />
-                        <p class="mt-1 text-xs text-gray-400">Start year *</p>
-                    </div>
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="2022" formControlName="endYear"
-                            [disabled]="creditForm.controls.current.value === true" />
-                        <p class="mt-1 text-xs text-gray-400">End year</p>
-                    </div>
+            <!-- Venue + Location -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                        placeholder="Venue" formControlName="venue" />
+                    <p class="mt-1 text-xs text-gray-400">Venue *</p>
+                </div>
+                <div>
+                    <input
+                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                        placeholder="Job Location" formControlName="jobLocation" />
+                    <p class="mt-1 text-xs text-gray-400">Job Location *</p>
+                </div>
+            </div>
+
+            <!-- Internship / fellowship -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
                     <div class="flex items-center gap-3">
-                        <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
+                        <span class="text-xs text-gray-400">This was an internship</span>
                         <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
-                            <button type="button" (click)="creditForm.controls.current.setValue(true)"
-                                [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            <button type="button" (click)="creditForm.controls.internship.setValue(true)"
+                                [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
                                 Yes
                             </button>
-                            <button type="button" (click)="creditForm.controls.current.setValue(false)"
-                                [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            <button type="button" (click)="creditForm.controls.internship.setValue(false)"
+                                [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
                                 No
                             </button>
                         </div>
                     </div>
                 </div>
-
-                <!-- Venue + Location -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="Venue" formControlName="venue" />
-                        <p class="mt-1 text-xs text-gray-400">Venue *</p>
-                    </div>
-                    <div>
-                        <input
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="Job Location" formControlName="jobLocation" />
-                        <p class="mt-1 text-xs text-gray-400">Job Location *</p>
-                    </div>
-                </div>
-
-                <!-- Internship / fellowship -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400">This was an internship</span>
-                            <div
-                                class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
-                                <button type="button" (click)="creditForm.controls.internship.setValue(true)"
-                                    [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
-                                    Yes
-                                </button>
-                                <button type="button" (click)="creditForm.controls.internship.setValue(false)"
-                                    [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
-                                    No
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400">This was a fellowship</span>
-                            <div
-                                class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
-                                <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
-                                    [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
-                                    Yes
-                                </button>
-                                <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
-                                    [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
-                                    No
-                                </button>
-                            </div>
+                <div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-gray-400">This was a fellowship</span>
+                        <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                            <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
+                                [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                class="px-3 py-1.5">
+                                Yes
+                            </button>
+                            <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
+                                [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                class="px-3 py-1.5">
+                                No
+                            </button>
                         </div>
                     </div>
                 </div>
-                <!-- Department -->
-                <div class="space-y-2">
-                    <h3 class="text-sm font-medium text-gray-100">
-                        Department <span class="text-red-400">*</span>
-                    </h3>
-                    <p class="text-xs text-gray-400">
-                        เลือก department ที่คุณทำงานใน position นี้
-                    </p>
-
-                    <div class="flex flex-wrap gap-2.5 mt-1">
-                        <button type="button" *ngFor="let d of departmentsApi" (click)="selectDept(d.id)"
-                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.deptId.value === d.id
-        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
-        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
-                            {{ d.nameEn || d.nameTh }}
-                        </button>
+            </div>
+            <!-- Department -->
+            <!-- Department (multi dropdown) -->
+            <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5
+            shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="relative pl-3">
+                        <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/70"></span>
+                        <h3 class="text-sm font-semibold text-gray-100">
+                            Department <span class="text-red-400">*</span>
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-0.5">เลือก department ที่คุณทำงานใน position นี้</p>
                     </div>
+
+                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10 bg-[#0f1216] px-2 py-1">
+                        {{ selectedCreditDepts.size }} selected
+                    </span>
                 </div>
 
-                <!-- Position -->
-                <div class="space-y-2 mt-4">
-                    <h3 class="text-sm font-medium text-gray-100">
-                        Position <span class="text-red-400">*</span>
-                    </h3>
-                    <p class="text-xs text-gray-400">
-                        เลือกตำแหน่งภายใต้ department ที่เลือก
-                    </p>
+                <div #deptWrap class="relative">
+                    <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
+         hover:border-gray-300 focus:outline-none focus:border-accent-500/70
+         focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]" (click)="toggleCreditDd($event,'dept')">
 
-                    <div *ngIf="filteredPositions.length" class="flex flex-wrap gap-2.5 mt-1">
-                        <button type="button" *ngFor="let p of filteredPositions" (click)="selectPos(p.id)"
-                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.posId.value === p.id
-        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
-        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
-                            {{ p.nameEn || p.nameTh }}
-                        </button>
+                        <div class="flex flex-wrap gap-1.5">
+                            <ng-container *ngIf="selectedCreditDepts.size; else deptPlaceholder">
+                                <span *ngFor="let label of labelsArrayFromNumSet(selectedCreditDepts, departmentsApi)"
+                                    class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5
+             text-xs font-medium text-gray-900 border border-gray-200">
+                                    {{ label }}
+                                </span>
+                            </ng-container>
+
+                            <ng-template #deptPlaceholder>
+                                <span class="text-sm text-gray-400">
+                                    Select department(s)...
+                                </span>
+                            </ng-template>
+                        </div>
+
+                    </button>
+                    <div *ngIf="creditDdOpen.dept" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 bg-[#0f1216]
+             shadow-[0_18px_60px_rgba(0,0,0,0.6)]
+             ring-1 ring-white/10 overflow-hidden">
+
+                        <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
+                            <input class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+         focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
+                                [(ngModel)]="creditDdSearch.pos" [ngModelOptions]="{ standalone: true }"
+                                (click)="$event.stopPropagation()" />
+
+                        </div>
+
+                        <div class="max-h-64 overflow-auto p-2">
+                            <label *ngFor="let d of filterAny(departmentsApi, creditDdSearch.dept)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
+                 border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
+                                <input type="checkbox" class="size-4 accent-accent-500"
+                                    [checked]="selectedCreditDepts.has(d.id)" (change)="toggleCreditDept(d.id)" />
+                                <span class="text-sm text-gray-200">{{ pickLabel(d) }}</span>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
+                            <button type="button"
+                                class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
+                                (click)="clearCreditDepts(); $event.stopPropagation()">
+                                Clear
+                            </button>
+                            <button type="button"
+                                class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                (click)="creditDdOpen.dept=false; $event.stopPropagation()">
+                                Done
+                            </button>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-
-                <!-- Skills -->
-                <!-- <div class="space-y-2">
-                    <h3 class="text-sm font-medium text-gray-100">
-                        Skills
-                    </h3>
-                    <p class="text-xs text-gray-400">
-                        เลือกทักษะที่เกี่ยวข้องกับ position นี้ (เลือกได้หลายข้อ)
-                    </p>
-
-                    <div class="flex flex-wrap gap-2.5" *ngIf="filteredSkills.length">
-                        <button type="button" *ngFor="let s of filteredSkills" (click)="toggleCreditSkill(s.id)"
-                            class="rounded-full border px-3.5 py-1.5 text-xs sm:text-sm transition" [ngClass]="creditForm.controls.skillIds.value.includes(s.id)
-        ? 'border-accent-500/60 bg-accent-500/10 text-accent-200 shadow-[0_0_0_3px_rgba(138,171,6,0.15)]'
-        : 'border-white/15 bg-[#0f1216] text-gray-200 hover:border-white/25 hover:bg-white/5'">
-                            {{ s.nameEn || s.nameTh }}
-                        </button>
+            <!-- Position -->
+            <!-- Position (multi dropdown) -->
+            <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5 mt-4
+            shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="relative pl-3">
+                        <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/40"></span>
+                        <h3 class="text-sm font-semibold text-gray-100">
+                            Position <span class="text-red-400">*</span>
+                        </h3>
+                        <p class="text-xs text-gray-400 mt-0.5">เลือกตำแหน่งภายใต้ department ที่เลือก</p>
                     </div>
-                </div> -->
+
+                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10 bg-[#0f1216] px-2 py-1">
+                        {{ selectedCreditPositions.size }} selected
+                    </span>
+                </div>
+
+                <div #posWrap class="relative">
+                    <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
+             hover:border-gray-300 focus:outline-none focus:border-accent-500/70
+             focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]
+             disabled:opacity-60 disabled:hover:border-gray-200" [disabled]="!filteredPositions.length"
+                        (click)="toggleCreditDd($event,'pos')">
+                        <div class="flex flex-wrap gap-1.5">
+                            <ng-container *ngIf="selectedCreditPositions.size; else posPlaceholder">
+                                <span
+                                    *ngFor="let label of labelsArrayFromNumSet(selectedCreditPositions, filteredPositions); trackBy: trackById"
+                                    class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-gray-900 border border-gray-200">
+                                    {{ label }}
+                                </span>
+                            </ng-container>
+
+                            <ng-template #posPlaceholder>
+                                <span class="text-sm text-gray-400">Select position(s)...</span>
+                            </ng-template>
+                        </div>
+                    </button>
+                    <div *ngIf="creditDdOpen.pos" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 bg-[#0f1216]
+             shadow-[0_18px_60px_rgba(0,0,0,0.6)]
+             ring-1 ring-white/10 overflow-hidden">
+
+                        <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
+                            <input class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+                 focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
+                                [(ngModel)]="creditDdSearch.pos" (click)="$event.stopPropagation()" />
+                        </div>
+
+                        <div class="max-h-64 overflow-auto p-2">
+                            <label *ngFor="let p of filterAny(filteredPositions, creditDdSearch.pos)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
+                 border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
+                                <input type="checkbox" class="size-4 accent-accent-500"
+                                    [checked]="selectedCreditPositions.has(p.id)" (change)="toggleCreditPos(p.id)" />
+                                <span class="text-sm text-gray-200">{{ pickLabel(p) }}</span>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
+                            <button type="button"
+                                class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
+                                (click)="clearNumSet(selectedCreditPositions); $event.stopPropagation()">
+                                Clear
+                            </button>
+                            <button type="button"
+                                class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                (click)="creditDdOpen.pos=false; $event.stopPropagation()">
+                                Done
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- คลิกที่ backdrop เพื่อปิด -->
-        <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
     </div>
+
+    <!-- คลิกที่ backdrop เพื่อปิด -->
+    <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
 </div>

@@ -121,6 +121,22 @@ export class ListProfileComponent implements OnInit {
   private posMap = new Map<number, MasterItem>();
   private skillMap = new Map<number, MasterItem>();
 
+  private workLocationMap = new Map<number, MasterItem>();
+  private partnerMap = new Map<number, MasterItem>();
+  private experienceMap = new Map<number, MasterItem>();
+  private unionMap = new Map<number, MasterItem>();
+  private genderMap = new Map<number, MasterItem>();
+  private raceMap = new Map<number, MasterItem>();
+  private additionalMap = new Map<number, MasterItem>();
+
+  workLocationLabels = signal<string[]>([]);
+  partnerLabels = signal<string[]>([]);
+  experienceLabels = signal<string[]>([]);
+  unionLabels = signal<string[]>([]);
+  genderLabels = signal<string[]>([]);
+  raceLabels = signal<string[]>([]);
+  additionalLabels = signal<string[]>([]);
+
 
   constructor(
     private router: Router,
@@ -177,11 +193,14 @@ export class ListProfileComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.isLoading.set(true);
 
     this.profileService.getProfile().subscribe({
       next: (p: ProfileDto | any) => {
         this.profile = p;   // ✅ สำคัญมาก เพื่อให้ *ngIf="profile?.facebook" ใช้ได้
+        this.loadProfileMasters(this.profile);
+        this.setProfileLabelGroups(this.profile);
 
         const first = (p?.firstName ?? '').trim();
         const last = (p?.lastName ?? '').trim();
@@ -368,6 +387,177 @@ export class ListProfileComponent implements OnInit {
         this.isError.set(true);
       },
     });
+  }
+
+  private buildLabels(
+    ids: number[] | null | undefined,
+    map: Map<number, MasterItem>,
+    opts?: {
+      otherId?: number;          // default 999
+      otherText?: string;        // ข้อความ other
+      otherPrefix?: string;      // เช่น 'Other'
+      attachToId?: number;       // เช่น 998
+      attachText?: string;       // ข้อความของ 998
+      attachFormat?: (base: string, text: string) => string; // รูปแบบการแนบ
+    }
+  ): string[] {
+    const list = (ids ?? []).filter((x) => typeof x === 'number');
+
+    const otherId = opts?.otherId ?? 999;
+    const otherText = (opts?.otherText ?? '').trim();
+    const otherPrefix = (opts?.otherPrefix ?? 'Other').trim();
+
+    const attachToId = opts?.attachToId;
+    const attachText = (opts?.attachText ?? '').trim();
+
+    const labels: string[] = [];
+
+    for (const id of list) {
+      const item = map.get(id);
+      const base = this.pickLabel(item, `${id}`);
+
+      // 1) Other: โชว์ "Other: <text>"
+      if (id === otherId) {
+        if (otherText) labels.push(`${otherPrefix}: ${otherText}`);
+        else labels.push(otherPrefix);
+        continue;
+      }
+
+      // 2) เคสต้องแนบ text ให้ id เฉพาะ (เช่น Student/Academic)
+      if (attachToId != null && id === attachToId && attachText) {
+        const fmt = opts?.attachFormat ?? ((b, t) => `${b}: ${t}`);
+        labels.push(fmt(base, attachText));
+        continue;
+      }
+
+      // 3) ปกติ
+      labels.push(base);
+    }
+
+    // กันซ้ำ
+    return Array.from(new Set(labels)).filter(Boolean);
+  }
+
+  private loadProfileMasters(p: ProfileDto | any): void {
+    const wlIds = new Set<number>(p?.workLocations ?? []);
+    const partnerIds = new Set<number>(p?.partners ?? []);
+    const expIds = new Set<number>(p?.experience ?? []);
+    const unionIds = new Set<number>(p?.unions ?? []);
+    const genderIds = new Set<number>(p?.genders ?? []);
+    const raceIds = new Set<number>(p?.races ?? []);
+    const addIds = new Set<number>(p?.additionals ?? []);
+
+    // ⚠️ ด้านล่างนี้ “ชื่อเมธอด” ขึ้นกับ service ของคุณ
+    // ถ้าของคุณชื่อไม่ตรง ให้เปลี่ยนเป็น endpoint ที่มีจริง
+
+    this.publicService.getWorkLocaltion?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (wlIds.has(i.id)) this.workLocationMap.set(i.id, i); });
+        this.setProfileLabelGroups(p); // โหลดเสร็จแล้วค่อย refresh labels
+      },
+    });
+
+    this.publicService.getPartnerIdentity?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (partnerIds.has(i.id)) this.partnerMap.set(i.id, i); });
+        this.setProfileLabelGroups(p);
+      },
+    });
+
+    this.publicService.getExperienceLevel?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (expIds.has(i.id)) this.experienceMap.set(i.id, i); });
+        this.setProfileLabelGroups(p);
+      },
+    });
+
+    this.publicService.getUnionMembership?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (unionIds.has(i.id)) this.unionMap.set(i.id, i); });
+        this.setProfileLabelGroups(p);
+      },
+    });
+
+    this.publicService.getGenderIdentity?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (genderIds.has(i.id)) this.genderMap.set(i.id, i); });
+        this.setProfileLabelGroups(p);
+      },
+    });
+
+    this.publicService.getRacialIdentity?.().subscribe({
+      next: (res: any) => {
+        const items: MasterItem[] = res?.items ?? res ?? [];
+        items.forEach(i => { if (raceIds.has(i.id)) this.raceMap.set(i.id, i); });
+        this.setProfileLabelGroups(p);
+      },
+    });
+
+    // this.publicService.getAdditionals?.().subscribe({
+    //   next: (res: any) => {
+    //     const items: MasterItem[] = res?.items ?? res ?? [];
+    //     items.forEach(i => { if (addIds.has(i.id)) this.additionalMap.set(i.id, i); });
+    //     this.setProfileLabelGroups(p);
+    //   },
+    // });
+  }
+
+  private setProfileLabelGroups(p: ProfileDto | any): void {
+    this.workLocationLabels.set(
+      this.buildLabels(p?.workLocations, this.workLocationMap)
+    );
+
+    this.partnerLabels.set(
+      this.buildLabels(p?.partners, this.partnerMap, {
+        otherId: 999,
+        otherPrefix: 'Other',
+        otherText: p?.partnerOtherText,
+      })
+    );
+
+    this.experienceLabels.set(
+      this.buildLabels(p?.experience, this.experienceMap, {
+        otherId: 999,
+        otherPrefix: 'Other',
+        otherText: p?.experienceOtherText,
+      })
+    );
+
+    this.unionLabels.set(
+      this.buildLabels(p?.unions, this.unionMap, {
+        otherId: 999,
+        otherPrefix: 'Other',
+        otherText: p?.unionOtherText,
+        attachToId: 998, // Student/Academic
+        attachText: p?.unionStudentAcademicText,
+        attachFormat: (base, text) => `${base}: ${text}`,
+      })
+    );
+
+    this.genderLabels.set(
+      this.buildLabels(p?.genders, this.genderMap, {
+        otherId: 999, // Prefer to self-describe
+        otherPrefix: 'Self-described',
+        otherText: p?.genderSelfDescribeText,
+      })
+    );
+
+    this.raceLabels.set(
+      this.buildLabels(p?.races, this.raceMap, {
+        otherId: 999,
+        otherPrefix: 'Other',
+        otherText: p?.racialIdentityOtherText,
+      })
+    );
+
+    this.additionalLabels.set(
+      this.buildLabels(p?.additionals, this.additionalMap)
+    );
   }
 
   private loadCreditMasters(credits: Credit[]): void {

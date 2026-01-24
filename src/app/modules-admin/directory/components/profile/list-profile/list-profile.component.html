@@ -9,7 +9,7 @@
             <!-- soft color glows -->
             <div
                 class="absolute inset-0 opacity-90
-               bg-[radial-gradient(70%_50%_at_10%_-10%,rgba(138,171,6,0.35),transparent),radial-gradient(55%_40%_at_80%_-15%,rgba(37,150,190,0.35),transparent)]">
+        bg-[radial-gradient(70%_50%_at_10%_-10%,rgba(138,171,6,0.35),transparent),radial-gradient(55%_40%_at_80%_-15%,rgba(37,150,190,0.35),transparent)]">
             </div>
 
             <!-- subtle noise -->
@@ -17,36 +17,39 @@
 
             <!-- bottom fade -->
             <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#05070b] to-transparent"></div>
+
+            <!-- Edit Button -->
+            <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
+                <span *ngIf="isPrivateProfile()"
+                    class="hidden sm:inline-flex items-center gap-1 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-2.5 py-1 text-[11px] text-yellow-100">
+                    <svg-icon src="assets/icons/heroicons/outline/lock-closed.svg"
+                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                    Private profile
+                </span>
+
+                <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-1.5
+          text-xs sm:text-sm shadow-[0_12px_40px_rgba(0,0,0,0.8)]
+          hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40">
+                    <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg"
+                        [svgClass]="'h-4 w-4 text-white/80'">
+                    </svg-icon>
+                    <span i18n="@@edit_profile">Edit profile</span>
+                </button>
+            </div>
         </div>
 
-        <!-- Edit Button -->
-        <div class="absolute top-4 right-4 flex items-center gap-2">
-            <span *ngIf="isPrivateProfile()"
-                class="hidden sm:inline-flex items-center gap-1 rounded-full border border-yellow-400/40 bg-yellow-400/10 px-2.5 py-1 text-[11px] text-yellow-100">
-                <svg-icon src="assets/icons/heroicons/outline/lock-closed.svg" [svgClass]="'h-3.5 w-3.5'"></svg-icon>
-                Private profile
-            </span>
-            <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-1.5
-               text-xs sm:text-sm shadow-[0_12px_40px_rgba(0,0,0,0.8)]
-               hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40">
-                <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg" [svgClass]="'h-4 w-4 text-white/80'">
-                </svg-icon>
-                <span i18n="@@edit_profile">Edit profile</span>
-            </button>
-        </div>
-
-        <!-- Avatar + headline -->
-        <div class="absolute inset-x-0 -bottom-16">
-            <div class="mx-auto max-w-6xl px-4">
+        <!-- Avatar + headline (overlay ที่คุมระยะได้จริง) -->
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-1/2">
+            <div class="mx-auto max-w-6xl px-4 pointer-events-auto">
                 <div class="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
                     <!-- Avatar -->
-                    <div class="relative">
+                    <div class="relative shrink-0">
                         <div class="rounded-[28px] p-[1px]
-                     bg-[conic-gradient(at_10%_0%,#8aab06,120deg,#2596be,240deg,#8aab06)]
-                     shadow-[0_18px_60px_rgba(0,0,0,0.9)]">
+              bg-[conic-gradient(at_10%_0%,#8aab06,120deg,#2596be,240deg,#8aab06)]
+              shadow-[0_18px_60px_rgba(0,0,0,0.9)]">
                             <div class="size-32 md:size-40 rounded-[24px] bg-[#05070b] p-1">
                                 <div class="size-full rounded-2xl bg-gradient-to-br from-white/10 to-white/[0.02]
-                         ring-1 ring-white/15 flex items-center justify-center overflow-hidden">
+                  ring-1 ring-white/15 flex items-center justify-center overflow-hidden">
                                     <img *ngIf="hasAvatar()" [src]="avatarUrl()" class="h-full w-full object-cover"
                                         alt="profile avatar" />
                                     <svg *ngIf="!hasAvatar()" viewBox="0 0 24 24"
@@ -68,7 +71,7 @@
                             </h1>
 
                             <span *ngIf="pronouns()" class="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5
-                       text-[11px] uppercase tracking-wide text-white/80">
+                text-[11px] uppercase tracking-wide text-white/80">
                                 {{ pronouns() }}
                             </span>
                         </div>
@@ -103,13 +106,15 @@
     </section>
 
     <!-- Body -->
-    <main class="mx-auto max-w-6xl px-4 pt-24 pb-16">
+    <main class="mx-auto max-w-6xl px-4 pt-24 md:pt-28 pb-16">
+        <!-- Details (ย้ายมาไว้ main + ลอยขึ้นมาเล็กน้อย) -->
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- LEFT COLUMN -->
-            <aside class="lg:col-span-1 space-y-6">
+            <aside class="lg:col-span-1 space-y-6 lg:sticky lg:top-6 lg:self-start">
                 <!-- Contact card -->
                 <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02]
-                 backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+          backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase" i18n="@@contact">
                             Contact
@@ -126,12 +131,12 @@
                     <div *ngIf="links()?.length; else noLinks" class="space-y-3">
                         <a *ngFor="let l of links()" [href]="l.href" target="_blank" rel="noopener"
                             class="group flex items-center justify-between rounded-xl border border-white/10 bg-[#05070b]/80 px-4 py-3
-                     hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30 transition">
+                hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30 transition">
                             <div class="flex items-center gap-3 min-w-0">
                                 <svg-icon [src]="l.icon"
                                     [svgClass]="'h-5 w-5 text-white/70 group-hover:text-[#cde07f]'">
                                 </svg-icon>
-                                <div class="leading-tight truncate">
+                                <div class="leading-tight min-w-0">
                                     <div class="text-sm font-medium truncate">{{ l.label }}</div>
                                     <div class="text-xs text-white/60 truncate">{{ l.value }}</div>
                                 </div>
@@ -145,16 +150,14 @@
                     </ng-template>
                 </div>
 
-                <!-- 🔹 Social card (icon only, no handle text) -->
+                <!-- Social card -->
                 <div *ngIf="profile?.facebook || profile?.instagram || profile?.twitter || profile?.linkedin" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
-            backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+          backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
                             Social
                         </h2>
-                        <span class="text-[10px] text-white/40">
-                            Profiles
-                        </span>
+                        <span class="text-[10px] text-white/40">Profiles</span>
                     </div>
 
                     <div class="flex flex-wrap gap-2 text-xs">
@@ -202,7 +205,7 @@
 
                 <!-- Resume card -->
                 <div *ngIf="resumeUrlAbs()" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
-                 backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+          backdrop-blur-xl p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                     <div class="flex items-center justify-between mb-3">
                         <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
                             Resume
@@ -213,7 +216,7 @@
                     <div *ngIf="resumeIsImage()" class="relative rounded-xl overflow-hidden ring-1 ring-white/10 mb-3">
                         <img [src]="resumeUrlAbs()!" class="w-full max-h-60 object-cover" alt="Resume preview" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent
-                     opacity-0 hover:opacity-100 transition flex items-end">
+              opacity-0 hover:opacity-100 transition flex items-end">
                             <div class="w-full flex justify-between items-center px-3 py-2 text-xs text-white">
                                 <span class="font-medium truncate">Preview</span>
                                 <div class="flex gap-2">
@@ -234,10 +237,10 @@
                         </div>
                     </div>
 
-                    <!-- ถ้าเป็น pdf หรือไฟล์อื่น แสดงเป็น card -->
+                    <!-- ถ้าเป็น pdf หรือไฟล์อื่น -->
                     <div *ngIf="!resumeIsImage()"
                         class="rounded-xl border border-dashed border-white/20 bg-black/30 p-3 mb-3">
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
                             <div
                                 class="h-8 w-8 rounded-lg bg-[#8aab06]/15 flex items-center justify-center ring-1 ring-[#8aab06]/40">
                                 <svg-icon
@@ -254,21 +257,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- <div class="flex gap-2 justify-end text-xs">
-                        <a [href]="resumeUrlAbs()!" target="_blank" rel="noopener"
-                            class="inline-flex items-center gap-1 rounded-lg border border-white/20 bg-white/5 px-2.5 py-1 hover:bg-white/10">
-                            <svg-icon src="assets/icons/heroicons/outline/eye.svg"
-                                [svgClass]="'h-3.5 w-3.5'"></svg-icon>
-                            View
-                        </a>
-                        <a [href]="resumeUrlAbs()!" download
-                            class="inline-flex items-center gap-1 rounded-lg bg-[#8aab06]/80 px-2.5 py-1 text-[#111827] font-semibold hover:bg-[#a9c739]">
-                            <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
-                                [svgClass]="'h-3.5 w-3.5'"></svg-icon>
-                            Download
-                        </a>
-                    </div> -->
                 </div>
 
                 <!-- Stats -->
@@ -286,15 +274,13 @@
                     <div
                         class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-4 text-center">
                         <div class="text-xs text-white/50 mb-1" i18n="@@videos">Videos</div>
-                        <div class="text-2xl font-semibold">
-                            {{ videoSources().length }}
-                        </div>
+                        <div class="text-2xl font-semibold">{{ videoSources().length }}</div>
                     </div>
                 </div>
 
                 <!-- Performance images -->
                 <div *ngIf="performanceUrls()?.length" class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
-                 p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+          p-5 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
                             Performance Stills
@@ -320,7 +306,8 @@
                                 <a [href]="img" [download]="getFileName(img)"
                                     class="inline-flex items-center gap-1 rounded-md bg-[#8aab06]/85 px-2 py-1 text-[#111827] font-semibold hover:bg-[#a9c739]">
                                     <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
-                                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                        [svgClass]="'h-3.5 w-3.5'">
+                                    </svg-icon>
                                     Download
                                 </a>
                             </div>
@@ -330,12 +317,12 @@
             </aside>
 
             <!-- RIGHT COLUMN -->
-            <section class="lg:col-span-2 space-y-6">
-                <!-- Tabs (UI only) -->
-                <nav class="flex items-center gap-2 overflow-x-auto">
+            <section class="lg:col-span-2 space-y-6 min-w-0">
+                <!-- Tabs -->
+                <nav class="flex items-center gap-2 overflow-x-auto pr-2">
                     <button class="relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs sm:text-sm
-                   bg-white/8 border border-white/15 text-white hover:bg-white/10
-                   focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30" aria-current="page">
+            bg-white/8 border border-white/15 text-white hover:bg-white/10
+            focus:outline-none focus:ring-2 focus:ring-[#8aab06]/30" aria-current="page">
                         <span i18n="@@about">About</span>
                         <span class="absolute inset-x-3 -bottom-[1px] h-[2px] rounded bg-[#8aab06]/90"></span>
                     </button>
@@ -343,7 +330,7 @@
 
                 <!-- About -->
                 <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02]
-                 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)] space-y-6">
+          p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)] space-y-6">
                     <!-- Bio -->
                     <div>
                         <h3 class="text-sm font-semibold mb-2 flex items-center gap-2" i18n="@@bio">
@@ -365,7 +352,8 @@
                                     Education
                                 </div>
                                 <svg-icon src="assets/icons/heroicons/outline/book-open.svg"
-                                    [svgClass]="'h-4 w-4 text-white/50'"></svg-icon>
+                                    [svgClass]="'h-4 w-4 text-white/50'">
+                                </svg-icon>
                             </div>
                             <p class="mt-2 text-sm text-white/80 whitespace-pre-line">
                                 {{ education() || '-' }}
@@ -378,7 +366,8 @@
                                     Services
                                 </div>
                                 <svg-icon src="assets/icons/heroicons/outline/sparkles.svg"
-                                    [svgClass]="'h-4 w-4 text-white/50'"></svg-icon>
+                                    [svgClass]="'h-4 w-4 text-white/50'">
+                                </svg-icon>
                             </div>
                             <ul class="mt-2 list-disc pl-5 text-sm text-white/80 space-y-1">
                                 <li>UX/UI &amp; Frontend Engineering</li>
@@ -392,7 +381,7 @@
                 <!-- Credits -->
                 <section *ngIf="credits()?.length">
                     <div class="rounded-2xl border border-white/10 bg-gradient-to-b from-[#10141f] to-[#05070b]
-                   p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+            p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-sm font-semibold flex items-center gap-2">
                                 <svg-icon src="assets/icons/heroicons/outline/briefcase.svg"
@@ -400,23 +389,22 @@
                                 </svg-icon>
                                 <span>Credits</span>
                             </h3>
-                            <span class="text-xs text-white/50">
-                                {{ creditsCount() }} entries
-                            </span>
+                            <span class="text-xs text-white/50">{{ creditsCount() }} entries</span>
                         </div>
 
                         <div class="space-y-4">
                             <article *ngFor="let c of credits()"
                                 class="rounded-xl border border-white/10 bg-black/40 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.8)]">
                                 <div class="flex flex-wrap items-baseline justify-between gap-2">
-                                    <div>
-                                        <div class="text-sm font-semibold">
+                                    <div class="min-w-0">
+                                        <div class="text-sm font-semibold truncate">
                                             {{ c.title || '—' }}
                                         </div>
-                                        <div class="text-xs text-white/60">
+                                        <div class="text-xs text-white/60 truncate">
                                             {{ c.company || '—' }}
                                         </div>
                                     </div>
+
                                     <div class="text-xs text-white/60">
                                         <ng-container *ngIf="c.current; else dateRange">
                                             {{ c.startYear || '—' }} – Present
@@ -450,29 +438,140 @@
                                     </span>
                                 </div>
 
-                                <!-- ids (โชว์เลขไปก่อน ถ้ามี master data เดี๋ยวค่อย map ชื่อจริง) -->
                                 <div class="mt-2 flex flex-wrap gap-2 text-[11px] text-white/60">
-                                    <span *ngIf="deptNames(c).length">
-                                        Dept: {{ deptNames(c).join(', ') }}
-                                    </span>
-                                    <span *ngIf="posNames(c).length">
-                                        Pos: {{ posNames(c).join(', ') }}
-                                    </span>
-                                    <span *ngIf="skillNames(c).length">
-                                        Skills: {{ skillNames(c).join(', ') }}
-                                    </span>
+                                    <span *ngIf="deptNames(c).length">Dept: {{ deptNames(c).join(', ') }}</span>
+                                    <span *ngIf="posNames(c).length">Pos: {{ posNames(c).join(', ') }}</span>
+                                    <span *ngIf="skillNames(c).length">Skills: {{ skillNames(c).join(', ') }}</span>
                                 </div>
                             </article>
                         </div>
                     </div>
                 </section>
 
+                <section class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01]
+          p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">Details</h2>
+                        <span class="text-[10px] text-white/40">Profile attributes</span>
+                    </div>
+
+                    <!-- Dashboard grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Work locations -->
+                        <ng-container *ngIf="workLocationLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Work
+                                    locations</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of workLocationLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Partners -->
+                        <ng-container *ngIf="partnerLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Partners
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of partnerLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Experience -->
+                        <ng-container *ngIf="experienceLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Experience
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of experienceLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Unions -->
+                        <ng-container *ngIf="unionLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Unions</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of unionLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Gender -->
+                        <ng-container *ngIf="genderLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Gender</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of genderLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Race / Ethnicity -->
+                        <ng-container *ngIf="raceLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Race /
+                                    Ethnicity
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of raceLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Additional -->
+                        <ng-container *ngIf="additionalLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4">
+                                <div class="text-[11px] uppercase tracking-[0.2em] text-white/60 mb-2">Additional
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span *ngFor="let x of additionalLabels()"
+                                        class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-3 py-1 text-[12px] text-white/80">
+                                        {{ x }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <!-- Empty state -->
+                        <ng-container
+                            *ngIf="!workLocationLabels().length && !partnerLabels().length && !experienceLabels().length && !unionLabels().length && !genderLabels().length && !raceLabels().length && !additionalLabels().length">
+                            <div class="rounded-xl border border-white/10 bg-black/30 p-4 md:col-span-2 xl:col-span-3">
+                                <div class="text-xs text-white/50">No details provided.</div>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                </section>
+
                 <!-- Media / Video -->
                 <section class="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.05] to-white/[0.01]
-                 p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
+          p-6 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
                     <h3 class="text-sm font-semibold flex items-center gap-2 mb-3">
                         <svg-icon src="assets/icons/heroicons/outline/play-circle.svg"
-                            [svgClass]="'h-5 w-5 text-[#8aab06]'"></svg-icon>
+                            [svgClass]="'h-5 w-5 text-[#8aab06]'">
+                        </svg-icon>
                         Media / Video
                     </h3>
                     <app-video-gallery [viewOnly]="true" [limit]="2" [sources]="videoSources()"></app-video-gallery>

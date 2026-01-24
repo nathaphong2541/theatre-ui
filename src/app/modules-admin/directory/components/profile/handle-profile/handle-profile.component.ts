@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ProfileService } from '../../../service/profile.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
@@ -70,6 +70,7 @@ export type ProfileDto = {
 export type ProfilePayload = {
   id?: number;
   userId?: number;
+
   privateProfile: boolean;
   profileIsCompany: boolean;
   firstName: string;
@@ -80,31 +81,52 @@ export type ProfilePayload = {
   email?: string;
   phone?: string;
   website?: string;
+
   linkedin?: string;
   facebook?: string;
   instagram?: string;
   twitter?: string;
+
   multiLang: boolean;
   travel: boolean;
   tour: boolean;
+
   about?: string;
   education?: string;
+
   video1?: string;
   video2?: string;
+
   workLocations: number[];
-  unions: number[];
-  experience: number[];
+
   partners: number[];
+  partnerDetailById: Record<number, string>;
+  partnerOtherText?: string;
+
+  experience: number[];
+  experienceOtherText?: string;
+
+  unions: number[];
+  unionOtherText?: string;
+  unionStudentAcademicText?: string;
+
   genders: number[];
+  genderSelfDescribeText?: string;
+
   races: number[];
+  racialIdentityOtherText?: string;
+
   additionals: number[];
   credits: ProfileCredit[];
 };
 
+
+type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races';
+
 @Component({
   selector: 'app-handle-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './handle-profile.component.html',
   styleUrl: './handle-profile.component.css'
 })
@@ -197,13 +219,16 @@ export class HandleProfileComponent implements OnInit {
     });
   }
 
-
-  private pickLabel(x: { nameTh?: string; nameEn?: string }): string {
+  public pickLabel(x: { nameTh?: string; nameEn?: string }): string {
     const lang = this.ls.currentLocale();
     const isTh = lang === 'th';
     return isTh
       ? (x.nameTh || x.nameEn || '')
       : (x.nameEn || x.nameTh || '');
+  }
+
+  public async refreshCreditPositions() {
+    await this.reloadPositionsForSelectedDepts();
   }
 
   private async loadMaster(): Promise<void> {
@@ -282,6 +307,8 @@ export class HandleProfileComponent implements OnInit {
             value: x.id,
           })
         );
+
+        this.buildPartnerLabelMap(); // ✅ ย้ายมาไว้ตรงนี้
 
         this.races = res.races.items.map(
           (x: { id: number; nameTh: string; nameEn: string }) => ({
@@ -363,6 +390,19 @@ export class HandleProfileComponent implements OnInit {
     twitter: new FormControl<string>(''),
     tiktok: new FormControl<string>(''),
     linkedin: new FormControl<string>(''),
+    workLocations: new FormControl<number[]>([], { nonNullable: true }),
+    unions: new FormControl<number[]>([], { nonNullable: true }),
+    experience: new FormControl<number[]>([], { nonNullable: true }),
+    partners: new FormControl<number[]>([], { nonNullable: true }),
+    genders: new FormControl<number[]>([], { nonNullable: true }),
+    races: new FormControl<number[]>([], { nonNullable: true }),
+    racialIdentityOtherText: new FormControl<string>(''),
+    genderSelfDescribeText: new FormControl<string>(''),
+    partnerOtherText: new FormControl<string>(''),
+    experienceOtherText: new FormControl<string>(''),
+    unionOtherText: new FormControl<string>(''),
+    unionStudentAcademicText: new FormControl<string>(''),
+    partnerDetailById: new FormControl<Record<number, string>>({}, { nonNullable: true }),
   });
 
   // selections เป็น number ให้ตรงกับ API
@@ -382,7 +422,6 @@ export class HandleProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.isNewProfile = this.router.url.includes('/profile-new');
-
     if (!this.isNewProfile) {
       this.loadProfile();
     } else {
@@ -392,6 +431,27 @@ export class HandleProfileComponent implements OnInit {
     this.loadMasterData();
     this.loadMaster();
   }
+
+  private buildPartnerLabelMap() {
+    this.partnerLabelMap.clear();
+    for (const it of this.partnerDirectories ?? []) {
+      this.partnerLabelMap.set(it.value, it.label);
+    }
+  }
+
+  get partnerDetailMap(): Record<number, string> {
+    return this.form.controls.partnerDetailById.value ?? {};
+  }
+
+  partnerDetail(pid: number): string {
+    return this.partnerDetailMap[pid] ?? '';
+  }
+
+  setPartnerDetail(pid: number, val: string) {
+    const next = { ...this.partnerDetailMap, [pid]: val };
+    this.form.controls.partnerDetailById.setValue(next);
+  }
+
 
   private buildCreditLabel(c: ProfileCredit): string {
     const presentLabel = $localize`:@@profile_credit_present:Present`;
@@ -493,7 +553,20 @@ export class HandleProfileComponent implements OnInit {
       education: p.education,
       video1: p.video1,
       video2: p.video2,
-    });
+      workLocations: p.workLocations ?? [],
+      unions: p.unions ?? [],
+      experience: p.experience ?? [],
+      partners: p.partners ?? [],
+      genders: p.genders ?? [],
+      races: p.races ?? [],
+      racialIdentityOtherText: (p as any).racialIdentityOtherText ?? '',
+      genderSelfDescribeText: (p as any).genderSelfDescribeText ?? '',
+      partnerOtherText: (p as any).partnerOtherText ?? '',
+      experienceOtherText: (p as any).experienceOtherText ?? '',
+      unionOtherText: (p as any).unionOtherText ?? '',
+      unionStudentAcademicText: (p as any).unionStudentAcademicText ?? '',
+      partnerDetailById: (p as any).partnerDetailById ?? {},
+    }, { emitEvent: false });
 
     this.selectedWorkLocations = new Set(p.workLocations ?? []);
     this.selectedUnions = new Set(p.unions ?? []);
@@ -596,9 +669,7 @@ export class HandleProfileComponent implements OnInit {
   }
 
   // ---------- Credit popup handlers ----------
-  // ---------- Credit popup handlers ----------
   addCredit() {
-    // กด + New Credit = สร้างใหม่ ไม่ใช่แก้ของเก่า
     this.editingCreditIndex = null;
 
     this.creditForm.reset({
@@ -616,8 +687,13 @@ export class HandleProfileComponent implements OnInit {
       skillIds: [],
     });
 
+    this.selectedCreditDepts.clear();
+    this.selectedCreditPositions.clear();
     this.filteredPositions = [];
     this.filteredSkills = [];
+
+    this.creditDdSearch = { dept: '', pos: '' };
+    this.creditDdOpen = { dept: false, pos: false };
 
     this.creditModalOpen = true;
   }
@@ -628,10 +704,11 @@ export class HandleProfileComponent implements OnInit {
 
     this.editingCreditIndex = index;
 
-    const deptId = c.deptIds?.[0] ?? null;
-    const posId = c.posIds?.[0] ?? null;
+    // set selections
+    this.selectedCreditDepts = new Set<number>(c.deptIds ?? []);
+    this.selectedCreditPositions = new Set<number>(c.posIds ?? []);
 
-    // 1) set dept ก่อน
+    // reset form fields อื่น ๆ
     this.creditForm.patchValue({
       company: c.company,
       title: c.title,
@@ -642,26 +719,54 @@ export class HandleProfileComponent implements OnInit {
       jobLocation: c.jobLocation,
       internship: c.internship,
       fellowship: c.fellowship,
-      deptId,
+      deptId: null,
       posId: null,
-      skillIds: [],
+      skillIds: [...(c.skillIds ?? [])],
     }, { emitEvent: false });
 
-    this.filteredPositions = [];
-    this.filteredSkills = [];
-
-    // 2) โหลด positions ตาม dept
-    if (deptId) {
-      await this.loadPositionsByDepartment(deptId);
-
-      // 3) set pos แล้วให้ valueChanges ไป filter skills
-      this.creditForm.patchValue({ posId }, { emitEvent: true });
-
-      // 4) set skills ทีหลัง (ไม่ต้อง emit)
-      this.creditForm.patchValue({ skillIds: [...(c.skillIds ?? [])] }, { emitEvent: false });
-    }
+    // โหลด positions ตาม dept ที่เลือก (รองรับหลาย dept)
+    await this.reloadPositionsForSelectedDepts();
 
     this.creditModalOpen = true;
+  }
+
+  private async reloadPositionsForSelectedDepts(): Promise<void> {
+    this.filteredPositions = [];
+    this.filteredSkills = [];
+    this.creditForm.patchValue({ skillIds: [] }, { emitEvent: false });
+
+    const deptIds = Array.from(this.selectedCreditDepts);
+    if (!deptIds.length) return;
+
+    // เรียกทีละ dept แล้วรวม (กัน duplicate ด้วย id)
+    const all: any[] = [];
+    for (const deptId of deptIds) {
+      const res = await new Promise<any>(resolve => {
+        this.publicService.listByDepartment(deptId, 0, 500).subscribe({
+          next: (r) => resolve(r),
+          error: () => resolve(null)
+        });
+      });
+      const items = res?.items ?? [];
+      all.push(...items);
+    }
+
+    // unique by id
+    const map = new Map<number, any>();
+    for (const p of all) if (typeof p?.id === 'number') map.set(p.id, p);
+    const unique = Array.from(map.values());
+
+    // map สำหรับ label
+    this.posById.clear();
+    unique.forEach(p => this.posById.set(p.id, p));
+
+    this.filteredPositions = unique;
+
+    // ถ้ามี pos ที่เลือกไว้แต่ไม่อยู่ใน list แล้ว → ตัดทิ้ง
+    const keep = new Set(unique.map(p => p.id));
+    for (const id of Array.from(this.selectedCreditPositions)) {
+      if (!keep.has(id)) this.selectedCreditPositions.delete(id);
+    }
   }
 
   closeCreditModal() {
@@ -681,8 +786,11 @@ export class HandleProfileComponent implements OnInit {
       jobLocation: v.jobLocation || '',
       internship: !!v.internship,
       fellowship: !!v.fellowship,
-      deptIds: v.deptId ? [v.deptId] : [],
-      posIds: v.posId ? [v.posId] : [],
+
+      // ✅ หลายอัน
+      deptIds: Array.from(this.selectedCreditDepts),
+      posIds: Array.from(this.selectedCreditPositions),
+
       skillIds: v.skillIds ?? [],
     };
 
@@ -691,6 +799,15 @@ export class HandleProfileComponent implements OnInit {
 
     this.editingCreditIndex = null;
     this.closeCreditModal();
+  }
+
+  public async toggleCreditDept(id: number) {
+    this.toggleNumSet(this.selectedCreditDepts, id);
+    await this.reloadPositionsForSelectedDepts();
+  }
+
+  public toggleCreditPos(id: number) {
+    this.toggleNumSet(this.selectedCreditPositions, id);
   }
 
   removeCredit(i: number) {
@@ -800,13 +917,111 @@ export class HandleProfileComponent implements OnInit {
   toggleUnion(v: number) { this.toggleSet(this.selectedUnions, v); }
   toggleExp(v: number) { this.toggleSet(this.selectedExp, v); }
   togglePartner(v: number) { this.toggleSet(this.selectedPartners, v); }
-  toggleGender(v: number) { this.toggleSet(this.selectedGenders, v); }
+  toggleGenderIdentity(v: number) {
+    this.toggleSet(this.selectedGenders, v);
+
+    const selfId = this.genderSelfDescribeValue;
+    const isSelf = selfId != null && this.selectedGenders.has(selfId);
+
+    const ctrl = this.form.controls.genderSelfDescribeText;
+
+    if (!isSelf) {
+      ctrl.setValue('', { emitEvent: false });
+      ctrl.clearValidators();
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    } else {
+      ctrl.setValidators([Validators.required, Validators.maxLength(100)]);
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+  public toggleExperienceIdentity(v: number) {
+    this.toggleSet(this.selectedExp, v);
+
+    const otherId = this.expOtherValue;
+    const isOther = otherId != null && this.selectedExp.has(otherId);
+
+    const ctrl = this.form.controls.experienceOtherText;
+
+    if (!isOther) {
+      ctrl.setValue('', { emitEvent: false });
+      ctrl.clearValidators();
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    } else {
+      ctrl.setValidators([Validators.required, Validators.maxLength(100)]);
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  getPartnerLabel(pid: number): string {
+    return this.partnerLabelMap.get(pid) ?? '';
+  }
+
+  public toggleUnionIdentity(v: number) {
+    this.toggleSet(this.selectedUnions, v);
+
+    // Other
+    {
+      const otherId = this.unionOtherValue;
+      const isOther = otherId != null && this.selectedUnions.has(otherId);
+      const ctrl = this.form.controls.unionOtherText;
+
+      if (!isOther) {
+        ctrl.setValue('', { emitEvent: false });
+        ctrl.clearValidators();
+        ctrl.updateValueAndValidity({ emitEvent: false });
+      } else {
+        ctrl.setValidators([Validators.required, Validators.maxLength(120)]);
+        ctrl.updateValueAndValidity({ emitEvent: false });
+      }
+    }
+
+    // Student/Academic Member(Text)
+    {
+      const sid = this.unionStudentAcademicValue;
+      const isSel = sid != null && this.selectedUnions.has(sid);
+      const ctrl = this.form.controls.unionStudentAcademicText;
+
+      if (!isSel) {
+        ctrl.setValue('', { emitEvent: false });
+        ctrl.clearValidators();
+        ctrl.updateValueAndValidity({ emitEvent: false });
+      } else {
+        ctrl.setValidators([Validators.required, Validators.maxLength(120)]);
+        ctrl.updateValueAndValidity({ emitEvent: false });
+      }
+    }
+  }
+  public togglePartnerIdentity(v: number) {
+    this.toggleSet(this.selectedPartners, v);
+
+    // เคลียร์ detail ถ้า unselect
+    const detail = { ...this.form.controls.partnerDetailById.value };
+    if (!this.selectedPartners.has(v)) {
+      delete detail[v];
+      this.form.controls.partnerDetailById.setValue(detail, { emitEvent: false });
+    }
+
+    // Other
+    const otherId = this.partnerOtherValue;
+    const isOther = otherId != null && this.selectedPartners.has(otherId);
+
+    const otherCtrl = this.form.controls.partnerOtherText;
+    if (!isOther) {
+      otherCtrl.setValue('', { emitEvent: false });
+      otherCtrl.clearValidators();
+      otherCtrl.updateValueAndValidity({ emitEvent: false });
+    } else {
+      otherCtrl.setValidators([Validators.required, Validators.maxLength(120)]);
+      otherCtrl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  public isPartnerNeedNameSelected(id: number): boolean {
+    return this.selectedPartners.has(id);
+  }
+
   toggleRace(v: number) { this.toggleSet(this.selectedRaces, v); }
   toggleAdd(v: number) { this.toggleSet(this.selectedAdds, v); }
-
-  private toggleSet(set: Set<number>, v: number) {
-    set.has(v) ? set.delete(v) : set.add(v);
-  }
 
   updateEmbed(which: 1 | 2) {
     const ctrl = which === 1 ? this.form.controls.video1 : this.form.controls.video2;
@@ -860,6 +1075,13 @@ export class HandleProfileComponent implements OnInit {
       partners: Array.from(this.selectedPartners),
       genders: Array.from(this.selectedGenders),
       races: Array.from(this.selectedRaces),
+      racialIdentityOtherText: (base.racialIdentityOtherText || '').trim() || undefined,
+      genderSelfDescribeText: (base.genderSelfDescribeText || '').trim() || undefined,
+      partnerOtherText: (base.partnerOtherText || '').trim() || undefined,
+      experienceOtherText: (base.experienceOtherText || '').trim() || undefined,
+      unionOtherText: (base.unionOtherText || '').trim() || undefined,
+      unionStudentAcademicText: (base.unionStudentAcademicText || '').trim() || undefined,
+      partnerDetailById: base.partnerDetailById ?? {},
       additionals: Array.from(this.selectedAdds),
       credits: this.credits,
     };
@@ -976,5 +1198,238 @@ export class HandleProfileComponent implements OnInit {
     }
     this.imagePreviewUrls[i] = null;
     this.images[i] = null;
+  }
+
+  ddOpen: Record<DdKey, boolean> = {
+    work: false,
+    unions: false,
+    exp: false,
+    partners: false,
+    genders: false,
+    races: false,
+  };
+
+  ddSearch: Record<DdKey, string> = {
+    work: '',
+    unions: '',
+    exp: '',
+    partners: '',
+    genders: '',
+    races: '',
+  };
+
+  public toggleDd(e: MouseEvent, key: DdKey) {
+    e.stopPropagation();
+    (Object.keys(this.ddOpen) as DdKey[]).forEach(k => (this.ddOpen[k] = false));
+    this.ddOpen[key] = !this.ddOpen[key];
+  }
+
+  public closeDd(key: DdKey) {
+    this.ddOpen[key] = false;
+  }
+
+  public filterList(list: { label: string; value: number }[], q: string) {
+    const s = (q || '').trim().toLowerCase();
+    if (!s) return list;
+    return list.filter(x => x.label.toLowerCase().includes(s));
+  }
+
+  public clearSet(set: Set<number>) {
+    set.clear();
+  }
+
+  public labelsFromSet(set: Set<number>, list: { label: string; value: number }[]) {
+    if (!set?.size) return '';
+    const map = new Map(list.map(x => [x.value, x.label]));
+    const arr = Array.from(set).map(v => map.get(v)).filter(Boolean) as string[];
+    if (arr.length <= 3) return arr.join(', ');
+    return `${arr.slice(0, 3).join(', ')} +${arr.length - 3} more`;
+  }
+
+  public toggleSet(set: Set<number>, v: number) {
+    set.has(v) ? set.delete(v) : set.add(v);
+  }
+
+  // ===== Credit modal multi dropdown =====
+  creditDdOpen = { dept: false, pos: false };
+  creditDdSearch = { dept: '', pos: '' };
+
+  selectedCreditDepts = new Set<number>();
+  selectedCreditPositions = new Set<number>();
+
+  // filter list แบบเดียวกับของคุณ แต่แยกใช้ใน modal ได้เลย
+  filterAny(list: any[], q: string) {
+    const s = (q || '').trim().toLowerCase();
+    if (!s) return list;
+    return list.filter(x => (this.pickLabel(x) || '').toLowerCase().includes(s));
+  }
+
+  toggleNumSet(set: Set<number>, v: number) {
+    set.has(v) ? set.delete(v) : set.add(v);
+  }
+
+  clearNumSet(set: Set<number>) { set.clear(); }
+
+  // เดิมตัดแค่ 3 แล้ว +more → เปลี่ยนเป็นแสดงทั้งหมด
+  labelsFromNumSet(set: Set<number>, list: any[]) {
+    if (!set?.size) return '';
+    const map = new Map<number, string>(list.map(x => [x.id, this.pickLabel(x)]));
+    const arr = Array.from(set)
+      .map(id => map.get(id))
+      .filter(Boolean) as string[];
+
+    return arr.join(', '); // ✅ แสดงทั้งหมด
+  }
+
+  public labelsArrayFromNumSet(set: Set<number>, list: any[]): string[] {
+    if (!set?.size) return [];
+    const map = new Map<number, string>(list.map(x => [x.id, this.pickLabel(x)]));
+    return Array.from(set)
+      .map(id => map.get(id))
+      .filter(Boolean) as string[];
+  }
+
+  public clearCreditDepts() {
+    this.selectedCreditDepts.clear();
+    // เปลี่ยน dept -> ควร reload positions + เคลียร์ pos ที่ไม่ valid
+    this.reloadPositionsForSelectedDepts();
+    this.selectedCreditPositions.clear();
+  }
+
+
+  toggleCreditDd(e: MouseEvent, key: 'dept' | 'pos') {
+    e.stopPropagation();
+    this.creditDdOpen.dept = false;
+    this.creditDdOpen.pos = false;
+    this.creditDdOpen[key] = !this.creditDdOpen[key];
+  }
+
+  public closeCreditDd(key: 'dept' | 'pos') {
+    this.creditDdOpen[key] = false;
+  }
+
+  partnerLabelMap = new Map<number, string>();
+
+  // ====== outside click close dropdowns (main + credit modal) ======
+  @ViewChild('deptWrap') deptWrap?: ElementRef<HTMLElement>;
+  @ViewChild('posWrap') posWrap?: ElementRef<HTMLElement>;
+
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentClick(ev: MouseEvent) {
+    const target = ev.target as Node;
+
+    // ---- close main dropdowns (work/unions/exp/partners/genders/races)
+    // ถ้าคลิกนอก dropdown ใด ๆ ให้ปิดทั้งหมด (กันค้าง)
+    // (ถ้าคุณอยากให้ปิดเฉพาะอันที่เปิดอยู่ ก็ปรับได้)
+    const clickedInsideAnyMainDd =
+      (target as HTMLElement)?.closest?.('[data-ddwrap="work"]') ||
+      (target as HTMLElement)?.closest?.('[data-ddwrap="unions"]') ||
+      (target as HTMLElement)?.closest?.('[data-ddwrap="exp"]') ||
+      (target as HTMLElement)?.closest?.('[data-ddwrap="partners"]') ||
+      (target as HTMLElement)?.closest?.('[data-ddwrap="genders"]') ||
+      (target as HTMLElement)?.closest?.('[data-ddwrap="races"]');
+
+    if (!clickedInsideAnyMainDd) {
+      (Object.keys(this.ddOpen) as DdKey[]).forEach(k => (this.ddOpen[k] = false));
+    }
+
+    // ---- close credit dropdowns (dept/pos) แบบไม่พัง
+    if (this.creditDdOpen.dept && this.deptWrap && !this.deptWrap.nativeElement.contains(target)) {
+      this.creditDdOpen.dept = false;
+    }
+    if (this.creditDdOpen.pos && this.posWrap && !this.posWrap.nativeElement.contains(target)) {
+      this.creditDdOpen.pos = false;
+    }
+  }
+
+  trackById = (_: number, item: any) => item?.id;
+
+
+  public getRaceOtherValue(): number | null {
+    const it = this.races.find(x => (x.label || '').toLowerCase().includes('other'));
+    return it ? it.value : null;
+  }
+
+  public get isRaceOtherSelected(): boolean {
+    const otherVal = this.getRaceOtherValue();
+    return otherVal != null && this.selectedRaces.has(otherVal);
+  }
+
+  public toggleRaceIdentity(v: number) {
+    this.toggleSet(this.selectedRaces, v);
+
+    const otherVal = this.getRaceOtherValue();
+    const isOther = otherVal != null && this.selectedRaces.has(otherVal);
+
+    // ✅ ถ้าไม่เลือก Other แล้ว -> เคลียร์ค่า text
+    if (!isOther) {
+      this.form.controls.racialIdentityOtherText.setValue('', { emitEvent: false });
+      this.form.controls.racialIdentityOtherText.clearValidators();
+      this.form.controls.racialIdentityOtherText.updateValueAndValidity({ emitEvent: false });
+      return;
+    }
+
+    // ✅ ถ้าเลือก Other แล้ว -> บังคับกรอก
+    this.form.controls.racialIdentityOtherText.setValidators([Validators.required, Validators.maxLength(100)]);
+    this.form.controls.racialIdentityOtherText.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private findValueByLabel(list: Labeled[], includesText: string): number | null {
+    const t = includesText.toLowerCase();
+    const it = list.find(x => (x.label || '').toLowerCase().includes(t));
+    return it ? it.value : null;
+  }
+
+  get genderSelfDescribeValue(): number | null {
+    return this.findValueByLabel(this.genders, 'self-describe');
+  }
+  get isGenderSelfDescribeSelected(): boolean {
+    const v = this.genderSelfDescribeValue;
+    return v != null && this.selectedGenders.has(v);
+  }
+
+  get expOtherValue(): number | null {
+    return this.findValueByLabel(this.experienceLevels, 'other');
+  }
+  get isExpOtherSelected(): boolean {
+    const v = this.expOtherValue;
+    return v != null && this.selectedExp.has(v);
+  }
+
+  get unionOtherValue(): number | null {
+    return this.findValueByLabel(this.unions, 'other');
+  }
+  get unionStudentAcademicValue(): number | null {
+    // label ของคุณ: "Student / Academic Member (Text)"
+    return this.findValueByLabel(this.unions, 'student / academic');
+  }
+
+  get isUnionOtherSelected(): boolean {
+    const v = this.unionOtherValue;
+    return v != null && this.selectedUnions.has(v);
+  }
+  get isUnionStudentAcademicSelected(): boolean {
+    const v = this.unionStudentAcademicValue;
+    return v != null && this.selectedUnions.has(v);
+  }
+
+  private partnerNeedsNameKeywords = [
+    'local theatre', 'community org',
+    'university', 'conservatory',
+    'non-profit',
+    'independent collective'
+  ];
+
+  get partnerOtherValue(): number | null {
+    return this.findValueByLabel(this.partnerDirectories, 'other');
+  }
+
+  public partnerNeedsNameIds(): number[] {
+    const set = new Set<number>();
+    for (const kw of this.partnerNeedsNameKeywords) {
+      const id = this.findValueByLabel(this.partnerDirectories, kw);
+      if (id != null) set.add(id);
+    }
+    return Array.from(set);
   }
 }
