@@ -1,125 +1,143 @@
-<section class="min-h-screen bg-gradient-to-b from-black via-slate-950 to-black text-white">
+<section class="bg-main min-h-screen text-white">
+
     <!-- Hero -->
-    <div class="relative">
-        <div
-            class="relative flex flex-col items-center justify-center px-6 py-16 text-center sm:py-20 lg:py-24 overflow-hidden">
-            <!-- GREEN background glow -->
-            <div
-                class="pointer-events-none absolute inset-0 opacity-80 bg-[radial-gradient(110%_140%_at_0%_0%,rgba(34,197,94,0.22),transparent),radial-gradient(110%_140%_at_100%_0%,rgba(132,204,22,0.2),transparent)]">
-            </div>
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(15,23,42,0.4),rgba(3,7,18,1))]"></div>
 
+
+    <div class="relative mx-auto max-w-6xl px-4 sm:px-6">
+        <!-- Back button -->
+        <button type="button" (click)="goBack()" class="absolute left-4 top-4 sm:left-6 sm:top-6 z-20 inline-flex items-center gap-2
+        rounded-xl border border-emerald-500/25 bg-slate-950/90 px-3.5 py-2 text-xs sm:text-sm text-white/90
+        hover:-translate-y-0.5 hover:border-white/20 transition">
+            <span class="text-base leading-none">←</span>
+            <span class="whitespace-nowrap">กลับไปหน้า{{ backSrc === 'skills' ? 'เลือกทักษะ' : 'ค้นหา' }}</span>
+        </button>
+
+        <div class="relative flex flex-col items-center text-center pt-16 sm:pt-20 lg:pt-24 pb-10 sm:pb-12">
             <!-- Avatar -->
-            <div class="relative mb-6">
-                <span class="absolute -inset-1 rounded-full bg-emerald-400/40 blur-xl"></span>
-                <span class="absolute -inset-[3px] rounded-full bg-slate-950/90 ring-1 ring-emerald-400/60"></span>
-                <img [src]="avatar()" alt="avatar"
-                    class="relative h-28 w-28 md:h-32 md:w-32 rounded-full border-[3px] border-emerald-300/90 object-cover shadow-[0_18px_45px_rgba(0,0,0,0.9)] ring-2 ring-lime-400/60" />
+            <div class="relative z-10 mb-6">
+                <span class="absolute -inset-4 rounded-full blur-2xl bg-[rgba(12,88,92,0.35)]"></span>
+                <span class="absolute -inset-2 rounded-full blur-xl bg-[rgba(9,76,79,0.25)]"></span>
+                <span class="absolute -inset-[3px] rounded-full bg-black/55 ring-1 ring-white/10"></span>
+
+                <img [src]="avatar()" alt="avatar" class="relative h-28 w-28 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full object-cover
+            border-[3px] border-[rgba(12,88,92,0.85)]
+            shadow-[0_22px_65px_rgba(0,0,0,0.9)]
+            ring-1 ring-[rgba(12,88,92,0.35)]" />
             </div>
 
-            <!-- Name + Title -->
-            <div
-                class="relative max-w-2xl rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-slate-950/90 via-slate-900/90 to-black/90 px-6 py-4 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.85)]">
-                <div
-                    class="pointer-events-none absolute -inset-px rounded-2xl border border-emerald-400/20 bg-[conic-gradient(from_140deg_at_10%_0%,rgba(74,222,128,0.08),transparent_40%,rgba(190,242,100,0.14),transparent_70%)] opacity-60 mix-blend-screen">
-                </div>
+            <!-- Header card -->
+            <div class="relative z-10 w-full max-w-3xl rounded-2xl
+          px-6 sm:px-8 py-6">
+                <!-- subtle gradient border glow -->
 
-                <h1 class="relative text-3xl md:text-4xl font-semibold tracking-tight text-white">
+                <h1 class="relative text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
                     {{ fullName() }}
                 </h1>
 
-                <p class="relative mt-2 text-sm md:text-base text-white/80">
+                <p class="relative mt-2 text-sm sm:text-base text-white/75">
                     {{ profile?.title || '—' }}
-                    <span class="mx-2 text-white/60">•</span>
+                    <span class="mx-2 text-white/45">•</span>
                     {{ locationText() }}
                 </p>
 
                 <!-- Top tags -->
-                <div class="relative mt-3 flex flex-wrap justify-center gap-2 text-[11px] md:text-xs">
-                    <span *ngIf="profile?.multiLang"
-                        class="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-3 py-1 font-medium text-white ring-1 ring-emerald-400/60">
+                <div class="relative mt-4 flex flex-wrap justify-center gap-2 text-[11px] sm:text-xs">
+                    <span *ngIf="profile?.multiLang" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-[rgba(12,88,92,0.55)]">
                         <span
-                            class="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(74,222,128,0.9)]"></span>
+                            class="h-1.5 w-1.5 rounded-full bg-[rgba(12,88,92,0.95)] shadow-[0_0_12px_rgba(12,88,92,0.9)]"></span>
                         Multi-language
                     </span>
-                    <span *ngIf="profile?.travel"
-                        class="inline-flex items-center gap-1 rounded-full bg-lime-400/15 px-3 py-1 font-medium text-white ring-1 ring-lime-400/60">
+
+                    <span *ngIf="profile?.travel" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
                         ✈ เดินทางได้
                     </span>
-                    <span *ngIf="profile?.tour"
-                        class="inline-flex items-center gap-1 rounded-full bg-emerald-400/10 px-3 py-1 font-medium text-white ring-1 ring-emerald-300/60">
+
+                    <span *ngIf="profile?.tour" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
                         🎭 พร้อมทัวร์
                     </span>
-                    <span *ngIf="profile?.profileIsCompany"
-                        class="inline-flex items-center gap-1 rounded-full bg-amber-400/10 px-3 py-1 font-medium text-white ring-1 ring-amber-300/60">
+
+                    <span *ngIf="profile?.profileIsCompany" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
                         🏢 Company Profile
                     </span>
                 </div>
-            </div>
 
-            <!-- Quick stats -->
-            <div class="relative mt-6 grid w-full max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
-                <div
-                    class="group rounded-2xl border border-emerald-500/25 bg-slate-950/80 p-4 text-left shadow-[0_18px_45px_rgba(0,0,0,0.9)] backdrop-blur transition hover:-translate-y-1 hover:border-lime-400/70 hover:shadow-[0_25px_70px_rgba(22,163,74,0.65)]">
-                    <div class="text-[11px] uppercase tracking-[0.15em] text-white/60">Orders</div>
-                    <div class="mt-1 flex items-baseline gap-2">
-                        <div class="text-2xl font-semibold text-white">{{ getStat('orders') }}</div>
-                        <span *ngIf="getStat('orders') > 0"
-                            class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-white ring-1 ring-emerald-400/70">
-                            Active
-                        </span>
+                <!-- Quick stats -->
+                <div class="relative mt-6 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div
+                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left
+              
+              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Orders</div>
+                        <div class="mt-1 flex items-baseline gap-2">
+                            <div class="text-2xl font-semibold">{{ getStat('orders') }}</div>
+                            <span *ngIf="getStat('orders') > 0" class="rounded-full px-2 py-0.5 text-[10px] font-semibold text-white
+                  bg-[rgba(12,88,92,0.20)] ring-1 ring-[rgba(12,88,92,0.45)]">
+                                Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <div
+                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left 
+              
+              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Rating</div>
+                        <div class="mt-1 flex items-center gap-2">
+                            <div class="text-2xl font-semibold">{{ getStat('rating') || '—' }}</div>
+                            <svg class="h-5 w-5 text-white/70" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21 12 17.27Z" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div
+                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left 
+              
+              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Since</div>
+                        <div class="mt-1 text-2xl font-semibold">
+                            {{ getStat('startedYear') || (profile?.createdAt?.slice(0, 4) || '—') }}
+                        </div>
                     </div>
                 </div>
 
-                <div
-                    class="group rounded-2xl border border-emerald-500/25 bg-slate-950/80 p-4 text-left shadow-[0_18px_45px_rgba(0,0,0,0.9)] backdrop-blur transition hover:-translate-y-1 hover:border-lime-400/70 hover:shadow-[0_25px_70px_rgba(22,163,74,0.65)]">
-                    <div class="text-[11px] uppercase tracking-[0.15em] text-white/60">Rating</div>
-                    <div class="mt-1 flex items-center gap-1.5">
-                        <div class="text-2xl font-semibold text-white">{{ getStat('rating') || '—' }}</div>
-                        <svg class="h-5 w-5 text-lime-400" viewBox="0 0 24 24" fill="currentColor">
+                <!-- Top actions -->
+                <div class="relative mt-5 flex flex-wrap justify-center gap-2">
+                    <a *ngIf="profile?.email" [href]="'mailto:'+profile?.email" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
+              border  border-emerald-500/25 bg-slate-950/90 text-white 
+               hover:-translate-y-0.5 transition">
+                        <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
                             <path
-                                d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21 12 17.27Z" />
+                                d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" />
                         </svg>
-                    </div>
+                        Email
+                    </a>
+
+                    <a *ngIf="profile?.phone" [href]="'tel:'+profile?.phone" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-white
+              border-emerald-500/25 bg-slate-950/90
+              hover:-translate-y-0.5 transition">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 7a1 1 0 0 1 1-1h2.49a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.24 1.01l-2.2 2.21Z" />
+                        </svg>
+                        Call
+                    </a>
+
+                    <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
+              border border-emerald-500/25 bg-slate-950/90 text-white backdrop-blur-md
+              hover:-translate-y-0.5 transition">
+                        <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3Z" />
+                            <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
+                        </svg>
+                        Website
+                    </a>
                 </div>
-
-                <div
-                    class="group rounded-2xl border border-emerald-500/25 bg-slate-950/80 p-4 text-left shadow-[0_18px_45px_rgba(0,0,0,0.9)] backdrop-blur transition hover:-translate-y-1 hover:border-lime-400/70 hover:shadow-[0_25px_70px_rgba(22,163,74,0.65)]">
-                    <div class="text-[11px] uppercase tracking-[0.15em] text-white/60">Since</div>
-                    <div class="mt-1 text-2xl font-semibold text-white">
-                        {{ getStat('startedYear') || (profile?.createdAt?.slice(0, 4) || '—') }}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top actions -->
-            <div class="relative mt-6 flex flex-wrap justify-center gap-2">
-                <a *ngIf="profile?.email" [href]="'mailto:'+profile?.email"
-                    class="group inline-flex items-center gap-2 rounded-xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-2.5 text-xs sm:text-sm font-medium text-white shadow-[0_14px_40px_rgba(0,0,0,0.8)] backdrop-blur transition hover:-translate-y-0.5 hover:bg-emerald-400/20 hover:border-lime-400/70">
-                    <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" />
-                    </svg>
-                    Email
-                </a>
-
-                <a *ngIf="profile?.phone" [href]="'tel:'+profile?.phone"
-                    class="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-400 via-lime-400 to-emerald-500 px-4 py-2.5 text-xs sm:text-sm font-semibold text-black shadow-[0_18px_45px_rgba(22,163,74,0.7)] transition hover:-translate-y-0.5 hover:brightness-110">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 7a1 1 0 0 1 1-1h2.49a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.24 1.01l-2.2 2.21Z" />
-                    </svg>
-                    Call
-                </a>
-
-                <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener"
-                    class="group inline-flex items-center gap-2 rounded-xl border border-emerald-400/35 bg-slate-950/80 px-4 py-2.5 text-xs sm:text-sm font-medium text-white shadow-[0_14px_40px_rgba(0,0,0,0.8)] backdrop-blur transition hover:-translate-y-0.5 hover:border-lime-400/70 hover:bg-slate-900">
-                    <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3Z" />
-                        <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
-                    </svg>
-                    Website
-                </a>
             </div>
         </div>
     </div>
@@ -156,8 +174,7 @@
             <!-- LEFT: main info -->
             <div class="space-y-6 lg:col-span-2">
                 <!-- About -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6">
                     <div class="flex items-center justify-between gap-2">
                         <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                             About
@@ -177,8 +194,7 @@
                 </section>
 
                 <!-- Education -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6">
                     <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                         Education
                     </h2>
@@ -195,8 +211,7 @@
                 </section>
 
                 <!-- Credits / Experience -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6">
                     <div class="flex items-center justify-between gap-2">
                         <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                             Credits / Experience
@@ -206,28 +221,32 @@
                         </span>
                     </div>
 
-                    <div *ngIf="profile?.credits?.length; else noCredits" class="mt-4 space-y-4">
-                        <div *ngFor="let c of profile?.credits; let i = index"
-                            class="rounded-xl border border-emerald-500/25 bg-slate-950/95 p-4 text-sm shadow-sm shadow-emerald-900/40">
+                    <div *ngIf="p.credits?.length; else noCredits" class="mt-4 space-y-4">
+                        <div *ngFor="let c of p.credits; let i = index"
+                            class="group rounded-xl border border-emerald-500/25 bg-slate-950/95 p-4 shadow-sm shadow-emerald-900/40 transition hover:-translate-y-0.5 hover:border-lime-400/60 hover:shadow-[0_20px_50px_rgba(22,163,74,0.35)]">
+
                             <div class="flex flex-wrap items-start justify-between gap-2">
                                 <div>
-                                    <div class="text-xs uppercase tracking-[0.18em] text-white/60">Company</div>
-                                    <div class="text-base font-medium text-white">{{ c.company || '—' }}</div>
+                                    <div class="text-[11px] uppercase tracking-[0.18em] text-white/60">Company</div>
+                                    <div class="mt-0.5 text-base font-medium text-white">
+                                        {{ c.company || '—' }}
+                                    </div>
                                     <div class="mt-1 text-xs text-white/70">
                                         {{ c.title || '—' }}
                                     </div>
                                 </div>
+
                                 <div class="text-right text-xs text-white/70">
                                     <div>
                                         {{ c.startYear || '—' }} - {{ c.current ? 'Present' : (c.endYear || '—') }}
                                     </div>
-                                    <div class="mt-1">
+                                    <div class="mt-1 flex justify-end gap-1.5">
                                         <span *ngIf="c.internship"
-                                            class="mr-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] text-white">
+                                            class="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[11px] text-white ring-1 ring-emerald-400/40">
                                             Internship
                                         </span>
                                         <span *ngIf="c.fellowship"
-                                            class="rounded-full bg-lime-400/20 px-2 py-0.5 text-[11px] text-white">
+                                            class="rounded-full bg-lime-400/20 px-2 py-0.5 text-[11px] text-white ring-1 ring-lime-300/40">
                                             Fellowship
                                         </span>
                                     </div>
@@ -266,6 +285,11 @@
                                         {{ skillName(s) }}
                                     </span>
                                 </ng-container>
+
+                                <span *ngIf="!c.deptIds?.length && !c.posIds?.length && !c.skillIds?.length"
+                                    class="text-xs text-white/50">
+                                    ไม่มีแท็ก
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -279,8 +303,7 @@
                 </section>
 
                 <!-- Videos -->
-                <section *ngIf="video1 || video2"
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section *ngIf="video1 || video2" class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6">
                     <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                         Performance Videos
                     </h2>
@@ -297,8 +320,7 @@
                 </section>
 
                 <!-- Performance Gallery -->
-                <section *ngIf="gallery().length"
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section *ngIf="gallery().length" class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-6">
                     <div class="flex items-center justify-between gap-2">
                         <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                             Performance Gallery
@@ -335,8 +357,7 @@
             <!-- RIGHT: sidebar -->
             <aside class="space-y-6 lg:sticky lg:top-24 lg:self-start">
                 <!-- Contact -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5">
                     <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                         Contact
                     </h2>
@@ -360,8 +381,7 @@
                 </section>
 
                 <!-- Social -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5">
                     <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                         Social
                     </h2>
@@ -420,12 +440,14 @@
                 </section>
 
                 <!-- Tags / Filters -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5">
                     <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                         Profile Tags
                     </h2>
+
                     <div class="mt-3 space-y-3 text-[11px] text-white/90">
+
+                        <!-- Work Locations -->
                         <div *ngIf="profile?.workLocations?.length">
                             <div class="text-white/70">Work Locations</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
@@ -436,66 +458,87 @@
                             </div>
                         </div>
 
+                        <!-- Unions -->
                         <div *ngIf="profile?.unions?.length">
                             <div class="text-white/70">Unions</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
                                 <span *ngFor="let u of profile?.unions"
                                     class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
-                                    {{ unionName(u) }}
+                                    {{ unionLabel(u) }}
                                 </span>
                             </div>
                         </div>
 
+                        <!-- Experience -->
                         <div *ngIf="profile?.experience?.length">
                             <div class="text-white/70">Experience</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
                                 <span *ngFor="let e of profile?.experience"
                                     class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
-                                    {{ experienceName(e) }}
+                                    {{ experienceLabel(e) }}
                                 </span>
                             </div>
                         </div>
 
+                        <!-- Partners -->
                         <div *ngIf="profile?.partners?.length">
                             <div class="text-white/70">Partners</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
                                 <span *ngFor="let p2 of profile?.partners"
                                     class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
-                                    {{ partnerName(p2) }}
+                                    {{ partnerLabel(p2) }}
                                 </span>
                             </div>
                         </div>
 
+                        <!-- Genders -->
                         <div *ngIf="profile?.genders?.length">
                             <div class="text-white/70">Genders</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
                                 <span *ngFor="let g of profile?.genders"
                                     class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
-                                    {{ genderName(g) }}
+                                    {{ genderLabel(g) }}
                                 </span>
                             </div>
                         </div>
 
+                        <!-- Races -->
                         <div *ngIf="profile?.races?.length">
                             <div class="text-white/70">Races</div>
                             <div class="mt-1 flex flex-wrap gap-1.5">
                                 <span *ngFor="let r of profile?.races"
                                     class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
-                                    {{ raceName(r) }}
+                                    {{ raceLabel(r) }}
                                 </span>
                             </div>
                         </div>
 
-                        <div *ngIf="!profile?.workLocations?.length && !profile?.unions?.length && !profile?.experience?.length && !profile?.partners?.length && !profile?.genders?.length && !profile?.races?.length && !profile?.additionals?.length"
-                            class="text-xs text-white/50">
+                        <!-- Additionals -->
+                        <div *ngIf="profile?.additionals?.length">
+                            <div class="text-white/70">Additional</div>
+                            <div class="mt-1 flex flex-wrap gap-1.5">
+                                <span *ngFor="let a of profile?.additionals"
+                                    class="rounded-full bg-slate-900 px-2 py-0.5 ring-1 ring-emerald-500/40">
+                                    {{ additionalName(a) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Empty -->
+                        <div *ngIf="!profile?.workLocations?.length
+            && !profile?.unions?.length
+            && !profile?.experience?.length
+            && !profile?.partners?.length
+            && !profile?.genders?.length
+            && !profile?.races?.length
+            && !profile?.additionals?.length" class="text-xs text-white/50">
                             ยังไม่มีแท็กเพิ่มเติม
                         </div>
                     </div>
                 </section>
 
                 <!-- Resume viewer -->
-                <section
-                    class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5 shadow-[0_18px_45px_rgba(0,0,0,0.9)]">
+                <section class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-5">
                     <div class="flex items-center justify-between gap-2">
                         <h2 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">
                             Resume / CV

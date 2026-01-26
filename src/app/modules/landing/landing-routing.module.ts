@@ -7,6 +7,7 @@ import { AllScriptComponent } from './components/info-script/all-script/all-scri
 import { DetailScriptComponent } from './components/info-script/detail-script/detail-script.component';
 import { AllSearchComponent } from './components/info-search/all-search/all-search.component';
 import { HowToUseComponent } from './components/info-about/how-to-use/how-to-use.component';
+import { SearchSkillComponent } from './components/info-search/search-skill/search-skill.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: '', redirectTo: '', pathMatch: 'full' },
       { path: '', component: MainPagesComponent },
       { path: 'profiles/:id', component: SearchDetailComponent },
+      { path: 'member/skills', component: SearchSkillComponent },// หรือ standalone ก็ได้
       { path: 'member', component: AllSearchComponent },
       { path: 'how-to-user', component: HowToUseComponent },
       { path: 'theatre-library', component: AllScriptComponent },

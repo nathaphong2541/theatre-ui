@@ -1,91 +1,37 @@
-<!-- Donate (Compact, Dark Theme + Accent, no emojis, no amount display) -->
-<section id="donate" class="relative bg-[#0b1417] py-10 text-white">
+<!-- Donate (Link Only, Dark Theme) -->
+<section id="donate" class="relative bg-[#0b1417] py-12 text-white">
     <div class="mx-auto max-w-3xl px-6 text-center">
-        <!-- Heading: เล็กลง -->
         <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight" i18n="@@donate_title">
             สนับสนุนศูนย์รวมศิลปินการแสดงไทย
         </h2>
+
         <p class="mt-2 text-sm sm:text-base text-white/70" i18n="@@donate_subtitle">
-            แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้ต่อเนื่อง
+            แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้อย่างยั่งยืน
         </p>
 
-        <!-- Payment Methods -->
-        <div class="mt-8 text-left">
-            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <!-- PromptPay -->
-                <label
-                    class="flex cursor-pointer items-center gap-3 rounded-xl border border-white/15 bg-white/5 p-4 shadow-sm transition hover:bg-white/10"
-                    [ngClass]="{ 'ring-1 ring-[#8aab06]': paymentMethod==='promptpay' }">
-                    <input type="radio" name="pm" class="sr-only" value="promptpay" [(ngModel)]="paymentMethod" />
-                    <div class="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <svg class="h-5 w-5 text-[#8aab06]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <rect x="7" y="2" width="10" height="20" rx="2" stroke-width="2"></rect>
-                            <circle cx="12" cy="18" r="1.5" stroke-width="2"></circle>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold text-white" i18n="@@donate_promptpay_title">
-                            PromptPay / โอนผ่านแอป
-                        </div>
-                        <div class="text-sm text-white/70" i18n="@@donate_promptpay_desc">
-                            สแกน QR แล้วอัปโหลดสลิป
-                        </div>
-                    </div>
-                </label>
-
-                <!-- Bank -->
-                <label
-                    class="flex cursor-pointer items-center gap-3 rounded-xl border border-white/15 bg-white/5 p-4 shadow-sm transition hover:bg-white/10"
-                    [ngClass]="{ 'ring-1 ring-[#8aab06]': paymentMethod==='bank' }">
-                    <input type="radio" name="pm" class="sr-only" value="bank" [(ngModel)]="paymentMethod" />
-                    <div class="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <!-- bank svg -->
-                        <svg class="h-5 w-5 text-[#8aab06]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M3 10l9-6 9 6" stroke-width="2"></path>
-                            <path d="M4 10h16v8H4z" stroke-width="2"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold text-white" i18n="@@donate_bank_title">
-                            โอนเข้าบัญชีธนาคาร
-                        </div>
-                        <div class="text-sm text-white/70" i18n="@@donate_bank_desc">
-                            ดูเลขบัญชีและแนบสลิป
-                        </div>
-                    </div>
-                </label>
-            </div>
+        <!-- Donate Link -->
+        <div class="mt-8 flex justify-center">
+            <a href="https://www.thaitheatre.org/en/donate" target="_blank" rel="noopener noreferrer" class="
+          inline-flex items-center gap-2
+          rounded-xl border border-[#8aab06]/40
+          bg-[#8aab06]/10
+          px-6 py-3
+          text-sm font-semibold text-[#cfe27a]
+          transition
+          hover:bg-[#8aab06]/20
+          hover:border-[#8aab06]
+          focus:outline-none focus:ring-2 focus:ring-[#8aab06]/60
+        " i18n="@@donate_home">
+                ไปยังหน้า Donate
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M7 17L17 7"></path>
+                    <path d="M7 7h10v10"></path>
+                </svg>
+            </a>
         </div>
 
-        <!-- Helper / Note -->
-        <p class="mt-4 text-xs text-white/60" i18n="@@donate_thankyou">
-            ขอบคุณที่ร่วมสนับสนุนการทำงานของเรา
+        <p class="mt-4 text-xs text-white/60" i18n="@@donate_system">
+            ระบบการบริจาคจะเปิดในเว็บไซต์หลักของ Thai Theatre
         </p>
-
-        <!-- PromptPay Preview -->
-        <div *ngIf="paymentMethod==='promptpay' && amountToPay>0"
-            class="mx-auto mt-8 max-w-md rounded-2xl border border-white/15 bg-white/5 p-6">
-            <h4 class="text-left text-sm font-semibold text-white" i18n="@@donate_promptpay_preview_title">
-                สแกนเพื่อชำระผ่าน PromptPay
-            </h4>
-            <div class="mt-4 flex items-center justify-center">
-                <img src="assets/images/promptpay-qr-placeholder.png" alt="PromptPay QR"
-                    i18n-alt="@@donate_promptpay_qr_alt" class="h-44 w-44 rounded-lg border border-white/15 bg-white" />
-            </div>
-            <p class="mt-4 text-left text-xs text-white/60" i18n="@@donate_promptpay_preview_note">
-                สแกนแล้วแนบสลิปในขั้นตอนถัดไป
-            </p>
-        </div>
-
-        <!-- Success message -->
-        <div *ngIf="donationSuccess"
-            class="mx-auto mt-6 max-w-md rounded-xl border border-green-300/40 bg-green-500/10 p-4 text-left">
-            <div class="font-semibold text-green-300" i18n="@@donate_success_title">
-                ส่งคำขอบริจาคสำเร็จ
-            </div>
-            <div class="mt-1 text-sm text-green-200/90" i18n="@@donate_success_body">
-                เราจะส่งรายละเอียดการชำระเงิน/ใบเสร็จไปยังอีเมลที่ระบุ (ถ้ามี)
-            </div>
-        </div>
     </div>
 </section>

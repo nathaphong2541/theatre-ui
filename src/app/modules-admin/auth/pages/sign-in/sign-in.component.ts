@@ -37,7 +37,29 @@ export class SignInComponent implements OnInit {
     private fb: FormBuilder
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // ล้างทันทีรอบแรก
+    this.clearAllClientState();
+
+    // ล้างอีกรอบหลัง init ต่างๆ (กัน theme/onboarding เขียนกลับ)
+    queueMicrotask(() => this.clearAllClientState());
+    setTimeout(() => this.clearAllClientState(), 0);
+  }
+
+  private clearAllClientState() {
+    try { localStorage.clear(); } catch { }
+    try { sessionStorage.clear(); } catch { }
+    this.clearAllCookies();
+  }
+
+  private clearAllCookies() {
+    const cookies = document.cookie ? document.cookie.split('; ') : [];
+    for (const c of cookies) {
+      const eq = c.indexOf('=');
+      const name = eq > -1 ? c.substring(0, eq) : c;
+      document.cookie = `${name}=; Max-Age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+    }
+  }
 
   get f() { return this.form.controls; }
 

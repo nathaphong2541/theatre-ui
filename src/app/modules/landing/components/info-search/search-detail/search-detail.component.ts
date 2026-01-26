@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Profile, InfoSearchService } from '../service/info-search.service';
 import { environment } from 'src/environments/environment';
@@ -72,10 +72,14 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
   posMap = new Map<number, MasterItem>();
   skillMap = new Map<number, MasterItem>();
 
+  backSrc: 'member' | 'skills' | '' = '';
+  private backQueryParams: any = {};
+
   private currentLocale: 'th' | 'en' = 'th';
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private api: InfoSearchService,
     private sanitizer: DomSanitizer,
     private masterService: PubilcService,
@@ -84,19 +88,16 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
   ) { }
   ngOnInit(): void {
 
-    try {
-      // ถ้า service ของคุณมี currentLocale เป็น string เช่น 'th'|'en'
-      this.currentLocale = (this.ls as any).currentLocale ?? 'th';
+    try { this.currentLocale = this.getLocale(); } catch { this.currentLocale = 'th'; }
 
-      // หรือถ้าใช้ method:
-      // this.currentLocale = this.ls.getCurrentLocale() ?? 'th';
-    } catch {
-      this.currentLocale = 'th';
-    }
+    // ✅ เก็บ queryParams ทั้งชุด (ไว้ส่งกลับ)
+    this.backQueryParams = { ...(this.route.snapshot.queryParams || {}) };
+    this.backSrc = (this.backQueryParams?.src as any) || '';
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) { this.error = 'ไม่พบรหัสโปรไฟล์'; return; }
     this.fetch(id);
+
   }
 
   ngOnDestroy(): void { this.sub?.unsubscribe(); }
@@ -109,8 +110,8 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
         this.prepareVideos(p);
         this.prepareAssets(p);
 
-        // ✅ โหลดชื่อ master ต่าง ๆ ตาม id ใน profile
-        this.loadMasterNames(p);
+        // ✅ ใช้ตัวนี้แทน
+        this.loadProfileMasters(p);
 
         this.loading = false;
       },
@@ -147,96 +148,6 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
       .filter(Boolean) as string[];
   }
 
-  // ✅ ดึงชื่อ master ตาม id ใน profile + credits
-  private loadMasterNames(p: Profile) {
-    const uniq = (arr?: number[]) => Array.from(new Set(arr || []));
-
-    // ---- จาก profile ----
-    const workLocationIds = uniq((p as any).workLocations);
-    const unionIds = uniq((p as any).unions);
-    const experienceIds = uniq((p as any).experience);
-    const partnerIds = uniq((p as any).partners);
-    const genderIds = uniq((p as any).genders);
-    const raceIds = uniq((p as any).races);
-    const additionalIds = uniq((p as any).additionals); // สมมติ = personal-identities
-
-    // ---- จาก credits ----
-    const allDeptIds: number[] = [];
-    const allPosIds: number[] = [];
-    const allSkillIds: number[] = [];
-
-    (p.credits || []).forEach(c => {
-      allDeptIds.push(...(c.deptIds || []));
-      allPosIds.push(...(c.posIds || []));
-      allSkillIds.push(...(c.skillIds || []));
-    });
-
-    const deptIds = uniq(allDeptIds);
-    const posIds = uniq(allPosIds);
-    const skillIds = uniq(allSkillIds);
-
-    // ยิง getById เป็นรายตัวแบบง่าย ๆ (จำนวน id ไม่เยอะ)
-    workLocationIds.forEach(id => {
-      this.masterService.getWorkLocationById(id).subscribe(item => {
-        this.workLocationMap.set(item.id, item);
-      });
-    });
-
-    unionIds.forEach(id => {
-      this.masterService.getUnionMembershipById(id).subscribe(item => {
-        this.unionMap.set(item.id, item);
-      });
-    });
-
-    experienceIds.forEach(id => {
-      this.masterService.getExperienceLevelById(id).subscribe(item => {
-        this.experienceMap.set(item.id, item);
-      });
-    });
-
-    partnerIds.forEach(id => {
-      this.masterService.getPartnerIdentityById(id).subscribe(item => {
-        this.partnerMap.set(item.id, item);
-      });
-    });
-
-    genderIds.forEach(id => {
-      this.masterService.getGenderIdentityById(id).subscribe(item => {
-        this.genderMap.set(item.id, item);
-      });
-    });
-
-    raceIds.forEach(id => {
-      this.masterService.getRacialIdentityById(id).subscribe(item => {
-        this.raceMap.set(item.id, item);
-      });
-    });
-
-    additionalIds.forEach(id => {
-      this.masterService.getPersonalIdentityById(id).subscribe(item => {
-        this.additionalMap.set(item.id, item);
-      });
-    });
-
-    deptIds.forEach(id => {
-      this.masterService.getDepartmentById(id).subscribe(item => {
-        this.deptMap.set(item.id, item);
-      });
-    });
-
-    posIds.forEach(id => {
-      this.masterService.getPositionById(id).subscribe(item => {
-        this.posMap.set(item.id, item);
-      });
-    });
-
-    skillIds.forEach(id => {
-      this.masterService.getSkillById(id).subscribe(item => {
-        this.skillMap.set(item.id, item);
-      });
-    });
-  }
-
   private resolveName(item?: MasterItem | null, fallback: string = ''): string {
     if (!item) return fallback;
 
@@ -248,7 +159,7 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
       lang = 'th';
     }
 
-    const isTh = lang === 'th';
+    const isTh = this.getLocale() === 'th';
 
     return isTh
       ? (item.nameTh || item.nameEn || fallback || `${item.id}`)
@@ -362,5 +273,220 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
         return Number.isFinite(y2) ? y2 : 0;
       }
     }
+  }
+
+  private asItems(res: any): MasterItem[] {
+    if (!res) return [];
+    if (Array.isArray(res)) return res;
+    return Array.isArray(res.items) ? res.items : [];
+  }
+
+  private touchProfile() {
+    // ช่วยกระตุ้นให้ UI re-render ในบางเคส
+    this.profile = this.profile ? ({ ...this.profile } as any) : this.profile;
+  }
+
+  private loadProfileMasters(p: Profile) {
+    const uniq = (arr?: number[]) => Array.from(new Set((arr ?? []).filter(x => typeof x === 'number')));
+
+    // ===== profile groups =====
+    const wlIds = new Set(uniq((p as any).workLocations));
+    const unionIds = new Set(uniq((p as any).unions));
+    const expIds = new Set(uniq((p as any).experience));
+    const partnerIds = new Set(uniq((p as any).partners));
+    const genderIds = new Set(uniq((p as any).genders));
+    const raceIds = new Set(uniq((p as any).races));
+    const addIds = new Set(uniq((p as any).additionals)); // personal-identity
+
+    // ===== credits groups =====
+    const deptIds = new Set<number>();
+    const posIds = new Set<number>();
+    const skillIds = new Set<number>();
+
+    (p.credits ?? []).forEach(c => {
+      (c.deptIds ?? []).forEach(id => deptIds.add(id));
+      (c.posIds ?? []).forEach(id => posIds.add(id));
+      (c.skillIds ?? []).forEach(id => skillIds.add(id));
+    });
+
+    // ----- WorkLocation -----
+    this.masterService.getWorkLocaltion?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (wlIds.has(it.id)) this.workLocationMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Partner -----
+    this.masterService.getPartnerIdentity?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (partnerIds.has(it.id)) this.partnerMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Experience -----
+    this.masterService.getExperienceLevel?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (expIds.has(it.id)) this.experienceMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Union -----
+    this.masterService.getUnionMembership?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (unionIds.has(it.id)) this.unionMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Gender -----
+    this.masterService.getGenderIdentity?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (genderIds.has(it.id)) this.genderMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Race -----
+    this.masterService.getRacialIdentity?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (raceIds.has(it.id)) this.raceMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ----- Additional / PersonalIdentity -----
+    this.masterService.getPersonalIdentity?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (addIds.has(it.id)) this.additionalMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    // ===== credits masters =====
+    this.masterService.getDepartment?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (deptIds.has(it.id)) this.deptMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    this.masterService.getPosition?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (posIds.has(it.id)) this.posMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+
+    this.masterService.getSkills?.().subscribe({
+      next: res => {
+        this.asItems(res).forEach(it => { if (skillIds.has(it.id)) this.skillMap.set(it.id, it); });
+        this.touchProfile();
+      }
+    });
+  }
+
+  // สมมติ id พิเศษ
+  private readonly OTHER_ID = 999;
+  private readonly STUDENT_ACADEMIC_ID = 998; // เฉพาะ unions ตาม payload ตัวอย่าง
+
+  private otherText(val?: string | null): string | null {
+    const t = (val ?? '').trim();
+    return t ? t : null;
+  }
+
+  // ====== Labels ที่รองรับ Other ======
+
+  unionLabel(id: number): string {
+    // 999 = Other -> ใช้ unionOtherText
+    if (id === this.OTHER_ID) {
+      return this.otherText((this.profile as any)?.unionOtherText)
+        ? `Other: ${(this.profile as any).unionOtherText}`
+        : 'Other';
+    }
+
+    // 998 = Student/Academic (จาก payload ของคุณ) -> ใช้ unionStudentAcademicText
+    if (id === this.STUDENT_ACADEMIC_ID) {
+      return this.otherText((this.profile as any)?.unionStudentAcademicText)
+        ? `Student/Academic: ${(this.profile as any).unionStudentAcademicText}`
+        : 'Student/Academic';
+    }
+
+    return this.unionName(id);
+  }
+
+  experienceLabel(id: number): string {
+    if (id === this.OTHER_ID) {
+      return this.otherText((this.profile as any)?.experienceOtherText)
+        ? `Other: ${(this.profile as any).experienceOtherText}`
+        : 'Other';
+    }
+    return this.experienceName(id);
+  }
+
+  partnerLabel(id: number): string {
+    if (id === this.OTHER_ID) {
+      return this.otherText((this.profile as any)?.partnerOtherText)
+        ? `Other: ${(this.profile as any).partnerOtherText}`
+        : 'Other';
+    }
+    return this.partnerName(id);
+  }
+
+  genderLabel(id: number): string {
+    // ถ้า 999 = Prefer to self-describe -> ใช้ genderSelfDescribeText
+    if (id === this.OTHER_ID) {
+      return this.otherText((this.profile as any)?.genderSelfDescribeText)
+        ? `Self-describe: ${(this.profile as any).genderSelfDescribeText}`
+        : 'Prefer to self-describe';
+    }
+    return this.genderName(id);
+  }
+
+  raceLabel(id: number): string {
+    if (id === this.OTHER_ID) {
+      return this.otherText((this.profile as any)?.racialIdentityOtherText)
+        ? `Other: ${(this.profile as any).racialIdentityOtherText}`
+        : 'Other';
+    }
+    return this.raceName(id);
+  }
+
+  private getLocale(): 'th' | 'en' {
+    try {
+      const v: any = (this.ls as any);
+      const lang = typeof v.currentLocale === 'function'
+        ? v.currentLocale()
+        : v.currentLocale;
+      return (lang === 'en') ? 'en' : 'th';
+    } catch {
+      return 'th';
+    }
+  }
+
+  private getLangPrefix(): string | null {
+    const segments = this.router.url.split('/').filter(Boolean);
+    const supported = ['th', 'en'];
+    return supported.includes(segments[0]) ? segments[0] : null;
+  }
+
+  goBack() {
+    const lang = this.getLangPrefix();
+    const base = lang ? ['/', lang] : ['/'];
+
+    // ✅ ล้าง src ไม่ต้องพกกลับไปก็ได้ (กัน url ยาว/งง)
+    const { src, ...rest } = this.backQueryParams || {};
+
+    // เลือกหน้าปลายทางตาม src
+    const target =
+      this.backSrc === 'skills'
+        ? [...base, 'member', 'skills']
+        : [...base, 'member']; // default กลับ member
+
+    this.router.navigate(target, {
+      queryParams: rest, // ✅ ส่งค่าค้นหาเดิมกลับไป
+    });
   }
 }

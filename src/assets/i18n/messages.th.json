@@ -217,6 +217,8 @@
   "profile_toast_perf_type_warning": "รองรับเฉพาะ JPG, PNG, WEBP",
   "donate_title": "สนับสนุนศูนย์รวมศิลปินการแสดงไทย",
   "donate_subtitle": "แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้ต่อเนื่อง",
+  "donate_home": "ไปยังหน้า Donate",
+  "donate_system": "ระบบการบริจาคจะเปิดในเว็บไซต์หลักของ Thai Theatre",
   "donate_promptpay_title": "PromptPay / โอนผ่านแอป",
   "donate_promptpay_desc": "สแกน QR แล้วอัปโหลดสลิป",
   "donate_bank_title": "โอนเข้าบัญชีธนาคาร",

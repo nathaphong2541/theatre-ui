@@ -6,7 +6,7 @@ import { Profile, InfoSearchService, ProfileSearchOptions } from './service/info
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
 import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
-
+import { Location } from '@angular/common';
 function toAbsolute(url?: string | null): string | null {
   if (!url) return null;
   if (/^https?:\/\//i.test(url)) return url;
@@ -126,11 +126,32 @@ export class InfoSearchComponent implements OnInit {
     private api: InfoSearchService,
     private publicService: PubilcService,
     private ls: LocaleSwitcherService,
+    private location: Location, // ✅ เพิ่ม
   ) { }
 
   ngOnInit(): void {
-    // โหลด master แล้วค่อยค้น (เพื่อให้เมนูพร้อม)
-    this.loadMaster().then(() => this.search(true));
+    this.loadMaster().then(() => {
+      this.route.queryParamMap.subscribe(async (pm) => {
+        // ถ้ามี query string -> restore
+        if (pm.keys.length) {
+          this.restoreSelectedFromQuery(pm);
+
+          // ✅ ถ้ามี dept ให้โหลด positions ก่อน เพื่อให้ jobsFiltered ทำงานถูก
+          const deptId = [...this.selected.departments][0];
+          if (deptId) await this.loadPositionsByDepartment(deptId);
+
+          // ✅ sync combobox ให้โชว์ job ที่เลือก (optional แต่ UX ดี)
+          const jobId = [...this.selected.jobs][0];
+          if (jobId) {
+            const pos = this.posById.get(jobId);
+            this.jobQuery = pos ? this.pickLabel(pos.nameTh, pos.nameEn) : this.jobQuery;
+          }
+        }
+
+        // แล้วค่อย search
+        this.search(true);
+      });
+    });
   }
 
   get isThai(): boolean {
@@ -261,13 +282,15 @@ export class InfoSearchComponent implements OnInit {
   goProfile(m: Profile) {
     const anyM = m as any;
     const id = anyM.userId ?? anyM.id;
+    if (!id) return;
 
-    if (!id) {
-      console.warn('❗ ไม่มี id สำหรับ profile นี้');
-      return;
-    }
+    const lang = this.getLangPrefix?.() ?? null; // ถ้ามี helper เหมือนกัน
+    const base = lang ? ['/', lang] : ['/'];
 
-    this.router.navigate(['profiles', id], { relativeTo: this.route });
+    this.router.navigate([...base, 'profiles', id], {
+      queryParamsHandling: 'merge',
+      queryParams: { src: 'skills' },
+    });
   }
 
   // ===== State =====
@@ -342,7 +365,8 @@ export class InfoSearchComponent implements OnInit {
 
   // ===== Search core =====
   private fetchPage(): void {
-    if (!this.hasDepartment || !this.hasJob) {
+    // ✅ ต้องมี department เป็นขั้นต่ำ
+    if (!this.hasDepartment) {
       this.results = [];
       this.total = 0;
       this.lastPageCount = 0;
@@ -360,10 +384,9 @@ export class InfoSearchComponent implements OnInit {
       limit: this.limit,
       dateFrom: this.dateFrom || undefined,
       dateTo: this.dateTo || undefined,
-      creditDeptIds: pickIds('departments'),
-      creditPosIds: pickIds('jobs'),
-      creditSkillIds: pickIds('skills'),
-      // ถ้า backend ยังไม่รองรับ locations/experiences/unions จะยังไม่ต้องส่งก็ได้
+      creditDeptIds: pickIds('departments'),     // ✅ มีแน่
+      creditPosIds: pickIds('jobs'),             // ✅ อาจว่างได้
+      creditSkillIds: pickIds('skills'),         // ✅ อาจว่างได้
     };
 
     this.api.searchProfiles(payload).subscribe({
@@ -464,24 +487,25 @@ export class InfoSearchComponent implements OnInit {
     if (!set) return;
 
     if (group === 'departments') {
-      // ✅ single-select department
       set.clear();
       set.add(value);
 
-      // ✅ เคลียร์ downstream
       this.resetDownstream('departments');
-      this.jobQuery = ''; // (optional) เคลียร์ช่องค้นหางาน
+      this.jobQuery = '';
 
-      // ✅ โหลด position ตาม department ที่เลือก
       const deptId = Number(value);
       if (!Number.isNaN(deptId)) {
         await this.loadPositionsByDepartment(deptId);
-
-        // ✅ กัน user เลือก job ค้างจาก dept เก่า
         this.selected.jobs.clear();
         this.selected.skills.clear();
       }
 
+      this.onSubmit();
+
+      // ✅ เพิ่มบรรทัดนี้
+      this.syncUrl();
+
+      return;
     } else {
       // multi-select groups (jobs/skills/...)
       if (set.has(value)) set.delete(value);
@@ -492,13 +516,15 @@ export class InfoSearchComponent implements OnInit {
       }
     }
 
-    // trigger search เฉพาะเมื่อครบคู่ dept + job
-    if (this.hasDepartment && this.hasJob) {
+    // trigger search เมื่อมี department ก็พอแล้ว
+    if (this.hasDepartment) {
       this.onSubmit();
+      this.syncUrl();
     } else {
       this.results = [];
       this.total = 0;
       this.lastPageCount = 0;
+      this.syncUrl();
     }
   }
 
@@ -516,13 +542,14 @@ export class InfoSearchComponent implements OnInit {
       this.selected.skills.clear();
     }
 
-    if (this.hasDepartment && this.hasJob) {
+    if (this.hasDepartment) {
       this.onSubmit();
     } else {
       this.results = [];
       this.total = 0;
       this.lastPageCount = 0;
     }
+    this.syncUrl();
   }
 
   selectedChips(): Array<{ group: SelectedGroup; value: number | string; label: string }> {
@@ -723,9 +750,12 @@ export class InfoSearchComponent implements OnInit {
   }
   // helper หา lang จาก URL ปัจจุบัน
   private getLangPrefix(): string | null {
-    const segments = this.router.url.split('/').filter(Boolean);
-    const supported = ['th', 'en'];
-    return supported.includes(segments[0]) ? segments[0] : null;
+    // ✅ ตัด ?query และ #fragment ออกก่อน
+    const pathOnly = this.router.url.split('?')[0].split('#')[0];
+    const segments = pathOnly.split('/').filter(Boolean);
+
+    const supported = new Set(['th', 'en']);
+    return segments.length && supported.has(segments[0]) ? segments[0] : null;
   }
 
   goFullSearch() {
@@ -734,4 +764,98 @@ export class InfoSearchComponent implements OnInit {
     this.router.navigate([...base, 'member']);
   }
 
+  private serializeSelected(): any {
+    const toCsv = (s: Set<any>) => Array.from(s).join(',');
+
+    const qp: any = {
+      q: this.q?.trim() || null,
+      dept: toCsv(this.selected.departments) || null,
+      jobs: toCsv(this.selected.jobs) || null,
+      skills: toCsv(this.selected.skills) || null,
+      locations: toCsv(this.selected.locations) || null,
+      unions: toCsv(this.selected.unions) || null,
+      experiences: toCsv(this.selected.experiences) || null,
+      genders: toCsv(this.selected.genders) || null,
+    };
+
+    // ✅ ลบ key ที่เป็น null ออก (URL จะไม่โล่ง/ไม่เพี้ยน)
+    Object.keys(qp).forEach(k => (qp[k] == null || qp[k] === '') && delete qp[k]);
+
+    return qp;
+  }
+
+  private restoreSelectedFromQuery(pm: any) {
+    const fromCsv = (v: string | null) =>
+      new Set((v ? v.split(',').filter(Boolean).map(x => Number(x)) : []));
+
+    this.q = pm.get('q') ?? '';
+
+    this.selected.departments = fromCsv(pm.get('dept'));
+    this.selected.jobs = fromCsv(pm.get('jobs'));
+    this.selected.skills = fromCsv(pm.get('skills'));
+    this.selected.locations = fromCsv(pm.get('locations'));
+    this.selected.unions = fromCsv(pm.get('unions'));
+    this.selected.experiences = fromCsv(pm.get('experiences'));
+    this.selected.genders = fromCsv(pm.get('genders'));
+  }
+
+  async pickJobOnlyAndGoSkill(j: Position): Promise<void> {
+    if (!j?.id) return;
+
+    this.selected.departments.clear();
+    this.selected.departments.add(j.departmentId);
+
+    await this.loadPositionsByDepartment(j.departmentId);
+
+    this.selected.jobs.clear();
+    this.selected.jobs.add(j.id);
+
+    this.selected.skills.clear();
+
+    this.jobQuery = this.pickLabel(j.nameTh, j.nameEn);
+    this.jobOpen = false;
+
+    const lang = this.getLangPrefix();
+    const base = lang ? ['/', lang] : ['/'];
+
+    // ✅ ไปหน้า skills พร้อม queryParams ทีเดียว (ไม่ merge)
+    this.router.navigate([...base, 'member', 'skills'], {
+      queryParams: this.serializeSelected(),
+      replaceUrl: true, // ✅ optional: ทำให้ history ไม่ยาว
+    });
+  }
+
+  private syncUrl() {
+    const pathOnly = this.router.url.split('?')[0].split('#')[0];
+    const qp = this.serializeSelected();
+    const qs = new URLSearchParams(qp as any).toString();
+
+    this.location.replaceState(pathOnly, qs);
+  }
+
+  clearJobsOnly(): void {
+    if (this.selected.jobs.size === 0) return;
+
+    // ล้าง job
+    this.selected.jobs.clear();
+
+    // ล้าง downstream
+    this.selected.skills.clear();
+
+    // reset combobox
+    this.jobQuery = '';
+    this.jobOpen = false;
+
+    // search ใหม่ (ยังมี department อยู่)
+    if (this.hasDepartment) {
+      this.onSubmit();
+    } else {
+      this.results = [];
+      this.total = 0;
+      this.lastPageCount = 0;
+    }
+
+    // sync state ลง URL
+    this.syncUrl();
+  }
 }

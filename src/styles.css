@@ -299,10 +299,23 @@ html {
 [multiple],
 textarea,
 select {
-  @apply w-full rounded-md border border-border bg-background text-xs text-foreground placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-hidden focus:ring-primary;
+  @apply w-full rounded-md border border-border bg-background text-black text-xs placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-hidden focus:ring-primary;
 }
 
 [type='checkbox'],
 [type='radio'] {
-  @apply h-4 w-4 rounded-sm border-border bg-background checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary focus:ring-2 focus:ring-primary;
+  @apply h-4 w-4 rounded-sm border-border text-black bg-background checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary focus:ring-2 focus:ring-primary;
+}
+
+.bg-main {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 30%, transparent 55%),
+
+    radial-gradient(800px 700px at -10% 50%, rgba(0, 0, 0, 0.55), transparent 65%),
+    radial-gradient(800px 600px at 95% 95%, rgba(0, 0, 0, 0.35), transparent 60%),
+
+    radial-gradient(900px 600px at 20% -10%, rgba(15, 110, 115, 0.55), transparent 60%),
+    radial-gradient(900px 600px at 85% -15%, rgba(11, 95, 99, 0.55), transparent 60%),
+
+    linear-gradient(to bottom, #0b5f63, #0f6e73, #0b5f63);
 }

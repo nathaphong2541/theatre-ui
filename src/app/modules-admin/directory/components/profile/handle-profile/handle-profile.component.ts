@@ -98,7 +98,7 @@ export type ProfilePayload = {
   video2?: string;
 
   workLocations: number[];
-
+  workLocationsOtherText?: string;
   partners: number[];
   partnerDetailById: Record<number, string>;
   partnerOtherText?: string;
@@ -396,6 +396,7 @@ export class HandleProfileComponent implements OnInit {
     partners: new FormControl<number[]>([], { nonNullable: true }),
     genders: new FormControl<number[]>([], { nonNullable: true }),
     races: new FormControl<number[]>([], { nonNullable: true }),
+    workLocationsOtherText: new FormControl<string>(''),
     racialIdentityOtherText: new FormControl<string>(''),
     genderSelfDescribeText: new FormControl<string>(''),
     partnerOtherText: new FormControl<string>(''),
@@ -559,6 +560,7 @@ export class HandleProfileComponent implements OnInit {
       partners: p.partners ?? [],
       genders: p.genders ?? [],
       races: p.races ?? [],
+      workLocationsOtherText: (p as any).workLocationsOtherText ?? '',
       racialIdentityOtherText: (p as any).racialIdentityOtherText ?? '',
       genderSelfDescribeText: (p as any).genderSelfDescribeText ?? '',
       partnerOtherText: (p as any).partnerOtherText ?? '',
@@ -1075,6 +1077,7 @@ export class HandleProfileComponent implements OnInit {
       partners: Array.from(this.selectedPartners),
       genders: Array.from(this.selectedGenders),
       races: Array.from(this.selectedRaces),
+      workLocationsOtherText: (base.workLocationsOtherText || '').trim() || undefined,
       racialIdentityOtherText: (base.racialIdentityOtherText || '').trim() || undefined,
       genderSelfDescribeText: (base.genderSelfDescribeText || '').trim() || undefined,
       partnerOtherText: (base.partnerOtherText || '').trim() || undefined,
@@ -1344,7 +1347,6 @@ export class HandleProfileComponent implements OnInit {
 
   trackById = (_: number, item: any) => item?.id;
 
-
   public getRaceOtherValue(): number | null {
     const it = this.races.find(x => (x.label || '').toLowerCase().includes('other'));
     return it ? it.value : null;
@@ -1358,10 +1360,12 @@ export class HandleProfileComponent implements OnInit {
   public toggleRaceIdentity(v: number) {
     this.toggleSet(this.selectedRaces, v);
 
+    // ✅ sync set -> form
+    this.form.controls.races.setValue(Array.from(this.selectedRaces), { emitEvent: false });
+
     const otherVal = this.getRaceOtherValue();
     const isOther = otherVal != null && this.selectedRaces.has(otherVal);
 
-    // ✅ ถ้าไม่เลือก Other แล้ว -> เคลียร์ค่า text
     if (!isOther) {
       this.form.controls.racialIdentityOtherText.setValue('', { emitEvent: false });
       this.form.controls.racialIdentityOtherText.clearValidators();
@@ -1369,8 +1373,10 @@ export class HandleProfileComponent implements OnInit {
       return;
     }
 
-    // ✅ ถ้าเลือก Other แล้ว -> บังคับกรอก
-    this.form.controls.racialIdentityOtherText.setValidators([Validators.required, Validators.maxLength(100)]);
+    this.form.controls.racialIdentityOtherText.setValidators([
+      Validators.required,
+      Validators.maxLength(100)
+    ]);
     this.form.controls.racialIdentityOtherText.updateValueAndValidity({ emitEvent: false });
   }
 
@@ -1432,4 +1438,45 @@ export class HandleProfileComponent implements OnInit {
     }
     return Array.from(set);
   }
+
+  get workLocationOtherValue(): number | null {
+    // หา label ที่มีคำว่า other (รองรับ th/en)
+    const it = this.workLocations.find(x =>
+      (x.label || '').toLowerCase().includes('other')
+    );
+    return it ? it.value : null;
+  }
+
+  get isWorkLocationOtherSelected(): boolean {
+    const v = this.workLocationOtherValue;
+    return v != null && this.selectedWorkLocations.has(v);
+  }
+
+  public toggleWorkLocationIdentity(v: number) {
+    this.toggleSet(this.selectedWorkLocations, v);
+
+    const otherId = this.workLocationOtherValue;
+    const isOther = otherId != null && this.selectedWorkLocations.has(otherId);
+
+    const ctrl = this.form.controls.workLocationsOtherText;
+
+    if (!isOther) {
+      ctrl.setValue('', { emitEvent: false });
+      ctrl.clearValidators();
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    } else {
+      ctrl.setValidators([Validators.required, Validators.maxLength(120)]);
+      ctrl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  public clearWorkLocations() {
+    this.selectedWorkLocations.clear();
+
+    const ctrl = this.form.controls.workLocationsOtherText;
+    ctrl.setValue('', { emitEvent: false });
+    ctrl.clearValidators();
+    ctrl.updateValueAndValidity({ emitEvent: false });
+  }
+
 }

@@ -217,6 +217,8 @@
   "profile_toast_perf_type_warning": "Only JPG, PNG, and WEBP files are supported.",
   "donate_title": "Support the Thai Performing Arts Hub",
   "donate_subtitle": "Your contribution helps us sustain and expand theatre and live performance in Thai society.",
+  "donate_home": "Go to the Donate page",
+  "donate_system": "The donation system is available on the main Thai Theatre website.",
   "donate_promptpay_title": "PromptPay / Mobile transfer",
   "donate_promptpay_desc": "Scan the QR code and upload your payment slip.",
   "donate_bank_title": "Bank transfer",

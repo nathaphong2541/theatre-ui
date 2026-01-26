@@ -43,27 +43,18 @@ export class MainPagesComponent implements OnInit {
   constructor(private router: Router, private auth: AuthService) { }
 
   ngOnInit(): void {
-    const dismissed = localStorage.getItem(this.DISMISS_KEY) === 'true';
-
-    // subscribe เพื่อตรวจสอบว่า login อยู่หรือไม่
-    this.isLoggedIn$ = this.auth.isLoggedIn$.pipe(
-      startWith(false)
-    );
+    this.isLoggedIn$ = this.auth.isLoggedIn$.pipe(startWith(false));
 
     this.isLoggedIn$.subscribe(isLogged => {
       if (isLogged) {
-        // ถ้า login แล้ว → ไม่ต้องขึ้น popup
         this.showProfilePopup = false;
         return;
       }
 
-      // ยังไม่ login → เช็ก dismiss
-      if (!dismissed) {
-        this.showProfilePopup = true;
-      }
+      const dismissed = localStorage.getItem(this.DISMISS_KEY) === 'true'; // ✅ อ่านสด
+      this.showProfilePopup = !dismissed;
     });
   }
-
 
   /** helper: ดึง prefix แรกจาก URL เช่น /en/... -> 'en' */
   private getLangPrefix(): string | null {
@@ -98,6 +89,13 @@ export class MainPagesComponent implements OnInit {
   }
 
   onCloseProfilePopup(): void {
+    // ✅ ถ้าอยู่หน้า sign-in / auth ห้ามเขียน localStorage เด็ดขาด
+    const url = this.router.url.split('?')[0].split('#')[0];
+    if (url.includes('/auth/sign-in')) {
+      this.showProfilePopup = false;
+      return;
+    }
+
     if (this.dontShowAgain) {
       localStorage.setItem(this.DISMISS_KEY, 'true');
     }

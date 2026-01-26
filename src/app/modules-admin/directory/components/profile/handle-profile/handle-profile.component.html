@@ -1,7 +1,6 @@
-<div class="min-h-screen bg-[#0f1216] text-[#e9edf1]">
+<div class="min-h-screen  bg-main text-white">
     <!-- Top bar -->
-    <header
-        class="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-[#0f1216]/70 bg-[#0f1216]/90 border-b border-white/5">
+    <header class="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:/70 /90 border-b border-white/5">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div
@@ -78,7 +77,7 @@
                             <!-- Uploader -->
                             <label
                                 class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
-                                <input type="file" class="hidden" (change)="onPickAvatar($event)"
+                                <input type="text" type="file" class="hidden" (change)="onPickAvatar($event)"
                                     accept="image/jpeg,image/png,image/webp" />
                                 <div class="flex items-center gap-4 p-6 sm:p-8">
                                     <div
@@ -111,7 +110,7 @@
                             <!-- Private -->
                             <div class="flex items-start gap-4">
                                 <label class="inline-flex items-center select-none">
-                                    <input type="checkbox" class="peer sr-only"
+                                    <input type="text" type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.privateProfile" />
                                     <span
                                         class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
@@ -135,7 +134,7 @@
                             <!-- Company -->
                             <div class="flex items-start gap-4">
                                 <label class="inline-flex items-center select-none">
-                                    <input type="checkbox" class="peer sr-only"
+                                    <input type="text" type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.profileIsCompany" />
                                     <span
                                         class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
@@ -170,20 +169,20 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <input placeholder="First name"
-                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                <input type="text" placeholder="First name"
+                                    class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.firstName" />
                                 <p class="mt-1 text-xs text-gray-400">First name *</p>
                             </div>
                             <div>
-                                <input placeholder="Last name"
-                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                <input type="text" placeholder="Last name"
+                                    class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.lastName" />
                                 <p class="mt-1 text-xs text-gray-400">Last name *</p>
                             </div>
                             <div>
-                                <input placeholder="Pronouns"
-                                    class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                <input type="text" placeholder="Pronouns"
+                                    class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.pronouns" />
                                 <p class="mt-1 text-xs text-gray-400">Pronouns</p>
                             </div>
@@ -203,8 +202,8 @@
                                 <div class="relative">
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">☆</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="programmer" [formControl]="form.controls.title" maxlength="50" />
                                     <span class="absolute right-3 top-2 text-[11px] text-gray-500">
                                         {{ (form.controls.title.value || '').length }}/50
@@ -311,7 +310,7 @@
                                             <!-- skills -->
                                             <ng-container *ngFor="let name of getSkillNames(c)">
                                                 <span
-                                                    class="inline-flex items-center rounded-full border border-white/10 bg-[#0f1216] px-2.5 py-0.5 text-[10px] text-gray-200">
+                                                    class="inline-flex items-center rounded-full border border-white/10  px-2.5 py-0.5 text-[10px] text-gray-200">
                                                     {{ name }}
                                                 </span>
                                             </ng-container>
@@ -343,7 +342,7 @@
                             <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>About
                         </h2>
                         <textarea
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-48 resize-y"
+                            class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-48 resize-y"
                             placeholder="Tell us about yourself" [formControl]="form.controls.about"></textarea>
                     </section>
 
@@ -362,8 +361,8 @@
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
                                         aria-hidden="true">✉️</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="you@example.com" [formControl]="form.controls.email" />
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Contact Email</p>
@@ -373,8 +372,8 @@
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
                                         aria-hidden="true">📞</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="080-000-0000" [formControl]="form.controls.phone" />
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Phone</p>
@@ -384,8 +383,8 @@
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
                                         aria-hidden="true">🔗</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://example.com" [formControl]="form.controls.website" />
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">Website</p>
@@ -415,8 +414,8 @@
                                                 d="M4.98 3.5C4.98 4.88 3.9 6 2.5 6S0 4.88 0 3.5 1.08 1 2.5 1s2.48 1.12 2.48 2.5zM.3 8.1h4.4V23H.3zM8.7 8.1h4.2v2h.1c.6-1.1 2-2.2 4.1-2.2 4.4 0 5.2 2.9 5.2 6.6V23h-4.4v-7.1c0-1.7 0-3.8-2.3-3.8-2.3 0-2.7 1.8-2.7 3.7V23H8.7z" />
                                         </svg>
                                     </span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://linkedin.com/in/yourprofile"
                                         [formControl]="form.controls.linkedin" />
                                 </div>
@@ -434,8 +433,8 @@
                                                 d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07C2 17.1 5.66 21.29 10.44 22v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.58v1.9h2.78l-.44 2.9h-2.34V22C18.34 21.29 22 17.1 22 12.07Z" />
                                         </svg>
                                     </span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://facebook.com/yourpage"
                                         [formControl]="form.controls.facebook" />
                                 </div>
@@ -453,8 +452,8 @@
                                                 d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.9.3 2.4.5.6.2 1.1.6 1.6 1.1.5.5.9 1 .9 1.6.3.5.5 1.2.5 2.4.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.9-.5 2.4-.2.6-.6 1.1-1.1 1.6-.5.5-1 .9-1.6 1.1-.5.3-1.2.5-2.4.5-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.9-.3-2.4-.5-.6-.2-1.1-.6-1.6-1.1-.5-.5-.9-1-1.1-1.6-.3-.5-.5-1.2-.5-2.4C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.3-1.9.5-2.4.2-.6.6-1.1 1.1-1.6.5-.5 1-.9 1.6-1.1.5-.3 1.2-.5 2.4-.5C8.4 2.2 8.8 2.2 12 2.2z" />
                                         </svg>
                                     </span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://instagram.com/yourhandle"
                                         [formControl]="form.controls.instagram" />
                                 </div>
@@ -472,8 +471,8 @@
                                                 d="M18.9 3H21l-4.6 5.2L21.7 21h-5.5l-3.4-7.1L8.5 21H3.3l5-5.7L2.6 3h5.6l3.1 6.5L18.9 3zM9.7 5.1H7.8l7.5 13.9h2z" />
                                         </svg>
                                     </span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://x.com/yourhandle" [formControl]="form.controls.twitter" />
                                 </div>
                                 <p class="mt-1 text-xs text-gray-400">X / Twitter URL</p>
@@ -485,13 +484,14 @@
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Work Locations
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                Work Locations
                             </h2>
                             <p class="text-sm text-gray-400">Select any areas in which you're a local hire.</p>
                         </div>
 
                         <div class="relative" data-ddwrap="work">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'work')">
                                 <div class="flex items-center justify-between gap-3">
@@ -510,9 +510,10 @@
 
                             <div *ngIf="ddOpen['work']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['work']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -521,9 +522,11 @@
                                     <label *ngFor="let it of filterList(workLocations, ddSearch['work'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedWorkLocations.has(it.value)"
-                                            (change)="toggleSet(selectedWorkLocations, it.value)" />
+                                            (change)="toggleWorkLocationIdentity(it.value)" />
+
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
                                     </label>
                                 </div>
@@ -531,7 +534,7 @@
                                 <div class="flex items-center justify-between p-2 border-t border-white/10">
                                     <button type="button"
                                         class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedWorkLocations); $event.stopPropagation()">
+                                        (click)="clearWorkLocations(); $event.stopPropagation()">
                                         Clear
                                     </button>
                                     <button type="button"
@@ -541,6 +544,18 @@
                                     </button>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- ✅ Other input (โชว์เมื่อเลือก Other) -->
+                        <div *ngIf="isWorkLocationOtherSelected" class="mt-3">
+                            <label class="block text-xs text-gray-400 mb-1">
+                                Please specify
+                            </label>
+
+                            <input type="text" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-sm text-gray-100
+             outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]"
+                                placeholder="Type your work location..."
+                                [formControl]="form.controls.workLocationsOtherText" />
                         </div>
                     </section>
 
@@ -553,7 +568,7 @@
                                 <p class="text-sm text-gray-300 mb-2">PDF or image</p>
 
                                 <!-- input file ตัวจริง ซ่อน แต่มีอยู่ตลอด -->
-                                <input #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
+                                <input type="text" #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
                                     accept=".pdf,image/*" />
 
                                 <!-- โหมดไม่มี resume: แสดง dropzone -->
@@ -645,7 +660,7 @@
                         </div>
 
                         <div class="relative" data-ddwrap="unions">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'unions')">
                                 <div class="flex items-center justify-between gap-3">
@@ -662,8 +677,8 @@
                             <div *ngIf="ddOpen['unions']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['unions']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -672,7 +687,7 @@
                                     <label *ngFor="let it of filterList(unions, ddSearch['unions'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedUnions.has(it.value)"
                                             (change)="toggleSet(selectedUnions, it.value)" />
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
@@ -691,7 +706,7 @@
                         </div>
                         <div *ngIf="isUnionStudentAcademicSelected" class="mt-3">
                             <label class="text-xs text-gray-400">Student / Academic Member</label>
-                            <input class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
                 focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                 [formControl]="form.controls.unionStudentAcademicText"
                                 placeholder="Type your membership status..." />
@@ -699,7 +714,7 @@
 
                         <div *ngIf="isUnionOtherSelected" class="mt-3">
                             <label class="text-xs text-gray-400">Other</label>
-                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
                 focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                 [formControl]="form.controls.unionOtherText" placeholder="Please specify..." />
                         </div>
@@ -717,7 +732,7 @@
                         </div>
 
                         <div class="relative" data-ddwrap="exp">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'exp')">
                                 <div class="flex items-center justify-between gap-3">
@@ -735,8 +750,8 @@
                             <div *ngIf="ddOpen['exp']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['exp']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -745,7 +760,7 @@
                                     <label *ngFor="let it of filterList(experienceLevels, ddSearch['exp'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedExp.has(it.value)"
                                             (change)="toggleSet(selectedExp, it.value)" />
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
@@ -764,7 +779,7 @@
                         </div>
                         <div *ngIf="isExpOtherSelected" class="mt-3">
                             <label class="text-xs text-gray-400">Other</label>
-                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5  text-black text-sm outline-none
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5  text-black text-sm outline-none
                 focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                 [formControl]="form.controls.experienceOtherText" placeholder="Please specify..." />
                         </div>
@@ -783,7 +798,7 @@
                         </div>
 
                         <div class="relative" data-ddwrap="partners">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'partners')">
                                 <div class="flex items-center justify-between gap-3">
@@ -803,8 +818,8 @@
                             <div *ngIf="ddOpen['partners']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['partners']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -813,7 +828,7 @@
                                     <label *ngFor="let it of filterList(partnerDirectories, ddSearch['partners'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedPartners.has(it.value)"
                                             (change)="toggleSet(selectedPartners, it.value)" />
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
@@ -836,7 +851,7 @@
                                     {{ getPartnerLabel(pid) }} : Name
                                 </label>
 
-                                <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+                                <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
              focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                     [ngModelOptions]="{ standalone: true }"
                                     [ngModel]="form.controls.partnerDetailById.value[pid]"
@@ -847,7 +862,7 @@
 
                         <div *ngIf="partnerOtherValue != null && selectedPartners.has(partnerOtherValue)" class="mt-3">
                             <label class="text-xs text-gray-400">Other</label>
-                            <input class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
            focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                 [formControl]="form.controls.partnerOtherText" placeholder="Please specify..." />
                         </div>
@@ -864,7 +879,7 @@
                         </div>
 
                         <div class="relative" data-ddwrap="genders">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'genders')">
                                 <div class="flex items-center justify-between gap-3">
@@ -881,8 +896,8 @@
                             <div *ngIf="ddOpen['genders']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['genders']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -891,7 +906,7 @@
                                     <label *ngFor="let it of filterList(genders, ddSearch['genders'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedGenders.has(it.value)"
                                             (change)="toggleSet(selectedGenders, it.value)" />
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
@@ -910,7 +925,7 @@
                         </div>
                         <div *ngIf="isGenderSelfDescribeSelected" class="mt-3">
                             <label class="text-xs text-gray-400">Please describe</label>
-                            <input class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
            focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
                                 [formControl]="form.controls.genderSelfDescribeText" placeholder="Type here..." />
                             <p *ngIf="form.controls.genderSelfDescribeText.touched && form.controls.genderSelfDescribeText.invalid"
@@ -929,7 +944,7 @@
                         </div>
 
                         <div class="relative" data-ddwrap="races">
-                            <button type="button" class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 text-left
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'races')">
                                 <div class="flex items-center justify-between gap-3">
@@ -946,8 +961,8 @@
                             <div *ngIf="ddOpen['races']"
                                 class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
-                                    <input
-                                        class="w-full rounded-lg bg-[#0f1216] border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
                                         placeholder="Search..." [(ngModel)]="ddSearch['races']"
                                         (click)="$event.stopPropagation()" />
                                 </div>
@@ -956,7 +971,7 @@
                                     <label *ngFor="let it of filterList(races, ddSearch['races'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedRaces.has(it.value)"
                                             (change)="toggleSet(selectedRaces, it.value)" />
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
@@ -973,9 +988,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-3" *ngIf="(form.controls.races.value || []).includes(999)">
-                            <input class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none
-           focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                        <div class="mt-3" *ngIf="isRaceOtherSelected">
+                            <input type="text" class="w-full rounded-xl border border-white/10 px-3.5 py-2.5 outline-none text-black
+    focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                 placeholder="Please specify..." [formControl]="form.controls.racialIdentityOtherText" />
                             <p class="mt-1 text-xs text-gray-400">Other (please specify)</p>
                         </div>
@@ -991,7 +1006,7 @@
                             </h2>
                         </div>
                         <textarea
-                            class="w-full rounded-xl bg-[#0f1216] border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-40 resize-y"
+                            class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-40 resize-y"
                             placeholder="Schools, certifications, workshops"
                             [formControl]="form.controls.education"></textarea>
                     </section>
@@ -1013,8 +1028,8 @@
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
                                         aria-hidden="true">🔗</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://youtube.com/watch?v=..."
                                         [formControl]="form.controls.video1" (blur)="updateEmbed(1)" />
                                 </div>
@@ -1029,8 +1044,8 @@
                                     <span
                                         class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
                                         aria-hidden="true">🔗</span>
-                                    <input
-                                        class="w-full rounded-xl bg-[#0f1216] border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://youtube.com/watch?v=..."
                                         [formControl]="form.controls.video2" (blur)="updateEmbed(2)" />
                                 </div>
@@ -1050,7 +1065,7 @@
                             <label *ngFor="let i of [0,1,2,3,4,5]"
                                 class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-0 overflow-hidden min-h-[220px] bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
 
-                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/webp"
+                                <input type="text" type="file" class="hidden" accept="image/jpeg,image/png,image/webp"
                                     (change)="onPickImage($event, i)" />
 
                                 <div *ngIf="imagePreviewUrls[i]; else emptySlot" class="relative group h-56">
@@ -1121,7 +1136,7 @@
                                 <p class="text-sm text-gray-400">Let people know you can work in multiple languages.</p>
                             </div>
                             <label class="inline-flex items-center gap-3 text-base md:text-lg">
-                                <input type="checkbox"
+                                <input type="text" type="checkbox"
                                     class="size-5 rounded border-gray-600 bg-transparent accent-accent-500"
                                     [formControl]="form.controls.multiLang" />
                                 <span>I speak more than one language</span>
@@ -1161,14 +1176,14 @@
             <!-- First row -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                         placeholder="Company/Production Name" formControlName="company" />
                     <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
                 </div>
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                         placeholder="Job/Position Title" formControlName="title" />
                     <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
                 </div>
@@ -1177,21 +1192,21 @@
             <!-- Years + current -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
                         placeholder="2020" formControlName="startYear" />
                     <p class="mt-1 text-xs text-gray-400">Start year *</p>
                 </div>
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
                         placeholder="2022" formControlName="endYear"
                         [disabled]="creditForm.controls.current.value === true" />
                     <p class="mt-1 text-xs text-gray-400">End year</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
-                    <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                    <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                         <button type="button" (click)="creditForm.controls.current.setValue(true)"
                             [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                             class="px-3 py-1.5">
@@ -1209,14 +1224,14 @@
             <!-- Venue + Location -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
                         placeholder="Venue" formControlName="venue" />
                     <p class="mt-1 text-xs text-gray-400">Venue *</p>
                 </div>
                 <div>
-                    <input
-                        class="w-full rounded-xl bg-[#0f1216] border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                    <input type="text"
+                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
                         placeholder="Job Location" formControlName="jobLocation" />
                     <p class="mt-1 text-xs text-gray-400">Job Location *</p>
                 </div>
@@ -1227,7 +1242,7 @@
                 <div>
                     <div class="flex items-center gap-3">
                         <span class="text-xs text-gray-400">This was an internship</span>
-                        <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                        <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                             <button type="button" (click)="creditForm.controls.internship.setValue(true)"
                                 [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
@@ -1244,7 +1259,7 @@
                 <div>
                     <div class="flex items-center gap-3">
                         <span class="text-xs text-gray-400">This was a fellowship</span>
-                        <div class="inline-flex rounded-lg bg-[#0f1216] border border-white/15 overflow-hidden text-xs">
+                        <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                             <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
                                 [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
@@ -1272,7 +1287,7 @@
                         <p class="text-xs text-gray-400 mt-0.5">เลือก department ที่คุณทำงานใน position นี้</p>
                     </div>
 
-                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10 bg-[#0f1216] px-2 py-1">
+                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
                         {{ selectedCreditDepts.size }} selected
                     </span>
                 </div>
@@ -1299,12 +1314,12 @@
                         </div>
 
                     </button>
-                    <div *ngIf="creditDdOpen.dept" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 bg-[#0f1216]
+                    <div *ngIf="creditDdOpen.dept" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
                         <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
-                            <input class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+                            <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
          focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
                                 [(ngModel)]="creditDdSearch.pos" [ngModelOptions]="{ standalone: true }"
                                 (click)="$event.stopPropagation()" />
@@ -1314,7 +1329,7 @@
                         <div class="max-h-64 overflow-auto p-2">
                             <label *ngFor="let d of filterAny(departmentsApi, creditDdSearch.dept)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                <input type="checkbox" class="size-4 accent-accent-500"
+                                <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                     [checked]="selectedCreditDepts.has(d.id)" (change)="toggleCreditDept(d.id)" />
                                 <span class="text-sm text-gray-200">{{ pickLabel(d) }}</span>
                             </label>
@@ -1349,7 +1364,7 @@
                         <p class="text-xs text-gray-400 mt-0.5">เลือกตำแหน่งภายใต้ department ที่เลือก</p>
                     </div>
 
-                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10 bg-[#0f1216] px-2 py-1">
+                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
                         {{ selectedCreditPositions.size }} selected
                     </span>
                 </div>
@@ -1374,12 +1389,12 @@
                             </ng-template>
                         </div>
                     </button>
-                    <div *ngIf="creditDdOpen.pos" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 bg-[#0f1216]
+                    <div *ngIf="creditDdOpen.pos" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
                         <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
-                            <input class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+                            <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
                  focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
                                 [(ngModel)]="creditDdSearch.pos" (click)="$event.stopPropagation()" />
                         </div>
@@ -1387,7 +1402,7 @@
                         <div class="max-h-64 overflow-auto p-2">
                             <label *ngFor="let p of filterAny(filteredPositions, creditDdSearch.pos)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                <input type="checkbox" class="size-4 accent-accent-500"
+                                <input type="text" type="checkbox" class="size-4 accent-accent-500"
                                     [checked]="selectedCreditPositions.has(p.id)" (change)="toggleCreditPos(p.id)" />
                                 <span class="text-sm text-gray-200">{{ pickLabel(p) }}</span>
                             </label>
