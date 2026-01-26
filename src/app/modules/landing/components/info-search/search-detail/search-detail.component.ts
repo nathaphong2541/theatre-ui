@@ -476,17 +476,8 @@ export class SearchDetailComponent implements OnInit, OnDestroy {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang] : ['/'];
 
-    // ✅ ล้าง src ไม่ต้องพกกลับไปก็ได้ (กัน url ยาว/งง)
-    const { src, ...rest } = this.backQueryParams || {};
-
-    // เลือกหน้าปลายทางตาม src
-    const target =
-      this.backSrc === 'skills'
-        ? [...base, 'member', 'skills']
-        : [...base, 'member']; // default กลับ member
-
-    this.router.navigate(target, {
-      queryParams: rest, // ✅ ส่งค่าค้นหาเดิมกลับไป
+    this.router.navigate([...base, 'member', 'skills'], {
+      queryParams: { ...(this.backQueryParams || {}) },
     });
   }
 }

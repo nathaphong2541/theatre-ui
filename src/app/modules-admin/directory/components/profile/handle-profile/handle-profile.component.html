@@ -568,8 +568,8 @@
                                 <p class="text-sm text-gray-300 mb-2">PDF or image</p>
 
                                 <!-- input file ตัวจริง ซ่อน แต่มีอยู่ตลอด -->
-                                <input type="text" #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
-                                    accept=".pdf,image/*" />
+                                <input type="text" #resumeInput type="file" class="sr-only"
+                                    (change)="onPickResume($event)" accept=".pdf,image/*" />
 
                                 <!-- โหมดไม่มี resume: แสดง dropzone -->
                                 <div *ngIf="!resumePreviewUrl">
@@ -1125,24 +1125,60 @@
                     </section>
 
                     <!-- Additional Languages -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                    <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Additional
-                                    Languages
-                                </h2>
-                                <p class="text-sm text-gray-400">Let people know you can work in multiple languages.</p>
+                    <div [formGroup]="form">
+                        <section
+                            class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <h2
+                                        class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                        <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                        Additional Languages
+                                    </h2>
+                                    <p class="text-sm text-gray-400">Let people know you can work in multiple languages.
+                                    </p>
+                                </div>
+
+                                <label class="inline-flex items-center gap-3 text-base md:text-lg">
+                                    <input type="checkbox"
+                                        class="size-5 rounded border-gray-600 bg-transparent accent-accent-500"
+                                        [formControl]="form.controls.multiLang" />
+                                    <span>I speak more than one language</span>
+                                </label>
                             </div>
-                            <label class="inline-flex items-center gap-3 text-base md:text-lg">
-                                <input type="text" type="checkbox"
-                                    class="size-5 rounded border-gray-600 bg-transparent accent-accent-500"
-                                    [formControl]="form.controls.multiLang" />
-                                <span>I speak more than one language</span>
-                            </label>
-                        </div>
-                    </section>
+
+                            <!-- ✅ Show when multiLang -->
+                            <div *ngIf="form.controls.multiLang.value" class="mt-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="text-sm text-gray-300">Languages</div>
+
+                                    <button type="button" (click)="addLanguage()"
+                                        class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 hover:bg-white/10">
+                                        <span class="text-lg leading-none">+</span>
+                                        <span>Add</span>
+                                    </button>
+                                </div>
+
+                                <div class="mt-3 space-y-2" formArrayName="additionalLanguages">
+                                    <div *ngFor="let ctrl of additionalLanguagesFA.controls; let i = index"
+                                        class="flex items-center gap-2">
+                                        <input type="text" [formControlName]="i"
+                                            placeholder="e.g. English, Thai, Japanese"
+                                            class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-gray-100 placeholder:text-gray-500 outline-none focus:border-accent-500/60" />
+
+                                        <button type="button" (click)="removeLanguage(i)"
+                                            class="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 hover:bg-white/10">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <p class="mt-2 text-xs text-gray-500">
+                                    This will be sent as an array (e.g. ["English","Thai"]).
+                                </p>
+                            </div>
+                        </section>
+                    </div>
                 </section>
             </div>
         </div>

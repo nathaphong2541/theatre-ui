@@ -128,7 +128,7 @@ export class ListProfileComponent implements OnInit {
   private genderMap = new Map<number, MasterItem>();
   private raceMap = new Map<number, MasterItem>();
   private additionalMap = new Map<number, MasterItem>();
-
+  languageLabels = signal<string[]>([]);
   workLocationLabels = signal<string[]>([]);
   partnerLabels = signal<string[]>([]);
   experienceLabels = signal<string[]>([]);
@@ -295,12 +295,15 @@ export class ListProfileComponent implements OnInit {
         }
 
         if (p?.phone) {
-          const tel = String(p.phone).replace(/\s|-/g, '');
+          const raw = String(p.phone).trim();
+          const tel = raw.replace(/\s|-/g, '');
+          const isPhoneLike = /^[0-9+()]{6,}$/.test(tel);
+
           links.push({
             type: 'phone',
-            label: 'Phone',
-            value: p.phone,
-            href: `tel:${tel}`,
+            label: isPhoneLike ? 'Phone' : 'Contact',
+            value: raw,
+            href: isPhoneLike ? `tel:${tel}` : '#',
             icon: 'assets/icons/heroicons/outline/phone.svg',
           });
         }
@@ -364,6 +367,21 @@ export class ListProfileComponent implements OnInit {
             (x): x is string => !!x && x.toString().trim().length > 0
           )
         );
+
+        // languages (multiLang + additionalLanguages)
+        const langs: string[] = [];
+
+        if (p?.multiLang) {
+          // จะให้มี "Multi-Language" เป็น badge ก็แล้วแต่คุณ (คุณทำไว้แล้วใน tags)
+          // ที่นี่คือ list ภาษาเพิ่มเติมจริง ๆ
+          const add = Array.isArray(p?.additionalLanguages) ? p.additionalLanguages : [];
+          add
+            .map((x: any) => String(x ?? '').trim())
+            .filter((x: string) => !!x)
+            .forEach((x: string) => langs.push(x));
+        }
+        this.languageLabels.set(Array.from(new Set(langs)));
+
 
         // credits
         this.credits.set(Array.isArray(p?.credits) ? p.credits : []);
@@ -509,7 +527,11 @@ export class ListProfileComponent implements OnInit {
 
   private setProfileLabelGroups(p: ProfileDto | any): void {
     this.workLocationLabels.set(
-      this.buildLabels(p?.workLocations, this.workLocationMap)
+      this.buildLabels(p?.workLocations, this.workLocationMap, {
+        otherId: 999,
+        otherPrefix: 'Other',
+        otherText: p?.workLocationsOtherText,
+      })
     );
 
     this.partnerLabels.set(

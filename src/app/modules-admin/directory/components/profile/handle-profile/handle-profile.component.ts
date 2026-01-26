@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
 import { ProfileService } from '../../../service/profile.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
@@ -46,6 +46,7 @@ export type ProfileDto = {
   instagram: string | null;
   twitter: string | null;
   multiLang: boolean;
+  additionalLanguages?: string[];
   travel: boolean;
   tour: boolean;
   about: string;
@@ -88,6 +89,7 @@ export type ProfilePayload = {
   twitter?: string;
 
   multiLang: boolean;
+  additionalLanguages?: string[];
   travel: boolean;
   tour: boolean;
 
@@ -379,6 +381,7 @@ export class HandleProfileComponent implements OnInit {
     phone: new FormControl<string>(''),
     website: new FormControl<string>(''),
     multiLang: new FormControl(false),
+    additionalLanguages: this.fb.array<FormControl<string>>([]),
     travel: new FormControl<boolean | null>(null),
     tour: new FormControl<boolean | null>(null),
     about: new FormControl<string>(''),
@@ -431,6 +434,37 @@ export class HandleProfileComponent implements OnInit {
 
     this.loadMasterData();
     this.loadMaster();
+
+    // ✅ multiLang toggle -> เคลียร์ languages ถ้าปิด
+    this.form.controls.multiLang.valueChanges.subscribe((on) => {
+      if (!on) {
+        this.additionalLanguagesFA.clear();
+      } else {
+        // ถ้าเปิดแล้วไม่มี input เลย ให้ใส่ 1 ช่องเริ่มต้น
+        if (this.additionalLanguagesFA.length === 0) {
+          this.addLanguage();
+        }
+      }
+    });
+  }
+
+  // ✅ เพิ่ม input 1 ช่อง
+  addLanguage(value = '') {
+    this.additionalLanguagesFA.push(
+      new FormControl<string>(value, {
+        nonNullable: true,
+        validators: [Validators.maxLength(50)],
+      })
+    );
+  }
+
+  // ✅ ลบ input ตาม index
+  removeLanguage(i: number) {
+    this.additionalLanguagesFA.removeAt(i);
+    // กันเหลือ 0 ช่องขณะ multiLang=true
+    if (this.form.controls.multiLang.value && this.additionalLanguagesFA.length === 0) {
+      this.addLanguage();
+    }
   }
 
   private buildPartnerLabelMap() {
@@ -438,6 +472,10 @@ export class HandleProfileComponent implements OnInit {
     for (const it of this.partnerDirectories ?? []) {
       this.partnerLabelMap.set(it.value, it.label);
     }
+  }
+
+  get additionalLanguagesFA(): FormArray<FormControl<string>> {
+    return this.form.get('additionalLanguages') as FormArray<FormControl<string>>;
   }
 
   get partnerDetailMap(): Record<number, string> {
@@ -569,6 +607,15 @@ export class HandleProfileComponent implements OnInit {
       unionStudentAcademicText: (p as any).unionStudentAcademicText ?? '',
       partnerDetailById: (p as any).partnerDetailById ?? {},
     }, { emitEvent: false });
+
+    // ✅ เติม languages
+    this.additionalLanguagesFA.clear();
+    const langs = (p.additionalLanguages ?? []).filter(x => (x ?? '').trim().length > 0);
+
+    if (p.multiLang) {
+      if (langs.length) langs.forEach(x => this.addLanguage(x));
+      else this.addLanguage(); // เปิด multiLang แต่ไม่มีข้อมูล -> มี 1 ช่อง
+    }
 
     this.selectedWorkLocations = new Set(p.workLocations ?? []);
     this.selectedUnions = new Set(p.unions ?? []);
@@ -915,10 +962,31 @@ export class HandleProfileComponent implements OnInit {
     );
   }
 
-  toggleWorkLocation(v: number) { this.toggleSet(this.selectedWorkLocations, v); }
-  toggleUnion(v: number) { this.toggleSet(this.selectedUnions, v); }
-  toggleExp(v: number) { this.toggleSet(this.selectedExp, v); }
-  togglePartner(v: number) { this.toggleSet(this.selectedPartners, v); }
+  toggleWorkLocation(v: number) {
+    this.toggleSet(this.selectedWorkLocations, v);
+    this.form.controls.workLocations.setValue(Array.from(this.selectedWorkLocations), { emitEvent: false });
+  }
+
+  toggleUnion(v: number) {
+    this.toggleSet(this.selectedUnions, v);
+    this.form.controls.unions.setValue(Array.from(this.selectedUnions), { emitEvent: false });
+  }
+
+  toggleExp(v: number) {
+    this.toggleSet(this.selectedExp, v);
+    this.form.controls.experience.setValue(Array.from(this.selectedExp), { emitEvent: false });
+  }
+
+  togglePartner(v: number) {
+    this.toggleSet(this.selectedPartners, v);
+    this.form.controls.partners.setValue(Array.from(this.selectedPartners), { emitEvent: false });
+  }
+
+  toggleAdd(v: number) {
+    this.toggleSet(this.selectedAdds, v);
+    // ถ้าคุณมี form.controls.additionals ด้วยจะ set ได้เลย
+  }
+
   toggleGenderIdentity(v: number) {
     this.toggleSet(this.selectedGenders, v);
 
@@ -1018,12 +1086,55 @@ export class HandleProfileComponent implements OnInit {
     }
   }
 
+  private validateBeforeSave(): boolean {
+    // sync set -> form
+    this.syncAllSetsToForm();
+
+    // บังคับ trigger validation
+    this.form.markAllAsTouched();
+    this.form.updateValueAndValidity({ emitEvent: false });
+
+    // ✅ Email format
+    const emailCtrl = this.form.controls.email;
+    const email = (emailCtrl.value || '').trim();
+
+    // ถ้าใส่มาแต่ format ไม่ถูก
+    if (email && emailCtrl.hasError('email')) {
+      this.toast.error(
+        $localize`:@@profile_toast_email_invalid:รูปแบบอีเมลไม่ถูกต้อง`,
+        { title: $localize`:@@profile_toast_email_invalid_title:ตรวจสอบอีเมล` }
+      );
+      // optional: โฟกัส input email (ถ้ามี #emailInput)
+      // setTimeout(() => this.emailInput?.nativeElement?.focus(), 0);
+      return false;
+    }
+
+    // ✅ required title (ตัวอย่าง field สำคัญอื่น ๆ)
+    if (this.form.controls.title.invalid) {
+      this.toast.warning(
+        $localize`:@@profile_toast_title_required:กรุณากรอก Title`,
+        { title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ` }
+      );
+      return false;
+    }
+
+    // ถ้าฟอร์ม invalid โดยรวม
+    if (this.form.invalid) {
+      this.toast.warning(
+        $localize`:@@profile_toast_invalid:กรุณากรอกข้อมูลให้ครบถ้วน`,
+        { title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ` }
+      );
+      return false;
+    }
+
+    return true;
+  }
+
   public isPartnerNeedNameSelected(id: number): boolean {
     return this.selectedPartners.has(id);
   }
 
   toggleRace(v: number) { this.toggleSet(this.selectedRaces, v); }
-  toggleAdd(v: number) { this.toggleSet(this.selectedAdds, v); }
 
   updateEmbed(which: 1 | 2) {
     const ctrl = which === 1 ? this.form.controls.video1 : this.form.controls.video2;
@@ -1043,8 +1154,25 @@ export class HandleProfileComponent implements OnInit {
     } catch { return null; }
   }
 
+  isSaving = false;
+
   async save() {
+    if (!this.validateBeforeSave()) return;
+    this.syncAllSetsToForm();
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toast.warning($localize`:@@profile_toast_invalid:กรุณากรอกข้อมูลให้ครบถ้วน`);
+      return;
+    }
+
     const base = this.form.getRawValue();
+
+    const langs = this.form.controls.multiLang.value
+      ? this.additionalLanguagesFA.controls
+        .map(c => (c.value || '').trim())
+        .filter(Boolean)
+      : [];
 
     const payload: ProfilePayload = {
       ...(this.currentProfile && !this.isNewProfile
@@ -1065,18 +1193,22 @@ export class HandleProfileComponent implements OnInit {
       instagram: base.instagram || '',
       twitter: base.twitter || '',
       multiLang: !!base.multiLang,
+      additionalLanguages: langs,
       travel: base.travel ?? false,
       tour: base.tour ?? false,
       about: base.about || '',
       education: base.education || '',
       video1: base.video1 || '',
       video2: base.video2 || '',
+
+      // ✅ ใช้ค่าจาก Set เป็นหลัก (แน่นอนกว่า form)
       workLocations: Array.from(this.selectedWorkLocations),
       unions: Array.from(this.selectedUnions),
       experience: Array.from(this.selectedExp),
       partners: Array.from(this.selectedPartners),
       genders: Array.from(this.selectedGenders),
       races: Array.from(this.selectedRaces),
+
       workLocationsOtherText: (base.workLocationsOtherText || '').trim() || undefined,
       racialIdentityOtherText: (base.racialIdentityOtherText || '').trim() || undefined,
       genderSelfDescribeText: (base.genderSelfDescribeText || '').trim() || undefined,
@@ -1085,21 +1217,63 @@ export class HandleProfileComponent implements OnInit {
       unionOtherText: (base.unionOtherText || '').trim() || undefined,
       unionStudentAcademicText: (base.unionStudentAcademicText || '').trim() || undefined,
       partnerDetailById: base.partnerDetailById ?? {},
+
       additionals: Array.from(this.selectedAdds),
       credits: this.credits,
     };
 
-    // ถ้าไม่อยากบีบอัด ก็ให้อัปโหลดตรง ๆ (ดูหัวข้อ 3)
     const uploadFile = this.avatarFile;
-
     const isMultipart = !!uploadFile;
+
     const req$ = this.isNewProfile
       ? (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload))
       : (this.currentProfile
         ? (isMultipart ? this.profileService.updateProfileMultipart(payload, uploadFile!) : this.profileService.updateProfile(payload))
         : (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload)));
 
-    req$.subscribe({ /* เหมือนเดิม */ });
+    this.isSaving = true;
+
+    req$.subscribe({
+      next: (res: any) => {
+        this.toast.success(
+          $localize`:@@profile_toast_save_success:บันทึกข้อมูลสำเร็จ`,
+          { title: $localize`:@@profile_toast_save_success_title:สำเร็จ` }
+        );
+
+        // ✅ ถ้าต้องการ: อัปเดต currentProfile (กันหน้าเดิมค้าง)
+        if (res?.id) {
+          this.isNewProfile = false;
+        }
+
+        // ✅ กลับไปหน้า list/ดูโปรไฟล์
+        this.router.navigate(['en/directory/profile']);
+      },
+      error: (err) => {
+        // ✅ log ไว้ช่วย debug
+        console.error('save profile error', err);
+
+        const msg =
+          err?.error?.message ||
+          err?.message ||
+          $localize`:@@profile_toast_save_error:บันทึกข้อมูลไม่สำเร็จ`;
+
+        this.toast.error(msg, {
+          title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด`,
+        });
+      },
+      complete: () => {
+        this.isSaving = false;
+      }
+    });
+  }
+
+  private syncAllSetsToForm() {
+    this.form.controls.workLocations.setValue(Array.from(this.selectedWorkLocations), { emitEvent: false });
+    this.form.controls.unions.setValue(Array.from(this.selectedUnions), { emitEvent: false });
+    this.form.controls.experience.setValue(Array.from(this.selectedExp), { emitEvent: false });
+    this.form.controls.partners.setValue(Array.from(this.selectedPartners), { emitEvent: false });
+    this.form.controls.genders.setValue(Array.from(this.selectedGenders), { emitEvent: false });
+    this.form.controls.races.setValue(Array.from(this.selectedRaces), { emitEvent: false });
   }
 
   cancel() {
