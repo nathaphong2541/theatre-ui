@@ -23,11 +23,21 @@ import { SidebarSubmenuComponent } from '../sidebar-submenu/sidebar-submenu.comp
   ],
 })
 export class SidebarMenuComponent implements OnInit {
-  constructor(public menuService: MenuService) {}
+  constructor(public menuService: MenuService) { }
 
   public toggleMenu(subMenu: SubMenuItem) {
     this.menuService.toggleMenu(subMenu);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
+
+  public onItemClick(item: SubMenuItem, event: MouseEvent) {
+    if (item.children && item.children.length) {
+      this.toggleMenu(item);
+      return;
+    }
+    // ✅ ไม่ต้อง toggle ถ้าเป็นลิงก์จริง
+    event.stopPropagation();
+  }
+
 }

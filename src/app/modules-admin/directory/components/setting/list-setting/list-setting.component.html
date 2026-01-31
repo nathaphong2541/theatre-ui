@@ -2,72 +2,28 @@
     <div class="mx-auto max-w-6xl px-4 py-10">
         <!-- Header -->
         <header class="mb-6">
-            <h1 class="text-4xl font-semibold tracking-tight">Settings</h1>
-            <p class="text-sm text-white/60">Manage your profile visibility, account and preferences.</p>
-        </header>
-
-        <!-- Account -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-semibold mb-3">Account</h2>
-
-            <div
-                class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 md:p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                <div class="flex flex-wrap gap-3">
-                    <button type="button" (click)="changeEmail()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
-                        Change your email address
-                    </button>
-                    <button type="button" (click)="changePassword()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
-                        Change your password
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Danger zone -->
-        <section>
-            <h2 class="text-2xl font-semibold mb-3">Close your account</h2>
-
-            <div
-                class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                <p class="text-sm text-white/80 mb-4">
-                    If you'd like to remove your account entirely and delete your data, you can do so below. You can
-                    re-register at any time.
-                </p>
-                <button type="button" (click)="deleteAccount()" class="inline-flex items-center gap-2 rounded-xl border border-rose-400/40 bg-rose-400/15 px-4 py-2.5 text-sm text-rose-200
-                       hover:bg-rose-400/25 focus:outline-none focus:ring-2 focus:ring-rose-400/30">
-                    Delete account
-                </button>
-            </div>
-        </section>
-    </div>
-</div>
-
-
-<div class="min-h-screen bg-[#0b0e13] text-[#e9edf1]">
-    <div class="mx-auto max-w-6xl px-4 py-10">
-        <!-- Header -->
-        <header class="mb-6">
-            <h1 class="text-4xl font-semibold tracking-tight">Settings</h1>
-            <p class="text-sm text-white/60">
+            <h1 class="text-4xl font-semibold tracking-tight" i18n="@@settings_title">Settings</h1>
+            <p class="text-sm text-white/60" i18n="@@settings_subtitle">
                 Manage your profile visibility, account and preferences.
             </p>
         </header>
 
         <!-- Account -->
         <section class="mb-8">
-            <h2 class="text-2xl font-semibold mb-3">Account</h2>
+            <h2 class="text-2xl font-semibold mb-3" i18n="@@settings_account_title">Account</h2>
 
             <div
                 class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 md:p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
                 <div class="flex flex-wrap gap-3">
                     <button type="button" (click)="changeEmail()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+                        i18n="@@settings_change_email_btn">
                         Change your email address
                     </button>
+
                     <button type="button" (click)="changePassword()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+                        i18n="@@settings_change_password_btn">
                         Change your password
                     </button>
                 </div>
@@ -76,197 +32,240 @@
 
         <!-- Danger zone -->
         <section>
-            <h2 class="text-2xl font-semibold mb-3">Close your account</h2>
+            <h2 class="text-2xl font-semibold mb-3" i18n="@@settings_close_account_title">Close your account</h2>
 
             <div
                 class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
-                <p class="text-sm text-white/80 mb-4">
+                <p class="text-sm text-white/80 mb-4" i18n="@@settings_close_account_desc">
                     If you'd like to remove your account entirely and delete your data, you can do so below. You can
                     re-register at any time.
                 </p>
+
                 <button type="button" (click)="deleteAccount()" class="inline-flex items-center gap-2 rounded-xl border border-rose-400/40 bg-rose-400/15 px-4 py-2.5 text-sm text-rose-200
-                 hover:bg-rose-400/25 focus:outline-none focus:ring-2 focus:ring-rose-400/30">
+                 hover:bg-rose-400/25 focus:outline-none focus:ring-2 focus:ring-rose-400/30"
+                    i18n="@@settings_delete_account_btn">
                     Delete account
                 </button>
             </div>
         </section>
-    </div>
 
-    <!-- ──────────────────────────────────────────────── -->
-    <!-- Change Email Modal -->
-    <!-- ──────────────────────────────────────────────── -->
-    <div *ngIf="showChangeEmail()"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-        (click)="closeChangeEmail()">
-        <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#05070b] p-6 shadow-2xl"
-            (click)="$event.stopPropagation()">
-            <div class="mb-4 flex items-center gap-3">
-                <div
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/15 border border-sky-400/40">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 211, 252)"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                    </svg>
+        <!-- ──────────────────────────────────────────────── -->
+        <!-- Change Email Modal -->
+        <!-- ──────────────────────────────────────────────── -->
+        <div *ngIf="showChangeEmail()"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            (click)="closeChangeEmail()">
+            <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#05070b] p-6 shadow-2xl"
+                (click)="$event.stopPropagation()">
+                <div class="mb-4 flex items-center gap-3">
+                    <div
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/15 border border-sky-400/40">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgb(125, 211, 252)"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold" i18n="@@settings_modal_email_title">Change email address
+                        </h3>
+                        <p class="text-xs text-white/60" i18n="@@settings_modal_email_subtitle">
+                            Your new email will be used for login and notifications.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-base font-semibold">Change email address</h3>
-                    <p class="text-xs text-white/60">Your new email will be used for login and notifications.</p>
-                </div>
+
+                <form [formGroup]="changeEmailForm" (ngSubmit)="submitChangeEmail()" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-white/70 mb-1"
+                            i18n="@@settings_modal_email_new_label">
+                            New email
+                        </label>
+
+                        <input type="email" formControlName="newEmail" autocomplete="new-email" autofill="off"
+                            name="new_email_field" id="new_email_field"
+                            class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60" />
+
+                        <div *ngIf="changeEmailForm.controls.newEmail.touched && changeEmailForm.controls.newEmail.invalid"
+                            class="mt-1 text-[11px] text-rose-300" i18n="@@settings_modal_email_new_error">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-white/70 mb-1"
+                            i18n="@@settings_modal_email_current_pw_label">
+                            Current password
+                        </label>
+
+                        <input type="password" formControlName="currentPassword"
+                            class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60" />
+
+                        <div *ngIf="changeEmailForm.controls.currentPassword.touched && changeEmailForm.controls.currentPassword.invalid"
+                            class="mt-1 text-[11px] text-rose-300" i18n="@@settings_modal_email_current_pw_error">
+                            Please enter your current password.
+                        </div>
+                    </div>
+
+                    <div class="mt-5 flex justify-end gap-2">
+                        <button type="button" (click)="closeChangeEmail()"
+                            class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10"
+                            i18n="@@settings_common_cancel">
+                            Cancel
+                        </button>
+
+                        <button type="submit" [disabled]="changeEmailForm.invalid || isChangingEmail()"
+                            class="rounded-xl bg-sky-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-60 hover:bg-sky-400">
+                            <span *ngIf="!isChangingEmail()" i18n="@@settings_modal_email_save">Save changes</span>
+                            <span *ngIf="isChangingEmail()" i18n="@@settings_common_saving">Saving...</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <form [formGroup]="changeEmailForm" (ngSubmit)="submitChangeEmail()" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-white/70 mb-1">New email</label>
-                    <input type="email" formControlName="newEmail" autocomplete="new-email" autofill="off"
-                        name="new_email_field" id="new_email_field">
-                    <div *ngIf="changeEmailForm.controls.newEmail.touched && changeEmailForm.controls.newEmail.invalid"
-                        class="mt-1 text-[11px] text-rose-300">
-                        Please enter a valid email address.
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-medium text-white/70 mb-1">Current password</label>
-                    <input type="password" formControlName="currentPassword"
-                        class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400/60" />
-                    <div *ngIf="changeEmailForm.controls.currentPassword.touched && changeEmailForm.controls.currentPassword.invalid"
-                        class="mt-1 text-[11px] text-rose-300">
-                        Please enter your current password.
-                    </div>
-                </div>
-
-                <div class="mt-5 flex justify-end gap-2">
-                    <button type="button" (click)="closeChangeEmail()"
-                        class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10">
-                        Cancel
-                    </button>
-                    <button type="submit" [disabled]="changeEmailForm.invalid || isChangingEmail()"
-                        class="rounded-xl bg-sky-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-60 hover:bg-sky-400">
-                        <span *ngIf="!isChangingEmail()">Save changes</span>
-                        <span *ngIf="isChangingEmail()">Saving...</span>
-                    </button>
-                </div>
-            </form>
         </div>
-    </div>
 
-    <!-- ──────────────────────────────────────────────── -->
-    <!-- Change Password Modal -->
-    <!-- ──────────────────────────────────────────────── -->
-    <div *ngIf="showChangePassword()"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-        (click)="closeChangePassword()">
-        <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#05070b] p-6 shadow-2xl"
-            (click)="$event.stopPropagation()">
-            <div class="mb-4 flex items-center gap-3">
-                <div
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300">
-                    🔒
+        <!-- ──────────────────────────────────────────────── -->
+        <!-- Change Password Modal -->
+        <!-- ──────────────────────────────────────────────── -->
+        <div *ngIf="showChangePassword()"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            (click)="closeChangePassword()">
+            <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#05070b] p-6 shadow-2xl"
+                (click)="$event.stopPropagation()">
+                <div class="mb-4 flex items-center gap-3">
+                    <div
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300">
+                        🔒
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold" i18n="@@settings_modal_password_title">Change password</h3>
+                        <p class="text-xs text-white/60" i18n="@@settings_modal_password_subtitle">
+                            Choose a strong password to keep your account secure.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-base font-semibold">Change password</h3>
-                    <p class="text-xs text-white/60">Choose a strong password to keep your account secure.</p>
-                </div>
+
+                <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-white/70 mb-1"
+                            i18n="@@settings_modal_password_current_label">
+                            Current password
+                        </label>
+
+                        <input type="password" formControlName="currentPassword"
+                            class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
+
+                        <div *ngIf="changePasswordForm.controls.currentPassword.touched && changePasswordForm.controls.currentPassword.invalid"
+                            class="mt-1 text-[11px] text-rose-300" i18n="@@settings_modal_password_current_error">
+                            Please enter your current password.
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-white/70 mb-1"
+                                i18n="@@settings_modal_password_new_label">
+                                New password
+                            </label>
+                            <input type="password" formControlName="newPassword"
+                                class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-white/70 mb-1"
+                                i18n="@@settings_modal_password_confirm_label">
+                                Confirm new password
+                            </label>
+                            <input type="password" formControlName="confirmPassword"
+                                class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
+                        </div>
+                    </div>
+
+                    <div *ngIf="passwordMismatch" class="mt-1 text-[11px] text-rose-300"
+                        i18n="@@settings_modal_password_mismatch">
+                        New password and confirmation do not match.
+                    </div>
+
+                    <p class="text-[11px] text-white/50" i18n="@@settings_modal_password_hint">
+                        Password should be at least 8 characters and difficult to guess.
+                    </p>
+
+                    <div class="mt-5 flex justify-end gap-2">
+                        <button type="button" (click)="closeChangePassword()"
+                            class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10"
+                            i18n="@@settings_common_cancel">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                            [disabled]="changePasswordForm.invalid || isChangingPassword() || passwordMismatch"
+                            class="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-60 hover:bg-emerald-400">
+                            <span *ngIf="!isChangingPassword()" i18n="@@settings_modal_password_update">Update
+                                password</span>
+                            <span *ngIf="isChangingPassword()" i18n="@@settings_common_updating">Updating...</span>
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-white/70 mb-1">Current password</label>
-                    <input type="password" formControlName="currentPassword"
-                        class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
-                    <div *ngIf="changePasswordForm.controls.currentPassword.touched && changePasswordForm.controls.currentPassword.invalid"
-                        class="mt-1 text-[11px] text-rose-300">
-                        Please enter your current password.
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-white/70 mb-1">New password</label>
-                        <input type="password" formControlName="newPassword"
-                            class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
+        <!-- ──────────────────────────────────────────────── -->
+        <!-- Delete Account Modal -->
+        <!-- ──────────────────────────────────────────────── -->
+        <div *ngIf="showDeleteConfirm()"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+            (click)="closeDeleteAccount()">
+            <div class="w-full max-w-md rounded-2xl border border-rose-500/40 bg-[#1a070a] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
+                (click)="$event.stopPropagation()">
+                <div class="mb-4 flex items-center gap-3">
+                    <div
+                        class="flex h-9 w-9 items-center justify-center rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-200">
+                        ⚠️
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-white/70 mb-1">Confirm new password</label>
-                        <input type="password" formControlName="confirmPassword"
-                            class="w-full rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/60" />
+                        <h3 class="text-base font-semibold text-rose-100" i18n="@@settings_modal_delete_title">Delete
+                            account</h3>
+                        <p class="text-xs text-rose-200/80" i18n="@@settings_modal_delete_subtitle">
+                            This action will deactivate your account and remove your data from public view.
+                        </p>
                     </div>
                 </div>
-                <div *ngIf="passwordMismatch" class="mt-1 text-[11px] text-rose-300">
-                    New password and confirmation do not match.
-                </div>
 
-                <p class="text-[11px] text-white/50">
-                    Password should be at least 8 characters and difficult to guess.
+                <p class="mb-3 text-xs text-rose-100/80" i18n="@@settings_modal_delete_desc">
+                    This cannot be undone. You can re-register in the future, but your current profile and data will no
+                    longer be accessible.
                 </p>
 
-                <div class="mt-5 flex justify-end gap-2">
-                    <button type="button" (click)="closeChangePassword()"
-                        class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                        [disabled]="changePasswordForm.invalid || isChangingPassword() || passwordMismatch"
-                        class="rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-60 hover:bg-emerald-400">
-                        <span *ngIf="!isChangingPassword()">Update password</span>
-                        <span *ngIf="isChangingPassword()">Updating...</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+                <form [formGroup]="deleteAccountForm" (ngSubmit)="submitDeleteAccount()" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-rose-100 mb-1">
+                            <span i18n="@@settings_modal_delete_type_prefix">Type</span>
+                            <span
+                                class="font-mono px-1 rounded bg-black/40 border border-rose-500/40 text-[11px]">DELETE</span>
+                            <span i18n="@@settings_modal_delete_type_suffix">to confirm</span>
+                        </label>
 
-    <!-- ──────────────────────────────────────────────── -->
-    <!-- Delete Account Modal -->
-    <!-- ──────────────────────────────────────────────── -->
-    <div *ngIf="showDeleteConfirm()"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-        (click)="closeDeleteAccount()">
-        <div class="w-full max-w-md rounded-2xl border border-rose-500/40 bg-[#1a070a] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.9)]"
-            (click)="$event.stopPropagation()">
-            <div class="mb-4 flex items-center gap-3">
-                <div
-                    class="flex h-9 w-9 items-center justify-center rounded-full bg-rose-500/20 border border-rose-400/60 text-rose-200">
-                    ⚠️
-                </div>
-                <div>
-                    <h3 class="text-base font-semibold text-rose-100">Delete account</h3>
-                    <p class="text-xs text-rose-200/80">
-                        This action will deactivate your account and remove your data from public view.
-                    </p>
-                </div>
+                        <input type="text" formControlName="confirmText"
+                            class="w-full rounded-xl border border-rose-500/40 bg-black/30 px-3 py-2 text-sm text-rose-50 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400/60" />
+                    </div>
+
+                    <div class="mt-5 flex justify-end gap-2">
+                        <button type="button" (click)="closeDeleteAccount()"
+                            class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10"
+                            i18n="@@settings_common_cancel">
+                            Cancel
+                        </button>
+
+                        <button type="submit" [disabled]="!canDeleteAccount || isDeletingAccount()"
+                            class="rounded-xl bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-50 hover:bg-rose-400">
+                            <span *ngIf="!isDeletingAccount()" i18n="@@settings_modal_delete_confirm_btn">
+                                Yes, delete my account
+                            </span>
+                            <span *ngIf="isDeletingAccount()" i18n="@@settings_common_deleting">Deleting...</span>
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <p class="mb-3 text-xs text-rose-100/80">
-                This cannot be undone. You can re-register in the future, but your current profile and data will no
-                longer be
-                accessible.
-            </p>
-
-            <form [formGroup]="deleteAccountForm" (ngSubmit)="submitDeleteAccount()" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-medium text-rose-100 mb-1">
-                        Type <span
-                            class="font-mono px-1 rounded bg-black/40 border border-rose-500/40 text-[11px]">DELETE</span>
-                        to confirm
-                    </label>
-                    <input type="text" formControlName="confirmText"
-                        class="w-full rounded-xl border border-rose-500/40 bg-black/30 px-3 py-2 text-sm text-rose-50 outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400/60" />
-                </div>
-
-                <div class="mt-5 flex justify-end gap-2">
-                    <button type="button" (click)="closeDeleteAccount()"
-                        class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-white/80 hover:bg-white/10">
-                        Cancel
-                    </button>
-                    <button type="submit" [disabled]="!canDeleteAccount || isDeletingAccount()"
-                        class="rounded-xl bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow disabled:cursor-not-allowed disabled:opacity-50 hover:bg-rose-400">
-                        <span *ngIf="!isDeletingAccount()">Yes, delete my account</span>
-                        <span *ngIf="isDeletingAccount()">Deleting...</span>
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

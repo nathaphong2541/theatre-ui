@@ -9,7 +9,7 @@ import { LanguageMenuComponent } from 'src/locale/language-menu.component';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../service/auth.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 declare global {
   interface Window {

@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
 import { forkJoin } from 'rxjs';
 import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 type Labeled = { label: string; value: number };
 
@@ -128,7 +129,7 @@ type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races';
 @Component({
   selector: 'app-handle-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule],
   templateUrl: './handle-profile.component.html',
   styleUrl: './handle-profile.component.css'
 })
@@ -1236,10 +1237,12 @@ export class HandleProfileComponent implements OnInit {
     req$.subscribe({
       next: (res: any) => {
         this.toast.success(
-          $localize`:@@profile_toast_save_success:บันทึกข้อมูลสำเร็จ`,
-          { title: $localize`:@@profile_toast_save_success_title:สำเร็จ` }
+          $localize`:@@profile_toast_save_success_msg:บันทึกข้อมูลสำเร็จ`,
+          {
+            title: $localize`:@@profile_toast_save_success_title:สำเร็จ`,
+            duration: 3000,
+          },
         );
-
         // ✅ ถ้าต้องการ: อัปเดต currentProfile (กันหน้าเดิมค้าง)
         if (res?.id) {
           this.isNewProfile = false;
@@ -1255,7 +1258,7 @@ export class HandleProfileComponent implements OnInit {
         const msg =
           err?.error?.message ||
           err?.message ||
-          $localize`:@@profile_toast_save_error:บันทึกข้อมูลไม่สำเร็จ`;
+          $localize`:@@profile_toast_save_error_default_msg:เกิดข้อผิดพลาดในการบันทึกข้อมูล`;
 
         this.toast.error(msg, {
           title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด`,
