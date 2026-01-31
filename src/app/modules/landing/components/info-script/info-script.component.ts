@@ -91,11 +91,11 @@ export class InfoScriptComponent implements OnInit {
       .filter(Boolean);
   }
 
-  // helper หา lang จาก URL ปัจจุบัน
+  // helper หา lang จาก URL ปัจจุบัน (ตัด #fragment และ ?query ออกก่อน)
   private getLangPrefix(): string | null {
-    const segments = this.router.url.split('/').filter(Boolean);
-    const supported = ['th', 'en'];
-    return supported.includes(segments[0]) ? segments[0] : null;
+    const pathOnly = this.router.url.split('#')[0].split('?')[0]; // ✅ ตัด # / ?
+    const seg0 = pathOnly.split('/').filter(Boolean)[0];
+    return seg0 === 'th' || seg0 === 'en' ? seg0 : null;
   }
 
   // ไปหน้า "ดูทั้งหมด"
@@ -105,10 +105,15 @@ export class InfoScriptComponent implements OnInit {
     this.router.navigate([...base, 'theatre-library']);
   }
 
-  // ไปหน้า detail ของเรื่องนั้น (ใช้ route script เดิมของระบบคุณ)
+  // ไปหน้า detail ของเรื่องนั้น
   onViewDetail(script: ScriptPublic) {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang] : ['/'];
-    this.router.navigate([...base, 'theatre-library-detail', script.id]);
+
+    const url = this.router
+      .createUrlTree([...base, 'theatre-library-detail', script.id])
+      .toString();
+
+    this.router.navigateByUrl(url);
   }
 }

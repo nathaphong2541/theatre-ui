@@ -48,10 +48,11 @@ export class InfoHeroSectionComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  private getLangPrefix(): string {
-    const path = this.router.url.split('?')[0].split('#')[0];
-    const segments = path.split('/').filter(Boolean);
-    return segments.length > 0 ? segments[0] : 'en';
+  private getLangPrefix(): string | null {
+    const pathOnly = this.router.url.split('#')[0].split('?')[0]; // ✅ ตัด fragment
+    const segments = pathOnly.split('/').filter(Boolean);
+    const supported = ['th', 'en'];
+    return supported.includes(segments[0]) ? segments[0] : null;
   }
 
   goToMember(): void {

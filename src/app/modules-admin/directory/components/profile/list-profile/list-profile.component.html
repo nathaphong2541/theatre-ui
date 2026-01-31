@@ -3,13 +3,14 @@
     <section class="relative">
         <div
             class="relative h-56 md:h-72 w-full overflow-hidden rounded-b-[32px] border-b border-white/10 shadow-[0_40px_120px_-60px_rgba(0,0,0,0.9)]">
+
             <!-- gradient base -->
             <div class="absolute inset-0 bg-gradient-to-br from-[#05070b] via-[#0b141b] to-[#111827]"></div>
 
-            <!-- soft color glows -->
+            <!-- soft color glows (teal tone) -->
             <div
                 class="absolute inset-0 opacity-90
-        bg-[radial-gradient(70%_50%_at_10%_-10%,rgba(138,171,6,0.35),transparent),radial-gradient(55%_40%_at_80%_-15%,rgba(37,150,190,0.35),transparent)]">
+        bg-[radial-gradient(70%_50%_at_10%_-10%,rgba(15,110,115,0.45),transparent),radial-gradient(55%_40%_at_80%_-15%,rgba(42,166,171,0.35),transparent)]">
             </div>
 
             <!-- subtle noise -->
@@ -29,7 +30,8 @@
 
                 <button (click)="editProfile()" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-black/30 px-3 py-1.5
           text-xs sm:text-sm shadow-[0_12px_40px_rgba(0,0,0,0.8)]
-          hover:bg-white/5 hover:border-[#8aab06]/60 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40">
+          hover:bg-white/5 hover:border-[color:var(--accent)]/60
+          focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]/40">
                     <svg-icon src="assets/icons/heroicons/outline/pencil-square.svg"
                         [svgClass]="'h-4 w-4 text-white/80'">
                     </svg-icon>

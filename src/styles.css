@@ -57,6 +57,11 @@ html {
   --color-accent-800: #3d4c04;
   --color-accent-900: #2a3403;
 
+  --accent: #0f6e73;
+  --accent-2: #2aa6ab;
+  --accent-soft: rgba(15, 110, 115, .16);
+  --accent-ring: rgba(15, 110, 115, .35);
+
   @keyframes wiggle {
 
     0%,

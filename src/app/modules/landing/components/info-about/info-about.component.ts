@@ -23,9 +23,9 @@ export class InfoAboutComponent {
     el.referrerPolicy = 'no-referrer';
   }
 
-  // helper หา lang จาก URL ปัจจุบัน
   private getLangPrefix(): string | null {
-    const segments = this.router.url.split('/').filter(Boolean);
+    const pathOnly = this.router.url.split('#')[0].split('?')[0]; // ✅ ตัด fragment
+    const segments = pathOnly.split('/').filter(Boolean);
     const supported = ['th', 'en'];
     return supported.includes(segments[0]) ? segments[0] : null;
   }
@@ -33,7 +33,9 @@ export class InfoAboutComponent {
   howtouser() {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang] : ['/'];
-    this.router.navigate([...base, 'how-to-user']);
-  }
 
+    this.router.navigateByUrl(
+      [...base, 'how-to-user'].join('/')
+    );
+  }
 }

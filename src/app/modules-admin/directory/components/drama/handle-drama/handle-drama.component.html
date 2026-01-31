@@ -4,26 +4,35 @@
         <div class="mb-6 flex items-center justify-between gap-3">
             <div>
                 <h1 class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
-                    {{
-                    mode === 'create'
-                    ? 'อัปโหลดบทละครใหม่'
-                    : mode === 'edit'
-                    ? 'แก้ไขบทละคร'
-                    : 'รายละเอียดบทละคร'
-                    }}
+                    <ng-container *ngIf="mode === 'create'" i18n="@@script_create_title">
+                        อัปโหลดบทละครใหม่
+                    </ng-container>
+                    <ng-container *ngIf="mode === 'edit'" i18n="@@script_edit_title">
+                        แก้ไขบทละคร
+                    </ng-container>
+                    <ng-container *ngIf="mode === 'view'" i18n="@@script_view_title">
+                        รายละเอียดบทละคร
+                    </ng-container>
                 </h1>
+
                 <p class="text-sm text-white/60">
-                    {{
-                    mode === 'view'
-                    ? 'ดูรายละเอียดบทละคร พร้อมไฟล์บทละคร (PDF), คำอธิบาย และแท็ก'
-                    : 'เพิ่ม/แก้ไขบทละคร พร้อมไฟล์บทละคร (PDF - จำเป็น), คำอธิบาย, แท็ก และรูปภาพ (สูงสุด 5 รูป)'
-                    }}
+                    <ng-container *ngIf="mode === 'view'" i18n="@@script_view_desc">
+                        ดูรายละเอียดบทละคร พร้อมไฟล์บทละคร (PDF), คำอธิบาย และแท็ก
+                    </ng-container>
+                    <ng-container *ngIf="mode !== 'view'" i18n="@@script_create_desc">
+                        เพิ่ม/แก้ไขบทละคร พร้อมไฟล์บทละคร (PDF - จำเป็น), คำอธิบาย, แท็ก และรูปภาพ (สูงสุด 5 รูป)
+                    </ng-container>
                 </p>
             </div>
 
             <button type="button" (click)="onCancel()"
                 class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white hover:bg-[#6F9106]/15 hover:border-[#6F9106] transition">
-                {{ mode === 'view' ? 'กลับหน้ารายการ' : 'กลับไปหน้ารายการ' }}
+                <ng-container *ngIf="mode === 'view'" i18n="@@back_to_list_view">
+                    กลับหน้ารายการ
+                </ng-container>
+                <ng-container *ngIf="mode !== 'view'" i18n="@@back_to_list">
+                    กลับไปหน้ารายการ
+                </ng-container>
             </button>
         </div>
 
@@ -32,17 +41,19 @@
             class="space-y-6 rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] p-6 shadow shadow-black/70">
             <!-- Title -->
             <div>
-                <label class="mb-1 block text-sm font-medium">
+                <label class="mb-1 block text-sm font-medium" i18n="@@script_form_title_label">
                     ชื่อเรื่อง <span class="text-red-400">*</span>
                 </label>
-                <input type="text" formControlName="title" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white
-                 placeholder-white/30 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
-                    placeholder="เช่น ความลับหลังเวที" />
+
+                <input type="text" formControlName="title" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
+                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40" placeholder="เช่น ความลับหลังเวที"
+                    i18n-placeholder="@@script_form_title_placeholder" />
+
                 <div *ngIf="titleCtrl?.touched && titleCtrl?.invalid" class="mt-1 text-xs text-red-300">
-                    <span *ngIf="titleCtrl?.errors?.['required']">
+                    <span *ngIf="titleCtrl?.errors?.['required']" i18n="@@script_form_title_required">
                         กรุณากรอกชื่อเรื่อง
                     </span>
-                    <span *ngIf="titleCtrl?.errors?.['maxlength']">
+                    <span *ngIf="titleCtrl?.errors?.['maxlength']" i18n="@@script_form_title_maxlength">
                         ชื่อเรื่องยาวเกิน 200 ตัวอักษร
                     </span>
                 </div>
@@ -50,12 +61,17 @@
 
             <!-- Description -->
             <div>
-                <label class="mb-1 block text-sm font-medium"> คำอธิบาย </label>
-                <textarea formControlName="description" rows="5" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white
-                 placeholder-white/30 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
-                    placeholder="เล่าเนื้อหาโดยย่อ บรรยากาศ ตัวละครหลัก หรือรายละเอียดเวที"></textarea>
+                <label class="mb-1 block text-sm font-medium" i18n="@@script_form_description_label">
+                    คำอธิบาย
+                </label>
+
+                <textarea formControlName="description" rows="5" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
+                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                    placeholder="เล่าเนื้อหาโดยย่อ บรรยากาศ ตัวละครหลัก หรือรายละเอียดเวที"
+                    i18n-placeholder="@@script_form_description_placeholder"></textarea>
+
                 <div *ngIf="descriptionCtrl?.touched && descriptionCtrl?.invalid" class="mt-1 text-xs text-red-300">
-                    <span *ngIf="descriptionCtrl?.errors?.['maxlength']">
+                    <span *ngIf="descriptionCtrl?.errors?.['maxlength']" i18n="@@script_form_description_maxlength">
                         คำอธิบายยาวเกิน 5000 ตัวอักษร
                     </span>
                 </div>
@@ -63,48 +79,57 @@
 
             <!-- Tags -->
             <div>
-                <label class="mb-1 block text-sm font-medium"> แท็ก (Tags) </label>
-                <input type="text" formControlName="tags" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white
-                 placeholder-white/30 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
-                    placeholder="เช่น ดราม่า,ตลก,ครอบครัว,ละครเวทีเล็ก" />
+                <label class="mb-1 block text-sm font-medium" i18n="@@script_form_tags_label">
+                    แท็ก (Tags)
+                </label>
+
+                <input type="text" formControlName="tags" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
+                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                    placeholder="เช่น ดราม่า,ตลก,ครอบครัว,ละครเวทีเล็ก"
+                    i18n-placeholder="@@script_form_tags_placeholder" />
+
                 <p class="mt-1 text-xs text-white/40">
-                    ใช้เครื่องหมายคอมมา ( , ) คั่นแต่ละแท็ก เช่น
-                    <span class="text-[#6F9106]">ดราม่า,ตลก,ร่วมสมัย</span>
+                    <span i18n="@@script_form_tags_hint">ใช้เครื่องหมายคอมมา ( , ) คั่นแต่ละแท็ก เช่น</span>
+                    <span class="text-[#6F9106]" i18n="@@script_form_tags_example">ดราม่า,ตลก,ร่วมสมัย</span>
                 </p>
             </div>
 
             <!-- PDF (Required) -->
             <div>
-                <label class="mb-1 block text-sm font-medium">
+                <label class="mb-1 block text-sm font-medium" i18n="@@script_form_pdf_label">
                     ไฟล์บทละคร (PDF) <span class="text-red-400">*</span>
                 </label>
 
                 <div class="flex items-center gap-3">
                     <!-- ปุ่มเลือกไฟล์ แสดงเฉพาะ create/edit -->
-                    <label *ngIf="!isViewMode" class="inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
-             hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
+                    <!-- ปุ่มเลือกไฟล์ PDF -->
+                    <button *ngIf="!isViewMode" type="button" (click)="triggerPdfPicker()" class="inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
+         hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition" i18n="@@script_form_pdf_select">
                         เลือกไฟล์ PDF
-                        <input type="file" class="hidden" accept="application/pdf" (change)="onPdfChange($event)" />
-                    </label>
+                    </button>
+
+                    <!-- input file: ห้ามใช้ hidden -->
+                    <input #pdfInput type="file" class="sr-only" accept="application/pdf" (change)="onPdfChange($event)"
+                        [disabled]="isViewMode" />
 
                     <span class="text-xs text-white/70" *ngIf="pdfFileName">
                         {{ pdfFileName }}
                     </span>
-                    <span class="text-xs text-white/40" *ngIf="!pdfFileName">
+
+                    <span class="text-xs text-white/40" *ngIf="!pdfFileName" i18n="@@script_form_pdf_not_selected">
                         ยังไม่ได้เลือกไฟล์
                     </span>
                 </div>
 
-                <p class="mt-1 text-[11px] text-white/40">
-                    รองรับเฉพาะไฟล์ .pdf เช่น ไฟล์บทละครฉบับเต็ม (จำเป็นต้องมีอย่างน้อย 1
-                    ไฟล์)
+                <p class="mt-1 text-[11px] text-white/40" i18n="@@script_form_pdf_hint">
+                    รองรับเฉพาะไฟล์ .pdf เช่น ไฟล์บทละครฉบับเต็ม (จำเป็นต้องมีอย่างน้อย 1 ไฟล์)
                 </p>
 
                 <!-- PDF Preview -->
                 <div *ngIf="pdfPreviewUrl" class="mt-3">
                     <div class="rounded-lg border border-[#3f4d1f] bg-black/40 p-3">
                         <div class="mb-2 flex items-center justify-between text-[11px] text-white/70">
-                            <span>ตัวอย่างไฟล์ PDF</span>
+                            <span i18n="@@script_form_pdf_preview">ตัวอย่างไฟล์ PDF</span>
                             <span class="max-w-[220px] truncate">
                                 {{ pdfFileName }}
                             </span>
@@ -116,14 +141,16 @@
 
                         <!-- ปุ่มควบคุม PDF -->
                         <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-                            <button type="button" (click)="openPdfFullScreen()" class="rounded-full border border-[#6F9106]/70 px-3 py-1 text-[11px] text-[#6F9106]
-               hover:bg-[#6F9106]/15">
+                            <button type="button" (click)="openPdfFullScreen()"
+                                class="rounded-full border border-[#6F9106]/70 px-3 py-1 text-[11px] text-[#6F9106] hover:bg-[#6F9106]/15"
+                                i18n="@@script_form_pdf_open_full">
                                 เปิดแบบเต็มหน้าจอ
                             </button>
 
                             <!-- ลบเฉพาะ create/edit -->
-                            <button *ngIf="!isViewMode" type="button" (click)="removePdf()" class="rounded-full border border-red-600/70 px-3 py-1 text-[11px] text-red-300
-               hover:bg-red-700/40">
+                            <button *ngIf="!isViewMode" type="button" (click)="removePdf()"
+                                class="rounded-full border border-red-600/70 px-3 py-1 text-[11px] text-red-300 hover:bg-red-700/40"
+                                i18n="@@script_form_pdf_remove">
                                 ลบไฟล์ PDF
                             </button>
                         </div>
@@ -134,40 +161,57 @@
             <!-- Images -->
             <div>
                 <label class="mb-2 block text-sm font-medium">
-                    รูปภาพโปสเตอร์ / ภาพประกอบ (สูงสุด {{ maxImages }} รูป)
+                    <span i18n="@@script_form_images_label_prefix">รูปภาพโปสเตอร์ / ภาพประกอบ (สูงสุด</span>
+                    <span class="mx-1">{{ maxImages }}</span>
+                    <span i18n="@@script_form_images_label_suffix">รูป)</span>
                 </label>
 
-                <div class="mt-4 flex flex-col items-center justify-start gap-3 rounded-xl border-2 border-dashed border-[#6F9106]/60
-         bg-[#05070b] px-4 py-6 text-center" [class.opacity-60]="isViewMode">
-                    <p class="text-xs text-white/60">
+                <div class="mt-4 flex flex-col items-center justify-start gap-3 rounded-xl border-2 border-dashed border-[#6F9106]/60 bg-[#05070b] px-4 py-6 text-center"
+                    [class.opacity-60]="isViewMode">
+                    <p class="text-xs text-white/60" i18n="@@script_form_images_select_hint">
                         เลือกไฟล์รูปภาพจากเครื่องของคุณ
                     </p>
+
                     <p class="text-[11px] text-white/40">
-                        อัปโหลดได้ไม่เกิน {{ maxImages }} รูป ต่อหนึ่งบทละคร
+                        <span i18n="@@script_form_images_limit_prefix">อัปโหลดได้ไม่เกิน</span>
+                        <span class="mx-1">{{ maxImages }}</span>
+                        <span i18n="@@script_form_images_limit_suffix">รูป ต่อหนึ่งบทละคร</span>
                     </p>
 
                     <!-- ปุ่มเลือกเฉพาะ create/edit -->
-                    <label *ngIf="!isViewMode" class="mt-1 inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
-           hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition">
+                    <!-- ปุ่มเลือกรูปภาพ -->
+                    <button *ngIf="!isViewMode" type="button" (click)="triggerImagesPicker()" class="mt-1 inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
+         hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition" i18n="@@script_form_images_select">
                         เลือกรูปภาพ
-                        <input type="file" class="hidden" accept="image/*" multiple (change)="onFileChange($event)" />
-                    </label>
+                    </button>
+
+                    <input #imagesInput type="file" class="sr-only" accept="image/*" multiple
+                        (change)="onFileChange($event)" [disabled]="isViewMode" />
 
                     <div class="mt-2 text-[11px] text-white/50">
-                        เลือกเพิ่มได้ทีหลังจนกว่าจะครบ {{ maxImages }} รูป
+                        <span i18n="@@script_form_images_add_later_prefix">เลือกเพิ่มได้ทีหลังจนกว่าจะครบ</span>
+                        <span class="mx-1">{{ maxImages }}</span>
+                        <span i18n="@@script_form_images_add_later_suffix">รูป</span>
                     </div>
 
                     <!-- Preview รูปสำหรับรูปใหม่ที่เลือก -->
                     <div *ngIf="previewUrls.length > 0" class="mt-4 w-full">
                         <p class="mb-2 text-xs text-white/70 text-left">
-                            รูปที่เลือกแล้ว ({{ previewUrls.length }}/{{ maxImages }})
+                            <span i18n="@@script_form_images_selected_prefix">รูปที่เลือกแล้ว (</span>
+                            <span>{{ previewUrls.length }}</span>
+                            <span i18n="@@script_form_images_selected_sep">/</span>
+                            <span>{{ maxImages }}</span>
+                            <span i18n="@@script_form_images_selected_suffix">)</span>
                         </p>
+
                         <div class="grid grid-cols-3 gap-3 md:grid-cols-5">
                             <div *ngFor="let url of previewUrls; let i = index"
                                 class="relative overflow-hidden rounded-lg border border-[#3f4d1f] bg-[#05070b]">
                                 <img [src]="url" alt="preview" class="h-24 w-full object-cover" />
+
                                 <button *ngIf="!isViewMode" type="button" (click)="removeImage(i)"
-                                    class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[10px] text-red-300 hover:bg-red-700/80">
+                                    class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[10px] text-red-300 hover:bg-red-700/80"
+                                    i18n="@@script_form_image_remove">
                                     ลบ
                                 </button>
                             </div>
@@ -181,20 +225,81 @@
                 <button type="button" (click)="onCancel()"
                     class="rounded-lg border border-[#3f4d1f] px-4 py-2 text-sm text-white hover:bg-white/5"
                     [disabled]="isSubmitting">
-                    {{ isViewMode ? 'กลับ' : 'ยกเลิก' }}
+                    <ng-container *ngIf="isViewMode" i18n="@@action_back">กลับ</ng-container>
+                    <ng-container *ngIf="!isViewMode" i18n="@@action_cancel">ยกเลิก</ng-container>
                 </button>
 
                 <!-- ปุ่มบันทึกเฉพาะ create/edit -->
                 <button *ngIf="!isViewMode" type="submit"
-                    class="rounded-lg bg-[#6F9106] px-5 py-2 text-sm font-medium text黑
+                    class="rounded-lg bg-[#6F9106] px-5 py-2 text-sm font-medium text-black
                  hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] disabled:opacity-60 disabled:cursor-not-allowed" [disabled]="isSubmitting">
-                    {{
-                    isSubmitting
-                    ? (mode === 'create' ? 'กำลังอัปโหลด...' : 'กำลังบันทึก...')
-                    : (mode === 'create' ? 'บันทึกบทละคร' : 'บันทึกการแก้ไข')
-                    }}
+                    <ng-container *ngIf="isSubmitting && mode === 'create'" i18n="@@action_uploading">
+                        กำลังอัปโหลด...
+                    </ng-container>
+                    <ng-container *ngIf="isSubmitting && mode !== 'create'" i18n="@@action_saving">
+                        กำลังบันทึก...
+                    </ng-container>
+
+                    <ng-container *ngIf="!isSubmitting && mode === 'create'" i18n="@@action_save_create">
+                        บันทึกบทละคร
+                    </ng-container>
+                    <ng-container *ngIf="!isSubmitting && mode !== 'create'" i18n="@@action_save_edit">
+                        บันทึกการแก้ไข
+                    </ng-container>
                 </button>
             </div>
         </form>
+    </div>
+    <!-- ===== Crop Modal ===== -->
+    <div *ngIf="cropOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+        <div class="w-full max-w-3xl rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow-black/70 shadow">
+            <div class="flex items-center justify-between border-b border-[#3f4d1f] px-5 py-3">
+                <div class="text-sm font-semibold text-white/90" i18n="@@script_crop_title">ครอปรูปภาพ</div>
+                <button type="button" (click)="closeCrop()"
+                    class="rounded-md border border-[#3f4d1f] px-2 py-1 text-xs text-white/70 hover:bg-white/5"
+                    i18n="@@action_close">ปิด</button>
+            </div>
+
+            <div class="p-5">
+                <!-- controls -->
+                <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-white/70">
+                    <!-- <button type="button" (click)="rotateLeft()"
+                        class="rounded-full border border-[#3f4d1f] px-3 py-1 hover:bg-white/5"
+                        i18n="@@crop_rotate_left">หมุนซ้าย</button>
+                    <button type="button" (click)="rotateRight()"
+                        class="rounded-full border border-[#3f4d1f] px-3 py-1 hover:bg-white/5"
+                        i18n="@@crop_rotate_right">หมุนขวา</button> -->
+
+                    <label class="ml-auto flex items-center gap-2">
+                        <span i18n="@@crop_aspect">อัตราส่วน</span>
+                        <select [(ngModel)]="cropAspect"
+                            class="rounded-md border border-[#3f4d1f] bg-[#0d1217] px-2 py-1 text-xs text-white">
+                            <option [ngValue]="1">1:1</option>
+                            <option [ngValue]="4/3">4:3</option>
+                            <option [ngValue]="16/9">16:9</option>
+                            <option [ngValue]="0">อิสระ</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- cropper -->
+                <div class="rounded-xl border border-[#3f4d1f] bg-black/40 p-3">
+                    <image-cropper *ngIf="cropBase64" [imageBase64]="cropBase64" output="base64"
+                        [maintainAspectRatio]="cropAspect !== 0" [aspectRatio]="cropAspect === 0 ? 1 : cropAspect"
+                        [resizeToWidth]="resizeToWidth" format="jpeg" [imageQuality]="85" [autoCrop]="true"
+                        (imageCropped)="onCropped($event)" (loadImageFailed)="onCropLoadFailed()"></image-cropper>
+                </div>
+
+                <div class="mt-4 flex items-center justify-end gap-2">
+                    <button type="button" (click)="closeCrop()"
+                        class="rounded-lg border border-[#3f4d1f] px-4 py-2 text-sm text-white hover:bg-white/5"
+                        i18n="@@action_cancel">ยกเลิก</button>
+
+                    <button type="button" (click)="confirmCrop()" class="rounded-lg bg-[#6F9106] px-5 py-2 text-sm font-medium text-black
+                 hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)]"
+                        i18n="@@action_confirm">ยืนยันครอป</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

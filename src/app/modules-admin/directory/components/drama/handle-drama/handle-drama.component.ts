@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -8,13 +8,14 @@ import { DramaService } from '../../../pages/drama/service/drama.service';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
 import { environment } from 'src/environments/environment';
 import { Drama } from '../../../pages/drama/models/drama.model';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 type Mode = 'create' | 'edit' | 'view';
 
 @Component({
   selector: 'app-handle-drama',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageCropperComponent],
   templateUrl: './handle-drama.component.html',
 })
 export class HandleDramaComponent implements OnInit {
@@ -44,6 +45,22 @@ export class HandleDramaComponent implements OnInit {
   // base สำหรับ static files (/uploads/**)
   private fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
 
+  // ===== Crop State (ใช้จริง) =====
+  cropOpen = false;
+  cropBase64: string | undefined;
+  croppedBase64: string | undefined;
+  private currentCropFile?: File;
+
+  // ปรับได้: ลดความกว้างหลังครอปเพื่อไม่ให้ไฟล์ใหญ่เกิน
+  resizeToWidth = 1400;
+
+  // 0 = อิสระ, 1=1:1, 4/3, 16/9
+  cropAspect = 0;
+
+  // queue ครอปทีละรูป
+  private cropQueue: File[] = [];
+  private cropOriginalName = 'image.png';
+
   constructor(
     private fb: FormBuilder,
     private dramaService: DramaService,
@@ -60,26 +77,34 @@ export class HandleDramaComponent implements OnInit {
   }
 
   // --------- getters ----------
-  get titleCtrl() {
-    return this.form.get('title');
-  }
-  get descriptionCtrl() {
-    return this.form.get('description');
-  }
-  get tagsCtrl() {
-    return this.form.get('tags');
+  get titleCtrl() { return this.form.get('title'); }
+  get descriptionCtrl() { return this.form.get('description'); }
+  get tagsCtrl() { return this.form.get('tags'); }
+  get isViewMode() { return this.mode === 'view'; }
+
+  @ViewChild('pdfInput') pdfInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('imagesInput') imagesInput!: ElementRef<HTMLInputElement>;
+
+  triggerPdfPicker() {
+    if (this.isViewMode) return;
+    const el = this.pdfInput?.nativeElement;
+    if (!el) return;
+    el.value = ''; // เลือกไฟล์เดิมซ้ำได้
+    el.click();
   }
 
-  get isViewMode() {
-    return this.mode === 'view';
+  triggerImagesPicker() {
+    if (this.isViewMode) return;
+    const el = this.imagesInput?.nativeElement;
+    if (!el) return;
+    el.value = ''; // เลือกไฟล์เดิมซ้ำได้
+    el.click();
   }
 
   // =============== lifecycle ===============
   ngOnInit(): void {
-    // ตรวจจาก url ว่าเป็น view / edit / create
     const idParam = this.route.snapshot.paramMap.get('id');
-    const segments = this.route.snapshot.url.map(s => s.path); // ['script','view','2'] หรือ ['script','2']
-
+    const segments = this.route.snapshot.url.map(s => s.path);
     const isView = segments.includes('view');
 
     if (idParam) {
@@ -87,15 +112,12 @@ export class HandleDramaComponent implements OnInit {
       this.mode = isView ? 'view' : 'edit';
       this.loadScript(this.scriptId);
 
-      if (this.isViewMode) {
-        this.form.disable();
-      }
+      if (this.isViewMode) this.form.disable();
     } else {
       this.mode = 'create';
     }
   }
 
-  // โหลด script จาก backend
   private loadScript(id: number) {
     this.dramaService.getDramaById(id).subscribe({
       next: (res: Drama) => {
@@ -105,11 +127,11 @@ export class HandleDramaComponent implements OnInit {
           tags: res.tags,
         });
 
-        // ----- PDF จาก server -----
+        // PDF จาก server
         if ((res as any).pdfPath) {
-          const rawPath = (res as any).pdfPath as string; // "uploads\\scripts\\pdf\\xxx.pdf"
-          const normalized = rawPath.replace(/\\/g, '/'); // => uploads/scripts/pdf/xxx.pdf
-          const url = `${this.fileBase}/${normalized}`;   // => http://localhost:8080/uploads/scripts/pdf/xxx.pdf
+          const rawPath = (res as any).pdfPath as string;
+          const normalized = rawPath.replace(/\\/g, '/');
+          const url = `${this.fileBase}/${normalized}`;
 
           this.pdfPreviewSrc = url;
           this.pdfPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -118,18 +140,16 @@ export class HandleDramaComponent implements OnInit {
           this.pdfFileName = parts[parts.length - 1];
         }
 
-        // ----- รูปภาพเดิมจาก server -----
-        if (res.images && res.images.length > 0) {
+        // รูปภาพเดิมจาก server
+        if (res.images?.length) {
           this.previewUrls = res.images.map(img => {
-            const raw = img.filePath || '';               // "uploads\\scripts\\1764_xxx.jpg"
-            const normalized = raw.replace(/\\/g, '/');    // "uploads/scripts/1764_xxx.jpg"
-            return `${this.fileBase}/${normalized}`;       // "http://localhost:8080/uploads/scripts/1764_xxx.jpg"
+            const raw = img.filePath || '';
+            const normalized = raw.replace(/\\/g, '/');
+            return `${this.fileBase}/${normalized}`;
           });
         }
 
-        if (this.isViewMode) {
-          this.form.disable();
-        }
+        if (this.isViewMode) this.form.disable();
       },
       error: () => {
         this.toast.error('ไม่พบข้อมูลบทละครที่ต้องการ', { title: 'เกิดข้อผิดพลาด' });
@@ -148,46 +168,136 @@ export class HandleDramaComponent implements OnInit {
   private navigateToList() {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang, 'directory'] : ['/directory'];
-    // ไปหน้า list หลัก
     this.router.navigate([...base, 'script']);
   }
 
-  // =============== image upload ===============
+  // =============== image upload + crop ===============
   onFileChange(event: Event) {
-    if (this.isViewMode) return; // กันเผื่อ
+    if (this.isViewMode) return;
 
     const input = event.target as HTMLInputElement;
-    if (!input.files) return;
+    if (!input.files?.length) return;
 
-    const selected = Array.from(input.files);
+    let selected = Array.from(input.files);
 
-    if (this.files.length + selected.length > this.maxImages) {
-      this.toast.warning(`เลือกได้สูงสุด ${this.maxImages} รูปภาพ`, {
-        title: 'จำนวนรูปภาพเกินกำหนด',
-        duration: 3000,
-      });
-      const slot = this.maxImages - this.files.length;
-      if (slot <= 0) {
-        input.value = '';
-        return;
-      }
-      selected.splice(slot);
+    // กันไฟล์ไม่ใช่รูป (บางที user เลือกผิด)
+    selected = selected.filter(f => f.type.startsWith('image/'));
+
+    if (!selected.length) {
+      this.toast.warning('กรุณาเลือกไฟล์รูปภาพเท่านั้น', { title: 'ชนิดไฟล์ไม่ถูกต้อง' });
+      input.value = '';
+      return;
     }
 
-    selected.forEach(file => {
-      this.files.push(file);
-      const reader = new FileReader();
-      reader.onload = () => this.previewUrls.push(reader.result as string);
-      reader.readAsDataURL(file);
-    });
+    // จำกัดจำนวนรวม
+    const remaining = this.maxImages - this.files.length;
+    if (remaining <= 0) {
+      this.toast.warning(`เลือกได้สูงสุด ${this.maxImages} รูปภาพ`, { title: 'จำนวนรูปภาพเกินกำหนด' });
+      input.value = '';
+      return;
+    }
+
+    if (selected.length > remaining) {
+      this.toast.warning(`เหลือที่ว่างอีก ${remaining} รูป (รวมสูงสุด ${this.maxImages})`, {
+        title: 'จำนวนรูปภาพเกินกำหนด',
+      });
+      selected = selected.slice(0, remaining);
+    }
+
+    // ต่อคิว (ไม่ทับของเดิม)
+    this.cropQueue.push(...selected);
 
     input.value = '';
+
+    // ถ้ายังไม่ได้เปิด crop อยู่ ให้เริ่มตัวแรก
+    if (!this.cropOpen) {
+      void this.startNextCrop();
+    }
   }
 
   removeImage(index: number) {
     if (this.isViewMode) return;
     this.files.splice(index, 1);
     this.previewUrls.splice(index, 1);
+  }
+
+  private async startNextCrop() {
+    if (this.cropQueue.length === 0) return;
+
+    const nextFile = this.cropQueue.shift()!;
+    this.currentCropFile = nextFile;               // ✅ เก็บไฟล์เดิม
+    this.cropOriginalName = nextFile.name;
+
+    this.croppedBase64 = undefined;                // (ตามที่แก้ type เป็น undefined)
+    this.cropBase64 = await this.fileToBase64(nextFile);
+
+    this.cropOpen = true;
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('read failed'));
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  onCropped(event: ImageCroppedEvent) {
+    this.croppedBase64 = event.base64 ?? undefined;
+  }
+
+  onCropLoadFailed() {
+    this.toast.error('โหลดรูปภาพไม่สำเร็จ', { title: 'เกิดข้อผิดพลาด' });
+    this.closeCrop();
+  }
+
+  closeCrop() {
+    this.cropOpen = false;
+    this.cropBase64 = undefined;
+    this.croppedBase64 = undefined;
+    this.currentCropFile = undefined;
+
+    setTimeout(() => void this.startNextCrop(), 0);
+  }
+
+  confirmCrop() {
+    // ถ้ามีผลครอป -> ใช้รูปที่ครอป
+    if (this.croppedBase64) {
+      const safeName = this.cropOriginalName.replace(/\.\w+$/, '');
+      const file = this.base64ToFile(this.croppedBase64, `${safeName}.jpg`);
+
+      this.files.push(file);
+      this.previewUrls.push(this.croppedBase64);
+    } else {
+      // ไม่ครอปก็ได้ -> ใช้ไฟล์เดิม
+      if (this.currentCropFile) {
+        this.files.push(this.currentCropFile);
+
+        const reader = new FileReader();
+        reader.onload = () => this.previewUrls.push(reader.result as string);
+        reader.readAsDataURL(this.currentCropFile);
+      }
+    }
+
+    // reset
+    this.cropOpen = false;
+    this.cropBase64 = undefined;
+    this.croppedBase64 = undefined;
+    this.currentCropFile = undefined;
+
+    setTimeout(() => void this.startNextCrop(), 0);
+  }
+
+  private base64ToFile(base64: string, filename: string): File {
+    const arr = base64.split(',');
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, { type: mime });
   }
 
   // =============== PDF upload ===============
@@ -200,15 +310,15 @@ export class HandleDramaComponent implements OnInit {
     const file = input.files[0];
 
     if (file.type !== 'application/pdf') {
-      this.toast.warning('รองรับเฉพาะไฟล์ PDF เท่านั้น', {
-        title: 'ชนิดไฟล์ไม่ถูกต้อง',
-      });
+      this.toast.warning('รองรับเฉพาะไฟล์ PDF เท่านั้น', { title: 'ชนิดไฟล์ไม่ถูกต้อง' });
       input.value = '';
       return;
     }
 
-    // ล้าง blob เดิม
-    if (this.pdfPreviewSrc) URL.revokeObjectURL(this.pdfPreviewSrc);
+    // revoke เฉพาะกรณีเป็น blob url (ของที่มาจาก server ไม่ต้อง revoke)
+    if (this.pdfPreviewSrc?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.pdfPreviewSrc);
+    }
 
     this.pdfFile = file;
     this.pdfFileName = file.name;
@@ -219,10 +329,7 @@ export class HandleDramaComponent implements OnInit {
 
     input.value = '';
 
-    this.toast.success('เพิ่มไฟล์ PDF สำเร็จ', {
-      title: 'อัปโหลดสำเร็จ',
-      duration: 1500,
-    });
+    this.toast.success('เพิ่มไฟล์ PDF สำเร็จ', { title: 'อัปโหลดสำเร็จ', duration: 1500 });
   }
 
   openPdfFullScreen() {
@@ -233,23 +340,21 @@ export class HandleDramaComponent implements OnInit {
   removePdf() {
     if (this.isViewMode) return;
 
-    if (this.pdfPreviewSrc) URL.revokeObjectURL(this.pdfPreviewSrc);
+    if (this.pdfPreviewSrc?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.pdfPreviewSrc);
+    }
+
     this.pdfFile = null;
     this.pdfPreviewUrl = null;
     this.pdfPreviewSrc = null;
     this.pdfFileName = null;
 
-    this.toast.warning('ลบไฟล์ PDF แล้ว', {
-      title: 'ลบสำเร็จ',
-      duration: 1500,
-    });
+    this.toast.warning('ลบไฟล์ PDF แล้ว', { title: 'ลบสำเร็จ', duration: 1500 });
   }
 
   // =============== submit ===============
   onSubmit() {
-    if (this.isViewMode) {
-      return; // เผื่อมีคนยิง event ผ่าน devtools
-    }
+    if (this.isViewMode) return;
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -257,19 +362,13 @@ export class HandleDramaComponent implements OnInit {
       return;
     }
 
-    // create: ต้องมี PDF เสมอ
     if (this.mode === 'create' && !this.pdfFile) {
-      this.toast.warning('จำเป็นต้องอัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์', {
-        title: 'ยังไม่ได้เพิ่ม PDF',
-      });
+      this.toast.warning('จำเป็นต้องอัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์', { title: 'ยังไม่ได้เพิ่ม PDF' });
       return;
     }
 
-    // edit: ถ้าไม่มีทั้ง pdf ใหม่ + preview เดิม = ไม่มี PDF เลย
     if (this.mode === 'edit' && !this.pdfFile && !this.pdfPreviewUrl) {
-      this.toast.warning('บทละครต้องมีไฟล์ PDF อย่างน้อย 1 ไฟล์', {
-        title: 'ยังไม่มีไฟล์ PDF',
-      });
+      this.toast.warning('บทละครต้องมีไฟล์ PDF อย่างน้อย 1 ไฟล์', { title: 'ยังไม่มีไฟล์ PDF' });
       return;
     }
 
@@ -282,20 +381,11 @@ export class HandleDramaComponent implements OnInit {
     };
 
     const formData = new FormData();
-    formData.append(
-      'data',
-      new Blob([JSON.stringify(payload)], { type: 'application/json' })
-    );
+    formData.append('data', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
 
-    // PDF ใหม่ (ถ้ามี) – ถ้าไม่มีสำหรับ edit จะไม่ส่ง field pdf ไปเลย → backend จะใช้ของเดิม
-    if (this.pdfFile) {
-      formData.append('pdf', this.pdfFile);
-    }
-
-    // รูปใหม่ (ถ้ามี)
+    if (this.pdfFile) formData.append('pdf', this.pdfFile);
     this.files.forEach(f => formData.append('images', f));
 
-    // แยก call ตามโหมด
     const request$ =
       this.mode === 'create'
         ? this.dramaService.createDrama(formData)
@@ -303,19 +393,14 @@ export class HandleDramaComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.toast.success(
-          this.mode === 'create' ? 'บันทึกบทละครสำเร็จ' : 'แก้ไขบทละครสำเร็จ',
-          {
-            title: 'ดำเนินการสำเร็จ',
-          }
-        );
+        this.toast.success(this.mode === 'create' ? 'บันทึกบทละครสำเร็จ' : 'แก้ไขบทละครสำเร็จ', {
+          title: 'ดำเนินการสำเร็จ',
+        });
         this.isSubmitting = false;
         this.navigateToList();
       },
       error: () => {
-        this.toast.error('เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง', {
-          title: 'บันทึกไม่สำเร็จ',
-        });
+        this.toast.error('เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง', { title: 'บันทึกไม่สำเร็จ' });
         this.isSubmitting = false;
       },
     });

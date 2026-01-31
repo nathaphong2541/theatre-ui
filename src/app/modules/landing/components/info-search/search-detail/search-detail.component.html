@@ -3,140 +3,161 @@
     <!-- Hero -->
 
 
-    <div class="relative mx-auto max-w-6xl px-4 sm:px-6">
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6">
         <!-- Back button -->
-        <button type="button" (click)="goBack()" class="absolute left-4 top-4 sm:left-6 sm:top-6 z-20 inline-flex items-center gap-2
-        rounded-xl border border-emerald-500/25 bg-slate-950/90 px-3.5 py-2 text-xs sm:text-sm text-white/90
-        hover:-translate-y-0.5 hover:border-white/20 transition">
+        <button type="button" (click)="goBack()" class="absolute left-4 top-4 sm:left-6 sm:top-6 z-30 inline-flex items-center gap-2
+           rounded-xl border border-emerald-500/25 bg-slate-950/90 px-3.5 py-2 text-xs sm:text-sm text-white/90
+           hover:-translate-y-0.5 hover:border-white/20 transition">
             <span class="text-base leading-none">←</span>
-            <span class="whitespace-nowrap">กลับไปหน้า{{ backSrc === 'skills' ? 'เลือกทักษะ' : 'ค้นหา' }}</span>
+            <span class="whitespace-nowrap">
+                <span i18n="@@profile_back_prefix">กลับไปหน้า</span>
+                <ng-container *ngIf="backSrc === 'skills'" i18n="@@profile_back_skills">เลือกทักษะ</ng-container>
+                <ng-container *ngIf="backSrc !== 'skills'" i18n="@@profile_back_search">ค้นหา</ng-container>
+            </span>
         </button>
 
-        <div class="relative flex flex-col items-center text-center pt-16 sm:pt-20 lg:pt-24 pb-10 sm:pb-12">
-            <!-- Avatar -->
-            <div class="relative z-10 mb-6">
-                <span class="absolute -inset-4 rounded-full blur-2xl bg-[rgba(12,88,92,0.35)]"></span>
-                <span class="absolute -inset-2 rounded-full blur-xl bg-[rgba(9,76,79,0.25)]"></span>
-                <span class="absolute -inset-[3px] rounded-full bg-black/55 ring-1 ring-white/10"></span>
+        <!-- Single frame card -->
+        <div class="relative pt-20 sm:pt-24 lg:pt-28 pb-10">
+            <!-- gradient border wrapper -->
+            <div class="relative rounded-3xl p-[1px] bg-gradient-to-br from-emerald-400/30 via-cyan-400/10 to-white/10">
+                <div class="relative rounded-3xl bg-slate-950/85 ring-1 ring-white/10 overflow-hidden">
+                    <!-- subtle background glow -->
+                    <div class="pointer-events-none absolute -top-24 left-1/2 h-64 w-[32rem] -translate-x-1/2 rounded-full
+                    bg-[rgba(12,88,92,0.28)] blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-24 left-1/2 h-64 w-[28rem] -translate-x-1/2 rounded-full
+                    bg-[rgba(9,76,79,0.22)] blur-3xl"></div>
 
-                <img [src]="avatar()" alt="avatar" class="relative h-28 w-28 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full object-cover
-            border-[3px] border-[rgba(12,88,92,0.85)]
-            shadow-[0_22px_65px_rgba(0,0,0,0.9)]
-            ring-1 ring-[rgba(12,88,92,0.35)]" />
-            </div>
+                    <div class="relative px-5 sm:px-8 lg:px-10 pt-10 sm:pt-12 lg:pt-14 pb-8 sm:pb-10">
+                        <!-- Header row: Avatar + name -->
+                        <div class="flex flex-col items-center text-center gap-5">
+                            <!-- Avatar (still inside same card) -->
+                            <div class="relative">
+                                <span class="absolute -inset-4 rounded-full blur-2xl bg-[rgba(12,88,92,0.35)]"></span>
+                                <span class="absolute -inset-2 rounded-full blur-xl bg-[rgba(9,76,79,0.25)]"></span>
+                                <span
+                                    class="absolute -inset-[3px] rounded-full bg-black/55 ring-1 ring-white/10"></span>
 
-            <!-- Header card -->
-            <div class="relative z-10 w-full max-w-3xl rounded-2xl
-          px-6 sm:px-8 py-6">
-                <!-- subtle gradient border glow -->
+                                <img [src]="avatar()" alt="avatar" class="relative h-28 w-28 sm:h-32 sm:w-32 lg:h-36 lg:w-36 rounded-full object-cover
+                       border-[3px] border-[rgba(12,88,92,0.85)]
+                       shadow-[0_22px_65px_rgba(0,0,0,0.9)]
+                       ring-1 ring-[rgba(12,88,92,0.35)]" />
+                            </div>
 
-                <h1 class="relative text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
-                    {{ fullName() }}
-                </h1>
+                            <!-- Title + subtitle -->
+                            <div class="max-w-3xl">
+                                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
+                                    {{ fullName() }}
+                                </h1>
 
-                <p class="relative mt-2 text-sm sm:text-base text-white/75">
-                    {{ profile?.title || '—' }}
-                    <span class="mx-2 text-white/45">•</span>
-                    {{ locationText() }}
-                </p>
+                                <p class="mt-2 text-sm sm:text-base text-white/75">
+                                    {{ profile?.title || '—' }}
+                                    <span class="mx-2 text-white/45">•</span>
+                                    {{ locationText() }}
+                                </p>
 
-                <!-- Top tags -->
-                <div class="relative mt-4 flex flex-wrap justify-center gap-2 text-[11px] sm:text-xs">
-                    <span *ngIf="profile?.multiLang" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
-              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-[rgba(12,88,92,0.55)]">
-                        <span
-                            class="h-1.5 w-1.5 rounded-full bg-[rgba(12,88,92,0.95)] shadow-[0_0_12px_rgba(12,88,92,0.9)]"></span>
-                        Multi-language
-                    </span>
+                                <!-- Top tags -->
+                                <div class="mt-4 flex flex-wrap justify-center gap-2 text-[11px] sm:text-xs">
+                                    <span *ngIf="profile?.multiLang" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+                         border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-[rgba(12,88,92,0.55)]">
+                                        <span
+                                            class="h-1.5 w-1.5 rounded-full bg-[rgba(12,88,92,0.95)] shadow-[0_0_12px_rgba(12,88,92,0.9)]"></span>
+                                        Multi-language
+                                    </span>
 
-                    <span *ngIf="profile?.travel" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
-              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
-                        ✈ เดินทางได้
-                    </span>
+                                    <span *ngIf="profile?.travel" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+                         border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
+                                        ✈ เดินทางได้
+                                    </span>
 
-                    <span *ngIf="profile?.tour" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
-              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
-                        🎭 พร้อมทัวร์
-                    </span>
+                                    <span *ngIf="profile?.tour" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+                         border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
+                                        🎭 พร้อมทัวร์
+                                    </span>
 
-                    <span *ngIf="profile?.profileIsCompany" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
-              border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
-                        🏢 Company Profile
-                    </span>
-                </div>
+                                    <span *ngIf="profile?.profileIsCompany" class="inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium
+                         border-emerald-500/25 bg-slate-950/90 text-white ring-1 ring-white/10">
+                                        🏢 Company Profile
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
-                <!-- Quick stats -->
-                <div class="relative mt-6 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div
-                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left
-              
-              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
-                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Orders</div>
-                        <div class="mt-1 flex items-baseline gap-2">
-                            <div class="text-2xl font-semibold">{{ getStat('orders') }}</div>
-                            <span *ngIf="getStat('orders') > 0" class="rounded-full px-2 py-0.5 text-[10px] font-semibold text-white
-                  bg-[rgba(12,88,92,0.20)] ring-1 ring-[rgba(12,88,92,0.45)]">
-                                Active
-                            </span>
+                        <!-- Divider -->
+                        <div
+                            class="mt-7 sm:mt-8 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent">
+                        </div>
+
+                        <!-- Quick stats -->
+                        <div class="mt-6 grid w-full grid-cols-1 gap-3 sm:grid-cols-3">
+                            <div class="rounded-2xl border border-emerald-500/20 bg-slate-950/70 p-4 text-left
+                     transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)]
+                     hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                                <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Orders</div>
+                                <div class="mt-1 flex items-baseline gap-2">
+                                    <div class="text-2xl font-semibold">{{ getStat('orders') }}</div>
+                                    <span *ngIf="getStat('orders') > 0" class="rounded-full px-2 py-0.5 text-[10px] font-semibold text-white
+                         bg-[rgba(12,88,92,0.20)] ring-1 ring-[rgba(12,88,92,0.45)]">
+                                        Active
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl border border-emerald-500/20 bg-slate-950/70 p-4 text-left
+                     transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)]
+                     hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                                <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Rating</div>
+                                <div class="mt-1 flex items-center gap-2">
+                                    <div class="text-2xl font-semibold">{{ getStat('rating') || '—' }}</div>
+                                    <svg class="h-5 w-5 text-white/70" viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21 12 17.27Z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl border border-emerald-500/20 bg-slate-950/70 p-4 text-left
+                     transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)]
+                     hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
+                                <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Since</div>
+                                <div class="mt-1 text-2xl font-semibold">
+                                    {{ getStat('startedYear') || (profile?.createdAt?.slice(0, 4) || '—') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top actions -->
+                        <div class="mt-6 flex flex-wrap justify-center gap-2">
+                            <a *ngIf="profile?.email" [href]="'mailto:'+profile?.email" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
+                     border border-emerald-500/20 bg-slate-950/70 text-white
+                     hover:-translate-y-0.5 transition">
+                                <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" />
+                                </svg>
+                                Email
+                            </a>
+
+                            <a *ngIf="profile?.phone" [href]="'tel:'+profile?.phone" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-white
+                     border border-emerald-500/20 bg-slate-950/70
+                     hover:-translate-y-0.5 transition">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 7a1 1 0 0 1 1-1h2.49a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.24 1.01l-2.2 2.21Z" />
+                                </svg>
+                                Call
+                            </a>
+
+                            <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
+                     border border-emerald-500/20 bg-slate-950/70 text-white
+                     hover:-translate-y-0.5 transition">
+                                <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3Z" />
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
+                                </svg>
+                                Website
+                            </a>
                         </div>
                     </div>
-
-                    <div
-                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left 
-              
-              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
-                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Rating</div>
-                        <div class="mt-1 flex items-center gap-2">
-                            <div class="text-2xl font-semibold">{{ getStat('rating') || '—' }}</div>
-                            <svg class="h-5 w-5 text-white/70" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21 12 17.27Z" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <div
-                        class="rounded-2xl border border-emerald-500/25 bg-slate-950/90 p-4 text-left 
-              
-              transition hover:-translate-y-0.5 hover:border-[rgba(12,88,92,0.45)] hover:shadow-[0_24px_75px_rgba(12,88,92,0.18)]">
-                        <div class="text-[11px] uppercase tracking-[0.15em] text-white/55">Since</div>
-                        <div class="mt-1 text-2xl font-semibold">
-                            {{ getStat('startedYear') || (profile?.createdAt?.slice(0, 4) || '—') }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Top actions -->
-                <div class="relative mt-5 flex flex-wrap justify-center gap-2">
-                    <a *ngIf="profile?.email" [href]="'mailto:'+profile?.email" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
-              border  border-emerald-500/25 bg-slate-950/90 text-white 
-               hover:-translate-y-0.5 transition">
-                        <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z" />
-                        </svg>
-                        Email
-                    </a>
-
-                    <a *ngIf="profile?.phone" [href]="'tel:'+profile?.phone" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold text-white
-              border-emerald-500/25 bg-slate-950/90
-              hover:-translate-y-0.5 transition">
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.36 11.36 0 0 0 3.56.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 7a1 1 0 0 1 1-1h2.49a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.56 1 1 0 0 1-.24 1.01l-2.2 2.21Z" />
-                        </svg>
-                        Call
-                    </a>
-
-                    <a *ngIf="profile?.website" [href]="profile?.website" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium
-              border border-emerald-500/25 bg-slate-950/90 text-white backdrop-blur-md
-              hover:-translate-y-0.5 transition">
-                        <svg class="h-4 w-4 opacity-90" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42L17.59 5H14V3Z" />
-                            <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
-                        </svg>
-                        Website
-                    </a>
                 </div>
             </div>
         </div>
