@@ -223,7 +223,8 @@
                     <div *ngIf="resumeIsImage()" class="relative rounded-xl overflow-hidden ring-1 ring-white/10 mb-3">
                         <img [src]="resumeUrlAbs()!" class="w-full max-h-60 object-cover" alt="Resume preview" />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent
-              opacity-0 hover:opacity-100 transition flex items-end">
+         opacity-0 hover:opacity-100 transition flex items-end
+         pointer-events-none hover:pointer-events-auto">
                             <div class="w-full flex justify-between items-center px-3 py-2 text-xs text-white">
                                 <span class="font-medium truncate" i18n="@@profile_resume_preview_label">Preview</span>
                                 <div class="flex gap-2">
@@ -247,24 +248,41 @@
                     <!-- ถ้าเป็น pdf หรือไฟล์อื่น -->
                     <div *ngIf="!resumeIsImage()"
                         class="rounded-xl border border-dashed border-white/20 bg-black/30 p-3 mb-3">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <div
-                                class="h-8 w-8 rounded-lg bg-[#8aab06]/15 flex items-center justify-center ring-1 ring-[#8aab06]/40">
-                                <svg-icon
-                                    [src]="resumeIsPdf() ? 'assets/icons/heroicons/outline/document-text.svg' : 'assets/icons/heroicons/outline/document.svg'"
-                                    [svgClass]="'h-4 w-4 text-[#cde07f]'"></svg-icon>
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div
+                                    class="h-8 w-8 rounded-lg bg-[#8aab06]/15 flex items-center justify-center ring-1 ring-[#8aab06]/40">
+                                    <svg-icon
+                                        [src]="resumeIsPdf() ? 'assets/icons/heroicons/outline/document-text.svg' : 'assets/icons/heroicons/outline/document.svg'"
+                                        [svgClass]="'h-4 w-4 text-[#cde07f]'"></svg-icon>
+                                </div>
+
+                                <div class="min-w-0">
+                                    <div class="text-xs font-medium truncate">
+                                        {{ getFileName(resumeUrlAbs()!) }}
+                                    </div>
+                                    <div class="text-[11px] text-white/50">
+                                        <span *ngIf="resumeIsPdf(); else otherDoc">PDF document</span>
+                                        <ng-template #otherDoc>Document file</ng-template>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="min-w-0">
-                                <div class="text-xs font-medium truncate">
-                                    {{ getFileName(resumeUrlAbs()!) }}
-                                </div>
-                                <div class="text-[11px] text-white/50">
-                                    <span *ngIf="resumeIsPdf(); else otherDoc" i18n="@@profile_pdf_document">PDF
-                                        document</span>
-                                    <ng-template #otherDoc>
-                                        <span i18n="@@profile_document_file">Document file</span>
-                                    </ng-template>
-                                </div>
+
+                            <!-- ✅ เพิ่มปุ่ม -->
+                            <div class="flex gap-2 shrink-0">
+                                <a [href]="resumeUrlAbs()!" target="_blank" rel="noopener"
+                                    class="inline-flex items-center gap-1 rounded-lg bg-white/15 px-2 py-1 hover:bg-white/25 text-xs text-white">
+                                    <svg-icon src="assets/icons/heroicons/outline/eye.svg"
+                                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                    <span>View</span>
+                                </a>
+
+                                <a [href]="resumeUrlAbs()!" download
+                                    class="inline-flex items-center gap-1 rounded-lg bg-[#8aab06]/80 px-2 py-1 text-[#111827] text-[11px] font-semibold hover:bg-[#a9c739]">
+                                    <svg-icon src="assets/icons/heroicons/outline/arrow-down-tray.svg"
+                                        [svgClass]="'h-3.5 w-3.5'"></svg-icon>
+                                    <span>Download</span>
+                                </a>
                             </div>
                         </div>
                     </div>

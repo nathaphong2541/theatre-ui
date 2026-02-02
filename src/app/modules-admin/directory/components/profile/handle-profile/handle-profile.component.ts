@@ -7,7 +7,7 @@ import { ToastService } from 'src/app/shared/components/toast/toast.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { PubilcService } from 'src/app/shared/service/public/pubilc.service';
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin, of, switchMap, tap } from 'rxjs';
 import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -1161,20 +1161,7 @@ export class HandleProfileComponent implements OnInit {
     if (!this.validateBeforeSave()) return;
     this.syncAllSetsToForm();
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.toast.warning($localize`:@@profile_toast_invalid:กรุณากรอกข้อมูลให้ครบถ้วน`);
-      return;
-    }
-
     const base = this.form.getRawValue();
-
-    const langs = this.form.controls.multiLang.value
-      ? this.additionalLanguagesFA.controls
-        .map(c => (c.value || '').trim())
-        .filter(Boolean)
-      : [];
-
     const payload: ProfilePayload = {
       ...(this.currentProfile && !this.isNewProfile
         ? { id: this.currentProfile.id, userId: this.currentProfile.userId }
@@ -1194,22 +1181,21 @@ export class HandleProfileComponent implements OnInit {
       instagram: base.instagram || '',
       twitter: base.twitter || '',
       multiLang: !!base.multiLang,
-      additionalLanguages: langs,
+      additionalLanguages: this.form.controls.multiLang.value
+        ? this.additionalLanguagesFA.controls.map(c => (c.value || '').trim()).filter(Boolean)
+        : [],
       travel: base.travel ?? false,
       tour: base.tour ?? false,
       about: base.about || '',
       education: base.education || '',
       video1: base.video1 || '',
       video2: base.video2 || '',
-
-      // ✅ ใช้ค่าจาก Set เป็นหลัก (แน่นอนกว่า form)
       workLocations: Array.from(this.selectedWorkLocations),
       unions: Array.from(this.selectedUnions),
       experience: Array.from(this.selectedExp),
       partners: Array.from(this.selectedPartners),
       genders: Array.from(this.selectedGenders),
       races: Array.from(this.selectedRaces),
-
       workLocationsOtherText: (base.workLocationsOtherText || '').trim() || undefined,
       racialIdentityOtherText: (base.racialIdentityOtherText || '').trim() || undefined,
       genderSelfDescribeText: (base.genderSelfDescribeText || '').trim() || undefined,
@@ -1218,56 +1204,62 @@ export class HandleProfileComponent implements OnInit {
       unionOtherText: (base.unionOtherText || '').trim() || undefined,
       unionStudentAcademicText: (base.unionStudentAcademicText || '').trim() || undefined,
       partnerDetailById: base.partnerDetailById ?? {},
-
       additionals: Array.from(this.selectedAdds),
       credits: this.credits,
     };
 
-    const uploadFile = this.avatarFile;
-    const isMultipart = !!uploadFile;
-
-    const req$ = this.isNewProfile
-      ? (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload))
-      : (this.currentProfile
-        ? (isMultipart ? this.profileService.updateProfileMultipart(payload, uploadFile!) : this.profileService.updateProfile(payload))
-        : (isMultipart ? this.profileService.saveProfileMultipart(payload, uploadFile!) : this.profileService.saveProfile(payload)));
-
     this.isSaving = true;
 
-    req$.subscribe({
-      next: (res: any) => {
-        this.toast.success(
-          $localize`:@@profile_toast_save_success_msg:บันทึกข้อมูลสำเร็จ`,
-          {
+    const save$ = this.isNewProfile
+      ? this.profileService.saveProfile(payload)     // ✅ JSON ปกติ
+      : this.profileService.updateProfile(payload);  // ✅ JSON ปกติ
+
+    save$
+      .pipe(
+        switchMap((res: any) => {
+          // อัปเดตสถานะ profile หลัง save
+          if (res?.id) this.isNewProfile = false;
+
+          // ✅ สร้างรายการ upload ที่ต้องทำต่อ (ถ้ามี)
+          const uploads: any[] = [];
+
+          if (this.avatarFile) {
+            uploads.push(this.profileService.uploadAvatar(this.avatarFile));
+          }
+
+          if (this.resumeFile) {
+            uploads.push(this.profileService.uploadResume(this.resumeFile));
+          }
+
+          const perfFiles = this.images.filter((f): f is File => !!f);
+          if (perfFiles.length) {
+            uploads.push(this.profileService.uploadPerformances(perfFiles));
+          }
+
+          // ถ้าไม่มีไฟล์อะไรเลย ก็จบ
+          return uploads.length ? forkJoin(uploads) : of(null);
+        }),
+        tap(() => {
+          this.toast.success($localize`:@@profile_toast_save_success_msg:บันทึกข้อมูลสำเร็จ`, {
             title: $localize`:@@profile_toast_save_success_title:สำเร็จ`,
             duration: 3000,
-          },
-        );
-        // ✅ ถ้าต้องการ: อัปเดต currentProfile (กันหน้าเดิมค้าง)
-        if (res?.id) {
-          this.isNewProfile = false;
-        }
-
-        // ✅ กลับไปหน้า list/ดูโปรไฟล์
-        this.router.navigate(['en/directory/profile']);
-      },
-      error: (err) => {
-        // ✅ log ไว้ช่วย debug
-        console.error('save profile error', err);
-
-        const msg =
-          err?.error?.message ||
-          err?.message ||
-          $localize`:@@profile_toast_save_error_default_msg:เกิดข้อผิดพลาดในการบันทึกข้อมูล`;
-
-        this.toast.error(msg, {
-          title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด`,
-        });
-      },
-      complete: () => {
-        this.isSaving = false;
-      }
-    });
+          });
+        }),
+        finalize(() => (this.isSaving = false))
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['en/directory/profile']);
+        },
+        error: (err) => {
+          console.error('save profile error', err);
+          const msg =
+            err?.error?.message ||
+            err?.message ||
+            $localize`:@@profile_toast_save_error_default_msg:เกิดข้อผิดพลาดในการบันทึกข้อมูล`;
+          this.toast.error(msg, { title: $localize`:@@profile_toast_save_error_title:เกิดข้อผิดพลาด` });
+        },
+      });
   }
 
   private syncAllSetsToForm() {
