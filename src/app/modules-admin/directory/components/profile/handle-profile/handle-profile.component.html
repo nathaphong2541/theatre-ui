@@ -197,22 +197,79 @@
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Profession
                             </h2>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-                            <div class="md:col-span-2">
-                                <div class="relative">
-                                    <span
-                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400">☆</span>
-                                    <input type="text"
-                                        class="w-full rounded-xl  border border-white/10 pl-10 pr-14 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="programmer" [formControl]="form.controls.title" maxlength="50" />
-                                    <span class="absolute right-3 top-2 text-[11px] text-gray-500">
-                                        {{ (form.controls.title.value || '').length }}/50
-                                    </span>
+
+                        <div class="relative" data-ddwrap="professions">
+                            <button type="button"
+                                class="w-full rounded-xl border border-white/10 px-3.5 py-2.5 text-left hover:border-white/20 focus:outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]"
+                                (click)="toggleDd($event,'professions')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            {{ labelsFromSet(selectedProfession, professions) || 'Select
+                                            profession(s)...' }}
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">{{ selectedProfession.size }} selected
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Title/Trade/Profession</p>
+                            </button>
+
+                            <div *ngIf="ddOpen['professions']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." [(ngModel)]="ddSearch['professions']"
+                                        (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(professions, ddSearch['professions'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedProfession.has(it.value)"
+                                            (change)="toggleProfession(it.value)" />
+
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedProfession); form.controls.title.setValue([], {emitEvent:false}); $event.stopPropagation()">
+                                        Clear
+                                    </button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['professions']=false; $event.stopPropagation()">
+                                        Done
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        <!-- ✅ Show when selected Other -->
+                        <div *ngIf="selectedProfession.has(999)" class="mt-3">
+                            <label class="block text-xs font-semibold text-gray-300 mb-1">
+                                Please specify
+                            </label>
+
+                            <input type="text" class="w-full rounded-xl border border-white/10 bg-[#101318] px-3.5 py-2.5 text-sm text-gray-100 outline-none
+           focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]"
+                                placeholder="Type your profession..." [formControl]="form.controls.titleOtherText" />
+
+                            <p *ngIf="form.controls.titleOtherText.touched && form.controls.titleOtherText.invalid"
+                                class="mt-1 text-xs text-red-400">
+                                Required
+                            </p>
+                        </div>
+
                     </section>
+
 
                     <section id="credits"
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">

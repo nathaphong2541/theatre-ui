@@ -132,4 +132,12 @@ export class PubilcService {
     return this.http.get<MasterItem>(`${this.api}/gender-identities/${id}`);
   }
 
+  /** --------------------- Title Identity --------------------- */
+  getProfessions(): Observable<any> {
+    return this.http.get<MasterResponse>(`${this.api}/professions`);
+  }
+  getProfessionById(id: number): Observable<MasterItem> {
+    return this.http.get<MasterItem>(`${this.api}/professions/${id}`);
+  }
+
 }

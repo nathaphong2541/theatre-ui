@@ -37,7 +37,7 @@ export type ProfileDto = {
   firstName: string;
   lastName: string;
   pronouns: string;
-  title: string;
+  title: number[];
   location: string;
   email: string;
   phone: string;
@@ -78,7 +78,9 @@ export type ProfilePayload = {
   firstName: string;
   lastName: string;
   pronouns?: string;
-  title: string;
+  title: number[];
+  titleOtherText?: string;
+  wtitleOtherText?: string;
   location?: string;
   email?: string;
   phone?: string;
@@ -124,7 +126,7 @@ export type ProfilePayload = {
 };
 
 
-type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races';
+type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races' | 'professions' | 'additional';
 
 @Component({
   selector: 'app-handle-profile',
@@ -161,6 +163,7 @@ export class HandleProfileComponent implements OnInit {
   experienceLevels: Labeled[] = [];
   partnerDirectories: Labeled[] = [];
   genders: Labeled[] = [];
+  professions: Labeled[] = [];
   races: Labeled[] = [];
   additionals: Labeled[] = [
     { label: $localize`:@@profile_additional_disabled:Disabled`, value: 1 },
@@ -281,6 +284,7 @@ export class HandleProfileComponent implements OnInit {
       partnerDirectories: this.publicService.getPartnerIdentity(),
       races: this.publicService.getRacialIdentity(),
       genders: this.publicService.getGenderIdentity(),
+      professions: this.publicService.getProfessions(),
     }).subscribe({
       next: (res) => {
         this.workLocations = res.workLocations.items.map(
@@ -321,6 +325,13 @@ export class HandleProfileComponent implements OnInit {
         );
 
         this.genders = res.genders.items.map(
+          (x: { id: number; nameTh: string; nameEn: string }) => ({
+            label: this.pickLabel(x),
+            value: x.id,
+          })
+        );
+
+        this.professions = res.professions.items.map(
           (x: { id: number; nameTh: string; nameEn: string }) => ({
             label: this.pickLabel(x),
             value: x.id,
@@ -376,9 +387,8 @@ export class HandleProfileComponent implements OnInit {
     firstName: new FormControl<string>('', { nonNullable: true }),
     lastName: new FormControl<string>('', { nonNullable: true }),
     pronouns: new FormControl<string>(''),
-    title: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(50)] }),
-    location: new FormControl<string>('', { nonNullable: true, validators: [Validators.maxLength(25)] }),
-    email: new FormControl<string>('', { nonNullable: true, validators: [Validators.email] }),
+    location: new FormControl<string>('', { nonNullable: true }),
+    email: new FormControl<string>('', { nonNullable: true }),
     phone: new FormControl<string>(''),
     website: new FormControl<string>(''),
     multiLang: new FormControl(false),
@@ -394,12 +404,14 @@ export class HandleProfileComponent implements OnInit {
     twitter: new FormControl<string>(''),
     tiktok: new FormControl<string>(''),
     linkedin: new FormControl<string>(''),
+    title: new FormControl<number[]>([], { nonNullable: true }),
     workLocations: new FormControl<number[]>([], { nonNullable: true }),
     unions: new FormControl<number[]>([], { nonNullable: true }),
     experience: new FormControl<number[]>([], { nonNullable: true }),
     partners: new FormControl<number[]>([], { nonNullable: true }),
     genders: new FormControl<number[]>([], { nonNullable: true }),
     races: new FormControl<number[]>([], { nonNullable: true }),
+    titleOtherText: new FormControl<string>(''),
     workLocationsOtherText: new FormControl<string>(''),
     racialIdentityOtherText: new FormControl<string>(''),
     genderSelfDescribeText: new FormControl<string>(''),
@@ -411,6 +423,7 @@ export class HandleProfileComponent implements OnInit {
   });
 
   // selections เป็น number ให้ตรงกับ API
+  selectedProfession = new Set<number>();
   selectedWorkLocations = new Set<number>();
   selectedUnions = new Set<number>();
   selectedExp = new Set<number>();
@@ -577,7 +590,7 @@ export class HandleProfileComponent implements OnInit {
       firstName: p.firstName,
       lastName: p.lastName,
       pronouns: p.pronouns ?? '',
-      title: p.title,
+      title: p.title ?? [],
       location: p.location,
       email: p.email,
       phone: p.phone,
@@ -599,6 +612,7 @@ export class HandleProfileComponent implements OnInit {
       partners: p.partners ?? [],
       genders: p.genders ?? [],
       races: p.races ?? [],
+      titleOtherText: (p as any).titleOtherText ?? '',
       workLocationsOtherText: (p as any).workLocationsOtherText ?? '',
       racialIdentityOtherText: (p as any).racialIdentityOtherText ?? '',
       genderSelfDescribeText: (p as any).genderSelfDescribeText ?? '',
@@ -618,6 +632,7 @@ export class HandleProfileComponent implements OnInit {
       else this.addLanguage(); // เปิด multiLang แต่ไม่มีข้อมูล -> มี 1 ช่อง
     }
 
+    this.selectedProfession = new Set(p.title ?? []);
     this.selectedWorkLocations = new Set(p.workLocations ?? []);
     this.selectedUnions = new Set(p.unions ?? []);
     this.selectedExp = new Set(p.experience ?? []);
@@ -963,6 +978,11 @@ export class HandleProfileComponent implements OnInit {
     );
   }
 
+  toggleProfession(v: number) {
+    this.toggleSet(this.selectedProfession, v);
+    this.form.controls.title.setValue(Array.from(this.selectedProfession), { emitEvent: false });
+  }
+
   toggleWorkLocation(v: number) {
     this.toggleSet(this.selectedWorkLocations, v);
     this.form.controls.workLocations.setValue(Array.from(this.selectedWorkLocations), { emitEvent: false });
@@ -1171,7 +1191,6 @@ export class HandleProfileComponent implements OnInit {
       firstName: base.firstName || '',
       lastName: base.lastName || '',
       pronouns: base.pronouns || '',
-      title: base.title || '',
       location: base.location || '',
       email: base.email || '',
       phone: base.phone || '',
@@ -1190,12 +1209,14 @@ export class HandleProfileComponent implements OnInit {
       education: base.education || '',
       video1: base.video1 || '',
       video2: base.video2 || '',
+      title: Array.from(this.selectedProfession),
       workLocations: Array.from(this.selectedWorkLocations),
       unions: Array.from(this.selectedUnions),
       experience: Array.from(this.selectedExp),
       partners: Array.from(this.selectedPartners),
       genders: Array.from(this.selectedGenders),
       races: Array.from(this.selectedRaces),
+      titleOtherText: (base.titleOtherText || '').trim() || undefined,
       workLocationsOtherText: (base.workLocationsOtherText || '').trim() || undefined,
       racialIdentityOtherText: (base.racialIdentityOtherText || '').trim() || undefined,
       genderSelfDescribeText: (base.genderSelfDescribeText || '').trim() || undefined,
@@ -1263,6 +1284,7 @@ export class HandleProfileComponent implements OnInit {
   }
 
   private syncAllSetsToForm() {
+    this.form.controls.title.setValue(Array.from(this.selectedProfession), { emitEvent: false });
     this.form.controls.workLocations.setValue(Array.from(this.selectedWorkLocations), { emitEvent: false });
     this.form.controls.unions.setValue(Array.from(this.selectedUnions), { emitEvent: false });
     this.form.controls.experience.setValue(Array.from(this.selectedExp), { emitEvent: false });
@@ -1379,6 +1401,8 @@ export class HandleProfileComponent implements OnInit {
     partners: false,
     genders: false,
     races: false,
+    professions: false,
+    additional: false,
   };
 
   ddSearch: Record<DdKey, string> = {
@@ -1388,6 +1412,8 @@ export class HandleProfileComponent implements OnInit {
     partners: '',
     genders: '',
     races: '',
+    professions: '',
+    additional: '',
   };
 
   public toggleDd(e: MouseEvent, key: DdKey) {
@@ -1494,6 +1520,7 @@ export class HandleProfileComponent implements OnInit {
     // ถ้าคลิกนอก dropdown ใด ๆ ให้ปิดทั้งหมด (กันค้าง)
     // (ถ้าคุณอยากให้ปิดเฉพาะอันที่เปิดอยู่ ก็ปรับได้)
     const clickedInsideAnyMainDd =
+      (target as HTMLElement)?.closest?.('[data-ddwrap="professions"]') ||
       (target as HTMLElement)?.closest?.('[data-ddwrap="work"]') ||
       (target as HTMLElement)?.closest?.('[data-ddwrap="unions"]') ||
       (target as HTMLElement)?.closest?.('[data-ddwrap="exp"]') ||
