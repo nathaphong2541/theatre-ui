@@ -206,12 +206,12 @@
 
                         <div class="grid grid-cols-3 gap-3 md:grid-cols-5">
                             <div *ngFor="let url of previewUrls; let i = index"
-                                class="relative overflow-hidden rounded-lg border border-[#3f4d1f] bg-[#05070b]">
-                                <img [src]="url" alt="preview" class="h-24 w-full object-cover" />
+                                class="relative overflow-hidden rounded-lg border border-[#3f4d1f] bg-[#05070b] w-[150px] h-[200px]">
+
+                                <img [src]="url" alt="preview" class="absolute inset-0 w-full h-full object-cover" />
 
                                 <button *ngIf="!isViewMode" type="button" (click)="removeImage(i)"
-                                    class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[10px] text-red-300 hover:bg-red-700/80"
-                                    i18n="@@script_form_image_remove">
+                                    class="absolute right-1 top-1 rounded-full bg-black/70 px-1.5 py-0.5 text-[10px] text-red-300 hover:bg-red-700/80">
                                     ลบ
                                 </button>
                             </div>
@@ -283,11 +283,15 @@
                 </div>
 
                 <!-- cropper -->
-                <div class="rounded-xl border border-[#3f4d1f] bg-black/40 p-3">
+                <!-- cropper -->
+                <div
+                    class="mx-auto w-[400px] h-[520px] overflow-hidden rounded-xl border border-[#3f4d1f] bg-black/30 p-2">
                     <image-cropper *ngIf="cropBase64" [imageBase64]="cropBase64" output="base64"
                         [maintainAspectRatio]="cropAspect !== 0" [aspectRatio]="cropAspect === 0 ? 1 : cropAspect"
-                        [resizeToWidth]="resizeToWidth" format="jpeg" [imageQuality]="85" [autoCrop]="true"
-                        (imageCropped)="onCropped($event)" (loadImageFailed)="onCropLoadFailed()"></image-cropper>
+                        [autoCrop]="true" [onlyScaleDown]="false" [containWithinAspectRatio]="true"
+                        [resizeToWidth]="fixedOutW" [resizeToHeight]="fixedOutH" format="jpeg" [imageQuality]="85"
+                        (imageCropped)="onCropped($event)" (loadImageFailed)="onCropLoadFailed()">
+                    </image-cropper>
                 </div>
 
                 <div class="mt-4 flex items-center justify-end gap-2">

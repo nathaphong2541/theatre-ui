@@ -1,0 +1,15 @@
+.cropper-frame {
+    width: 340px;
+    height: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+/* บังคับให้ตัว cropper เติมเต็มกรอบ */
+.cropper-frame ::ng-deep image-cropper,
+.cropper-frame ::ng-deep .ngx-image-cropper,
+.cropper-frame ::ng-deep .ngx-ic-cropper {
+    width: 100% !important;
+    height: 100% !important;
+}

@@ -304,7 +304,7 @@ html {
 [multiple],
 textarea,
 select {
-  @apply w-full rounded-md border border-border bg-background text-black text-xs placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-hidden focus:ring-primary;
+  @apply w-full rounded-md border border-border bg-white text-black text-xs placeholder-muted-foreground focus:z-10 focus:border-primary focus:outline-hidden focus:ring-primary;
 }
 
 [type='checkbox'],

@@ -25,18 +25,19 @@
                 <div class="relative flex-1 min-w-[220px]">
                     <input type="text" [(ngModel)]="search"
                         class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-[#6F9106]/40 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
-                        placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก" />
+                        placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก"
+                        i18n-placeholder="@@search_scripts_placeholder" />
                     <span i18n="@@search" class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
                         ค้นหา
                     </span>
                 </div>
 
                 <div class="text-xs text-white/60">
-                    <label for="" i18n="@@found_total">พบทั้งหมด</label>
+                    <label i18n="@@found_total">พบทั้งหมด</label>
                     <span class="text-[#d9f99d] font-semibold">
                         {{ filteredScripts.length }}
                     </span>
-                    <label for="" i18n="@@scripts">เรื่อง</label>
+                    <label i18n="@@scripts">เรื่อง</label>
                 </div>
             </div>
 
@@ -46,7 +47,7 @@
 
                 <!-- ปุ่ม "ทั้งหมด" -->
                 <button type="button" class="rounded-full border px-3 py-0.5 text-[11px]" [ngClass]="{
-            'border-[#6F9106] bg-[#6F9106]/20 text:white': !selectedTag,
+            'border-[#6F9106] bg-[#6F9106]/20 text-white': !selectedTag,
             'border-[#3f4d1f] text-white/70': selectedTag
           }" (click)="clearTag()" i18n="@@all">
                     ทั้งหมด
@@ -94,8 +95,10 @@
                 <div class="relative h-40 w-full bg-[#0f1a0b]">
                     <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
                         class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition" />
+
                     <div *ngIf="!getCover(s)"
-                        class="flex h-full w-full items-center justify-center text-xs text-white/50">
+                        class="flex h-full w-full items-center justify-center text-xs text-white/50"
+                        i18n="@@no_cover_image">
                         ไม่มีรูปปก
                     </div>
 
@@ -112,9 +115,15 @@
                         {{ s.title }}
                     </h2>
 
-                    <p class="mb-2 line-clamp-3 text-xs text-white/70">
-                        {{ s.description || 'ยังไม่มีคำอธิบายสำหรับบทละครนี้' }}
-                    </p>
+                    <!-- ✅ i18n fallback description แบบไม่ใช้ translate pipe -->
+                    <ng-container *ngIf="s.description?.trim()?.length; else noDesc">
+                        <p class="mb-2 line-clamp-3 text-xs text-white/70">{{ s.description }}</p>
+                    </ng-container>
+                    <ng-template #noDesc>
+                        <p class="mb-2 line-clamp-3 text-xs text-white/70" i18n="@@no_script_description">
+                            ยังไม่มีคำอธิบายสำหรับบทละครนี้
+                        </p>
+                    </ng-template>
 
                     <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
                         <span *ngFor="let tag of getTagList(s)"
@@ -137,7 +146,6 @@
                             </button>
                         </div>
 
-                        <!-- ผู้สร้าง: ด้านล่างสุดของการ์ด -->
                         <p *ngIf="s.createdByName" class="text-[10px] mt-4 text-white/40 text-right">
                             <label i18n="@@by">โดย</label> {{ s.createdByName }}
                         </p>

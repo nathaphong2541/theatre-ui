@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -18,9 +18,22 @@ type Mode = 'create' | 'edit' | 'view';
   imports: [CommonModule, ReactiveFormsModule, FormsModule, ImageCropperComponent],
   templateUrl: './handle-drama.component.html',
 })
-export class HandleDramaComponent implements OnInit {
+export class HandleDramaComponent implements OnInit, OnDestroy {
   form: FormGroup;
   isSubmitting = false;
+
+  // ====== UI crop box (บนจอ) ======
+  cropperBoxW = 320;
+  cropperBoxH = 426; // 3:4
+
+  // ====== output size (ไฟล์จริงหลังครอป) ======
+  fixedOutW = 900;
+  fixedOutH = 1200; // 3:4
+
+  // ถ้าคุณใช้ dropdown cropAspect เดิม
+  get isFreeAspect() {
+    return this.cropAspect === 0;
+  }
 
   // โหมด + id
   mode: Mode = 'create';
@@ -118,6 +131,12 @@ export class HandleDramaComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    // revoke blob urls
+    if (this.pdfPreviewSrc?.startsWith('blob:')) URL.revokeObjectURL(this.pdfPreviewSrc);
+    this.previewUrls.forEach(u => { if (u?.startsWith?.('blob:')) URL.revokeObjectURL(u); });
+  }
+
   private loadScript(id: number) {
     this.dramaService.getDramaById(id).subscribe({
       next: (res: Drama) => {
@@ -152,13 +171,15 @@ export class HandleDramaComponent implements OnInit {
         if (this.isViewMode) this.form.disable();
       },
       error: () => {
-        this.toast.error('ไม่พบข้อมูลบทละครที่ต้องการ', { title: 'เกิดข้อผิดพลาด' });
+        this.toast.error(
+          $localize`:@@drama_toast_not_found:Requested script was not found.`,
+          { title: $localize`:@@drama_toast_not_found_title:Error` }
+        );
         this.navigateToList();
       },
     });
   }
 
-  // ---------- helper lang ----------
   private getLangPrefix(): string | null {
     const segments = this.router.url.split('/').filter(Boolean);
     const supported = ['th', 'en'];
@@ -180,11 +201,14 @@ export class HandleDramaComponent implements OnInit {
 
     let selected = Array.from(input.files);
 
-    // กันไฟล์ไม่ใช่รูป (บางที user เลือกผิด)
+    // กันไฟล์ไม่ใช่รูป
     selected = selected.filter(f => f.type.startsWith('image/'));
 
     if (!selected.length) {
-      this.toast.warning('กรุณาเลือกไฟล์รูปภาพเท่านั้น', { title: 'ชนิดไฟล์ไม่ถูกต้อง' });
+      this.toast.warning(
+        $localize`:@@drama_toast_only_images:Please select image files only.`,
+        { title: $localize`:@@drama_toast_invalid_file_type_title:Invalid file type` }
+      );
       input.value = '';
       return;
     }
@@ -192,21 +216,24 @@ export class HandleDramaComponent implements OnInit {
     // จำกัดจำนวนรวม
     const remaining = this.maxImages - this.files.length;
     if (remaining <= 0) {
-      this.toast.warning(`เลือกได้สูงสุด ${this.maxImages} รูปภาพ`, { title: 'จำนวนรูปภาพเกินกำหนด' });
+      this.toast.warning(
+        $localize`:@@drama_toast_images_limit:You can select up to ${this.maxImages}:max: images.`,
+        { title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded` }
+      );
       input.value = '';
       return;
     }
 
     if (selected.length > remaining) {
-      this.toast.warning(`เหลือที่ว่างอีก ${remaining} รูป (รวมสูงสุด ${this.maxImages})`, {
-        title: 'จำนวนรูปภาพเกินกำหนด',
-      });
+      this.toast.warning(
+        $localize`:@@drama_toast_images_remaining:You can add ${remaining}:remaining: more image(s) (max ${this.maxImages}:max:).`,
+        { title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded` }
+      );
       selected = selected.slice(0, remaining);
     }
 
     // ต่อคิว (ไม่ทับของเดิม)
     this.cropQueue.push(...selected);
-
     input.value = '';
 
     // ถ้ายังไม่ได้เปิด crop อยู่ ให้เริ่มตัวแรก
@@ -217,6 +244,9 @@ export class HandleDramaComponent implements OnInit {
 
   removeImage(index: number) {
     if (this.isViewMode) return;
+    const prev = this.previewUrls[index];
+    if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+
     this.files.splice(index, 1);
     this.previewUrls.splice(index, 1);
   }
@@ -225,10 +255,10 @@ export class HandleDramaComponent implements OnInit {
     if (this.cropQueue.length === 0) return;
 
     const nextFile = this.cropQueue.shift()!;
-    this.currentCropFile = nextFile;               // ✅ เก็บไฟล์เดิม
+    this.currentCropFile = nextFile;
     this.cropOriginalName = nextFile.name;
 
-    this.croppedBase64 = undefined;                // (ตามที่แก้ type เป็น undefined)
+    this.croppedBase64 = undefined;
     this.cropBase64 = await this.fileToBase64(nextFile);
 
     this.cropOpen = true;
@@ -248,7 +278,10 @@ export class HandleDramaComponent implements OnInit {
   }
 
   onCropLoadFailed() {
-    this.toast.error('โหลดรูปภาพไม่สำเร็จ', { title: 'เกิดข้อผิดพลาด' });
+    this.toast.error(
+      $localize`:@@drama_toast_crop_load_failed:Failed to load image.`,
+      { title: $localize`:@@toast_title_error:Error` }
+    );
     this.closeCrop();
   }
 
@@ -266,7 +299,6 @@ export class HandleDramaComponent implements OnInit {
     if (this.croppedBase64) {
       const safeName = this.cropOriginalName.replace(/\.\w+$/, '');
       const file = this.base64ToFile(this.croppedBase64, `${safeName}.jpg`);
-
       this.files.push(file);
       this.previewUrls.push(this.croppedBase64);
     } else {
@@ -310,7 +342,10 @@ export class HandleDramaComponent implements OnInit {
     const file = input.files[0];
 
     if (file.type !== 'application/pdf') {
-      this.toast.warning('รองรับเฉพาะไฟล์ PDF เท่านั้น', { title: 'ชนิดไฟล์ไม่ถูกต้อง' });
+      this.toast.warning(
+        $localize`:@@drama_toast_pdf_only:Only PDF files are supported.`,
+        { title: $localize`:@@drama_toast_pdf_only_title:Invalid file type` }
+      );
       input.value = '';
       return;
     }
@@ -329,7 +364,13 @@ export class HandleDramaComponent implements OnInit {
 
     input.value = '';
 
-    this.toast.success('เพิ่มไฟล์ PDF สำเร็จ', { title: 'อัปโหลดสำเร็จ', duration: 1500 });
+    this.toast.success(
+      $localize`:@@drama_toast_pdf_added:PDF added successfully.`,
+      {
+        title: $localize`:@@drama_toast_pdf_added_title:Upload successful`,
+        duration: 1500,
+      }
+    );
   }
 
   openPdfFullScreen() {
@@ -349,7 +390,13 @@ export class HandleDramaComponent implements OnInit {
     this.pdfPreviewSrc = null;
     this.pdfFileName = null;
 
-    this.toast.warning('ลบไฟล์ PDF แล้ว', { title: 'ลบสำเร็จ', duration: 1500 });
+    this.toast.warning(
+      $localize`:@@drama_toast_pdf_removed:PDF removed.`,
+      {
+        title: $localize`:@@drama_toast_pdf_removed_title:Deleted`,
+        duration: 1500,
+      }
+    );
   }
 
   // =============== submit ===============
@@ -358,17 +405,29 @@ export class HandleDramaComponent implements OnInit {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน', { title: 'ข้อมูลไม่ครบ' });
+      this.toast.warning(
+        $localize`:@@drama_toast_fill_required:Please complete all required fields.`,
+        {
+          title: $localize`:@@drama_toast_fill_required_title:Incomplete data`,
+          duration: 3000,
+        }
+      );
       return;
     }
 
     if (this.mode === 'create' && !this.pdfFile) {
-      this.toast.warning('จำเป็นต้องอัปโหลดไฟล์ PDF อย่างน้อย 1 ไฟล์', { title: 'ยังไม่ได้เพิ่ม PDF' });
+      this.toast.warning(
+        $localize`:@@drama_toast_missing_pdf_create:You must upload at least 1 PDF file.`,
+        { title: $localize`:@@drama_toast_missing_pdf_create_title:Missing PDF` }
+      );
       return;
     }
 
     if (this.mode === 'edit' && !this.pdfFile && !this.pdfPreviewUrl) {
-      this.toast.warning('บทละครต้องมีไฟล์ PDF อย่างน้อย 1 ไฟล์', { title: 'ยังไม่มีไฟล์ PDF' });
+      this.toast.warning(
+        $localize`:@@drama_toast_missing_pdf_edit:This script must have at least 1 PDF file.`,
+        { title: $localize`:@@drama_toast_missing_pdf_edit_title:Missing PDF` }
+      );
       return;
     }
 
@@ -393,14 +452,20 @@ export class HandleDramaComponent implements OnInit {
 
     request$.subscribe({
       next: () => {
-        this.toast.success(this.mode === 'create' ? 'บันทึกบทละครสำเร็จ' : 'แก้ไขบทละครสำเร็จ', {
-          title: 'ดำเนินการสำเร็จ',
-        });
+        this.toast.success(
+          this.mode === 'create'
+            ? $localize`:@@drama_toast_create_ok:Script saved successfully.`
+            : $localize`:@@drama_toast_update_ok:Script updated successfully.`,
+          { title: $localize`:@@drama_toast_save_ok_title:Completed` }
+        );
         this.isSubmitting = false;
         this.navigateToList();
       },
       error: () => {
-        this.toast.error('เกิดข้อผิดพลาดในการบันทึก กรุณาลองใหม่อีกครั้ง', { title: 'บันทึกไม่สำเร็จ' });
+        this.toast.error(
+          $localize`:@@drama_toast_save_failed:Failed to save. Please try again.`,
+          { title: $localize`:@@drama_toast_save_failed_title:Save failed` }
+        );
         this.isSubmitting = false;
       },
     });

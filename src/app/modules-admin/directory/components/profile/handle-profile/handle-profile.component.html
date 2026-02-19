@@ -10,18 +10,20 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-semibold tracking-tight">Update Profile</h1>
-                    <p class="text-xs text-gray-400">Keep your info fresh so people can find you easily.</p>
+                    <h1 class="text-2xl font-semibold tracking-tight" i18n="@@profile_title">Update Profile</h1>
+                    <p class="text-xs text-gray-400" i18n="@@profile_subtitle">Keep your info fresh so people can find
+                        you easily.</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
                 <button type="button"
                     class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
-                    (click)="cancel()">Cancel</button>
+                    (click)="cancel()" i18n="@@profile_cancel_btn">Cancel</button>
+
                 <button type="button"
                     class="rounded-xl border border-accent-500/40 bg-accent-500/20 px-5 py-2.5 text-accent-200 hover:bg-accent-500/30 transition focus:outline-none focus:ring-2 focus:ring-accent-500/40"
-                    (click)="save()">Save Changes</button>
+                    (click)="save()" i18n="@@profile_save_btn">Save Changes</button>
             </div>
         </div>
     </header>
@@ -42,9 +44,11 @@
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-300/70"></span>Profile Image
+                                <span class="inline-block size-2.5 rounded-full bg-accent-300/70"></span>
+                                <span i18n="@@profile_image_title">Profile Image</span>
                             </h2>
-                            <p class="text-sm text-gray-400">Portrait orientation works best. Max 2MB.</p>
+                            <p class="text-sm text-gray-400" i18n="@@profile_image_hint">Portrait orientation works
+                                best. Max 2MB.</p>
                         </div>
 
                         <!-- ถ้ามี avatarSrc แล้ว แสดงแค่รูป + ปุ่มลบ / delete -->
@@ -55,12 +59,12 @@
                             <div class="mt-3 flex gap-2">
                                 <button type="button"
                                     class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
-                                    (click)="clearLocalAvatar()">
+                                    (click)="clearLocalAvatar()" i18n="@@profile_avatar_remove_local_btn">
                                     Remove (Local)
                                 </button>
                                 <button type="button"
                                     class="rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-1.5 text-xs text-red-200 hover:bg-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-400/30"
-                                    (click)="deleteAvatar()">
+                                    (click)="deleteAvatar()" i18n="@@profile_avatar_delete_server_btn">
                                     Delete from server
                                 </button>
                             </div>
@@ -69,15 +73,15 @@
                         <!-- ถ้าไม่มี avatarSrc: โชว์ placeholder + uploader -->
                         <ng-template #avatarEmpty>
                             <!-- Placeholder -->
-                            <div
-                                class="mb-4 grid place-items-center h-40 rounded-xl border border-white/10 bg-white/[0.02] text-sm text-white/50">
+                            <div class="mb-4 grid place-items-center h-40 rounded-xl border border-white/10 bg-white/[0.02] text-sm text-white/50"
+                                i18n="@@profile_avatar_empty">
                                 No image selected
                             </div>
 
                             <!-- Uploader -->
                             <label
                                 class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
-                                <input type="text" type="file" class="hidden" (change)="onPickAvatar($event)"
+                                <input type="file" class="hidden" (change)="onPickAvatar($event)"
                                     accept="image/jpeg,image/png,image/webp" />
                                 <div class="flex items-center gap-4 p-6 sm:p-8">
                                     <div
@@ -89,8 +93,10 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-base md:text-lg">Drag & drop or click to upload</p>
-                                        <p class="text-xs text-gray-400">JPG, PNG, WEBP up to 2MB</p>
+                                        <p class="text-base md:text-lg" i18n="@@profile_avatar_upload_title">Drag & drop
+                                            or click to upload</p>
+                                        <p class="text-xs text-gray-400" i18n="@@profile_avatar_upload_hint">JPG, PNG,
+                                            WEBP up to 2MB</p>
                                     </div>
                                 </div>
                             </label>
@@ -102,7 +108,8 @@
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6 sticky top-24">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Options
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_options_title">Options</span>
                             </h2>
                         </div>
 
@@ -110,7 +117,7 @@
                             <!-- Private -->
                             <div class="flex items-start gap-4">
                                 <label class="inline-flex items-center select-none">
-                                    <input type="text" type="checkbox" class="peer sr-only"
+                                    <input type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.privateProfile" />
                                     <span
                                         class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
@@ -118,15 +125,29 @@
                                             class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
                                     </span>
                                 </label>
+
                                 <div class="min-w-0">
-                                    <div class="font-medium">Private Profile: {{ form.value.privateProfile ? 'On' :
-                                        'Off' }}</div>
+                                    <div class="font-medium">
+                                        <span i18n="@@profile_private_label_prefix">Private Profile:</span>
+                                        <ng-container *ngIf="form.value.privateProfile; else privateOff">
+                                            <span i18n="@@profile_private_on">On</span>
+                                        </ng-container>
+                                        <ng-template #privateOff>
+                                            <span i18n="@@profile_private_off">Off</span>
+                                        </ng-template>
+                                    </div>
+
                                     <p class="text-sm text-gray-300">
-                                        Your profile is
+                                        <span i18n="@@profile_private_desc_prefix">Your profile is</span>
                                         <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
-                                            {{ form.value.privateProfile ? 'private' : 'public' }}
+                                            <ng-container *ngIf="form.value.privateProfile; else publicText">
+                                                <span i18n="@@profile_private_private">private</span>
+                                            </ng-container>
+                                            <ng-template #publicText>
+                                                <span i18n="@@profile_private_public">public</span>
+                                            </ng-template>
                                         </span>
-                                        and you'll appear in searches.
+                                        <span i18n="@@profile_private_desc_suffix">and you'll appear in searches.</span>
                                     </p>
                                 </div>
                             </div>
@@ -134,7 +155,7 @@
                             <!-- Company -->
                             <div class="flex items-start gap-4">
                                 <label class="inline-flex items-center select-none">
-                                    <input type="text" type="checkbox" class="peer sr-only"
+                                    <input type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.profileIsCompany" />
                                     <span
                                         class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
@@ -142,14 +163,29 @@
                                             class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
                                     </span>
                                 </label>
+
                                 <div class="min-w-0">
-                                    <div class="font-medium">Profile type: {{ form.value.profileIsCompany ? 'Company' :
-                                        'Personal' }}</div>
+                                    <div class="font-medium">
+                                        <span i18n="@@profile_type_label_prefix">Profile type:</span>
+                                        <ng-container *ngIf="form.value.profileIsCompany; else personalType">
+                                            <span i18n="@@profile_type_company">Company</span>
+                                        </ng-container>
+                                        <ng-template #personalType>
+                                            <span i18n="@@profile_type_personal">Personal</span>
+                                        </ng-template>
+                                    </div>
+
                                     <p class="text-sm text-gray-300">
-                                        This is a
+                                        <span i18n="@@profile_type_desc_prefix">This is a</span>
                                         <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
-                                            {{ form.value.profileIsCompany ? 'company' : 'personal' }}
-                                        </span> profile
+                                            <ng-container *ngIf="form.value.profileIsCompany; else personalLower">
+                                                <span i18n="@@profile_type_company_lower">company</span>
+                                            </ng-container>
+                                            <ng-template #personalLower>
+                                                <span i18n="@@profile_type_personal_lower">personal</span>
+                                            </ng-template>
+                                        </span>
+                                        <span i18n="@@profile_type_desc_suffix">profile</span>
                                     </p>
                                 </div>
                             </div>
@@ -164,27 +200,31 @@
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Name
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_name_title">Name</span>
                             </h2>
                         </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <input type="text" placeholder="First name"
+                                <input type="text" placeholder="First name" i18n-placeholder="@@profile_first_name_ph"
                                     class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.firstName" />
-                                <p class="mt-1 text-xs text-gray-400">First name *</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_first_name_hint">First name *</p>
                             </div>
+
                             <div>
-                                <input type="text" placeholder="Last name"
+                                <input type="text" placeholder="Last name" i18n-placeholder="@@profile_last_name_ph"
                                     class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.lastName" />
-                                <p class="mt-1 text-xs text-gray-400">Last name *</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_last_name_hint">Last name *</p>
                             </div>
+
                             <div>
-                                <input type="text" placeholder="Pronouns"
+                                <input type="text" placeholder="Pronouns" i18n-placeholder="@@profile_pronouns_ph"
                                     class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                     [formControl]="form.controls.pronouns" />
-                                <p class="mt-1 text-xs text-gray-400">Pronouns</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_pronouns_hint">Pronouns</p>
                             </div>
                         </div>
                     </section>
@@ -194,7 +234,8 @@
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Profession
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_profession_title">Profession</span>
                             </h2>
                         </div>
 
@@ -205,10 +246,18 @@
                                 <div class="flex items-center justify-between gap-3">
                                     <div class="min-w-0">
                                         <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedProfession, professions) || 'Select
-                                            profession(s)...' }}
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedProfession, professions); else profPlaceholder">
+                                                {{ labelsFromSet(selectedProfession, professions) }}
+                                            </ng-container>
+                                            <ng-template #profPlaceholder>
+                                                <span i18n="@@profile_profession_select_ph">Select
+                                                    profession(s)...</span>
+                                            </ng-template>
                                         </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedProfession.size }} selected
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedProfession.size }}
+                                            <span i18n="@@common_selected">selected</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -221,8 +270,8 @@
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['professions']"
-                                        (click)="$event.stopPropagation()" />
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['professions']" (click)="$event.stopPropagation()" />
                                 </div>
 
                                 <div class="max-h-64 overflow-auto p-2">
@@ -241,72 +290,86 @@
                                 <div class="flex items-center justify-between p-2 border-t border-white/10">
                                     <button type="button"
                                         class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedProfession); form.controls.title.setValue([], {emitEvent:false}); $event.stopPropagation()">
+                                        (click)="clearSet(selectedProfession); form.controls.title.setValue([], {emitEvent:false}); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">
                                         Clear
                                     </button>
                                     <button type="button"
                                         class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['professions']=false; $event.stopPropagation()">
+                                        (click)="ddOpen['professions']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">
                                         Done
                                     </button>
                                 </div>
                             </div>
                         </div>
+
                         <!-- ✅ Show when selected Other -->
                         <div *ngIf="selectedProfession.has(999)" class="mt-3">
-                            <label class="block text-xs font-semibold text-gray-300 mb-1">
+                            <label class="block text-xs font-semibold text-gray-300 mb-1"
+                                i18n="@@profile_other_specify_label">
                                 Please specify
                             </label>
 
                             <input type="text" class="w-full rounded-xl border border-white/10 bg-[#101318] px-3.5 py-2.5 text-sm text-gray-100 outline-none
            focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]"
-                                placeholder="Type your profession..." [formControl]="form.controls.titleOtherText" />
+                                placeholder="Type your profession..." i18n-placeholder="@@profile_profession_other_ph"
+                                [formControl]="form.controls.titleOtherText" />
 
                             <p *ngIf="form.controls.titleOtherText.touched && form.controls.titleOtherText.invalid"
-                                class="mt-1 text-xs text-red-400">
+                                class="mt-1 text-xs text-red-400" i18n="@@common_required">
                                 Required
                             </p>
                         </div>
 
                     </section>
 
-
                     <section id="credits"
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Credits
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_credits_title">Credits</span>
                             </h2>
                             <button type="button"
                                 class="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
-                                (click)="addCredit()">+ New Credit</button>
+                                (click)="addCredit()" i18n="@@profile_credit_new_btn">+ New Credit</button>
                         </div>
 
-                        <!-- ใช้ creditEntries + editCredit / removeCredit -->
                         <div class="space-y-4 mb-8" *ngIf="credits.length; else noCredits">
                             <article *ngFor="let c of credits; let i = index"
                                 class="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.03] via-[#101318] to-black/60 p-4 sm:p-5">
 
-                                <!-- glow -->
                                 <div aria-hidden="true"
                                     class="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-accent-500/15 blur-2xl">
                                 </div>
 
                                 <div class="relative flex items-start justify-between gap-4">
-                                    <!-- main info -->
                                     <div class="min-w-0">
-                                        <!-- title + company -->
                                         <div class="flex flex-wrap items-center gap-2 text-sm sm:text-base">
                                             <h3 class="font-semibold text-gray-50 truncate">
-                                                {{ c.title || 'Untitled position' }}
+                                                <ng-container *ngIf="c.title; else untitledPos">
+                                                    {{ c.title }}
+                                                </ng-container>
+                                                <ng-template #untitledPos>
+                                                    <span i18n="@@profile_credit_untitled_position">Untitled
+                                                        position</span>
+                                                </ng-template>
                                             </h3>
+
                                             <span class="text-gray-500">•</span>
+
                                             <p class="text-gray-300 truncate max-w-[220px] sm:max-w-xs">
-                                                {{ c.company || 'Company / Production' }}
+                                                <ng-container *ngIf="c.company; else companyFallback">
+                                                    {{ c.company }}
+                                                </ng-container>
+                                                <ng-template #companyFallback>
+                                                    <span i18n="@@profile_credit_company_fallback">Company /
+                                                        Production</span>
+                                                </ng-template>
                                             </p>
                                         </div>
 
-                                        <!-- period + venue + jobLocation -->
                                         <p
                                             class="mt-1 text-[11px] sm:text-xs text-gray-400 flex flex-wrap items-center gap-2">
                                             <span class="inline-flex items-center gap-1">
@@ -314,7 +377,12 @@
                                                     class="inline-block size-1.5 rounded-full bg-emerald-400/80"></span>
                                                 {{ c.startYear }}
                                                 –
-                                                {{ c.current ? 'Present' : (c.endYear || '—') }}
+                                                <ng-container *ngIf="c.current; else endYearTpl">
+                                                    <span i18n="@@common_present">Present</span>
+                                                </ng-container>
+                                                <ng-template #endYearTpl>
+                                                    {{ c.endYear || '—' }}
+                                                </ng-template>
                                             </span>
 
                                             <span *ngIf="c.venue" class="inline-flex items-center gap-1">
@@ -335,9 +403,7 @@
                                             </span>
                                         </p>
 
-                                        <!-- chips -->
                                         <div class="mt-3 flex flex-wrap gap-1.5">
-                                            <!-- departments -->
                                             <ng-container *ngFor="let name of getDeptNames(c)">
                                                 <span
                                                     class="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-wide text-gray-200">
@@ -345,7 +411,6 @@
                                                 </span>
                                             </ng-container>
 
-                                            <!-- positions -->
                                             <ng-container *ngFor="let name of getPosNames(c)">
                                                 <span
                                                     class="inline-flex items-center rounded-full border border-accent-500/40 bg-accent-500/10 px-2.5 py-1 text-[10px] uppercase tracking-wide text-accent-200">
@@ -353,18 +418,18 @@
                                                 </span>
                                             </ng-container>
 
-                                            <!-- tags internship/fellowship -->
                                             <span *ngIf="c.internship"
-                                                class="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200">
+                                                class="inline-flex items-center rounded-full border border-amber-400/40 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-200"
+                                                i18n="@@profile_credit_internship_chip">
                                                 Internship
                                             </span>
 
                                             <span *ngIf="c.fellowship"
-                                                class="inline-flex items-center rounded-full border border-indigo-400/40 bg-indigo-500/10 px-2 py-0.5 text-[10px] text-indigo-200">
+                                                class="inline-flex items-center rounded-full border border-indigo-400/40 bg-indigo-500/10 px-2 py-0.5 text-[10px] text-indigo-200"
+                                                i18n="@@profile_credit_fellowship_chip">
                                                 Fellowship
                                             </span>
 
-                                            <!-- skills -->
                                             <ng-container *ngFor="let name of getSkillNames(c)">
                                                 <span
                                                     class="inline-flex items-center rounded-full border border-white/10  px-2.5 py-0.5 text-[10px] text-gray-200">
@@ -374,15 +439,14 @@
                                         </div>
                                     </div>
 
-                                    <!-- action buttons -->
                                     <div class="flex flex-col gap-1 shrink-0">
                                         <button type="button" (click)="editCredit(i)"
                                             class="inline-flex items-center justify-center rounded-lg border border-blue-400/30 bg-blue-500/10 px-3 py-1.5 text-[11px] text-blue-200 hover:bg-blue-500/20 hover:border-blue-400/40 transition">
-                                            ✎ Edit
+                                            ✎ <span i18n="@@common_edit_btn">Edit</span>
                                         </button>
                                         <button type="button" (click)="removeCredit(i)"
                                             class="inline-flex items-center justify-center rounded-lg border border-red-400/30 bg-red-500/10 px-3 py-1.5 text-[11px] text-red-200 hover:bg-red-500/20 hover:border-red-400/40 transition">
-                                            ✕ Remove
+                                            ✕ <span i18n="@@common_remove_btn">Remove</span>
                                         </button>
                                     </div>
                                 </div>
@@ -390,26 +454,28 @@
                         </div>
 
                         <ng-template #noCredits>
-                            <p class="text-sm text-gray-400 mb-8">
+                            <p class="text-sm text-gray-400 mb-8" i18n="@@profile_credit_empty">
                                 No credits added yet. Click “+ New Credit” to add your first one.
                             </p>
                         </ng-template>
 
                         <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 mb-3">
-                            <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>About
+                            <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                            <span i18n="@@profile_about_title">About</span>
                         </h2>
                         <textarea
                             class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-48 resize-y"
-                            placeholder="Tell us about yourself" [formControl]="form.controls.about"></textarea>
+                            placeholder="Tell us about yourself" i18n-placeholder="@@profile_about_ph"
+                            [formControl]="form.controls.about"></textarea>
                     </section>
-
 
                     <!-- Contact -->
                     <section
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Contact
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_contact_title">Contact</span>
                             </h2>
                         </div>
                         <div class="space-y-4">
@@ -420,9 +486,11 @@
                                         aria-hidden="true">✉️</span>
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="you@example.com" [formControl]="form.controls.email" />
+                                        placeholder="you@example.com" i18n-placeholder="@@profile_email_ph"
+                                        [formControl]="form.controls.email" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Contact Email</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_contact_email_hint">Contact Email
+                                </p>
                             </div>
                             <div>
                                 <div class="relative">
@@ -431,9 +499,10 @@
                                         aria-hidden="true">📞</span>
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="080-000-0000" [formControl]="form.controls.phone" />
+                                        placeholder="080-000-0000" i18n-placeholder="@@profile_phone_ph"
+                                        [formControl]="form.controls.phone" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Phone</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_phone_hint">Phone</p>
                             </div>
                             <div>
                                 <div class="relative">
@@ -442,9 +511,10 @@
                                         aria-hidden="true">🔗</span>
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="https://example.com" [formControl]="form.controls.website" />
+                                        placeholder="https://example.com" i18n-placeholder="@@profile_website_ph"
+                                        [formControl]="form.controls.website" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Website</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_website_hint">Website</p>
                             </div>
                         </div>
                     </section>
@@ -455,7 +525,7 @@
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
-                                Social
+                                <span i18n="@@profile_social_title">Social</span>
                             </h2>
                         </div>
 
@@ -474,9 +544,10 @@
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://linkedin.com/in/yourprofile"
+                                        i18n-placeholder="@@profile_linkedin_ph"
                                         [formControl]="form.controls.linkedin" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">LinkedIn URL</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_linkedin_hint">LinkedIn URL</p>
                             </div>
 
                             <!-- Facebook -->
@@ -493,9 +564,10 @@
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://facebook.com/yourpage"
+                                        i18n-placeholder="@@profile_facebook_ph"
                                         [formControl]="form.controls.facebook" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Facebook URL</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_facebook_hint">Facebook URL</p>
                             </div>
 
                             <!-- Instagram -->
@@ -512,9 +584,10 @@
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
                                         placeholder="https://instagram.com/yourhandle"
+                                        i18n-placeholder="@@profile_instagram_ph"
                                         [formControl]="form.controls.instagram" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">Instagram URL</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_instagram_hint">Instagram URL</p>
                             </div>
 
                             <!-- X / Twitter -->
@@ -530,21 +603,24 @@
                                     </span>
                                     <input type="text"
                                         class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="https://x.com/yourhandle" [formControl]="form.controls.twitter" />
+                                        placeholder="https://x.com/yourhandle" i18n-placeholder="@@profile_twitter_ph"
+                                        [formControl]="form.controls.twitter" />
                                 </div>
-                                <p class="mt-1 text-xs text-gray-400">X / Twitter URL</p>
+                                <p class="mt-1 text-xs text-gray-400" i18n="@@profile_twitter_hint">X / Twitter URL</p>
                             </div>
                         </div>
                     </section>
 
+                    <!-- Work Locations -->
                     <section
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
-                                Work Locations
+                                <span i18n="@@profile_work_locations_title">Work Locations</span>
                             </h2>
-                            <p class="text-sm text-gray-400">Select any areas in which you're a local hire.</p>
+                            <p class="text-sm text-gray-400" i18n="@@profile_work_locations_hint">Select any areas in
+                                which you're a local hire.</p>
                         </div>
 
                         <div class="relative" data-ddwrap="work">
@@ -554,11 +630,18 @@
                                 <div class="flex items-center justify-between gap-3">
                                     <div class="min-w-0">
                                         <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedWorkLocations, workLocations) || 'Select work
-                                            locations...' }}
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedWorkLocations, workLocations); else workPlaceholder">
+                                                {{ labelsFromSet(selectedWorkLocations, workLocations) }}
+                                            </ng-container>
+                                            <ng-template #workPlaceholder>
+                                                <span i18n="@@profile_work_locations_select_ph">Select work
+                                                    locations...</span>
+                                            </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedWorkLocations.size }} selected
+                                            {{ selectedWorkLocations.size }} <span
+                                                i18n="@@common_selected">selected</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -571,19 +654,17 @@
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['work']"
-                                        (click)="$event.stopPropagation()" />
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['work']" (click)="$event.stopPropagation()" />
                                 </div>
 
                                 <div class="max-h-64 overflow-auto p-2">
                                     <label *ngFor="let it of filterList(workLocations, ddSearch['work'])"
                                         class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
                                         (click)="$event.stopPropagation()">
-
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
+                                        <input type="checkbox" class="size-4 accent-accent-500"
                                             [checked]="selectedWorkLocations.has(it.value)"
                                             (change)="toggleWorkLocationIdentity(it.value)" />
-
                                         <span class="text-sm text-gray-200">{{ it.label }}</span>
                                     </label>
                                 </div>
@@ -591,52 +672,604 @@
                                 <div class="flex items-center justify-between p-2 border-t border-white/10">
                                     <button type="button"
                                         class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearWorkLocations(); $event.stopPropagation()">
+                                        (click)="clearWorkLocations(); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">
                                         Clear
                                     </button>
                                     <button type="button"
                                         class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['work']=false; $event.stopPropagation()">
+                                        (click)="ddOpen['work']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">
                                         Done
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- ✅ Other input (โชว์เมื่อเลือก Other) -->
                         <div *ngIf="isWorkLocationOtherSelected" class="mt-3">
-                            <label class="block text-xs text-gray-400 mb-1">
+                            <label class="block text-xs text-gray-400 mb-1" i18n="@@profile_other_specify_label">
                                 Please specify
                             </label>
 
                             <input type="text" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-sm text-gray-100
              outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]"
                                 placeholder="Type your work location..."
+                                i18n-placeholder="@@profile_work_locations_other_ph"
                                 [formControl]="form.controls.workLocationsOtherText" />
                         </div>
                     </section>
 
-                    <!-- Travel / Tour / Resume -->
+                    <!-- Unions -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_unions_title">Unions / Guilds / Memberships</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_unions_hint">
+                                We employ members of the following unions or guilds:
+                            </p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="unions">
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'unions')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedUnions, unions); else unionsPlaceholder">
+                                                {{ labelsFromSet(selectedUnions, unions) }}
+                                            </ng-container>
+                                            <ng-template #unionsPlaceholder>
+                                                <span i18n="@@profile_unions_select_ph">Select unions...</span>
+                                            </ng-template>
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedUnions.size }} <span i18n="@@common_selected">selected</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['unions']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['unions']" (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(unions, ddSearch['unions'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedUnions.has(it.value)"
+                                            (change)="toggleSet(selectedUnions, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedUnions); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['unions']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isUnionStudentAcademicSelected" class="mt-3">
+                            <label class="text-xs text-gray-400" i18n="@@profile_union_student_label">Student / Academic
+                                Member</label>
+                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.unionStudentAcademicText"
+                                placeholder="Type your membership status..."
+                                i18n-placeholder="@@profile_union_student_ph" />
+                        </div>
+
+                        <div *ngIf="isUnionOtherSelected" class="mt-3">
+                            <label class="text-xs text-gray-400" i18n="@@common_other">Other</label>
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.unionOtherText" placeholder="Please specify..."
+                                i18n-placeholder="@@common_please_specify_ph" />
+                        </div>
+                    </section>
+
+                    <!-- Experience -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_experience_title">Experience Levels</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_experience_hint">At what levels have you
+                                worked?</p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="exp">
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'exp')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedExp, experienceLevels); else expPlaceholder">
+                                                {{ labelsFromSet(selectedExp, experienceLevels) }}
+                                            </ng-container>
+                                            <ng-template #expPlaceholder>
+                                                <span i18n="@@profile_experience_select_ph">Select experience
+                                                    levels...</span>
+                                            </ng-template>
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedExp.size }} <span i18n="@@common_selected">selected</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['exp']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['exp']" (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(experienceLevels, ddSearch['exp'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedExp.has(it.value)"
+                                            (change)="toggleSet(selectedExp, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedExp); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['exp']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isExpOtherSelected" class="mt-3">
+                            <label class="text-xs text-gray-400" i18n="@@common_other">Other</label>
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5  text-black text-sm outline-none
+             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.experienceOtherText" placeholder="Please specify..."
+                                i18n-placeholder="@@common_please_specify_ph" />
+                        </div>
+                    </section>
+
+                    <!-- Partners -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_partners_title">Partner Directories</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_partners_hint">
+                                Are you a member of one of our partner organizations?
+                            </p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="partners">
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'partners')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedPartners, partnerDirectories); else partnerPlaceholder">
+                                                {{ labelsFromSet(selectedPartners, partnerDirectories) }}
+                                            </ng-container>
+                                            <ng-template #partnerPlaceholder>
+                                                <span i18n="@@profile_partners_select_ph">Select partner
+                                                    directories...</span>
+                                            </ng-template>
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedPartners.size }} <span i18n="@@common_selected">selected</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['partners']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['partners']" (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(partnerDirectories, ddSearch['partners'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedPartners.has(it.value)"
+                                            (change)="toggleSet(selectedPartners, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedPartners); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['partners']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Partner needs name -->
+                        <ng-container *ngFor="let pid of partnerNeedsNameIds()">
+                            <div *ngIf="selectedPartners.has(pid)" class="mt-3">
+                                <label class="text-xs text-gray-400">
+                                    {{ getPartnerLabel(pid) }} : <span i18n="@@common_name">Name</span>
+                                </label>
+
+                                <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                    [ngModelOptions]="{ standalone: true }"
+                                    [ngModel]="form.controls.partnerDetailById.value[pid]"
+                                    (ngModelChange)="setPartnerDetail(pid, $event)"
+                                    placeholder="Type organization name..."
+                                    i18n-placeholder="@@profile_partner_org_name_ph" />
+                            </div>
+                        </ng-container>
+
+                        <div *ngIf="partnerOtherValue != null && selectedPartners.has(partnerOtherValue)" class="mt-3">
+                            <label class="text-xs text-gray-400" i18n="@@common_other">Other</label>
+                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
+           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.partnerOtherText" placeholder="Please specify..."
+                                i18n-placeholder="@@common_please_specify_ph" />
+                        </div>
+                    </section>
+
+                    <!-- Gender -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_gender_title">Gender</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_gender_hint">Optional. Searchable but not
+                                shown publicly.</p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="genders">
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'genders')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedGenders, genders); else gendersPlaceholder">
+                                                {{ labelsFromSet(selectedGenders, genders) }}
+                                            </ng-container>
+                                            <ng-template #gendersPlaceholder>
+                                                <span i18n="@@profile_gender_select_ph">Select gender(s)...</span>
+                                            </ng-template>
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedGenders.size }} <span i18n="@@common_selected">selected</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['genders']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['genders']" (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(genders, ddSearch['genders'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedGenders.has(it.value)"
+                                            (change)="toggleSet(selectedGenders, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedGenders); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['genders']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div *ngIf="isGenderSelfDescribeSelected" class="mt-3">
+                            <label class="text-xs text-gray-400" i18n="@@profile_gender_describe_label">Please
+                                describe</label>
+                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
+           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
+                                [formControl]="form.controls.genderSelfDescribeText" placeholder="Type here..."
+                                i18n-placeholder="@@profile_gender_describe_ph" />
+                            <p *ngIf="form.controls.genderSelfDescribeText.touched && form.controls.genderSelfDescribeText.invalid"
+                                class="mt-1 text-xs text-red-400" i18n="@@common_required">Required</p>
+                        </div>
+                    </section>
+
+                    <!-- Thai Culture Identity -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-2">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_thai_identity_title">Thai Culture Identity</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_thai_identity_hint">Optional. Searchable
+                                but not shown publicly.</p>
+                        </div>
+
+                        <div class="relative" data-ddwrap="races">
+                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
+             hover:border-white/20 focus:outline-none focus:border-accent-500/50
+             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'races')">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <div class="text-sm text-gray-100">
+                                            <ng-container
+                                                *ngIf="labelsFromSet(selectedRaces, races); else racesPlaceholder">
+                                                {{ labelsFromSet(selectedRaces, races) }}
+                                            </ng-container>
+                                            <ng-template #racesPlaceholder>
+                                                <span i18n="@@profile_thai_identity_select_ph">Select identity...</span>
+                                            </ng-template>
+                                        </div>
+                                        <div class="text-[11px] text-gray-500">
+                                            {{ selectedRaces.size }} <span i18n="@@common_selected">selected</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-gray-400">▾</span>
+                                </div>
+                            </button>
+
+                            <div *ngIf="ddOpen['races']"
+                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                <div class="p-2 border-b border-white/10">
+                                    <input type="text"
+                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
+                                        placeholder="Search..." i18n-placeholder="@@common_search_ph"
+                                        [(ngModel)]="ddSearch['races']" (click)="$event.stopPropagation()" />
+                                </div>
+
+                                <div class="max-h-64 overflow-auto p-2">
+                                    <label *ngFor="let it of filterList(races, ddSearch['races'])"
+                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
+                                        (click)="$event.stopPropagation()">
+                                        <input type="checkbox" class="size-4 accent-accent-500"
+                                            [checked]="selectedRaces.has(it.value)"
+                                            (change)="toggleSet(selectedRaces, it.value)" />
+                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between p-2 border-t border-white/10">
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
+                                        (click)="clearSet(selectedRaces); $event.stopPropagation()"
+                                        i18n="@@common_clear_btn">Clear</button>
+                                    <button type="button"
+                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                        (click)="ddOpen['races']=false; $event.stopPropagation()"
+                                        i18n="@@common_done_btn">Done</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3" *ngIf="isRaceOtherSelected">
+                            <input type="text" class="w-full rounded-xl border border-white/10 px-3.5 py-2.5 outline-none text-black
+    focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                placeholder="Please specify..." i18n-placeholder="@@common_please_specify_ph"
+                                [formControl]="form.controls.racialIdentityOtherText" />
+                            <p class="mt-1 text-xs text-gray-400" i18n="@@common_other_please_specify">Other (please
+                                specify)</p>
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_education_title">Education + Training</span>
+                            </h2>
+                        </div>
+                        <textarea
+                            class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-40 resize-y"
+                            placeholder="Schools, certifications, workshops" i18n-placeholder="@@profile_education_ph"
+                            [formControl]="form.controls.education"></textarea>
+                    </section>
+
+                    <!-- Media -->
+                    <section
+                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <div class="mb-4">
+                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
+                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span i18n="@@profile_media_title">Media</span>
+                            </h2>
+                            <p class="text-sm text-gray-400" i18n="@@profile_media_hint">Showcase your work with images
+                                and videos.</p>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mb-3" i18n="@@profile_videos_title">Videos</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <div class="relative mb-2">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
+                                        aria-hidden="true">🔗</span>
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://youtube.com/watch?v=..."
+                                        i18n-placeholder="@@profile_video_url_ph" [formControl]="form.controls.video1"
+                                        (blur)="updateEmbed(1)" />
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2" i18n="@@profile_video_embed_1">Video embed 1</p>
+                                <div *ngIf="embed1()"
+                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
+                                    <iframe [src]="embed1()" class="h-[420px] w-full" allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="relative mb-2">
+                                    <span
+                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
+                                        aria-hidden="true">🔗</span>
+                                    <input type="text"
+                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                                        placeholder="https://youtube.com/watch?v=..."
+                                        i18n-placeholder="@@profile_video_url_ph" [formControl]="form.controls.video2"
+                                        (blur)="updateEmbed(2)" />
+                                </div>
+                                <p class="text-xs text-gray-400 mb-2" i18n="@@profile_video_embed_2">Video embed 2</p>
+                                <div *ngIf="embed2()"
+                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
+                                    <iframe [src]="embed2()" class="h-[420px] w-full" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-lg font-semibold mt-8 mb-3" i18n="@@profile_images_title">Images</h3>
+                        <p class="text-sm text-gray-400 mb-3" i18n="@@profile_images_hint">
+                            Allowed: jpg, png, webp. No size limit (will be optimized on save)
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <label *ngFor="let i of [0,1,2,3,4,5]"
+                                class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-0 overflow-hidden min-h-[220px] bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
+
+                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/webp"
+                                    (change)="onPickImage($event, i)" />
+
+                                <div *ngIf="imagePreviewUrls[i]; else emptySlot" class="relative group h-56">
+                                    <ng-container [ngSwitch]="performanceKinds[i]">
+                                        <img *ngSwitchCase="'image'" [src]="imagePreviewUrls[i]!" alt="preview"
+                                            class="w-full h-full object-cover" />
+
+                                        <div *ngSwitchCase="'pdf'"
+                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
+                                            <div class="mb-2" i18n="@@common_pdf_file">PDF file</div>
+                                            <a [href]="imagePreviewUrls[i]" target="_blank"
+                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10"
+                                                i18n="@@common_open_pdf_btn">
+                                                Open PDF
+                                            </a>
+                                        </div>
+
+                                        <div *ngSwitchDefault
+                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
+                                            <div class="mb-2" i18n="@@common_file">File</div>
+                                            <a [href]="imagePreviewUrls[i]" target="_blank"
+                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10"
+                                                i18n="@@profile_download_btn">
+                                                Download
+                                            </a>
+                                        </div>
+                                    </ng-container>
+
+                                    <div
+                                        class="absolute inset-x-0 top-0 p-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
+                                        <button type="button" (click)="removeImage(i); $event.preventDefault()"
+                                            class="rounded-lg bg-black/60 px-2 py-1 text-xs text-white hover:bg-black/80"
+                                            i18n="@@common_delete_btn">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <ng-template #emptySlot>
+                                    <div class="grid place-items-center h-56">
+                                        <div class="text-center px-4">
+                                            <div class="text-sm" i18n="@@profile_upload_image_title">Upload image</div>
+                                            <div class="mt-1 text-xs text-gray-400" i18n="@@profile_upload_image_types">
+                                                JPG/PNG/WebP</div>
+                                            <div class="mt-1 text-xs text-gray-500"
+                                                i18n="@@profile_upload_image_no_limit">
+                                                Any size (will be optimized on save)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </label>
+                        </div>
+                    </section>
+
+
+                    <!-- Resume -->
                     <section
                         class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
                         <div class="grid grid-cols-1 gap-6 items-start">
                             <div>
-                                <h3 class="text-lg font-semibold">Resume</h3>
-                                <p class="text-sm text-gray-300 mb-2">PDF or image</p>
+                                <h3 class="text-lg font-semibold" i18n="@@profile_resume_title">Resume</h3>
+                                <p class="text-sm text-gray-300 mb-2" i18n="@@profile_resume_hint">PDF or image</p>
 
-                                <!-- input file ตัวจริง ซ่อน แต่มีอยู่ตลอด -->
-                                <input type="text" #resumeInput type="file" class="sr-only"
-                                    (change)="onPickResume($event)" accept=".pdf,image/*" />
+                                <input #resumeInput type="file" class="sr-only" (change)="onPickResume($event)"
+                                    accept=".pdf,image/*" />
 
-                                <!-- โหมดไม่มี resume: แสดง dropzone -->
                                 <div *ngIf="!resumePreviewUrl">
                                     <label
                                         class="group relative block cursor-pointer rounded-xl border-2 border-dashed border-white/10 bg-[#101318]/60 hover:border-white/20 transition min-h-[180px] focus-within:border-accent-500/50 outline-none"
-                                        tabindex="0" aria-label="Upload resume" (click)="resumeInput.click()"
+                                        tabindex="0" aria-label="Upload resume"
+                                        i18n-aria-label="@@profile_resume_upload_aria" (click)="resumeInput.click()"
                                         (keydown.enter)="resumeInput.click()">
 
                                         <div class="py-8 text-center pointer-events-none">
-                                            <!-- ไอคอนเล็ก ๆ -->
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                                 class="mx-auto h-8 w-8 opacity-70">
                                                 <path fill="currentColor"
@@ -644,19 +1277,20 @@
                                             </svg>
 
                                             <div class="mt-3 text-sm">
-                                                <span class="underline decoration-dotted group-hover:no-underline">
+                                                <span class="underline decoration-dotted group-hover:no-underline"
+                                                    i18n="@@common_click_to_upload">
                                                     Click to upload
                                                 </span>
-                                                or drag &amp; drop
+                                                <span i18n="@@common_or_drag_drop">or drag &amp; drop</span>
                                             </div>
-                                            <div class="mt-1 text-xs text-gray-400">
+
+                                            <div class="mt-1 text-xs text-gray-400" i18n="@@profile_resume_types_hint">
                                                 JPG, PNG, WEBP, or PDF up to 2MB
                                             </div>
                                         </div>
                                     </label>
                                 </div>
 
-                                <!-- โหมดมี resume: แสดง preview / ปุ่มต่าง ๆ, ไม่มี dropzone -->
                                 <div *ngIf="resumePreviewUrl"
                                     class="mt-4 rounded-xl border border-white/10 bg-[#101318]/60 p-3">
                                     <div class="flex items-center justify-between gap-3">
@@ -665,23 +1299,28 @@
                                                 {{ resumeFile?.name || 'resume' }}
                                             </div>
                                             <div class="text-xs text-gray-400">
-                                                {{ resumeIsPdf ? 'PDF' : 'Image' }} · {{ (resumeFile?.size || 0) / 1024
-                                                | number:'1.0-1' }} KB
+                                                <ng-container *ngIf="resumeIsPdf; else resumeImageText">
+                                                    <span i18n="@@common_pdf">PDF</span>
+                                                </ng-container>
+                                                <ng-template #resumeImageText>
+                                                    <span i18n="@@common_image">Image</span>
+                                                </ng-template>
+                                                · {{ (resumeFile?.size || 0) / 1024 | number:'1.0-1' }} KB
                                             </div>
                                         </div>
 
                                         <div class="flex items-center gap-2 shrink-0">
                                             <a [href]="resumePreviewUrl" download
                                                 class="text-xs px-2.5 py-1.5 rounded-lg border border-white/10 hover:border-white/20">
-                                                Download
+                                                <span i18n="@@profile_download_btn">Download</span>
                                             </a>
                                             <button type="button" (click)="clearResume()"
                                                 class="text-xs px-2.5 py-1.5 rounded-lg border border-white/10 hover:border-white/20">
-                                                Remove
+                                                <span i18n="@@common_remove_btn">Remove</span>
                                             </button>
                                             <button type="button" (click)="resumeInput.click()"
                                                 class="text-xs px-2.5 py-1.5 rounded-lg bg-accent-500/10 border border-accent-500/30 hover:bg-accent-500/20">
-                                                Replace
+                                                <span i18n="@@common_replace_btn">Replace</span>
                                             </button>
                                         </div>
                                     </div>
@@ -694,490 +1333,16 @@
                                         <ng-template #pdfTpl>
                                             <iframe [src]="resumeSafeUrl" class="w-full h-80 rounded-lg"></iframe>
                                             <p class="mt-2 text-xs text-gray-400">
-                                                ถ้า PDF ไม่แสดงผล
-                                                <a [href]="resumePreviewUrl" target="_blank"
-                                                    class="underline">เปิดในแท็บใหม่</a>
+                                                <span i18n="@@profile_pdf_not_show">If the PDF doesn’t display</span>
+                                                <a [href]="resumePreviewUrl" target="_blank" class="underline"
+                                                    i18n="@@profile_open_new_tab">
+                                                    Open in a new tab
+                                                </a>
                                             </p>
                                         </ng-template>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
-
-                    <!-- Unions -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-2">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Unions / Guilds
-                                / Memberships
-                            </h2>
-                            <p class="text-sm text-gray-400">We employ members of the following unions or guilds:</p>
-                        </div>
-
-                        <div class="relative" data-ddwrap="unions">
-                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
-             hover:border-white/20 focus:outline-none focus:border-accent-500/50
-             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'unions')">
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedUnions, unions) || 'Select unions...' }}
-                                        </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedUnions.size }} selected</div>
-                                    </div>
-                                    <span class="text-gray-400">▾</span>
-                                </div>
-                            </button>
-
-                            <div *ngIf="ddOpen['unions']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
-                                <div class="p-2 border-b border-white/10">
-                                    <input type="text"
-                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['unions']"
-                                        (click)="$event.stopPropagation()" />
-                                </div>
-
-                                <div class="max-h-64 overflow-auto p-2">
-                                    <label *ngFor="let it of filterList(unions, ddSearch['unions'])"
-                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
-                                        (click)="$event.stopPropagation()">
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                            [checked]="selectedUnions.has(it.value)"
-                                            (change)="toggleSet(selectedUnions, it.value)" />
-                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
-                                    </label>
-                                </div>
-
-                                <div class="flex items-center justify-between p-2 border-t border-white/10">
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedUnions); $event.stopPropagation()">Clear</button>
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['unions']=false; $event.stopPropagation()">Done</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="isUnionStudentAcademicSelected" class="mt-3">
-                            <label class="text-xs text-gray-400">Student / Academic Member</label>
-                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
-                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                [formControl]="form.controls.unionStudentAcademicText"
-                                placeholder="Type your membership status..." />
-                        </div>
-
-                        <div *ngIf="isUnionOtherSelected" class="mt-3">
-                            <label class="text-xs text-gray-400">Other</label>
-                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
-                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                [formControl]="form.controls.unionOtherText" placeholder="Please specify..." />
-                        </div>
-                    </section>
-
-                    <!-- Experience -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-2">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Experience
-                                Levels
-                            </h2>
-                            <p class="text-sm text-gray-400">At what levels have you worked?</p>
-                        </div>
-
-                        <div class="relative" data-ddwrap="exp">
-                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
-             hover:border-white/20 focus:outline-none focus:border-accent-500/50
-             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'exp')">
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedExp, experienceLevels) || 'Select experience
-                                            levels...' }}
-                                        </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedExp.size }} selected</div>
-                                    </div>
-                                    <span class="text-gray-400">▾</span>
-                                </div>
-                            </button>
-
-                            <div *ngIf="ddOpen['exp']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
-                                <div class="p-2 border-b border-white/10">
-                                    <input type="text"
-                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['exp']"
-                                        (click)="$event.stopPropagation()" />
-                                </div>
-
-                                <div class="max-h-64 overflow-auto p-2">
-                                    <label *ngFor="let it of filterList(experienceLevels, ddSearch['exp'])"
-                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
-                                        (click)="$event.stopPropagation()">
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                            [checked]="selectedExp.has(it.value)"
-                                            (change)="toggleSet(selectedExp, it.value)" />
-                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
-                                    </label>
-                                </div>
-
-                                <div class="flex items-center justify-between p-2 border-t border-white/10">
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedExp); $event.stopPropagation()">Clear</button>
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['exp']=false; $event.stopPropagation()">Done</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="isExpOtherSelected" class="mt-3">
-                            <label class="text-xs text-gray-400">Other</label>
-                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5  text-black text-sm outline-none
-                focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                [formControl]="form.controls.experienceOtherText" placeholder="Please specify..." />
-                        </div>
-
-                    </section>
-
-                    <!-- Partners -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-2">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Partner
-                                Directories
-                            </h2>
-                            <p class="text-sm text-gray-400">Are you a member of one of our partner organizations?</p>
-                        </div>
-
-                        <div class="relative" data-ddwrap="partners">
-                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
-             hover:border-white/20 focus:outline-none focus:border-accent-500/50
-             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'partners')">
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedPartners, partnerDirectories) || 'Select
-                                            partner
-                                            directories...' }}
-                                        </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedPartners.size }} selected
-                                        </div>
-                                    </div>
-                                    <span class="text-gray-400">▾</span>
-                                </div>
-                            </button>
-
-                            <div *ngIf="ddOpen['partners']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
-                                <div class="p-2 border-b border-white/10">
-                                    <input type="text"
-                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['partners']"
-                                        (click)="$event.stopPropagation()" />
-                                </div>
-
-                                <div class="max-h-64 overflow-auto p-2">
-                                    <label *ngFor="let it of filterList(partnerDirectories, ddSearch['partners'])"
-                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
-                                        (click)="$event.stopPropagation()">
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                            [checked]="selectedPartners.has(it.value)"
-                                            (change)="toggleSet(selectedPartners, it.value)" />
-                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
-                                    </label>
-                                </div>
-
-                                <div class="flex items-center justify-between p-2 border-t border-white/10">
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedPartners); $event.stopPropagation()">Clear</button>
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['partners']=false; $event.stopPropagation()">Done</button>
-                                </div>
-                            </div>
-                        </div>
-                        <ng-container *ngFor="let pid of partnerNeedsNameIds()">
-                            <div *ngIf="selectedPartners.has(pid)" class="mt-3">
-                                <label class="text-xs text-gray-400">
-                                    {{ getPartnerLabel(pid) }} : Name
-                                </label>
-
-                                <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
-             focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                    [ngModelOptions]="{ standalone: true }"
-                                    [ngModel]="form.controls.partnerDetailById.value[pid]"
-                                    (ngModelChange)="setPartnerDetail(pid, $event)"
-                                    placeholder="Type organization name..." />
-                            </div>
-                        </ng-container>
-
-                        <div *ngIf="partnerOtherValue != null && selectedPartners.has(partnerOtherValue)" class="mt-3">
-                            <label class="text-xs text-gray-400">Other</label>
-                            <input type="text" class="mt-1 w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-black text-sm outline-none
-           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                [formControl]="form.controls.partnerOtherText" placeholder="Please specify..." />
-                        </div>
-                    </section>
-
-                    <!-- Identity -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-2">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Gender
-                            </h2>
-                            <p class="text-sm text-gray-400">Optional. Searchable but not shown publicly.</p>
-                        </div>
-
-                        <div class="relative" data-ddwrap="genders">
-                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
-             hover:border-white/20 focus:outline-none focus:border-accent-500/50
-             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'genders')">
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedGenders, genders) || 'Select gender(s)...' }}
-                                        </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedGenders.size }} selected</div>
-                                    </div>
-                                    <span class="text-gray-400">▾</span>
-                                </div>
-                            </button>
-
-                            <div *ngIf="ddOpen['genders']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
-                                <div class="p-2 border-b border-white/10">
-                                    <input type="text"
-                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['genders']"
-                                        (click)="$event.stopPropagation()" />
-                                </div>
-
-                                <div class="max-h-64 overflow-auto p-2">
-                                    <label *ngFor="let it of filterList(genders, ddSearch['genders'])"
-                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
-                                        (click)="$event.stopPropagation()">
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                            [checked]="selectedGenders.has(it.value)"
-                                            (change)="toggleSet(selectedGenders, it.value)" />
-                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
-                                    </label>
-                                </div>
-
-                                <div class="flex items-center justify-between p-2 border-t border-white/10">
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedGenders); $event.stopPropagation()">Clear</button>
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['genders']=false; $event.stopPropagation()">Done</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="isGenderSelfDescribeSelected" class="mt-3">
-                            <label class="text-xs text-gray-400">Please describe</label>
-                            <input type="text" class="mt-1 w-full text-black rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-sm outline-none
-           focus:border-accent-500/70 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]"
-                                [formControl]="form.controls.genderSelfDescribeText" placeholder="Type here..." />
-                            <p *ngIf="form.controls.genderSelfDescribeText.touched && form.controls.genderSelfDescribeText.invalid"
-                                class="mt-1 text-xs text-red-400">Required</p>
-                        </div>
-                    </section>
-
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-2">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Thai Culture
-                                Identity
-                            </h2>
-                            <p class="text-sm text-gray-400">Optional. Searchable but not shown publicly.</p>
-                        </div>
-
-                        <div class="relative" data-ddwrap="races">
-                            <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
-             hover:border-white/20 focus:outline-none focus:border-accent-500/50
-             focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'races')">
-                                <div class="flex items-center justify-between gap-3">
-                                    <div class="min-w-0">
-                                        <div class="text-sm text-gray-100">
-                                            {{ labelsFromSet(selectedRaces, races) || 'Select identity...' }}
-                                        </div>
-                                        <div class="text-[11px] text-gray-500">{{ selectedRaces.size }} selected</div>
-                                    </div>
-                                    <span class="text-gray-400">▾</span>
-                                </div>
-                            </button>
-
-                            <div *ngIf="ddOpen['races']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
-                                <div class="p-2 border-b border-white/10">
-                                    <input type="text"
-                                        class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
-                                        placeholder="Search..." [(ngModel)]="ddSearch['races']"
-                                        (click)="$event.stopPropagation()" />
-                                </div>
-
-                                <div class="max-h-64 overflow-auto p-2">
-                                    <label *ngFor="let it of filterList(races, ddSearch['races'])"
-                                        class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/5 cursor-pointer select-none"
-                                        (click)="$event.stopPropagation()">
-                                        <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                            [checked]="selectedRaces.has(it.value)"
-                                            (change)="toggleSet(selectedRaces, it.value)" />
-                                        <span class="text-sm text-gray-200">{{ it.label }}</span>
-                                    </label>
-                                </div>
-
-                                <div class="flex items-center justify-between p-2 border-t border-white/10">
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5"
-                                        (click)="clearSet(selectedRaces); $event.stopPropagation()">Clear</button>
-                                    <button type="button"
-                                        class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                        (click)="ddOpen['races']=false; $event.stopPropagation()">Done</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3" *ngIf="isRaceOtherSelected">
-                            <input type="text" class="w-full rounded-xl border border-white/10 px-3.5 py-2.5 outline-none text-black
-    focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                placeholder="Please specify..." [formControl]="form.controls.racialIdentityOtherText" />
-                            <p class="mt-1 text-xs text-gray-400">Other (please specify)</p>
-                        </div>
-                    </section>
-
-                    <!-- Education -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-4">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Education +
-                                Training
-                            </h2>
-                        </div>
-                        <textarea
-                            class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm h-40 resize-y"
-                            placeholder="Schools, certifications, workshops"
-                            [formControl]="form.controls.education"></textarea>
-                    </section>
-
-                    <!-- Media -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
-                        <div class="mb-4">
-                            <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>Media
-                            </h2>
-                            <p class="text-sm text-gray-400">Showcase your work with images and videos.</p>
-                        </div>
-
-                        <h3 class="text-lg font-semibold mb-3">Videos</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <div class="relative mb-2">
-                                    <span
-                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
-                                        aria-hidden="true">🔗</span>
-                                    <input type="text"
-                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="https://youtube.com/watch?v=..."
-                                        [formControl]="form.controls.video1" (blur)="updateEmbed(1)" />
-                                </div>
-                                <p class="text-xs text-gray-400 mb-2">Video embed 1</p>
-                                <div *ngIf="embed1()"
-                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
-                                    <iframe [src]="embed1()" class="h-[420px] w-full" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="relative mb-2">
-                                    <span
-                                        class="pointer-events-none absolute inset-y-0 left-0 grid place-items-center w-10 text-gray-400"
-                                        aria-hidden="true">🔗</span>
-                                    <input type="text"
-                                        class="w-full rounded-xl  border border-white/10 pl-10 py-2.5 outline-none focus:border-accent-500/50 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                                        placeholder="https://youtube.com/watch?v=..."
-                                        [formControl]="form.controls.video2" (blur)="updateEmbed(2)" />
-                                </div>
-                                <p class="text-xs text-gray-400 mb-2">Video embed 2</p>
-                                <div *ngIf="embed2()"
-                                    class="aspect-video rounded-xl overflow-hidden border border-white/10">
-                                    <iframe [src]="embed2()" class="h-[420px] w-full" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="text-lg font-semibold mt-8 mb-3">Images</h3>
-                        <p class="text-sm text-gray-400 mb-3">Allowed: jpg, png, webp. ไม่จำกัดขนาด (จะลดไฟล์ตอนบันทึก)
-                        </p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <label *ngFor="let i of [0,1,2,3,4,5]"
-                                class="block cursor-pointer rounded-xl border-2 border-dashed border-white/10 p-0 overflow-hidden min-h-[220px] bg-[#101318]/60 hover:border-white/20 transition focus-within:border-accent-500/50">
-
-                                <input type="text" type="file" class="hidden" accept="image/jpeg,image/png,image/webp"
-                                    (change)="onPickImage($event, i)" />
-
-                                <div *ngIf="imagePreviewUrls[i]; else emptySlot" class="relative group h-56">
-
-                                    <!-- เลือก UI ตามชนิดไฟล์ -->
-                                    <ng-container [ngSwitch]="performanceKinds[i]">
-
-                                        <!-- รูปภาพ -->
-                                        <img *ngSwitchCase="'image'" [src]="imagePreviewUrls[i]!" alt="preview"
-                                            class="w-full h-full object-cover" />
-
-                                        <!-- PDF -->
-                                        <div *ngSwitchCase="'pdf'"
-                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
-                                            <div class="mb-2">PDF file</div>
-                                            <a [href]="imagePreviewUrls[i]" target="_blank"
-                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10">
-                                                Open PDF
-                                            </a>
-                                        </div>
-
-                                        <!-- อื่น ๆ -->
-                                        <div *ngSwitchDefault
-                                            class="w-full h-full flex flex-col items-center justify-center text-xs text-gray-200">
-                                            <div class="mb-2">File</div>
-                                            <a [href]="imagePreviewUrls[i]" target="_blank"
-                                                class="px-3 py-1 rounded-lg border border-white/20 hover:bg-white/10">
-                                                Download
-                                            </a>
-                                        </div>
-
-                                    </ng-container>
-
-                                    <!-- แถบ action บนสุด -->
-                                    <div
-                                        class="absolute inset-x-0 top-0 p-2 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition">
-                                        <button type="button" (click)="removeImage(i); $event.preventDefault()"
-                                            class="rounded-lg bg-black/60 px-2 py-1 text-xs text-white hover:bg-black/80">
-                                            ลบ
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <ng-template #emptySlot>
-                                    <div class="grid place-items-center h-56">
-                                        <div class="text-center px-4">
-                                            <div class="text-sm">Upload image</div>
-                                            <div class="mt-1 text-xs text-gray-400">JPG/PNG/WebP</div>
-                                            <div class="mt-1 text-xs text-gray-500">
-                                                ขนาดเท่าไหร่ก็ได้ (จะบีบอัดตอนบันทึก)
-                                            </div>
-                                        </div>
-                                    </div>
-                                </ng-template>
-                            </label>
                         </div>
                     </section>
 
@@ -1190,29 +1355,28 @@
                                     <h2
                                         class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                         <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
-                                        Additional Languages
+                                        <span i18n="@@profile_additional_languages_title">Additional Languages</span>
                                     </h2>
-                                    <p class="text-sm text-gray-400">Let people know you can work in multiple languages.
-                                    </p>
+                                    <p class="text-sm text-gray-400" i18n="@@profile_additional_languages_hint">Let
+                                        people know you can work in multiple languages.</p>
                                 </div>
 
                                 <label class="inline-flex items-center gap-3 text-base md:text-lg">
                                     <input type="checkbox"
                                         class="size-5 rounded border-gray-600 bg-transparent accent-accent-500"
                                         [formControl]="form.controls.multiLang" />
-                                    <span>I speak more than one language</span>
+                                    <span i18n="@@profile_multilang_toggle">I speak more than one language</span>
                                 </label>
                             </div>
 
-                            <!-- ✅ Show when multiLang -->
                             <div *ngIf="form.controls.multiLang.value" class="mt-4">
                                 <div class="flex items-center justify-between gap-3">
-                                    <div class="text-sm text-gray-300">Languages</div>
+                                    <div class="text-sm text-gray-300" i18n="@@profile_languages_label">Languages</div>
 
                                     <button type="button" (click)="addLanguage()"
                                         class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 hover:bg-white/10">
                                         <span class="text-lg leading-none">+</span>
-                                        <span>Add</span>
+                                        <span i18n="@@common_add_btn">Add</span>
                                     </button>
                                 </div>
 
@@ -1221,21 +1385,24 @@
                                         class="flex items-center gap-2">
                                         <input type="text" [formControlName]="i"
                                             placeholder="e.g. English, Thai, Japanese"
+                                            i18n-placeholder="@@profile_language_item_ph"
                                             class="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-gray-100 placeholder:text-gray-500 outline-none focus:border-accent-500/60" />
 
                                         <button type="button" (click)="removeLanguage(i)"
-                                            class="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 hover:bg-white/10">
+                                            class="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-gray-200 hover:bg-white/10"
+                                            i18n="@@common_remove_btn">
                                             Remove
                                         </button>
                                     </div>
                                 </div>
 
-                                <p class="mt-2 text-xs text-gray-500">
+                                <p class="mt-2 text-xs text-gray-500" i18n="@@profile_language_array_hint">
                                     This will be sent as an array (e.g. ["English","Thai"]).
                                 </p>
                             </div>
                         </section>
                     </div>
+
                 </section>
             </div>
         </div>

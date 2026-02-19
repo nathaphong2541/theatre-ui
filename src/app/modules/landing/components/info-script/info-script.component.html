@@ -34,53 +34,54 @@
         </div>
 
         <!-- List: การ์ด 5 ใบ แถวเดียว เลื่อนข้างได้ -->
-        <article *ngFor="let s of scripts" class="group snap-start min-w-[200px] sm:min-w-[220px] max-w-[220px]
-         overflow-hidden rounded-2xl border border-white/10 bg-white/5
-         shadow-sm transition hover:border-[#8aab06]/60 hover:shadow-[0_10px_28px_rgba(0,0,0,0.35)]">
+        <div class="flex gap-4 overflow-x-auto pb-3 snap-x snap-mandatory">
+            <article *ngFor="let s of scripts" class="group snap-start shrink-0 w-[220px] overflow-hidden rounded-2xl
+         border border-white/10 bg-white/5 shadow-sm transition
+         hover:border-[#8aab06]/60 hover:shadow-[0_10px_28px_rgba(0,0,0,0.35)]
+         flex flex-col">
+                <!-- Cover (สูงเท่ากันอยู่แล้วด้วย aspect) -->
+                <div class="relative aspect-[3/4] w-full overflow-hidden bg-[#0b1610]">
+                    <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
+                        class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-[1.03]" />
 
-            <!-- Cover -->
-            <div class="relative aspect-[3/4] w-full overflow-hidden bg-[#0b1610]">
-                <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
-                    class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-[1.03]" />
-
-                <div *ngIf="!getCover(s)"
-                    class="flex h-full w-full items-center justify-center px-3 text-center text-[12px] text-white/60">
-                    ไม่มีรูปปก
+                    <div *ngIf="!getCover(s)"
+                        class="flex h-full w-full items-center justify-center px-3 text-center text-[12px] text-white/60">
+                        ไม่มีรูปปก
+                    </div>
                 </div>
 
-                <!-- Date -->
-                <!-- <span *ngIf="s.createdAt" class="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-0.5
-             text-[10px] text-[#e5f5a3] backdrop-blur">
-                    {{ s.createdAt | date: 'dd/MM/yyyy' }}
-                </span> -->
-            </div>
+                <!-- Info panel: ทำให้เท่ากัน -->
+                <div class="bg-black/40 p-3 flex flex-col flex-1">
+                    <!-- title: ล็อก 2 บรรทัด -->
+                    <h3
+                        class="line-clamp-2 min-h-[34px] text-[13px] font-semibold text-white group-hover:text-[#e5f5a3]">
+                        {{ s.title }}
+                    </h3>
 
-            <!-- Info panel -->
-            <div class="bg-black/40 p-3">
-                <h3 class="line-clamp-2 text-[13px] font-semibold text-white group-hover:text-[#e5f5a3]">
-                    {{ s.title }}
-                </h3>
+                    <!-- tags: ล็อกพื้นที่ (เช่น 2 บรรทัด) -->
+                    <div class="mt-2 min-h-[34px]">
+                        <div class="flex flex-wrap gap-1 line-clamp-2 overflow-hidden" *ngIf="getTagList(s).length > 0">
+                            <span *ngFor="let tag of getTagList(s)"
+                                class="rounded-full border border-[#8aab06]/40 bg-[#8aab06]/10 px-2 py-0.5 text-[10px] text-[#e5f5a3]">
+                                #{{ tag }}
+                            </span>
+                        </div>
+                    </div>
 
-                <!-- tags -->
-                <div class="mt-2 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
-                    <span *ngFor="let tag of getTagList(s)"
-                        class="rounded-full border border-[#8aab06]/40 bg-[#8aab06]/10 px-2 py-0.5 text-[10px] text-[#e5f5a3]">
-                        #{{ tag }}
-                    </span>
+                    <!-- actions: ดันไปอยู่ล่างเสมอ -->
+                    <div class="mt-auto pt-3 flex items-center justify-end gap-2">
+                        <button type="button" (click)="onViewDetail(s)"
+                            class="rounded-full bg-[#8aab06] px-3 py-1.5 text-[11px] font-medium text-black hover:bg-[#5B7405] transition">
+                            ดูรายละเอียด
+                        </button>
+                    </div>
+
+                    <!-- by: อยู่ล่างเหมือนกัน -->
+                    <p *ngIf="s.createdByName" class="mt-2 text-[10px] text-white/50 text-right">
+                        โดย {{ s.createdByName }}
+                    </p>
                 </div>
-
-                <!-- actions -->
-                <div class="mt-3 flex items-center justify-end gap-2">
-                    <button i18n="@@view_details" type="button" (click)="onViewDetail(s)" class="rounded-full bg-[#8aab06] px-3 py-1.5 text-[11px] font-medium text-black
-               hover:bg-[#5B7405] transition">
-                        ดูรายละเอียด
-                    </button>
-                </div>
-
-                <p *ngIf="s.createdByName" class="mt-3 text-[10px] text-white/50 text-right">
-                    <label i18n="@@by">โดย</label> {{ s.createdByName }}
-                </p>
-            </div>
-        </article>
+            </article>
+        </div>
     </div>
 </section>
