@@ -1,38 +1,57 @@
-<div class="min-h-screen  bg-main text-white">
+<div class="min-h-screen text-white relative overflow-hidden
+            bg-gradient-to-br from-[#071a1d] via-[#0a4f52] to-[#0f6e73]">
+
+    <!-- global glow -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10
+    bg-[radial-gradient(circle_at_20%_0%,rgba(28,197,201,0.18),transparent_55%),
+        radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.06),transparent_55%),
+        radial-gradient(circle_at_50%_120%,rgba(0,0,0,0.55),transparent_60%)]">
+    </div>
+
     <!-- Top bar -->
-    <header class="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:/70 /90 border-b border-white/5">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div
-                    class="h-8 w-8 rounded-xl bg-gradient-to-br from-accent-500/30 to-accent-500/10 grid place-items-center ring-1 ring-white/10">
-                    <svg class="h-4 w-4 text-accent-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <header class="sticky top-0 z-30 border-b border-white/10
+                 bg-black/35 backdrop-blur-xl supports-[backdrop-filter]:bg-black/25">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="h-9 w-9 rounded-2xl grid place-items-center
+                    bg-white/5 border border-white/10 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
+                    <svg class="h-4 w-4 text-white/80" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6Z" />
                     </svg>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-semibold tracking-tight" i18n="@@profile_title">Update Profile</h1>
-                    <p class="text-xs text-gray-400" i18n="@@profile_subtitle">Keep your info fresh so people can find
-                        you easily.</p>
+
+                <div class="min-w-0">
+                    <h1 class="text-xl sm:text-2xl font-semibold tracking-tight truncate" i18n="@@profile_title">
+                        Update Profile
+                    </h1>
+                    <p class="text-xs sm:text-sm text-white/60 truncate" i18n="@@profile_subtitle">
+                        Keep your info fresh so people can find you easily.
+                    </p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button type="button"
-                    class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-accent-500/30"
-                    (click)="cancel()" i18n="@@profile_cancel_btn">Cancel</button>
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <button type="button" class="rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm
+                 hover:bg-white/10 hover:-translate-y-[1px] transition
+                 focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/35" (click)="cancel()"
+                    i18n="@@profile_cancel_btn">
+                    Cancel
+                </button>
 
-                <button type="button"
-                    class="rounded-xl border border-accent-500/40 bg-accent-500/20 px-5 py-2.5 text-accent-200 hover:bg-accent-500/30 transition focus:outline-none focus:ring-2 focus:ring-accent-500/40"
-                    (click)="save()" i18n="@@profile_save_btn">Save Changes</button>
+                <button type="button" class="rounded-xl border border-[#1cc5c9]/35 bg-[#1cc5c9]/15 px-5 py-2.5 text-[#bffcff] text-sm
+                 hover:bg-[#1cc5c9]/22 hover:-translate-y-[1px] transition
+                 focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/45" (click)="save()" i18n="@@profile_save_btn">
+                    Save Changes
+                </button>
             </div>
         </div>
     </header>
 
     <main class="relative">
-        <!-- subtle bg glow -->
-        <div aria-hidden="true"
-            class="pointer-events-none absolute inset-0
-       bg-[radial-gradient(60%_40%_at_50%_-10%,theme(colors.accent.500)/0.10,transparent),radial-gradient(40%_30%_at_80%_10%,theme(colors.accent.500)/0.06,transparent)]">
+        <!-- extra subtle glow (optional) -->
+        <div aria-hidden="true" class="pointer-events-none absolute inset-0
+      bg-[radial-gradient(60%_40%_at_50%_-10%,rgba(28,197,201,0.12),transparent),
+          radial-gradient(40%_30%_at_80%_10%,rgba(28,197,201,0.08),transparent)]">
         </div>
 
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
@@ -40,8 +59,9 @@
                 <!-- LEFT -->
                 <aside class="lg:col-span-1 space-y-6 lg:space-y-8">
                     <!-- Avatar -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-300/70"></span>
@@ -104,13 +124,32 @@
                     </section>
 
                     <!-- Options -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6 sticky top-24">
+                    <section class="sticky top-24 rounded-2xl
+         border border-white/10
+         bg-[#0b1417]/70
+         text-white
+         shadow-[0_12px_40px_rgba(0,0,0,0.45)]
+         backdrop-blur-xl
+         ring-1 ring-white/10
+         overflow-visible
+         p-5 md:p-6">
+
+                        <!-- subtle glow -->
+                        <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10
+              rounded-2xl
+              bg-[radial-gradient(60%_60%_at_20%_0%,rgba(138,171,6,0.14),transparent_60%),
+                  radial-gradient(50%_50%_at_90%_20%,rgba(20,124,127,0.18),transparent_55%)]">
+                        </div>
+
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
-                                <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
+                                <span
+                                    class="inline-block size-2.5 rounded-full bg-[#8aab06] shadow-[0_0_14px_rgba(138,171,6,0.45)]"></span>
                                 <span i18n="@@profile_options_title">Options</span>
                             </h2>
+                            <p class="mt-1 text-sm text-white/60" i18n="@@profile_options_hint">
+                                ตั้งค่าการแสดงผลและประเภทโปรไฟล์ของคุณ
+                            </p>
                         </div>
 
                         <div class="space-y-6">
@@ -119,27 +158,29 @@
                                 <label class="inline-flex items-center select-none">
                                     <input type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.privateProfile" />
-                                    <span
-                                        class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
-                                        <span
-                                            class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+                                    <span class="relative inline-flex h-6 w-11 rounded-full
+                     bg-white/15 border border-white/10
+                     transition peer-checked:bg-[#8aab06]/70 peer-checked:border-[#8aab06]/60">
+                                        <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white
+                       transition peer-checked:translate-x-5"></span>
                                     </span>
                                 </label>
 
                                 <div class="min-w-0">
-                                    <div class="font-medium">
+                                    <div class="font-semibold text-white">
                                         <span i18n="@@profile_private_label_prefix">Private Profile:</span>
                                         <ng-container *ngIf="form.value.privateProfile; else privateOff">
-                                            <span i18n="@@profile_private_on">On</span>
+                                            <span class="ml-1 text-[#cfe27a]" i18n="@@profile_private_on">On</span>
                                         </ng-container>
                                         <ng-template #privateOff>
-                                            <span i18n="@@profile_private_off">Off</span>
+                                            <span class="ml-1 text-white/70" i18n="@@profile_private_off">Off</span>
                                         </ng-template>
                                     </div>
 
-                                    <p class="text-sm text-gray-300">
+                                    <p class="mt-1 text-sm text-white/65">
                                         <span i18n="@@profile_private_desc_prefix">Your profile is</span>
-                                        <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                        <span class="mx-1 inline-flex items-center rounded-md border px-2 py-0.5 text-xs
+                       border-[#8aab06]/35 bg-[#8aab06]/10 text-[#cfe27a]">
                                             <ng-container *ngIf="form.value.privateProfile; else publicText">
                                                 <span i18n="@@profile_private_private">private</span>
                                             </ng-container>
@@ -152,32 +193,39 @@
                                 </div>
                             </div>
 
+                            <!-- Divider -->
+                            <div class="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
                             <!-- Company -->
                             <div class="flex items-start gap-4">
                                 <label class="inline-flex items-center select-none">
                                     <input type="checkbox" class="peer sr-only"
                                         [formControl]="form.controls.profileIsCompany" />
-                                    <span
-                                        class="relative inline-flex h-6 w-11 rounded-full bg-gray-600 transition peer-checked:bg-accent-500">
-                                        <span
-                                            class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+                                    <span class="relative inline-flex h-6 w-11 rounded-full
+                     bg-white/15 border border-white/10
+                     transition peer-checked:bg-[#8aab06]/70 peer-checked:border-[#8aab06]/60">
+                                        <span class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white
+                       transition peer-checked:translate-x-5"></span>
                                     </span>
                                 </label>
 
                                 <div class="min-w-0">
-                                    <div class="font-medium">
+                                    <div class="font-semibold text-white">
                                         <span i18n="@@profile_type_label_prefix">Profile type:</span>
                                         <ng-container *ngIf="form.value.profileIsCompany; else personalType">
-                                            <span i18n="@@profile_type_company">Company</span>
+                                            <span class="ml-1 text-[#cfe27a]"
+                                                i18n="@@profile_type_company">Company</span>
                                         </ng-container>
                                         <ng-template #personalType>
-                                            <span i18n="@@profile_type_personal">Personal</span>
+                                            <span class="ml-1 text-white/70"
+                                                i18n="@@profile_type_personal">Personal</span>
                                         </ng-template>
                                     </div>
 
-                                    <p class="text-sm text-gray-300">
+                                    <p class="mt-1 text-sm text-white/65">
                                         <span i18n="@@profile_type_desc_prefix">This is a</span>
-                                        <span class="inline-block rounded bg-yellow-200/20 px-2 py-0.5 text-yellow-300">
+                                        <span class="mx-1 inline-flex items-center rounded-md border px-2 py-0.5 text-xs
+                       border-[#8aab06]/35 bg-[#8aab06]/10 text-[#cfe27a]">
                                             <ng-container *ngIf="form.value.profileIsCompany; else personalLower">
                                                 <span i18n="@@profile_type_company_lower">company</span>
                                             </ng-container>
@@ -196,8 +244,9 @@
                 <!-- RIGHT -->
                 <section class="lg:col-span-2 space-y-8 lg:space-y-10">
                     <!-- Name -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -230,8 +279,9 @@
                     </section>
 
                     <!-- Profession -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -265,7 +315,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['professions']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
 
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
@@ -324,8 +374,9 @@
 
                     </section>
 
-                    <section id="credits"
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section id="credits" class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -470,8 +521,9 @@
                     </section>
 
                     <!-- Contact -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -520,8 +572,9 @@
                     </section>
 
                     <!-- Social -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -612,8 +665,9 @@
                     </section>
 
                     <!-- Work Locations -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -623,7 +677,7 @@
                                 which you're a local hire.</p>
                         </div>
 
-                        <div class="relative" data-ddwrap="work">
+                        <div class="relative" data-ddwrap="work" [ngClass]="ddOpen['work'] ? 'z-[80]' : 'z-auto'">
                             <button type="button" class="w-full rounded-xl  border border-white/10 px-3.5 py-2.5 text-left
              hover:border-white/20 focus:outline-none focus:border-accent-500/50
              focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)]" (click)="toggleDd($event,'work')">
@@ -649,7 +703,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['work']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
 
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
@@ -700,8 +754,9 @@
                     </section>
 
                     <!-- Unions -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -736,7 +791,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['unions']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
@@ -788,8 +843,9 @@
                     </section>
 
                     <!-- Experience -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -824,7 +880,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['exp']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
@@ -866,8 +922,9 @@
                     </section>
 
                     <!-- Partners -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -903,7 +960,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['partners']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
@@ -962,8 +1019,9 @@
                     </section>
 
                     <!-- Gender -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -997,7 +1055,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['genders']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
@@ -1042,8 +1100,9 @@
                     </section>
 
                     <!-- Thai Culture Identity -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-2">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -1077,7 +1136,7 @@
                             </button>
 
                             <div *ngIf="ddOpen['races']"
-                                class="absolute z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
+                                class="relative z-20 mt-2 w-full rounded-xl border border-white/10 bg-[#101318] shadow-2xl overflow-hidden">
                                 <div class="p-2 border-b border-white/10">
                                     <input type="text"
                                         class="w-full rounded-lg  border border-white/10 px-3 py-2 text-sm outline-none focus:border-accent-500/50"
@@ -1120,8 +1179,9 @@
                     </section>
 
                     <!-- Education -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -1135,8 +1195,9 @@
                     </section>
 
                     <!-- Media -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="mb-4">
                             <h2 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2">
                                 <span class="inline-block size-2.5 rounded-full bg-accent-500/70"></span>
@@ -1252,8 +1313,9 @@
 
 
                     <!-- Resume -->
-                    <section
-                        class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                    <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                         <div class="grid grid-cols-1 gap-6 items-start">
                             <div>
                                 <h3 class="text-lg font-semibold" i18n="@@profile_resume_title">Resume</h3>
@@ -1348,8 +1410,9 @@
 
                     <!-- Additional Languages -->
                     <div [formGroup]="form">
-                        <section
-                            class="rounded-2xl border border-white/10 bg-[#15181d]/80 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)] p-5 md:p-6">
+                        <section class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur z-10
+       shadow-[0_12px_40px_rgba(0,0,0,0.35)] p-5 md:p-6 sticky top-24
+       ring-1 ring-white/5">
                             <div class="flex items-center justify-between gap-4">
                                 <div>
                                     <h2
@@ -1410,282 +1473,301 @@
 </div>
 
 <!-- Credit Modal -->
-<div *ngIf="creditModalOpen" class="fixed inset-0 z-50 flex items-start justify-center bg-black/60 px-4 py-10">
-    <div class="relative w-full max-w-4xl rounded-2xl bg-[#15181d] border border-white/10 shadow-2xl"
-        (click)="$event.stopPropagation()">
+<div *ngIf="creditModalOpen" class="fixed inset-0 z-50">
+    <!-- Backdrop -->
+    <button class="absolute inset-0 bg-black/70 backdrop-blur-[2px]" (click)="closeCreditModal()"
+        aria-label="Close modal">
+    </button>
 
-        <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
-            <h2 class="text-2xl font-semibold tracking-tight text-white">Edit Credit</h2>
-            <div class="flex items-center gap-2">
-                <button type="button"
-                    class="inline-flex items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-200 px-3 py-1.5 border border-emerald-400/40 hover:bg-emerald-500/25"
-                    (click)="saveCreditFromModal()">
-                    ✓
-                </button>
-                <button type="button"
-                    class="inline-flex items-center justify-center rounded-lg bg-red-500/15 text-red-200 px-3 py-1.5 border border-red-400/40 hover:bg-red-500/25"
-                    (click)="closeCreditModal()">
-                    ✕
-                </button>
-            </div>
-        </div>
-
-        <!-- Body -->
-        <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
-            <!-- First row -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                        placeholder="Company/Production Name" formControlName="company" />
-                    <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
-                </div>
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                        placeholder="Job/Position Title" formControlName="title" />
-                    <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
-                </div>
+    <!-- Dialog -->
+    <div class="relative mx-auto max-w-4xl px-4 py-10">
+        <div class="relative w-full overflow-hidden rounded-2xl
+                border border-white/10 bg-[#0b1417]/75 backdrop-blur-xl
+                shadow-[0_25px_90px_rgba(0,0,0,0.75)] ring-1 ring-white/10">
+            <!-- glow -->
+            <div aria-hidden="true" class="pointer-events-none absolute -inset-20 -z-10
+                  bg-[radial-gradient(60%_40%_at_20%_0%,rgba(138,171,6,0.18),transparent_60%),
+                      radial-gradient(40%_30%_at_80%_10%,rgba(20,124,127,0.20),transparent_55%)]">
             </div>
 
-            <!-- Years + current -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                        placeholder="2020" formControlName="startYear" />
-                    <p class="mt-1 text-xs text-gray-400">Start year *</p>
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                <h2 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Edit Credit</h2>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" class="inline-flex items-center justify-center rounded-xl
+                   bg-emerald-500/15 text-emerald-200 px-3 py-2
+                   border border-emerald-400/35 hover:bg-emerald-500/25 transition
+                   focus:outline-none focus:ring-2 focus:ring-emerald-400/30" (click)="saveCreditFromModal()">
+                        ✓
+                    </button>
+
+                    <button type="button" class="inline-flex items-center justify-center rounded-xl
+                   bg-red-500/15 text-red-200 px-3 py-2
+                   border border-red-400/35 hover:bg-red-500/25 transition
+                   focus:outline-none focus:ring-2 focus:ring-red-400/30" (click)="closeCreditModal()">
+                        ✕
+                    </button>
                 </div>
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                        placeholder="2022" formControlName="endYear"
-                        [disabled]="creditForm.controls.current.value === true" />
-                    <p class="mt-1 text-xs text-gray-400">End year</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
-                    <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
-                        <button type="button" (click)="creditForm.controls.current.setValue(true)"
-                            [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                            class="px-3 py-1.5">
-                            Yes
-                        </button>
-                        <button type="button" (click)="creditForm.controls.current.setValue(false)"
-                            [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                            class="px-3 py-1.5">
-                            No
-                        </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
+                <!-- First row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                            placeholder="Company/Production Name" formControlName="company" />
+                        <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
+                    </div>
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
+                            placeholder="Job/Position Title" formControlName="title" />
+                        <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Venue + Location -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                        placeholder="Venue" formControlName="venue" />
-                    <p class="mt-1 text-xs text-gray-400">Venue *</p>
-                </div>
-                <div>
-                    <input type="text"
-                        class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                        placeholder="Job Location" formControlName="jobLocation" />
-                    <p class="mt-1 text-xs text-gray-400">Job Location *</p>
-                </div>
-            </div>
-
-            <!-- Internship / fellowship -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <!-- Years + current -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="2020" formControlName="startYear" />
+                        <p class="mt-1 text-xs text-gray-400">Start year *</p>
+                    </div>
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="2022" formControlName="endYear"
+                            [disabled]="creditForm.controls.current.value === true" />
+                        <p class="mt-1 text-xs text-gray-400">End year</p>
+                    </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-xs text-gray-400">This was an internship</span>
+                        <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
                         <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
-                            <button type="button" (click)="creditForm.controls.internship.setValue(true)"
-                                [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            <button type="button" (click)="creditForm.controls.current.setValue(true)"
+                                [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
                                 Yes
                             </button>
-                            <button type="button" (click)="creditForm.controls.internship.setValue(false)"
-                                [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                            <button type="button" (click)="creditForm.controls.current.setValue(false)"
+                                [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
                                 class="px-3 py-1.5">
                                 No
                             </button>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs text-gray-400">This was a fellowship</span>
-                        <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
-                            <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
-                                [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                class="px-3 py-1.5">
-                                Yes
-                            </button>
-                            <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
-                                [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                class="px-3 py-1.5">
-                                No
-                            </button>
+
+                <!-- Venue + Location -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="Venue" formControlName="venue" />
+                        <p class="mt-1 text-xs text-gray-400">Venue *</p>
+                    </div>
+                    <div>
+                        <input type="text"
+                            class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
+                            placeholder="Job Location" formControlName="jobLocation" />
+                        <p class="mt-1 text-xs text-gray-400">Job Location *</p>
+                    </div>
+                </div>
+
+                <!-- Internship / fellowship -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400">This was an internship</span>
+                            <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
+                                <button type="button" (click)="creditForm.controls.internship.setValue(true)"
+                                    [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    Yes
+                                </button>
+                                <button type="button" (click)="creditForm.controls.internship.setValue(false)"
+                                    [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    No
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400">This was a fellowship</span>
+                            <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
+                                <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
+                                    [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    Yes
+                                </button>
+                                <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
+                                    [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
+                                    class="px-3 py-1.5">
+                                    No
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Department -->
-            <!-- Department (multi dropdown) -->
-            <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5
+                <!-- Department -->
+                <!-- Department (multi dropdown) -->
+                <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5
             shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-                <div class="flex items-start justify-between gap-3 mb-3">
-                    <div class="relative pl-3">
-                        <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/70"></span>
-                        <h3 class="text-sm font-semibold text-gray-100">
-                            Department <span class="text-red-400">*</span>
-                        </h3>
-                        <p class="text-xs text-gray-400 mt-0.5">เลือก department ที่คุณทำงานใน position นี้</p>
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="relative pl-3">
+                            <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/70"></span>
+                            <h3 class="text-sm font-semibold text-gray-100">
+                                Department <span class="text-red-400">*</span>
+                            </h3>
+                            <p class="text-xs text-gray-400 mt-0.5">เลือก department ที่คุณทำงานใน position นี้</p>
+                        </div>
+
+                        <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
+                            {{ selectedCreditDepts.size }} selected
+                        </span>
                     </div>
 
-                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
-                        {{ selectedCreditDepts.size }} selected
-                    </span>
-                </div>
-
-                <div #deptWrap class="relative">
-                    <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
+                    <div #deptWrap class="relative">
+                        <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
          hover:border-gray-300 focus:outline-none focus:border-accent-500/70
          focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]" (click)="toggleCreditDd($event,'dept')">
 
-                        <div class="flex flex-wrap gap-1.5">
-                            <ng-container *ngIf="selectedCreditDepts.size; else deptPlaceholder">
-                                <span *ngFor="let label of labelsArrayFromNumSet(selectedCreditDepts, departmentsApi)"
-                                    class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5
+                            <div class="flex flex-wrap gap-1.5">
+                                <ng-container *ngIf="selectedCreditDepts.size; else deptPlaceholder">
+                                    <span
+                                        *ngFor="let label of labelsArrayFromNumSet(selectedCreditDepts, departmentsApi)"
+                                        class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5
              text-xs font-medium text-gray-900 border border-gray-200">
-                                    {{ label }}
-                                </span>
-                            </ng-container>
+                                        {{ label }}
+                                    </span>
+                                </ng-container>
 
-                            <ng-template #deptPlaceholder>
-                                <span class="text-sm text-gray-400">
-                                    Select department(s)...
-                                </span>
-                            </ng-template>
-                        </div>
+                                <ng-template #deptPlaceholder>
+                                    <span class="text-sm text-gray-400">
+                                        Select department(s)...
+                                    </span>
+                                </ng-template>
+                            </div>
 
-                    </button>
-                    <div *ngIf="creditDdOpen.dept" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 
+                        </button>
+                        <div *ngIf="creditDdOpen.dept" class="relative z-30 mt-2 w-full rounded-xl border border-white/15 
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
-                        <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
-                            <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+                            <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
+                                <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
          focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
-                                [(ngModel)]="creditDdSearch.pos" [ngModelOptions]="{ standalone: true }"
-                                (click)="$event.stopPropagation()" />
+                                    [(ngModel)]="creditDdSearch.pos" [ngModelOptions]="{ standalone: true }"
+                                    (click)="$event.stopPropagation()" />
 
-                        </div>
+                            </div>
 
-                        <div class="max-h-64 overflow-auto p-2">
-                            <label *ngFor="let d of filterAny(departmentsApi, creditDdSearch.dept)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
+                            <div class="max-h-64 overflow-auto p-2">
+                                <label *ngFor="let d of filterAny(departmentsApi, creditDdSearch.dept)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                    [checked]="selectedCreditDepts.has(d.id)" (change)="toggleCreditDept(d.id)" />
-                                <span class="text-sm text-gray-200">{{ pickLabel(d) }}</span>
-                            </label>
-                        </div>
+                                    <input type="text" type="checkbox" class="size-4 accent-accent-500"
+                                        [checked]="selectedCreditDepts.has(d.id)" (change)="toggleCreditDept(d.id)" />
+                                    <span class="text-sm text-gray-200">{{ pickLabel(d) }}</span>
+                                </label>
+                            </div>
 
-                        <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
-                            <button type="button"
-                                class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
-                                (click)="clearCreditDepts(); $event.stopPropagation()">
-                                Clear
-                            </button>
-                            <button type="button"
-                                class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                (click)="creditDdOpen.dept=false; $event.stopPropagation()">
-                                Done
-                            </button>
+                            <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
+                                <button type="button"
+                                    class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
+                                    (click)="clearCreditDepts(); $event.stopPropagation()">
+                                    Clear
+                                </button>
+                                <button type="button"
+                                    class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                    (click)="creditDdOpen.dept=false; $event.stopPropagation()">
+                                    Done
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Position -->
-            <!-- Position (multi dropdown) -->
-            <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5 mt-4
+                <!-- Position (multi dropdown) -->
+                <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5 mt-4
             shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-                <div class="flex items-start justify-between gap-3 mb-3">
-                    <div class="relative pl-3">
-                        <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/40"></span>
-                        <h3 class="text-sm font-semibold text-gray-100">
-                            Position <span class="text-red-400">*</span>
-                        </h3>
-                        <p class="text-xs text-gray-400 mt-0.5">เลือกตำแหน่งภายใต้ department ที่เลือก</p>
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div class="relative pl-3">
+                            <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/40"></span>
+                            <h3 class="text-sm font-semibold text-gray-100">
+                                Position <span class="text-red-400">*</span>
+                            </h3>
+                            <p class="text-xs text-gray-400 mt-0.5">เลือกตำแหน่งภายใต้ department ที่เลือก</p>
+                        </div>
+
+                        <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
+                            {{ selectedCreditPositions.size }} selected
+                        </span>
                     </div>
 
-                    <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
-                        {{ selectedCreditPositions.size }} selected
-                    </span>
-                </div>
-
-                <div #posWrap class="relative">
-                    <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
+                    <div #posWrap class="relative">
+                        <button type="button" class="w-full rounded-xl bg-white border border-gray-200 px-3.5 py-2.5 text-left
              hover:border-gray-300 focus:outline-none focus:border-accent-500/70
              focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]
              disabled:opacity-60 disabled:hover:border-gray-200" [disabled]="!filteredPositions.length"
-                        (click)="toggleCreditDd($event,'pos')">
-                        <div class="flex flex-wrap gap-1.5">
-                            <ng-container *ngIf="selectedCreditPositions.size; else posPlaceholder">
-                                <span
-                                    *ngFor="let label of labelsArrayFromNumSet(selectedCreditPositions, filteredPositions); trackBy: trackById"
-                                    class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-gray-900 border border-gray-200">
-                                    {{ label }}
-                                </span>
-                            </ng-container>
+                            (click)="toggleCreditDd($event,'pos')">
+                            <div class="flex flex-wrap gap-1.5">
+                                <ng-container *ngIf="selectedCreditPositions.size; else posPlaceholder">
+                                    <span
+                                        *ngFor="let label of labelsArrayFromNumSet(selectedCreditPositions, filteredPositions); trackBy: trackById"
+                                        class="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-gray-900 border border-gray-200">
+                                        {{ label }}
+                                    </span>
+                                </ng-container>
 
-                            <ng-template #posPlaceholder>
-                                <span class="text-sm text-gray-400">Select position(s)...</span>
-                            </ng-template>
-                        </div>
-                    </button>
-                    <div *ngIf="creditDdOpen.pos" class="absolute z-30 mt-2 w-full rounded-xl border border-white/15 
+                                <ng-template #posPlaceholder>
+                                    <span class="text-sm text-gray-400">Select position(s)...</span>
+                                </ng-template>
+                            </div>
+                        </button>
+                        <div *ngIf="creditDdOpen.pos" class="relative z-30 mt-2 w-full rounded-xl border border-white/15 
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
-                        <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
-                            <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
+                            <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
+                                <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
                  focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
-                                [(ngModel)]="creditDdSearch.pos" (click)="$event.stopPropagation()" />
-                        </div>
+                                    [(ngModel)]="creditDdSearch.pos" (click)="$event.stopPropagation()" />
+                            </div>
 
-                        <div class="max-h-64 overflow-auto p-2">
-                            <label *ngFor="let p of filterAny(filteredPositions, creditDdSearch.pos)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
+                            <div class="max-h-64 overflow-auto p-2">
+                                <label *ngFor="let p of filterAny(filteredPositions, creditDdSearch.pos)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                <input type="text" type="checkbox" class="size-4 accent-accent-500"
-                                    [checked]="selectedCreditPositions.has(p.id)" (change)="toggleCreditPos(p.id)" />
-                                <span class="text-sm text-gray-200">{{ pickLabel(p) }}</span>
-                            </label>
-                        </div>
+                                    <input type="text" type="checkbox" class="size-4 accent-accent-500"
+                                        [checked]="selectedCreditPositions.has(p.id)"
+                                        (change)="toggleCreditPos(p.id)" />
+                                    <span class="text-sm text-gray-200">{{ pickLabel(p) }}</span>
+                                </label>
+                            </div>
 
-                        <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
-                            <button type="button"
-                                class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
-                                (click)="clearNumSet(selectedCreditPositions); $event.stopPropagation()">
-                                Clear
-                            </button>
-                            <button type="button"
-                                class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                (click)="creditDdOpen.pos=false; $event.stopPropagation()">
-                                Done
-                            </button>
+                            <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
+                                <button type="button"
+                                    class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
+                                    (click)="clearNumSet(selectedCreditPositions); $event.stopPropagation()">
+                                    Clear
+                                </button>
+                                <button type="button"
+                                    class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
+                                    (click)="creditDdOpen.pos=false; $event.stopPropagation()">
+                                    Done
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- คลิกที่ backdrop เพื่อปิด -->
-    <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
+        <!-- คลิกที่ backdrop เพื่อปิด -->
+        <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
+    </div>
 </div>

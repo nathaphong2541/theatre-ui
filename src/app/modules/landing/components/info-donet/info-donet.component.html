@@ -1,37 +1,86 @@
-<!-- Donate (Link Only, Dark Theme) -->
-<section id="donate" class="relative bg-[#0b1417] py-12 text-white">
-    <div class="mx-auto max-w-3xl px-6 text-center">
-        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight" i18n="@@donate_title">
-            สนับสนุนศูนย์รวมศิลปินการแสดงไทย
-        </h2>
+<!-- Donate Premium Section -->
+<section id="donate" class="relative overflow-hidden bg-[#0b1417] py-20 text-white">
 
-        <p class="mt-2 text-sm sm:text-base text-white/70" i18n="@@donate_subtitle">
-            แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้อย่างยั่งยืน
-        </p>
+    <!-- Background Glow -->
+    <div class="pointer-events-none absolute inset-0 opacity-70
+    bg-[radial-gradient(circle_at_20%_10%,rgba(28,197,201,0.18),transparent_55%),
+        radial-gradient(circle_at_80%_0%,rgba(15,110,115,0.16),transparent_60%),
+        radial-gradient(circle_at_50%_100%,rgba(0,0,0,0.55),transparent_65%)]">
+    </div>
 
-        <!-- Donate Link -->
-        <div class="mt-8 flex justify-center">
-            <a href="https://www.thaitheatre.org/en/donate" target="_blank" rel="noopener noreferrer" class="
-          inline-flex items-center gap-2
-          rounded-xl border border-[#8aab06]/40
-          bg-[#8aab06]/10
-          px-6 py-3
-          text-sm font-semibold text-[#cfe27a]
-          transition
-          hover:bg-[#8aab06]/20
-          hover:border-[#8aab06]
-          focus:outline-none focus:ring-2 focus:ring-[#8aab06]/60
-        " i18n="@@donate_home">
-                ไปยังหน้า Donate
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M7 17L17 7"></path>
-                    <path d="M7 7h10v10"></path>
-                </svg>
-            </a>
+    <div class="relative mx-auto max-w-4xl px-6">
+
+        <!-- Glass Card -->
+        <div class="relative rounded-3xl
+                border border-[#19a7aa]/30
+                bg-white/5 backdrop-blur-xl
+                p-10 text-center
+                shadow-[0_25px_80px_rgba(0,0,0,0.65)]
+                overflow-hidden">
+
+            <!-- subtle inner glow -->
+            <div class="pointer-events-none absolute inset-0 opacity-40
+        bg-[radial-gradient(circle_at_50%_0%,rgba(28,197,201,0.25),transparent_55%)]">
+            </div>
+
+            <!-- Title -->
+            <h2 class="relative text-3xl sm:text-4xl font-extrabold tracking-tight
+                 bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                 bg-clip-text text-transparent
+                 drop-shadow-[0_10px_50px_rgba(0,0,0,0.9)]
+                 [text-shadow:0_0_45px_rgba(20,124,127,0.45)]" i18n="@@donate_title">
+                สนับสนุนศูนย์รวมศิลปินการแสดงไทย
+            </h2>
+
+            <!-- Subtitle -->
+            <p class="relative mt-4 text-base sm:text-lg text-white/75 leading-relaxed max-w-2xl mx-auto"
+                i18n="@@donate_subtitle">
+                แรงสนับสนุนของคุณช่วยให้เราขับเคลื่อนศิลปะการละครสู่สังคมได้อย่างยั่งยืน
+            </p>
+
+            <!-- Divider Glow Line -->
+            <div class="relative mx-auto mt-8 h-px w-40
+                  bg-gradient-to-r from-transparent via-[#1cc5c9]/60 to-transparent">
+            </div>
+
+            <!-- Donate Button (with subtle pulse) -->
+            <div class="relative mt-10 flex justify-center">
+                <a href="https://www.thaitheatre.org/en/donate" target="_blank" rel="noopener noreferrer" class="group inline-flex items-center gap-3
+                  rounded-full
+                  px-8 py-3.5
+                  text-base font-semibold tracking-wide text-white
+
+                  bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                  shadow-[0_15px_40px_rgba(15,110,115,0.45)]
+
+                  transition-all duration-300 ease-out
+                  hover:brightness-110
+                  hover:shadow-[0_20px_60px_rgba(20,124,127,0.75)]
+                  hover:-translate-y-[3px]
+                  active:translate-y-0
+
+                  focus:outline-none
+                  focus:ring-2 focus:ring-[#1cc5c9]/70
+                  focus:ring-offset-2 focus:ring-offset-[#0b1417]
+
+                  animate-[pulse_3.5s_ease-in-out_infinite]" i18n="@@donate_home">
+
+                    ไปยังหน้า Donate
+
+                    <svg class="h-5 w-5 transition-transform duration-300
+                      group-hover:translate-x-1 group-hover:-translate-y-1" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M7 17L17 7"></path>
+                        <path d="M7 7h10v10"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Note -->
+            <p class="relative mt-6 text-sm text-white/60" i18n="@@donate_system">
+                ระบบการบริจาคจะเปิดในเว็บไซต์หลักของ Thai Theatre
+            </p>
+
         </div>
-
-        <p class="mt-4 text-xs text-white/60" i18n="@@donate_system">
-            ระบบการบริจาคจะเปิดในเว็บไซต์หลักของ Thai Theatre
-        </p>
     </div>
 </section>

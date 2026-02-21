@@ -1,9 +1,10 @@
-<div class="min-h-screen bg-[#05070b] text-white">
+<div class="min-h-screen bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] text-white">
     <div class="mx-auto max-w-4xl px-4 py-8">
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between gap-3">
             <div>
-                <h1 class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                <h1 class="text-2xl font-semibold text-white
+           drop-shadow-[0_0_12px_rgba(20,184,166,0.35)]">
                     <ng-container *ngIf="mode === 'create'" i18n="@@script_create_title">
                         อัปโหลดบทละครใหม่
                     </ng-container>
@@ -25,8 +26,8 @@
                 </p>
             </div>
 
-            <button type="button" (click)="onCancel()"
-                class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white hover:bg-[#6F9106]/15 hover:border-[#6F9106] transition">
+            <button type="button" (click)="onCancel()" class="rounded-xl border border-white/12 bg-white/5 px-3 py-1.5 text-xs
+       hover:bg-white/10 hover:border-white/20 transition">
                 <ng-container *ngIf="mode === 'view'" i18n="@@back_to_list_view">
                     กลับหน้ารายการ
                 </ng-container>
@@ -37,16 +38,26 @@
         </div>
 
         <!-- Form Card -->
-        <form [formGroup]="form" (ngSubmit)="onSubmit()"
-            class="space-y-6 rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] p-6 shadow shadow-black/70">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 rounded-2xl
+         border border-white/10
+         bg-[#0b1417]/75 backdrop-blur-xl
+         p-6
+         shadow-[0_20px_60px_rgba(0,0,0,0.45)]
+         ring-1 ring-white/10">
             <!-- Title -->
             <div>
                 <label class="mb-1 block text-sm font-medium" i18n="@@script_form_title_label">
                     ชื่อเรื่อง <span class="text-red-400">*</span>
                 </label>
 
-                <input type="text" formControlName="title" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
-                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40" placeholder="เช่น ความลับหลังเวที"
+                <input type="text" formControlName="title" class="w-full rounded-xl
+       border border-white/12
+       bg-white/5
+       px-3 py-2 text-sm text-white
+       placeholder:text-white/40
+       outline-none
+       focus:border-[#14b8a6]/60
+       focus:shadow-[0_0_0_3px_rgba(20,184,166,0.20)]" placeholder="เช่น ความลับหลังเวที"
                     i18n-placeholder="@@script_form_title_placeholder" />
 
                 <div *ngIf="titleCtrl?.touched && titleCtrl?.invalid" class="mt-1 text-xs text-red-300">
@@ -65,8 +76,14 @@
                     คำอธิบาย
                 </label>
 
-                <textarea formControlName="description" rows="5" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
-                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                <textarea formControlName="description" rows="5" class="w-full rounded-xl
+       border border-white/12
+       bg-white/5
+       px-3 py-2 text-sm text-white
+       placeholder:text-white/40
+       outline-none
+       focus:border-[#14b8a6]/60
+       focus:shadow-[0_0_0_3px_rgba(20,184,166,0.20)]"
                     placeholder="เล่าเนื้อหาโดยย่อ บรรยากาศ ตัวละครหลัก หรือรายละเอียดเวที"
                     i18n-placeholder="@@script_form_description_placeholder"></textarea>
 
@@ -83,14 +100,19 @@
                     แท็ก (Tags)
                 </label>
 
-                <input type="text" formControlName="tags" class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-white/30
-                 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
-                    placeholder="เช่น ดราม่า,ตลก,ครอบครัว,ละครเวทีเล็ก"
+                <input type="text" formControlName="tags" class="w-full rounded-xl
+       border border-white/12
+       bg-white/5
+       px-3 py-2 text-sm text-white
+       placeholder:text-white/40
+       outline-none
+       focus:border-[#14b8a6]/60
+       focus:shadow-[0_0_0_3px_rgba(20,184,166,0.20)]" placeholder="เช่น ดราม่า,ตลก,ครอบครัว,ละครเวทีเล็ก"
                     i18n-placeholder="@@script_form_tags_placeholder" />
 
                 <p class="mt-1 text-xs text-white/40">
                     <span i18n="@@script_form_tags_hint">ใช้เครื่องหมายคอมมา ( , ) คั่นแต่ละแท็ก เช่น</span>
-                    <span class="text-[#6F9106]" i18n="@@script_form_tags_example">ดราม่า,ตลก,ร่วมสมัย</span>
+                    <span class="text-[#baf7ef]" i18n="@@script_form_tags_example">ดราม่า,ตลก,ร่วมสมัย</span>
                 </p>
             </div>
 
@@ -103,8 +125,10 @@
                 <div class="flex items-center gap-3">
                     <!-- ปุ่มเลือกไฟล์ แสดงเฉพาะ create/edit -->
                     <!-- ปุ่มเลือกไฟล์ PDF -->
-                    <button *ngIf="!isViewMode" type="button" (click)="triggerPdfPicker()" class="inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
-         hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition" i18n="@@script_form_pdf_select">
+                    <button *ngIf="!isViewMode" type="button" (click)="triggerPdfPicker()" class="inline-flex items-center rounded-xl
+       bg-[#14b8a6]/15 border border-[#14b8a6]/35
+       px-4 py-1.5 text-xs font-medium text-[#baf7ef]
+       hover:bg-[#14b8a6]/20 hover:border-[#14b8a6]/50 transition" i18n="@@script_form_pdf_select">
                         เลือกไฟล์ PDF
                     </button>
 
@@ -142,7 +166,7 @@
                         <!-- ปุ่มควบคุม PDF -->
                         <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                             <button type="button" (click)="openPdfFullScreen()"
-                                class="rounded-full border border-[#6F9106]/70 px-3 py-1 text-[11px] text-[#6F9106] hover:bg-[#6F9106]/15"
+                                class="rounded-full border border-[#14b8a6]/70 px-3 py-1 text-[11px] text-[#baf7ef] hover:bg-[#14b8a6]/15"
                                 i18n="@@script_form_pdf_open_full">
                                 เปิดแบบเต็มหน้าจอ
                             </button>
@@ -166,7 +190,7 @@
                     <span i18n="@@script_form_images_label_suffix">รูป)</span>
                 </label>
 
-                <div class="mt-4 flex flex-col items-center justify-start gap-3 rounded-xl border-2 border-dashed border-[#6F9106]/60 bg-[#05070b] px-4 py-6 text-center"
+                <div class="mt-4 flex flex-col items-center justify-start gap-3 rounded-xl border-2 border-dashed border-[#14b8a6]/60 bg-[#05070b] px-4 py-6 text-center"
                     [class.opacity-60]="isViewMode">
                     <p class="text-xs text-white/60" i18n="@@script_form_images_select_hint">
                         เลือกไฟล์รูปภาพจากเครื่องของคุณ
@@ -180,8 +204,10 @@
 
                     <!-- ปุ่มเลือกเฉพาะ create/edit -->
                     <!-- ปุ่มเลือกรูปภาพ -->
-                    <button *ngIf="!isViewMode" type="button" (click)="triggerImagesPicker()" class="mt-1 inline-flex cursor-pointer items-center rounded-lg bg-[#6F9106] px-4 py-1.5 text-xs font-medium text-black
-         hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] transition" i18n="@@script_form_images_select">
+                    <button *ngIf="!isViewMode" type="button" (click)="triggerImagesPicker()" class="mt-1 inline-flex items-center rounded-xl
+       bg-[#14b8a6]/15 border border-[#14b8a6]/35
+       px-4 py-1.5 text-xs font-medium text-[#baf7ef]
+       hover:bg-[#14b8a6]/20 hover:border-[#14b8a6]/50 transition" i18n="@@script_form_images_select">
                         เลือกรูปภาพ
                     </button>
 
@@ -230,9 +256,9 @@
                 </button>
 
                 <!-- ปุ่มบันทึกเฉพาะ create/edit -->
-                <button *ngIf="!isViewMode" type="submit"
-                    class="rounded-lg bg-[#6F9106] px-5 py-2 text-sm font-medium text-black
-                 hover:bg-[#5B7405] hover:shadow-[0_0_10px_rgba(111,145,6,0.7)] disabled:opacity-60 disabled:cursor-not-allowed" [disabled]="isSubmitting">
+                <button *ngIf="!isViewMode" type="submit" class="rounded-lg bg-[#14b8a6]/15 border border-[#14b8a6]/35 px-5 py-2 text-sm font-medium text-[#baf7ef]
+                 hover:bg-[#14b8a6]/20 hover:border-[#14b8a6]/50 disabled:opacity-60 disabled:cursor-not-allowed"
+                    [disabled]="isSubmitting">
                     <ng-container *ngIf="isSubmitting && mode === 'create'" i18n="@@action_uploading">
                         กำลังอัปโหลด...
                     </ng-container>

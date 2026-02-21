@@ -312,7 +312,7 @@ select {
   @apply h-4 w-4 rounded-sm border-border text-black bg-background checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary focus:ring-2 focus:ring-primary;
 }
 
-.bg-main {
+.bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] {
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 30%, transparent 55%),
 

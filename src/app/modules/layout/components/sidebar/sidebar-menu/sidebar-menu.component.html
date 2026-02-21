@@ -1,6 +1,6 @@
 <div *ngFor="let menu of menuService.pagesMenu">
   <div *ngIf="menuService.showSideBar" class="mx-1 flex items-center justify-between py-3">
-    <small [ngClass]="{ hidden: !menuService.showSideBar }" class="text-muted-foreground/50 text-xs font-semibold">
+    <small [ngClass]="{ hidden: !menuService.showSideBar }" class="text-white/50 text-xs font-semibold">
       {{ menu.group }}
     </small>
   </div>
@@ -12,9 +12,9 @@
           'hover:bg-primary/10': !menuService.showSideBar && item.active,
           'hover:bg-card/50': !menuService.showSideBar
         }"
-        class="text-muted-foreground hover:text-foreground group relative flex grow items-center gap-4 rounded-lg px-2">
+        class="text-white hover:text-foreground group relative flex grow items-center gap-4 rounded-lg px-2">
         <!-- Icon -->
-        <div [ngClass]="item.active && !menuService.showSideBar ? 'text-primary' : 'text-muted-foreground/50'">
+        <div [ngClass]="item.active && !menuService.showSideBar ? 'text-white' : 'text-white/50'">
           <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"> </svg-icon>
         </div>
 
@@ -26,9 +26,9 @@
         <!-- Workaround:: Enable routerLink -->
         <ng-template #parentMenu let-item="item">
           <div [routerLink]="menuService.link(item.route)"
-            class="text-muted-foreground hover:text-primary flex h-[36px] cursor-pointer items-center justify-start rounded-sm">
-            <a [ngClass]="{ hidden: !menuService.showSideBar }" routerLinkActive="text-primary"
-              class="truncate text-xs font-semibold tracking-wide focus:outline-hidden">
+            class="text-white hover:text-white flex h-[36px] cursor-pointer items-center justify-start rounded-sm">
+            <a [ngClass]="{ hidden: !menuService.showSideBar }" routerLinkActive="text-white"
+              class="truncate text-xs font-semibold tracking-wide text-white focus:outline-hidden">
               {{ item.label }}
             </a>
           </div>
@@ -38,7 +38,7 @@
         <ng-template #childMenu let-item="item">
           <div class="flex h-9 grow cursor-pointer items-center justify-start rounded-sm">
             <a [ngClass]="{ hidden: !menuService.showSideBar }"
-              class="text-muted-foreground group-hover:text-primary truncate text-xs font-semibold tracking-wide focus:outline-hidden">
+              class="text-white group-hover:text-white truncate text-xs font-semibold tracking-wide text-white focus:outline-hidden">
               {{ item.label }}
             </a>
           </div>

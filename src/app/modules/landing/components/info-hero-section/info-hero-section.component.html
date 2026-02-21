@@ -12,60 +12,95 @@
 
     <!-- Accent strips left / right -->
     <div
-        class="pointer-events-none h-72 absolute inset-y-0 left-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-[#8aab06] hidden sm:block ">
+        class="pointer-events-none h-72 absolute inset-y-0 left-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] hidden sm:block ">
     </div>
     <div
-        class="pointer-events-none h-96 absolute inset-y-96 right-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-[#8aab06] hidden sm:block">
+        class="pointer-events-none h-96 absolute inset-y-96 right-0 w-4 sm:w-8 md:w-9 lg:w-9 xl:12 bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] hidden sm:block">
     </div>
 
     <!-- Content -->
     <div class="relative z-10 max-w-7xl px-4 sm:px-8 lg:px-9 py-10 sm:py-14 lg:py-20">
         <div class="flex flex-col gap-5">
             <!-- Title -->
-            <div class="w-full max-w-2xl bg-black/85 border border-white/10
-               px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
-                <div class="flex flex-col gap-0.5 text-left">
-                    <label class="font-extrabold tracking-tight leading-tight
-                   text-3xl sm:text-4xl md:text-[56px]" i18n="@@landing_hero_text_1">
-                        ศิลปะการแสดงไทย
-                    </label>
+            <div class="w-full max-w-2xl 
+            bg-gradient-to-br from-black/95 via-[#0b1414]/90 to-black/95
+            backdrop-blur-sm
+            border border-white/10
+            shadow-2xl shadow-black/50
+            px-6 sm:px-8 lg:px-10 
+            py-7 sm:py-8 lg:py-8">
 
-                    <label class="font-extrabold tracking-tight leading-16
-                   text-4xl sm:text-5xl md:text-[5rem] text-[#8aab06]" i18n="@@landing_hero_text_2">
+                <div class="flex flex-col gap-1 text-left">
+
+                    <!-- บรรทัดบน -->
+                    <h1 class="font-extrabold tracking-tight leading-[1.05]
+text-3xl sm:text-4xl md:text-[56px]
+text-white
+drop-shadow-[0_6px_30px_rgba(0,0,0,0.9)]
+[ text-shadow:0_0_20px_rgba(255,255,255,0.15) ]" i18n="@@landing_hero_text_1">
+                        ศิลปะการแสดงไทย
+                    </h1>
+
+                    <!-- บรรทัดล่าง -->
+                    <h2 class="font-extrabold tracking-tight leading-[1]
+text-4xl sm:text-5xl md:text-[5.2rem]
+bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+bg-clip-text text-transparent
+drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
+[ text-shadow:0_0_40px_rgba(20,124,127,0.5) ]" i18n="@@landing_hero_text_2">
                         ศูนย์รวมศิลปินการแสดง
-                    </label>
+                    </h2>
+
                 </div>
             </div>
-            <div class="w-full max-w-2xl bg-black/85 border border-white/10 
-               px-5 sm:px-7 lg:px-9 py-6 sm:py-8 lg:py-9">
+            <div class="w-full max-w-2xl 
+            bg-black/90 
+            border border-white/10
+            shadow-2xl shadow-black/60
+            px-5 sm:px-7 lg:px-9 
+            py-6 sm:py-8 lg:py-9">
+
                 <!-- Bullet List -->
                 <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2
-                 text-[#8aab06] text-sm sm:text-base font-medium">
+                text-sm sm:text-base font-semibold tracking-wide
+                bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+bg-clip-text text-transparent
+drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
+[ text-shadow:0_0_40px_rgba(20,124,127,0.5) ]">
+
                     <span i18n="@@landing_hero_bullet_1">ค้นหาศิลปิน</span>
-                    <span>•</span>
+                    <span class="">•</span>
                     <span i18n="@@landing_hero_bullet_2">สร้างการเชื่อมต่อ</span>
-                    <span>•</span>
+                    <span class="">•</span>
                     <span i18n="@@landing_hero_bullet_3">เปิดประตูสู่โอกาสใหม่</span>
+
                 </div>
 
                 <!-- Paragraph Section -->
-                <div class="mt-4 space-y-1.5 text-xs sm:text-sm md:text-base
-                 leading-6 sm:leading-7 text-white/90">
+                <div class="mt-5 space-y-3
+              text-sm sm:text-base md:text-lg
+              leading-7 sm:leading-8
+              text-white
+              drop-shadow-[0_4px_15px_rgba(0,0,0,0.6)]">
+
                     <p class="m-0" i18n="@@landing_hero_para_1">
                         พื้นที่เล็ก ๆ ที่รวบรวมศิลปินจากทุกมุมมาพบกัน
                     </p>
+
                     <p class="m-0" i18n="@@landing_hero_para_2">
                         เราจะเป็นประตูที่เปิดรับคุณเสมอ ไม่ว่าคุณจะเป็นใคร
                     </p>
 
-                    <div class="h-1"></div>
+                    <div class="h-2"></div>
 
                     <p class="m-0" i18n="@@landing_hero_para_3">
                         พร้อมความตั้งใจให้ที่แห่งนี้ เป็นศูนย์กลางอันอบอุ่น
                     </p>
+
                     <p class="m-0" i18n="@@landing_hero_para_4">
                         มอบแรงบันดาลใจ และเติบโตได้ไปพร้อม ๆ กัน
                     </p>
+
                 </div>
             </div>
             <div class="w-full max-w-2xl 
@@ -84,20 +119,30 @@
                     </button>
 
                     <!-- Create Profile (green button) -->
-                    <button type="button" (click)="onClickOpportunity()" class="inline-flex items-center justify-center gap-2 rounded-lg
-                   bg-[#8aab06] text-black px-4 sm:px-5 py-2
-                   text-sm sm:text-base font-semibold shadow-lg
-                   hover:brightness-110 transition
-                   w-full sm:w-auto">
-                        <span class="flex items-center justify-center">
+                    <button type="button" (click)="onClickOpportunity()" class="relative inline-flex items-center justify-center gap-2
+  rounded-xl
+  px-5 sm:px-6 py-2.5
+  text-sm sm:text-base font-semibold
+  text-white
+  bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+  shadow-[0_8px_30px_rgba(15,110,115,0.45)]
+  transition-all duration-300
+  hover:brightness-110
+  hover:shadow-[0_12px_40px_rgba(20,124,127,0.65)]
+  hover:-translate-y-[2px]
+  active:translate-y-0
+  w-full sm:w-auto">
+
+                        <span class="flex items-center justify-center text-white/95">
                             <i class="fa-solid fa-user"></i>
                         </span>
-                        <!-- แค่ตัวอย่าง: เปลี่ยนข้อความตามสถานะ -->
+
                         <ng-container *ngIf="isLoggedIn$ | async; else notLogin">
-                            <label for="" i18n="@@landing_hero_button_3">โปรไฟล์ของคุณ</label>
+                            <span i18n="@@landing_hero_button_3">โปรไฟล์ของคุณ</span>
                         </ng-container>
+
                         <ng-template #notLogin>
-                            <label for="" i18n="@@landing_hero_button_2">สร้างโปรไฟล์</label>
+                            <span i18n="@@landing_hero_button_2">สร้างโปรไฟล์</span>
                         </ng-template>
                     </button>
                 </div>
@@ -106,5 +151,5 @@
     </div>
 
     <!-- Bottom accent line -->
-    <div class="hidden sm:block h-1 w-full bg-gradient-to-r from-transparent via-[#8aab06] to-transparent"></div>
+    <div class="hidden sm:block h-1 w-full bg-gradient-to-r from-transparent via-[#0F6E73] to-transparent"></div>
 </section>

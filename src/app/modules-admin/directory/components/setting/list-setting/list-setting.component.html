@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-[#0b0e13] text-[#e9edf1]">
+<div class="min-h-screen bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] text-[#e9edf1]">
     <div class="mx-auto max-w-6xl px-4 py-10">
         <!-- Header -->
         <header class="mb-6">
@@ -12,17 +12,23 @@
         <section class="mb-8">
             <h2 class="text-2xl font-semibold mb-3" i18n="@@settings_account_title">Account</h2>
 
-            <div
-                class="rounded-2xl border border-white/10 bg-white/[0.06] p-4 md:p-5 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+            <div class="rounded-2xl 
+border border-white/10 
+bg-[#0b1417]/85 backdrop-blur-xl
+p-5 
+shadow-[0_20px_70px_rgba(0,0,0,0.85)]
+ring-1 ring-white/10">
                 <div class="flex flex-wrap gap-3">
-                    <button type="button" (click)="changeEmail()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
-                        i18n="@@settings_change_email_btn">
+                    <button type="button" (click)="changeEmail()" class="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm
+       hover:bg-white/15
+       focus:outline-none focus:ring-2 focus:ring-[#14b8a6]/40 transition" i18n="@@settings_change_email_btn">
                         Change your email address
                     </button>
 
                     <!-- <button type="button" (click)="changePassword()"
-                        class="rounded-xl border border-white/10 bg-white/10 px-4 py-2.5 text-sm hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky-400/30"
+                        class="rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm
+       hover:bg-white/15
+       focus:outline-none focus:ring-2 focus:ring-[#14b8a6]/40 transition"
                         i18n="@@settings_change_password_btn">
                         Change your password
                     </button> -->
@@ -35,7 +41,7 @@
             <h2 class="text-2xl font-semibold mb-3" i18n="@@settings_close_account_title">Close your account</h2>
 
             <div
-                class="rounded-2xl border border-white/10 bg-white/[0.06] p-5 md:p-6 shadow-[0_10px_30px_-12px_rgba(0,0,0,0.6)]">
+                class="rounded-2xl border border-white/10 bg-[#0b1417]/85 backdrop-blur-xl p-5 md:p-6 shadow-[0_20px_70px_rgba(0,0,0,0.85)] ring-1 ring-white/10">
                 <p class="text-sm text-white/80 mb-4" i18n="@@settings_close_account_desc">
                     If you'd like to remove your account entirely and delete your data, you can do so below. You can
                     re-register at any time.
@@ -55,8 +61,8 @@
         <div *ngIf="showChangeEmail()"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
             (click)="closeChangeEmail()">
-            <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#05070b] p-6 shadow-2xl"
-                (click)="$event.stopPropagation()">
+            <div class="w-full max-w-md rounded-2xl border border-white/10 bg-[#0b1417]/95 backdrop-blur-xl
+ring-1 ring-white/10 p-6 shadow-2xl" (click)="$event.stopPropagation()">
                 <div class="mb-4 flex items-center gap-3">
                     <div
                         class="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/15 border border-sky-400/40">

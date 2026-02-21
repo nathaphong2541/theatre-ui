@@ -13,7 +13,7 @@
         </form>
 
         <!-- แจ้งเตือนเมื่อครบจำนวน (ซ่อนเมื่อ viewOnly หรือมี sources) -->
-        <p *ngIf="!viewOnly && !sources?.length && videos().length >= limit" class="text-sm text-muted-foreground mb-6">
+        <p *ngIf="!viewOnly && !sources?.length && videos().length >= limit" class="text-sm text-white mb-6">
             ✅ เพิ่มได้สูงสุด {{ limit }} วิดีโอ
         </p>
 

@@ -1,6 +1,13 @@
 <!-- About / Concept Section -->
-<section id="about" class="bg-[#05070a] py-16 sm:py-20 text-white border-t border-[#111827]">
-    <div class="mx-auto max-w-6xl px-6 lg:px-8">
+<section id="about" class="relative overflow-hidden bg-[#05070a] py-16 sm:py-20 text-white border-t border-[#111827]">
+
+    <!-- subtle glow background -->
+    <div class="pointer-events-none absolute inset-0 opacity-60
+    bg-[radial-gradient(circle_at_15%_20%,rgba(28,197,201,0.18),transparent_55%),
+        radial-gradient(circle_at_85%_10%,rgba(15,110,115,0.16),transparent_55%),
+        radial-gradient(circle_at_50%_90%,rgba(0,0,0,0.55),transparent_60%)]"></div>
+
+    <div class="relative mx-auto max-w-6xl px-6 lg:px-8">
         <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start">
 
             <!-- LEFT: Text -->
@@ -10,8 +17,15 @@
                     <span class="block text-sm text-[#9ca3af] mb-1" i18n="@@landing_about_text_main">
                         แพลตฟอร์มสำหรับงานละคร
                     </span>
-                    <span class="block text-[#8aab06] text-xl sm:text-2xl" i18n="@@landing_about_text_1">
-                        พื้นที่เชื่อมโยงสำหรับ “หาคนทำงาน” และ “หางานละคร” </span>
+
+                    <!-- ✅ teal gradient title -->
+                    <span class="block text-xl sm:text-2xl font-extrabold tracking-tight
+                   bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                   bg-clip-text text-transparent
+                   drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
+                   [text-shadow:0_0_40px_rgba(20,124,127,0.45)]" i18n="@@landing_about_text_1">
+                        พื้นที่เชื่อมโยงสำหรับ “หาคนทำงาน” และ “หางานละคร”
+                    </span>
                 </h2>
 
                 <!-- main description -->
@@ -28,11 +42,14 @@
 
                 <!-- bullet list -->
                 <dl class="mt-6 space-y-4 text-sm">
+
                     <!-- item 1 -->
                     <div class="flex gap-3">
-                        <div
-                            class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#0b1114] border border-[#8aab06]/50">
-                            <svg class="h-4 w-4 text-[#cbe46f]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <div class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full
+                        bg-black/35 backdrop-blur
+                        border border-[#19a7aa]/35
+                        shadow-[0_10px_30px_rgba(15,110,115,0.18)]">
+                            <svg class="h-4 w-4 text-[#1cc5c9]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M3 12h18" stroke-width="2" />
                                 <path d="M12 5v14" stroke-width="2" />
                             </svg>
@@ -49,9 +66,11 @@
 
                     <!-- item 2 -->
                     <div class="flex gap-3">
-                        <div
-                            class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#0b1114] border border-white/25">
-                            <svg class="h-4 w-4 text-[#e5e7eb]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <div class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full
+                        bg-black/35 backdrop-blur
+                        border border-[#19a7aa]/25
+                        shadow-[0_10px_30px_rgba(15,110,115,0.14)]">
+                            <svg class="h-4 w-4 text-[#bffcff]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <rect x="3" y="7" width="18" height="14" rx="2" stroke-width="2" />
                                 <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke-width="2" />
                             </svg>
@@ -68,9 +87,11 @@
 
                     <!-- item 3 -->
                     <div class="flex gap-3">
-                        <div
-                            class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#0b1114] border border-white/25">
-                            <svg class="h-4 w-4 text-[#e5e7eb]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <div class="mt-1 flex h-8 w-8 flex-none items-center justify-center rounded-full
+                        bg-black/35 backdrop-blur
+                        border border-[#19a7aa]/25
+                        shadow-[0_10px_30px_rgba(15,110,115,0.14)]">
+                            <svg class="h-4 w-4 text-[#bffcff]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M4 19h16" stroke-width="2" />
                                 <rect x="6" y="4" width="12" height="12" rx="2" stroke-width="2" />
                             </svg>
@@ -88,15 +109,34 @@
 
                 <!-- CTA -->
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <button (click)="howtouser()" type="button"
-                        class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#8aab06] px-5 py-2.5 text-sm font-medium text-black shadow-sm hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#8aab06]/70 sm:w-auto"
-                        i18n="@@landing_about_text_10">
+                    <!-- ✅ teal gradient primary -->
+                    <button (click)="howtouser()" type="button" class="group inline-flex w-full items-center justify-center gap-2 rounded-full
+                   px-2 py-2.5 text-sm font-semibold tracking-wide text-white
+                   bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                   shadow-[0_10px_30px_rgba(15,110,115,0.35)]
+                   transition-all duration-300 ease-out
+                   hover:brightness-110
+                   hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
+                   hover:-translate-y-[2px]
+                   active:translate-y-0
+                   focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/60 focus:ring-offset-2 focus:ring-offset-[#05070a]
+                   sm:w-auto" i18n="@@landing_about_text_10">
                         วิธีใช้งานแพลตฟอร์ม
+                        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </button>
 
-                    <a href="https://www.thaitheatre.org/" target="_blank" rel="noopener"
-                        class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/15 bg-transparent px-5 py-2.5 text-sm font-medium text-white/90 hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-white/40 sm:w-auto"
-                        i18n="@@landing_about_text_11">
+                    <!-- ✅ teal outline secondary -->
+                    <a href="https://www.thaitheatre.org/" target="_blank" rel="noopener" class="inline-flex w-full items-center justify-center gap-2 rounded-full
+                   border border-[#19a7aa]/35 bg-white/5
+                   px-2 py-2.5 text-sm font-semibold tracking-wide text-white/90
+                   transition-all duration-300
+                   hover:bg-white/10 hover:border-[#1cc5c9]/60
+                   hover:shadow-[0_12px_40px_rgba(20,124,127,0.22)]
+                   focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/45 focus:ring-offset-2 focus:ring-offset-[#05070a]
+                   sm:w-auto" i18n="@@landing_about_text_11">
                         ดูเว็บไซต์หลักของมูลนิธิ
                     </a>
                 </div>
@@ -105,10 +145,19 @@
             <!-- RIGHT: Image card -->
             <div class="lg:pl-6">
                 <div class="p-5 sm:p-6">
-                    <div class="rounded-2xl border border-[#1f2937] bg-black/80 grid place-items-center py-10">
-                        <img [src]="'assets/images/images.png'" class="w-full h-auto object-cover opacity-90"
+                    <div class="rounded-2xl border border-[#19a7aa]/20 bg-black/70 backdrop-blur
+                      shadow-[0_18px_60px_rgba(0,0,0,0.65)]
+                      grid place-items-center py-8 px-6">
+
+                        <div class="pointer-events-none absolute opacity-60"></div>
+
+                        <img [src]="'assets/images/images.png'"
+                            class="w-full h-auto object-cover opacity-90 rounded-xl border border-white/10"
                             alt="ภาพหน้าจอแพลตฟอร์มหาคนทำงานละคร" referrerpolicy="no-referrer" />
-                        <!-- ถ้าจะใช้ placeholder COMING SOON ให้เปลี่ยนเป็นภาพอื่นแทน -->
+
+                        <!-- optional caption -->
+                        <p class="mt-4 text-xs text-white/60">
+                        </p>
                     </div>
                 </div>
             </div>

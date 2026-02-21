@@ -1,13 +1,17 @@
-<section class="bg-main min-h-screen text-white relative overflow-hidden">
+<section class="bg-black min-h-screen text-white relative overflow-hidden">
     <!-- film overlay (ช่วยให้คอนทราสต์อ่านง่ายขึ้น) -->
     <div class="pointer-events-none absolute inset-0 bg-black/15"></div>
 
-    <div class="relative mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
+    <div class="relative mx-auto px-4 lg:px-8 py-8 lg:py-10">
 
         <!-- Header -->
         <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-3xl font-semibold tracking-tight text-[#8aab06]" i18n="@@skillpage_title">
+                <h2 class="text-3xl font-extrabold tracking-tight
+         bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+         bg-clip-text text-transparent
+         drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
+         [text-shadow:0_0_40px_rgba(20,124,127,0.5)]" i18n="@@skillpage_title">
                     เลือกทักษะ
                 </h2>
                 <p class="mt-1 text-white/70" i18n="@@skillpage_subtitle">
@@ -16,19 +20,28 @@
             </div>
 
             <div class="flex flex-wrap gap-2">
-                <button type="button" class="inline-flex items-center justify-center rounded-full border border-white/15
-                 bg-black/25 backdrop-blur px-4 py-2 text-sm font-medium text-white/90
-                 hover:bg-black/35 hover:border-white/25 transition" (click)="backToDirectory()"
+                <button type="button" class="inline-flex items-center justify-center rounded-full
+         border border-[#19a7aa]/35
+         bg-black/25 backdrop-blur
+         px-4 py-2 text-sm font-semibold tracking-wide text-white/90
+
+         shadow-[0_10px_30px_rgba(15,110,115,0.18)]
+         transition-all duration-300
+
+         hover:bg-black/35
+         hover:border-[#1cc5c9]/60
+         hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)]
+         hover:-translate-y-[1px]
+
+         active:translate-y-0
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/55
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]" (click)="backToDirectory()"
                     i18n="@@skillpage_back_to_directory_btn">
                     ← กลับไปหน้า Directory
                 </button>
-
-                <button type="button" class="inline-flex items-center justify-center rounded-full border border-[#8aab06]/50 bg-[#8aab06]/10
-                 px-4 py-2 text-sm font-medium text-[#d9ff6b] hover:bg-[#8aab06]/20 transition" (click)="clearSkills()"
-                    [class.opacity-50]="selected.skills.size===0" [class.pointer-events-none]="selected.skills.size===0"
-                    i18n="@@skillpage_clear_skills_btn">
-                    ล้างทักษะ
-                </button>
+               
             </div>
         </header>
 
@@ -40,8 +53,8 @@
                 <div class="sticky top-4 space-y-4">
 
                     <!-- Context chips -->
-                    <section class="rounded-2xl border border-white/10 bg-black/25 backdrop-blur-md p-4
-                          shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
+                    <section
+                        class="rounded-2xl border border-[#19a7aa]/25 bg-white/5 p-4 shadow-[0_10px_30px_rgba(15,110,115,0.14)] transition hover:border-[#1cc5c9]/40 hover:shadow-[0_14px_40px_rgba(20,124,127,0.22)]">
 
                         <div class="text-xs font-semibold tracking-wide text-white/70" i18n="@@skillpage_context_title">
                             บริบทการค้นหา
@@ -80,9 +93,9 @@
                     </section>
 
                     <!-- ✅ Position selector -->
-                    <section class="rounded-2xl border border-white/10 bg-black/25 backdrop-blur-md p-4
-                          shadow-[0_18px_45px_rgba(0,0,0,0.45)]" [class.opacity-50]="!hasDepartment"
-                        [class.pointer-events-none]="!hasDepartment">
+                    <section
+                        class="rounded-2xl border border-[#19a7aa]/25 bg-white/5 p-4 shadow-[0_10px_30px_rgba(15,110,115,0.14)] transition hover:border-[#1cc5c9]/40 hover:shadow-[0_14px_40px_rgba(20,124,127,0.22)]"
+                        [class.opacity-50]="!hasDepartment" [class.pointer-events-none]="!hasDepartment">
 
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-semibold tracking-wide" i18n="@@skillpage_positions_title">
@@ -99,9 +112,7 @@
 
                         <div class="mt-3 flex flex-wrap gap-2">
                             <button *ngFor="let p of positionsForDepartment" type="button" (click)="toggleJob(p.id)"
-                                class="rounded-full px-3 py-1.5 text-xs border transition" [ngClass]="selected.jobs.has(p.id)
-                  ? 'bg-[#8aab06]/20 border-[#8aab06]/40 text-[#d9ff6b]'
-                  : 'bg-black/25 border-white/15 text-white/85 hover:bg-black/35'">
+                                [class]="chipClass(selected.jobs.has(p.id))">
                                 {{ labelPos(p) }}
                             </button>
 
@@ -116,22 +127,29 @@
             </aside>
 
             <!-- Right: Results -->
-            <main class="lg:col-span-8 xl:col-span-9">
+            <main
+                class="lg:col-span-8 xl:col-span-9 rounded-2xl border border-[#19a7aa]/25 bg-white/5 p-4 shadow-[0_10px_30px_rgba(15,110,115,0.14)] transition hover:border-[#1cc5c9]/40 hover:shadow-[0_14px_40px_rgba(20,124,127,0.22)]">
 
                 <!-- Loading (no static text) -->
 
                 <!-- Cards -->
                 <div *ngIf="!loading && results.length" class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    <article *ngFor="let m of results" class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10
-                   bg-black/35 backdrop-blur-md
-                   shadow-[0_18px_55px_rgba(0,0,0,0.45)]
-                   transition hover:-translate-y-1 hover:border-[#8aab06]/60
-                   hover:shadow-[0_28px_85px_rgba(138,171,6,0.18)]">
+                    <article *ngFor="let m of results" class="group relative flex flex-col overflow-hidden rounded-2xl
+
+         border border-[#19a7aa]/25
+         bg-black/35 backdrop-blur-md
+
+         shadow-[0_18px_55px_rgba(0,0,0,0.45)]
+         transition-all duration-300
+
+         hover:-translate-y-1
+         hover:border-[#1cc5c9]/60
+         hover:shadow-[0_28px_85px_rgba(20,124,127,0.22)]">
 
                         <div class="relative h-20 bg-gradient-to-r from-black/45 via-black/25 to-black/40">
-                            <div class="pointer-events-none absolute inset-0 opacity-60 group-hover:opacity-90
-                   bg-[radial-gradient(circle_at_0%_0%,rgba(138,171,6,0.35),transparent_55%),
-                       radial-gradient(circle_at_100%_0%,rgba(56,189,248,0.22),transparent_55%)]">
+                            <div class="pointer-events-none absolute inset-0 opacity-60 group-hover:opacity-95 transition
+  bg-[radial-gradient(circle_at_0%_0%,rgba(28,197,201,0.35),transparent_55%),
+      radial-gradient(circle_at_100%_0%,rgba(15,110,115,0.28),transparent_55%)]">
                             </div>
 
                             <div class="absolute left-4 bottom-[-28px]">
@@ -151,12 +169,24 @@
                             </div>
 
                             <div class="mt-4">
-                                <button type="button" class="inline-flex items-center gap-1.5 rounded-xl border border-white/15
-                         bg-black/25 backdrop-blur px-3 py-1.5 text-xs font-medium
-                         text-white/90 hover:bg-black/35 hover:text-white
-                         focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40" (click)="goProfile(m)">
+                                <button type="button" class="group/btn inline-flex items-center gap-1.5 rounded-xl
+         border border-[#19a7aa]/35
+         bg-black/25 backdrop-blur px-3 py-1.5 text-xs font-semibold tracking-wide
+         text-white/90
+
+         transition-all duration-300
+
+         hover:bg-black/35
+         hover:border-[#1cc5c9]/60
+         hover:shadow-[0_10px_25px_rgba(20,124,127,0.35)]
+         hover:-translate-y-[1px]
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/50
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]" (click)="goProfile(m)">
                                     <span i18n="@@skillpage_view_profile_btn">ดูโปรไฟล์</span>
-                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" />
                                     </svg>
@@ -173,17 +203,52 @@
                     <p class="mt-1 text-sm text-white/70" i18n="@@skillpage_empty_desc">
                         ลองเปลี่ยนทักษะ หรือกลับไปเปลี่ยน Department/Job
                     </p>
-                    <button (click)="backToDirectory()" class="mt-4 rounded-xl border border-white/15 bg-black/25 backdrop-blur px-4 py-2.5 text-sm
-                   hover:bg-black/35" i18n="@@skillpage_empty_back_btn">
+                    <button type="button" class="mt-3 inline-flex items-center justify-center rounded-full
+         border border-[#19a7aa]/35
+         bg-black/25 backdrop-blur
+         px-4 py-2 text-sm font-semibold tracking-wide text-white/90
+
+         shadow-[0_10px_30px_rgba(15,110,115,0.18)]
+         transition-all duration-300
+
+         hover:bg-black/35
+         hover:border-[#1cc5c9]/60
+         hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)]
+         hover:-translate-y-[1px]
+
+         active:translate-y-0
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/55
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]" (click)="backToDirectory()"
+                        i18n="@@skillpage_back_to_directory_btn">
                         กลับไปหน้า Directory
                     </button>
                 </div>
 
                 <!-- Load more -->
                 <div *ngIf="!loading && hasMore" class="mt-8 flex justify-center">
-                    <button (click)="loadMore()" class="rounded-xl bg-[#8aab06] px-5 py-2.5 text-sm font-semibold text-black shadow
-                   hover:brightness-110" i18n="@@skillpage_load_more_btn">
+                    <button (click)="loadMore()" class="group inline-flex items-center gap-2 rounded-xl
+         px-5 py-2.5 text-sm font-semibold tracking-wide text-white
+
+         bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+         shadow-[0_10px_30px_rgba(15,110,115,0.35)]
+
+         transition-all duration-300 ease-out
+         hover:brightness-110
+         hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
+         hover:-translate-y-[2px]
+         active:translate-y-0
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/55
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]" i18n="@@skillpage_load_more_btn">
                         ดูเพิ่มเติม
+                        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-[1px]"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </button>
                 </div>
 

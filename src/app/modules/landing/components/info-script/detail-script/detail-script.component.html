@@ -1,83 +1,140 @@
 <!-- src/app/pages/detail-script/detail-script.component.html -->
-<div class="min-h-[calc(100vh-4rem)] bg-[#020617] px-4 py-6 md:px-8 md:py-8">
-    <div class="mx-auto max-w-5xl">
+<div class="relative min-h-[calc(100vh-4rem)] bg-[#0b1417] px-4 py-6 md:px-8 md:py-10 text-white overflow-hidden">
+
+    <!-- background glow -->
+    <div class="pointer-events-none absolute inset-0 opacity-65
+    bg-[radial-gradient(circle_at_20%_10%,rgba(28,197,201,0.18),transparent_55%),
+        radial-gradient(circle_at_85%_0%,rgba(15,110,115,0.16),transparent_60%),
+        radial-gradient(circle_at_50%_110%,rgba(0,0,0,0.55),transparent_65%)]">
+    </div>
+
+    <!-- film overlay -->
+    <div class="pointer-events-none absolute inset-0 bg-black/15"></div>
+
+    <div class="relative mx-auto max-w-5xl">
+
         <!-- Back -->
-        <a routerLink="/theatre-library"
-            class="mb-4 inline-flex items-center text-xs md:text-sm text-white/60 hover:text-white transition">
-            <span aria-hidden="true">←</span>
-            <span class="ml-2" i18n="@@script_detail_back">กลับไปหน้าคลังบทละคร</span>
+        <a routerLink="/theatre-library" class="group mb-6 inline-flex items-center gap-2 rounded-full
+             border border-[#19a7aa]/30 bg-white/5 backdrop-blur
+             px-4 py-2 text-xs md:text-sm font-semibold tracking-wide text-white/85
+             shadow-[0_10px_30px_rgba(15,110,115,0.16)]
+             transition-all duration-300
+             hover:bg-white/10 hover:border-[#1cc5c9]/55
+             hover:shadow-[0_14px_45px_rgba(20,124,127,0.30)]
+             hover:-translate-y-[1px]
+             active:translate-y-0">
+            <span aria-hidden="true" class="text-base leading-none">←</span>
+            <span i18n="@@script_detail_back">กลับไปหน้าคลังบทละคร</span>
         </a>
 
         <!-- Loading & Error -->
-        <div *ngIf="loading" class="mt-4 text-sm text-white/60" i18n="@@script_detail_loading">
-            กำลังโหลดข้อมูลบทละคร...
+        <div *ngIf="loading"
+            class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-4 text-sm text-white/70">
+            <span i18n="@@script_detail_loading">กำลังโหลดข้อมูลบทละคร...</span>
         </div>
 
-        <div *ngIf="!loading && error" class="mt-4 text-sm text-red-400">
+        <div *ngIf="!loading && error"
+            class="rounded-2xl border border-red-400/30 bg-red-500/10 p-4 text-sm text-red-200">
             {{ error }}
         </div>
 
         <!-- Content -->
         <ng-container *ngIf="!loading && !error && script as s">
-            <div class="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1.2fr)] items-start">
+            <div class="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)] items-start">
+
                 <!-- Main info -->
-                <div>
-                    <h1 class="mb-2 text-2xl md:text-3xl font-semibold text-white tracking-tight">
-                        {{ s.title }}
-                    </h1>
+                <div class="rounded-3xl border border-[#19a7aa]/20 bg-white/5 backdrop-blur-xl
+                    shadow-[0_25px_80px_rgba(0,0,0,0.60)]
+                    p-6 md:p-7 overflow-hidden relative">
 
-                    <!-- Author line (avoid ICU by splitting text parts) -->
-                    <p class="mb-1 text-xs md:text-sm text-white/60">
-                        <span i18n="@@script_detail_by_prefix">โดย</span>
-                        <span class="ml-1">
-                            {{ s.createdByName || ('ไม่ระบุผู้เขียน' ) }}
-                        </span>
-                    </p>
-
-                    <!-- If you want the fallback also translated, use a template instead (recommended) -->
-                    <ng-template #unknownAuthor>
-                        <span i18n="@@script_detail_unknown_author">ไม่ระบุผู้เขียน</span>
-                    </ng-template>
-
-                    <p class="mb-3 text-[11px] md:text-xs text-white/40">
-                        <span i18n="@@script_detail_created_at_label">สร้างเมื่อ:</span>
-                        <span class="ml-1">
-                            {{ s.createdAt ? (s.createdAt | date : 'dd/MM/yyyy HH:mm') : '-' }}
-                        </span>
-                    </p>
-
-                    <!-- Tags -->
-                    <div *ngIf="getTagList(s).length > 0" class="mb-4 flex flex-wrap gap-2">
-                        <span *ngFor="let tag of getTagList(s)"
-                            class="inline-flex rounded-full bg-white/5 px-3 py-0.5 text-[11px] text-white/70">
-                            #{{ tag }}
-                        </span>
+                    <!-- inner glow -->
+                    <div class="pointer-events-none absolute inset-0 opacity-45
+            bg-[radial-gradient(circle_at_50%_0%,rgba(28,197,201,0.16),transparent_55%)]">
                     </div>
 
-                    <!-- Description -->
-                    <p class="whitespace-pre-line text-sm md:text-base leading-relaxed text-white/80">
-                        <ng-container *ngIf="s.description; else noDesc">
-                            {{ s.description }}
-                        </ng-container>
-                        <ng-template #noDesc>
-                            <span i18n="@@script_detail_no_desc">ยังไม่มีคำอธิบายเพิ่มเติมสำหรับบทละครนี้</span>
-                        </ng-template>
-                    </p>
+                    <div class="relative">
+                        <h1 class="mb-2 text-2xl md:text-3xl font-extrabold tracking-tight
+                     bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                     bg-clip-text text-transparent
+                     [text-shadow:0_0_40px_rgba(20,124,127,0.35)]">
+                            {{ s.title }}
+                        </h1>
 
-                    <!-- PDF button -->
-                    <div class="mt-6 flex flex-wrap gap-3">
-                        <a *ngIf="getPdfUrl(s) as pdfUrl" [href]="pdfUrl" target="_blank" rel="noopener"
-                            class="inline-flex items-center rounded-full border border-white/10 bg-[#111827] px-4 py-1.5 text-xs md:text-sm font-medium text-white hover:bg-white hover:text-black transition">
-                            <span i18n="@@script_detail_open_pdf">เปิด PDF บทละคร</span>
-                        </a>
+                        <!-- Author -->
+                        <p class="mb-1 text-xs md:text-sm text-white/70">
+                            <span i18n="@@script_detail_by_prefix">โดย</span>
+                            <span class="ml-1 font-semibold text-white/85">
+                                {{ s.createdByName || ('ไม่ระบุผู้เขียน') }}
+                            </span>
+                        </p>
+
+                        <p class="mb-4 text-[11px] md:text-xs text-white/50">
+                            <span i18n="@@script_detail_created_at_label">สร้างเมื่อ:</span>
+                            <span class="ml-1">
+                                {{ s.createdAt ? (s.createdAt | date : 'dd/MM/yyyy HH:mm') : '-' }}
+                            </span>
+                        </p>
+
+                        <!-- Tags -->
+                        <div *ngIf="getTagList(s).length > 0" class="mb-5 flex flex-wrap gap-2">
+                            <span *ngFor="let tag of getTagList(s)" class="inline-flex rounded-full border border-[#19a7aa]/25
+                       bg-[linear-gradient(180deg,rgba(28,197,201,0.10),rgba(15,110,115,0.06))]
+                       px-3 py-1 text-[11px] text-[#bffcff]/90">
+                                #{{ tag }}
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="text-sm md:text-base leading-relaxed text-white/80 whitespace-pre-line">
+                            <ng-container *ngIf="s.description; else noDesc">
+                                {{ s.description }}
+                            </ng-container>
+                            <ng-template #noDesc>
+                                <span i18n="@@script_detail_no_desc">ยังไม่มีคำอธิบายเพิ่มเติมสำหรับบทละครนี้</span>
+                            </ng-template>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-7 flex flex-wrap gap-3">
+                            <a *ngIf="getPdfUrl(s) as pdfUrl" [href]="pdfUrl" target="_blank" rel="noopener" class="group inline-flex items-center gap-2 rounded-full
+                        px-5 py-2 text-xs md:text-sm font-semibold tracking-wide text-white
+                        bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                        shadow-[0_12px_35px_rgba(15,110,115,0.35)]
+                        transition-all duration-300 ease-out
+                        hover:brightness-110
+                        hover:shadow-[0_18px_55px_rgba(20,124,127,0.60)]
+                        hover:-translate-y-[2px]
+                        active:translate-y-0
+                        focus:outline-none
+                        focus:ring-2 focus:ring-[#1cc5c9]/60
+                        focus:ring-offset-2 focus:ring-offset-[#0b1417]">
+                                <span i18n="@@script_detail_open_pdf">เปิด PDF บทละคร</span>
+                                <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Cover -->
-                <div class="overflow-hidden rounded-xl border border-white/10 bg-black/40">
-                    <img [src]="getCover(s) || 'assets/images/script-placeholder.jpg'" alt="script cover"
-                        class="h-full w-full object-cover" i18n-alt="@@script_detail_cover_alt" />
+                <div class="group overflow-hidden rounded-3xl
+                    border border-[#19a7aa]/25
+                    bg-white/5 backdrop-blur-xl
+                    shadow-[0_22px_70px_rgba(0,0,0,0.55)]
+                    relative">
+
+                    <!-- cover glow -->
+                    <div class="pointer-events-none absolute inset-0 opacity-40
+            bg-[radial-gradient(circle_at_50%_0%,rgba(28,197,201,0.14),transparent_55%)]">
+                    </div>
+
+                    <img [src]="getCover(s) || 'assets/images/script-placeholder.jpg'" alt="script cover" class="relative aspect-[3/4] w-full object-cover
+                      transition-transform duration-500
+                      group-hover:scale-[1.03]" i18n-alt="@@script_detail_cover_alt" />
                 </div>
+
             </div>
         </ng-container>
     </div>

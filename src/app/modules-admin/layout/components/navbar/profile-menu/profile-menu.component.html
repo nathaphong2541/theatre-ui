@@ -9,15 +9,15 @@
 
   <!-- Dropdown -->
   <div [@openClose]="isOpen ? 'open' : 'closed'"
-    class="bg-background shadow-custom border-muted absolute z-20 mt-2 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0">
+    class="bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] shadow-custom border-muted absolute z-20 mt-2 w-60 origin-top-right transform rounded-md border border-dashed py-4 ring-1 ring-transparent ring-opacity-5 transition focus:outline-hidden ltr:right-0 rtl:left-0">
     <!-- Header: avatar + name + email -->
     <div class="flex-row flex items-center px-4 pb-4" *ngIf="menuUser$ | async as u">
       <div class="w-10 shrink-0">
         <img class="rounded-md" [src]="u.avatarSrc || 'assets/images/avatar-placeholder.png'" alt="user avatar" />
       </div>
-      <div class="text-foreground overflow-hidden px-2 text-sm font-semibold">
+      <div class="text-white overflow-hidden px-2 text-sm font-semibold">
         {{ u.displayName || '—' }}
-        <p class="text-muted-foreground truncate text-ellipsis text-xs font-semibold">
+        <p class="text-white truncate text-ellipsis text-xs font-semibold">
           {{ u.email || '—' }}
         </p>
       </div>
@@ -31,15 +31,15 @@
         @if (item.action) {
         <!-- ▶️ กรณี Logout / เมนูที่เป็น action -->
         <button type="button" (click)="item.action(); isOpen = false"
-          class="text-muted-foreground hover:bg-card hover:text-primary w-full text-left inline-flex items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
-          <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"></svg-icon>
+          class="text-white hover:bg-card hover:text-primary w-full text-left inline-flex items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
+          <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-white/50'"></svg-icon>
           {{ item.title }}
         </button>
         } @else {
         <!-- ▶️ กรณีเมนูทั่วไปที่เป็น link -->
         <a [routerLink]="item.link" (click)="isOpen = false"
-          class="text-muted-foreground hover:bg-card hover:text-primary inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
-          <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-muted-foreground/50'"></svg-icon>
+          class="text-white hover:bg-card hover:text-primary inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-xs font-semibold">
+          <svg-icon [src]="item.icon" [svgClass]="'h-5 w-5 text-white/50'"></svg-icon>
           {{ item.title }}
         </a>
         }

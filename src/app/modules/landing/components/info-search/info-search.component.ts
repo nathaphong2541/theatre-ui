@@ -470,10 +470,24 @@ export class InfoSearchComponent implements OnInit {
   // ===== Chip helpers =====
   chipClass(active: boolean): string {
     return [
-      'rounded-full px-3 py-1.5 text-xs border transition',
+      'rounded-full px-3 py-1.5 text-xs font-medium tracking-wide',
+      'border transition-all duration-300',
       active
-        ? 'bg-[#8aab06]/20 border-[#8aab06]/40 text-[#d9ff6b]'
-        : 'bg-white/5 border-white/15 text-white/80 hover:bg-white/10'
+        ? `
+        bg-gradient-to-r from-[#1cc5c9]/25 via-[#19a7aa]/25 to-[#0f6e73]/25
+        border-[#1cc5c9]/60
+        text-[#bffcff]
+        shadow-[0_6px_18px_rgba(20,124,127,0.35)]
+        `
+        : `
+        bg-white/5
+        border-[#19a7aa]/25
+        text-white/80
+        hover:bg-white/10
+        hover:border-[#1cc5c9]/50
+        hover:text-white
+        hover:-translate-y-[1px]
+        `
     ].join(' ');
   }
   // ===== Chip helpers (ไม่ใช้ overload เพื่อให้ template เรียกแบบไดนามิกได้) =====

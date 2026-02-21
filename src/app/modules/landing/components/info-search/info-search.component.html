@@ -1,11 +1,14 @@
 <!-- Member Search (Directory) -->
 <section class="bg-[#0b1417] text-white">
-    <div class="mx-auto max-w-7xl px-4 lg:px-8 py-8 lg:py-10">
+    <div class="mx-auto px-4 lg:px-8 py-8 lg:py-10">
         <!-- Title -->
         <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <!-- ซ้าย: ข้อความ -->
             <div>
-                <h2 class="text-3xl font-semibold tracking-tight text-[#8aab06]" i18n="@@landing_search_text_1">
+                <h2 class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+bg-clip-text text-transparent
+drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
+[ text-shadow:0_0_40px_rgba(20,124,127,0.5) ]" i18n="@@landing_search_text_1">
                     ค้นหาศิลปิน
                 </h2>
                 <p class="mt-1 text-white/70" i18n="@@landing_search_text_2">
@@ -76,21 +79,21 @@
                         </div>
                     </section>
 
-                    <!-- <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <div class="mb-2 text-sm font-semibold">ตัวกรองที่เลือก</div>
-                        <div class="flex flex-wrap gap-2">
-                            <button *ngFor="let c of selectedChips()" type="button"
-                                (click)="removeChip(c.group, c.value)"
-                                class="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs hover:bg-white/20">
-                                {{ c.label }} ✕
-                            </button>
-                        </div>
-                    </div> -->
-
                     <!-- Departments: แสดงเสมอ -->
-                    <section class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                        <h3 class="mb-3 text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_2">
-                            หรือเรียกดูด้วยตนเองตามแผนก</h3>
+                    <section class="rounded-2xl
+         border border-[#19a7aa]/25
+         bg-white/5
+         p-4
+         shadow-[0_10px_30px_rgba(15,110,115,0.14)]
+         transition
+         hover:border-[#1cc5c9]/40
+         hover:shadow-[0_14px_40px_rgba(20,124,127,0.22)]">
+
+                        <h3 class="mb-3 text-sm font-semibold tracking-wide text-white/90"
+                            i18n="@@landing_search_text_input_2">
+                            หรือเรียกดูด้วยตนเองตามแผนก
+                        </h3>
+
                         <div class="flex flex-wrap gap-2">
                             <button *ngFor="let d of departmentsApi" type="button"
                                 (click)="toggleTag('departments', d.id)"
@@ -101,18 +104,28 @@
                     </section>
 
                     <!-- Jobs: แสดง แต่ disabled ถ้ายังไม่เลือก department -->
-                    <section class="rounded-2xl border border-white/10 bg-white/5 p-4"
-                        [class.opacity-50]="!hasDepartment" [class.pointer-events-none]="!hasDepartment">
+                    <section class="rounded-2xl
+         border border-[#19a7aa]/25
+         bg-white/5
+         p-4
+         shadow-[0_10px_30px_rgba(15,110,115,0.14)]
+         transition
+         hover:border-[#1cc5c9]/40
+         hover:shadow-[0_14px_40px_rgba(20,124,127,0.22)]" [class.opacity-50]="!hasDepartment"
+                        [class.pointer-events-none]="!hasDepartment">
 
                         <div class="mb-3 flex items-center justify-between">
-                            <h3 class="text-sm font-semibold tracking-wide" i18n="@@landing_search_text_input_4">
+                            <h3 class="text-sm font-semibold tracking-wide text-white/90"
+                                i18n="@@landing_search_text_input_4">
                                 คุณกำลังมองหางานอะไรที่จะเติมเต็ม
                             </h3>
 
                             <!-- ปุ่มล้าง job -->
-                            <button *ngIf="selected.jobs.size > 0" type="button"
-                                class="text-xs text-white/60 hover:text-white underline underline-offset-2"
-                                (click)="clearJobsOnly()">
+                            <button *ngIf="selected.jobs.size > 0" type="button" class="text-xs font-semibold tracking-wide
+             text-[#1cc5c9]/80
+             hover:text-[#1cc5c9]
+             underline underline-offset-2
+             transition" (click)="clearJobsOnly()">
                                 ล้าง
                             </button>
                         </div>
@@ -140,18 +153,26 @@
                 </div>
 
                 <!-- Cards -->
-                <!-- Cards -->
                 <div *ngIf="!loading && results.length"
                     class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-                    <article *ngFor="let m of results; trackBy: trackById" class="group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#10141a] shadow-sm transition
-                  hover:-translate-y-1 hover:shadow-2xl hover:border-[#8aab06]/60">
+                    <article *ngFor="let m of results; trackBy: trackById" class="group relative flex flex-col overflow-hidden rounded-2xl
+
+           border border-[#19a7aa]/25
+           bg-[#10141a]
+
+           shadow-[0_10px_30px_rgba(15,110,115,0.18)]
+           transition-all duration-300
+
+           hover:-translate-y-1
+           hover:border-[#1cc5c9]/60
+           hover:shadow-[0_18px_55px_rgba(20,124,127,0.45)]">
 
                         <!-- Top cover + status badge -->
                         <div class="relative h-20 bg-gradient-to-r from-[#1b2732] via-[#111921] to-[#171f28]">
                             <!-- light glow -->
                             <div
-                                class="pointer-events-none absolute inset-0 opacity-60 group-hover:opacity-90
-                  bg-[radial-gradient(circle_at_0%_0%,rgba(138,171,6,0.35),transparent_55%),radial-gradient(circle_at_100%_0%,rgba(56,189,248,0.25),transparent_55%)]">
+                                class="pointer-events-none absolute inset-0 opacity-60 group-hover:opacity-95 transition
+  bg-[radial-gradient(circle_at_0%_0%,rgba(28,197,201,0.35),transparent_55%),radial-gradient(circle_at_100%_0%,rgba(15,110,115,0.30),transparent_55%)]">
                             </div>
 
                             <!-- Status badge -->
@@ -196,11 +217,26 @@
 
                             <!-- Footer -->
                             <div class="mt-4 flex items-center justify-between gap-2">
-                                <button type="button" (click)="goProfile(m)"
-                                    class="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-medium
-                       text-white/90 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#8aab06]/40">
+                                <button type="button" (click)="goProfile(m)" class="group/btn inline-flex items-center gap-1.5 rounded-xl
+
+         border border-[#19a7aa]/35
+         bg-white/5 px-3 py-1.5 text-xs font-semibold tracking-wide
+         text-white/90
+
+         transition-all duration-300
+
+         hover:bg-white/10 hover:text-white
+         hover:border-[#1cc5c9]/70
+         hover:shadow-[0_10px_25px_rgba(20,124,127,0.35)]
+         hover:-translate-y-[1px]
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/50
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]">
+
                                     <span>ดูโปรไฟล์</span>
-                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path d="M9 5l7 7-7 7" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" />
                                     </svg>
@@ -229,9 +265,27 @@
 
                 <!-- Load more -->
                 <div *ngIf="!loading && hasMore" class="mt-8 flex justify-center">
-                    <button (click)="loadMore()"
-                        class="rounded-xl bg-[#8aab06] px-5 py-2.5 text-sm font-semibold text-black shadow hover:brightness-110">
+                    <button (click)="loadMore()" class="group inline-flex items-center gap-2 rounded-xl
+         px-5 py-2.5 text-sm font-semibold tracking-wide text-white
+
+         bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+         shadow-[0_10px_30px_rgba(15,110,115,0.35)]
+
+         transition-all duration-300 ease-out
+         hover:brightness-110
+         hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
+         hover:-translate-y-[2px]
+         active:translate-y-0
+
+         focus:outline-none
+         focus:ring-2 focus:ring-[#1cc5c9]/55
+         focus:ring-offset-2 focus:ring-offset-[#0b1417]">
                         ดูเพิ่มเติม
+                        <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-[1px]"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
                     </button>
                 </div>
             </main>
