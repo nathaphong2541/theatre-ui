@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ProfileDto } from '../components/profile/list-profile/list-profile.component';
 // ถ้าอยากใช้ type จริง ให้ import มาจากที่ประกาศ ProfileDto / ProfilePayload
 // import { ProfileDto, ProfilePayload } from '...';
 
@@ -80,9 +81,15 @@ export class ProfileService {
     return this.http.post(`${this.api}/performances`, fd);
   }
 
-  /** ลบ performance รูปเดียวตาม id */
-  deletePerformance(id: number): Observable<any /* ProfileDto */> {
-    return this.http.delete(`${this.api}/performances/${id}`);
+  // /** ลบ performance รูปเดียวตาม id */
+  // deletePerformance(id: number): Observable<any /* ProfileDto */> {
+  //   return this.http.delete(`${this.api}/performances/${id}`);
+  // }
+
+  deletePerformance(performanceId: number) {
+    return this.http.delete<ProfileDto>(
+      `${this.api}/me/performance/${performanceId}`
+    );
   }
 
   // ---------- Helper ----------

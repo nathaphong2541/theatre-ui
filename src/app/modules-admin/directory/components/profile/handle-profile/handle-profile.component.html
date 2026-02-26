@@ -148,7 +148,7 @@
                                 <span i18n="@@profile_options_title">Options</span>
                             </h2>
                             <p class="mt-1 text-sm text-white/60" i18n="@@profile_options_hint">
-                                ตั้งค่าการแสดงผลและประเภทโปรไฟล์ของคุณ
+                                เปิดใช้งานโปรไฟล์ส่วนตัวเพื่อซ่อนข้อมูลจากสาธารณะ
                             </p>
                         </div>
 
@@ -307,7 +307,7 @@
                                         </div>
                                         <div class="text-[11px] text-gray-500">
                                             {{ selectedProfession.size }}
-                                            <span i18n="@@common_selected">selected</span>
+                                            <span i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -695,7 +695,7 @@
                                         </div>
                                         <div class="text-[11px] text-gray-500">
                                             {{ selectedWorkLocations.size }} <span
-                                                i18n="@@common_selected">selected</span>
+                                                i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -783,7 +783,8 @@
                                             </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedUnions.size }} <span i18n="@@common_selected">selected</span>
+                                            {{ selectedUnions.size }} <span
+                                                i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -872,7 +873,7 @@
                                             </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedExp.size }} <span i18n="@@common_selected">selected</span>
+                                            {{ selectedExp.size }} <span i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -952,7 +953,8 @@
                                             </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedPartners.size }} <span i18n="@@common_selected">selected</span>
+                                            {{ selectedPartners.size }} <span
+                                                i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -1047,7 +1049,8 @@
                                             </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedGenders.size }} <span i18n="@@common_selected">selected</span>
+                                            {{ selectedGenders.size }} <span
+                                                i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -1128,7 +1131,8 @@
                                             </ng-template>
                                         </div>
                                         <div class="text-[11px] text-gray-500">
-                                            {{ selectedRaces.size }} <span i18n="@@common_selected">selected</span>
+                                            {{ selectedRaces.size }} <span
+                                                i18n="@@common_selected">รายการที่เลือก</span>
                                         </div>
                                     </div>
                                     <span class="text-gray-400">▾</span>
@@ -1473,10 +1477,11 @@
 </div>
 
 <!-- Credit Modal -->
+<!-- Credit Modal -->
 <div *ngIf="creditModalOpen" class="fixed inset-0 z-50">
     <!-- Backdrop -->
     <button class="absolute inset-0 bg-black/70 backdrop-blur-[2px]" (click)="closeCreditModal()"
-        aria-label="Close modal">
+        aria-label="Close modal" i18n-aria-label="@@profile_credit_modal_close_aria">
     </button>
 
     <!-- Dialog -->
@@ -1484,6 +1489,7 @@
         <div class="relative w-full overflow-hidden rounded-2xl
                 border border-white/10 bg-[#0b1417]/75 backdrop-blur-xl
                 shadow-[0_25px_90px_rgba(0,0,0,0.75)] ring-1 ring-white/10">
+
             <!-- glow -->
             <div aria-hidden="true" class="pointer-events-none absolute -inset-20 -z-10
                   bg-[radial-gradient(60%_40%_at_20%_0%,rgba(138,171,6,0.18),transparent_60%),
@@ -1492,20 +1498,25 @@
 
             <!-- Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h2 class="text-xl sm:text-2xl font-semibold tracking-tight text-white">Edit Credit</h2>
+                <h2 class="text-xl sm:text-2xl font-semibold tracking-tight text-white"
+                    i18n="@@profile_credit_modal_title">
+                    Edit Credit
+                </h2>
 
                 <div class="flex items-center gap-2">
                     <button type="button" class="inline-flex items-center justify-center rounded-xl
                    bg-emerald-500/15 text-emerald-200 px-3 py-2
                    border border-emerald-400/35 hover:bg-emerald-500/25 transition
-                   focus:outline-none focus:ring-2 focus:ring-emerald-400/30" (click)="saveCreditFromModal()">
+                   focus:outline-none focus:ring-2 focus:ring-emerald-400/30" (click)="saveCreditFromModal()"
+                        aria-label="Save" i18n-aria-label="@@common_save_aria">
                         ✓
                     </button>
 
                     <button type="button" class="inline-flex items-center justify-center rounded-xl
                    bg-red-500/15 text-red-200 px-3 py-2
                    border border-red-400/35 hover:bg-red-500/25 transition
-                   focus:outline-none focus:ring-2 focus:ring-red-400/30" (click)="closeCreditModal()">
+                   focus:outline-none focus:ring-2 focus:ring-red-400/30" (click)="closeCreditModal()"
+                        aria-label="Close" i18n-aria-label="@@common_close_aria">
                         ✕
                     </button>
                 </div>
@@ -1513,19 +1524,25 @@
 
             <!-- Body -->
             <div class="px-6 py-6 space-y-8 max-h-[80vh] overflow-y-auto text-sm" [formGroup]="creditForm">
+
                 <!-- First row -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                            placeholder="Company/Production Name" formControlName="company" />
-                        <p class="mt-1 text-xs text-gray-400">Company/Production Name *</p>
+                            placeholder="Company/Production Name" i18n-placeholder="@@profile_credit_company_ph"
+                            formControlName="company" />
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_company_hint">ชื่อบริษัท/โปรดักชัน
+                            Name *</p>
                     </div>
+
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.18)] placeholder:text-gray-500 text-sm"
-                            placeholder="Job/Position Title" formControlName="title" />
-                        <p class="mt-1 text-xs text-gray-400">Job/Position Title *</p>
+                            placeholder="Job/Position Title" i18n-placeholder="@@profile_credit_title_ph"
+                            formControlName="title" />
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_title_hint">ชื่อตำแหน่งงาน *
+                        </p>
                     </div>
                 </div>
 
@@ -1534,27 +1551,32 @@
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="2020" formControlName="startYear" />
-                        <p class="mt-1 text-xs text-gray-400">Start year *</p>
+                            placeholder="2020" i18n-placeholder="@@profile_credit_start_year_ph"
+                            formControlName="startYear" />
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_start_year_hint">ปีเริ่มต้น *</p>
                     </div>
+
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="2022" formControlName="endYear"
+                            placeholder="2022" i18n-placeholder="@@profile_credit_end_year_ph" formControlName="endYear"
                             [disabled]="creditForm.controls.current.value === true" />
-                        <p class="mt-1 text-xs text-gray-400">End year</p>
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_end_year_hint">ปีสิ้นสุด *</p>
                     </div>
+
                     <div class="flex items-center gap-3">
-                        <span class="text-xs text-gray-400 whitespace-nowrap">Currently working here</span>
+                        <span class="text-xs text-gray-400 whitespace-nowrap" i18n="@@profile_credit_currently_working">
+                            ยังทำงานอยู่ที่นี่
+                        </span>
                         <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                             <button type="button" (click)="creditForm.controls.current.setValue(true)"
                                 [ngClass]="creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                class="px-3 py-1.5">
+                                class="px-3 py-1.5" i18n="@@common_yes">
                                 Yes
                             </button>
                             <button type="button" (click)="creditForm.controls.current.setValue(false)"
                                 [ngClass]="!creditForm.controls.current.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                class="px-3 py-1.5">
+                                class="px-3 py-1.5" i18n="@@common_no">
                                 No
                             </button>
                         </div>
@@ -1566,14 +1588,16 @@
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="Venue" formControlName="venue" />
-                        <p class="mt-1 text-xs text-gray-400">Venue *</p>
+                            placeholder="Venue" i18n-placeholder="@@profile_credit_venue_ph" formControlName="venue" />
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_venue_hint">สถานที่/เวนิว *</p>
                     </div>
                     <div>
                         <input type="text"
                             class="w-full rounded-xl  border border-white/15 px-3.5 py-2.5 outline-none focus:border-accent-500/60 placeholder:text-gray-500 text-sm"
-                            placeholder="Job Location" formControlName="jobLocation" />
-                        <p class="mt-1 text-xs text-gray-400">Job Location *</p>
+                            placeholder="Job Location" i18n-placeholder="@@profile_credit_job_location_ph"
+                            formControlName="jobLocation" />
+                        <p class="mt-1 text-xs text-gray-400" i18n="@@profile_credit_job_location_hint">พื้นที่ทำงาน *
+                        </p>
                     </div>
                 </div>
 
@@ -1581,16 +1605,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400">This was an internship</span>
+                            <span class="text-xs text-gray-400" i18n="@@profile_credit_internship_label">เป็นงานฝึกงาน
+                                (Internship)</span>
                             <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                                 <button type="button" (click)="creditForm.controls.internship.setValue(true)"
                                     [ngClass]="creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
+                                    class="px-3 py-1.5" i18n="@@common_yes">
                                     Yes
                                 </button>
                                 <button type="button" (click)="creditForm.controls.internship.setValue(false)"
                                     [ngClass]="!creditForm.controls.internship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
+                                    class="px-3 py-1.5" i18n="@@common_no">
                                     No
                                 </button>
                             </div>
@@ -1598,37 +1623,40 @@
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <span class="text-xs text-gray-400">This was a fellowship</span>
+                            <span class="text-xs text-gray-400" i18n="@@profile_credit_fellowship_label">เป็น
+                                Fellowship</span>
                             <div class="inline-flex rounded-lg  border border-white/15 overflow-hidden text-xs">
                                 <button type="button" (click)="creditForm.controls.fellowship.setValue(true)"
                                     [ngClass]="creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
+                                    class="px-3 py-1.5" i18n="@@common_yes">
                                     Yes
                                 </button>
                                 <button type="button" (click)="creditForm.controls.fellowship.setValue(false)"
                                     [ngClass]="!creditForm.controls.fellowship.value ? 'bg-accent-500 text-black' : 'bg-transparent text-gray-300'"
-                                    class="px-3 py-1.5">
+                                    class="px-3 py-1.5" i18n="@@common_no">
                                     No
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Department -->
+
                 <!-- Department (multi dropdown) -->
                 <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5
             shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="relative pl-3">
                             <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/70"></span>
-                            <h3 class="text-sm font-semibold text-gray-100">
-                                Department <span class="text-red-400">*</span>
+                            <h3 class="text-sm font-semibold text-gray-100" i18n="@@profile_credit_department_title">
+                                แผนก <span class="text-red-400">*</span>
                             </h3>
-                            <p class="text-xs text-gray-400 mt-0.5">เลือก department ที่คุณทำงานใน position นี้</p>
+                            <p class="text-xs text-gray-400 mt-0.5" i18n="@@profile_credit_department_desc">
+                                เลือกแผนกที่คุณทำงานในผลงานนี้
+                            </p>
                         </div>
 
                         <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
-                            {{ selectedCreditDepts.size }} selected
+                            {{ selectedCreditDepts.size }} <span i18n="@@common_selected">รายการที่เลือก</span>
                         </span>
                     </div>
 
@@ -1648,29 +1676,29 @@
                                 </ng-container>
 
                                 <ng-template #deptPlaceholder>
-                                    <span class="text-sm text-gray-400">
+                                    <span class="text-sm text-gray-400" i18n="@@profile_credit_department_select_ph">
                                         Select department(s)...
                                     </span>
                                 </ng-template>
                             </div>
 
                         </button>
-                        <div *ngIf="creditDdOpen.dept" class="relative z-30 mt-2 w-full rounded-xl border border-white/15 
+
+                        <div *ngIf="creditDdOpen.dept" class="relative z-30 mt-2 w-full rounded-xl border border-white/15
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
                             <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
                                 <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
          focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
-                                    [(ngModel)]="creditDdSearch.pos" [ngModelOptions]="{ standalone: true }"
-                                    (click)="$event.stopPropagation()" />
-
+                                    i18n-placeholder="@@common_search_ph" [(ngModel)]="creditDdSearch.dept"
+                                    [ngModelOptions]="{ standalone: true }" (click)="$event.stopPropagation()" />
                             </div>
 
                             <div class="max-h-64 overflow-auto p-2">
                                 <label *ngFor="let d of filterAny(departmentsApi, creditDdSearch.dept)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                    <input type="text" type="checkbox" class="size-4 accent-accent-500"
+                                    <input type="checkbox" class="size-4 accent-accent-500"
                                         [checked]="selectedCreditDepts.has(d.id)" (change)="toggleCreditDept(d.id)" />
                                     <span class="text-sm text-gray-200">{{ pickLabel(d) }}</span>
                                 </label>
@@ -1679,33 +1707,52 @@
                             <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
                                 <button type="button"
                                     class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
-                                    (click)="clearCreditDepts(); $event.stopPropagation()">
+                                    (click)="clearCreditDepts(); $event.stopPropagation()" i18n="@@common_clear_btn">
                                     Clear
                                 </button>
                                 <button type="button"
                                     class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                    (click)="creditDdOpen.dept=false; $event.stopPropagation()">
+                                    (click)="creditDdOpen.dept=false; $event.stopPropagation()"
+                                    i18n="@@common_done_btn">
                                     Done
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div *ngIf="isCreditDeptOtherSelected" class="mt-3">
+                        <label class="text-xs text-gray-300" i18n="@@profile_credit_department_other_label">
+                            Department (Other) <span class="text-red-400">*</span>
+                        </label>
+
+                        <input type="text" class="mt-1 w-full rounded-xl bg-[#0b0e12] border border-white/12 px-3.5 py-2.5 text-sm text-gray-100 outline-none
+           focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Please specify..."
+                            i18n-placeholder="@@common_please_specify" [formControl]="creditForm.controls.deptText" />
+
+                        <p *ngIf="creditForm.controls.deptText.touched && creditForm.controls.deptText.invalid"
+                            class="mt-1 text-xs text-red-400">
+                            Required
+                        </p>
                     </div>
                 </div>
 
                 <!-- Position (multi dropdown) -->
                 <div class="rounded-2xl border border-white/12 bg-white/[0.03] p-4 sm:p-5 mt-4
             shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+
                     <div class="flex items-start justify-between gap-3 mb-3">
                         <div class="relative pl-3">
                             <span class="absolute left-0 top-0 h-full w-1 rounded-full bg-accent-500/40"></span>
-                            <h3 class="text-sm font-semibold text-gray-100">
-                                Position <span class="text-red-400">*</span>
+                            <h3 class="text-sm font-semibold text-gray-100" i18n="@@profile_credit_position_title">
+                                ตำแหน่ง <span class="text-red-400">*</span>
                             </h3>
-                            <p class="text-xs text-gray-400 mt-0.5">เลือกตำแหน่งภายใต้ department ที่เลือก</p>
+                            <p class="text-xs text-gray-400 mt-0.5" i18n="@@profile_credit_position_desc">
+                                เลือกตำแหน่งภายใต้แผนกที่เลือก
+                            </p>
                         </div>
 
                         <span class="text-[11px] text-gray-400 rounded-full border border-white/10  px-2 py-1">
-                            {{ selectedCreditPositions.size }} selected
+                            {{ selectedCreditPositions.size }} <span i18n="@@common_selected">รายการที่เลือก</span>
                         </span>
                     </div>
 
@@ -1715,6 +1762,7 @@
              focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)]
              disabled:opacity-60 disabled:hover:border-gray-200" [disabled]="!filteredPositions.length"
                             (click)="toggleCreditDd($event,'pos')">
+
                             <div class="flex flex-wrap gap-1.5">
                                 <ng-container *ngIf="selectedCreditPositions.size; else posPlaceholder">
                                     <span
@@ -1725,24 +1773,27 @@
                                 </ng-container>
 
                                 <ng-template #posPlaceholder>
-                                    <span class="text-sm text-gray-400">Select position(s)...</span>
+                                    <span class="text-sm text-gray-400"
+                                        i18n="@@profile_credit_position_select_ph">Select position(s)...</span>
                                 </ng-template>
                             </div>
                         </button>
-                        <div *ngIf="creditDdOpen.pos" class="relative z-30 mt-2 w-full rounded-xl border border-white/15 
+
+                        <div *ngIf="creditDdOpen.pos" class="relative z-30 mt-2 w-full rounded-xl border border-white/15
              shadow-[0_18px_60px_rgba(0,0,0,0.6)]
              ring-1 ring-white/10 overflow-hidden">
 
                             <div class="p-2.5 border-b border-white/10 bg-white/[0.02]">
                                 <input type="text" class="w-full rounded-lg bg-[#0b0e12] border border-white/12 px-3 py-2 text-sm outline-none
                  focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Search..."
-                                    [(ngModel)]="creditDdSearch.pos" (click)="$event.stopPropagation()" />
+                                    i18n-placeholder="@@common_search_ph" [(ngModel)]="creditDdSearch.dept"
+                                    (click)="$event.stopPropagation()" />
                             </div>
 
                             <div class="max-h-64 overflow-auto p-2">
                                 <label *ngFor="let p of filterAny(filteredPositions, creditDdSearch.pos)" class="flex items-center gap-3 rounded-lg px-2.5 py-2 hover:bg-white/6 cursor-pointer select-none
                  border border-transparent hover:border-white/10" (click)="$event.stopPropagation()">
-                                    <input type="text" type="checkbox" class="size-4 accent-accent-500"
+                                    <input type="checkbox" class="size-4 accent-accent-500"
                                         [checked]="selectedCreditPositions.has(p.id)"
                                         (change)="toggleCreditPos(p.id)" />
                                     <span class="text-sm text-gray-200">{{ pickLabel(p) }}</span>
@@ -1752,22 +1803,41 @@
                             <div class="flex items-center justify-between p-2 border-t border-white/10 bg-white/[0.02]">
                                 <button type="button"
                                     class="text-xs px-3 py-1.5 rounded-lg border border-white/12 hover:bg-white/5"
-                                    (click)="clearNumSet(selectedCreditPositions); $event.stopPropagation()">
+                                    (click)="clearNumSet(selectedCreditPositions); $event.stopPropagation()"
+                                    i18n="@@common_clear_btn">
                                     Clear
                                 </button>
                                 <button type="button"
                                     class="text-xs px-3 py-1.5 rounded-lg bg-accent-500/15 border border-accent-500/30 text-accent-200 hover:bg-accent-500/20"
-                                    (click)="creditDdOpen.pos=false; $event.stopPropagation()">
+                                    (click)="creditDdOpen.pos=false; $event.stopPropagation()" i18n="@@common_done_btn">
                                     Done
                                 </button>
                             </div>
                         </div>
+                        <div *ngIf="isCreditPosOtherSelected" class="mt-3">
+                            <label class="text-xs text-gray-300" i18n="@@profile_credit_position_other_label">
+                                Position (Other) <span class="text-red-400">*</span>
+                            </label>
+
+                            <input type="text" class="mt-1 w-full rounded-xl bg-[#0b0e12] border border-white/12 px-3.5 py-2.5 text-sm text-gray-100 outline-none
+           focus:border-accent-500/60 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.16)]" placeholder="Please specify..."
+                                i18n-placeholder="@@common_please_specify"
+                                [formControl]="creditForm.controls.posText" />
+
+                            <p *ngIf="creditForm.controls.posText.touched && creditForm.controls.posText.invalid"
+                                class="mt-1 text-xs text-red-400">
+                                Required
+                            </p>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
         <!-- คลิกที่ backdrop เพื่อปิด -->
-        <button class="fixed inset-0 -z-10" (click)="closeCreditModal()"></button>
+        <button class="fixed inset-0 -z-10" (click)="closeCreditModal()" aria-label="Close modal"
+            i18n-aria-label="@@profile_credit_modal_close_aria">
+        </button>
     </div>
 </div>

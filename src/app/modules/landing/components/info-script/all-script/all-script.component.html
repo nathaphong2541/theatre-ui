@@ -1,10 +1,14 @@
 <div class="min-h-screen bg-[#05070b] text-white">
     <div class="mx-auto max-w-6xl px-4 py-8">
+
         <!-- Header -->
         <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
-                <h1 i18n="@@all_scripts_header"
-                    class="text-2xl font-semibold text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.6)]">
+                <h1 i18n="@@all_scripts_header" class="text-2xl md:text-3xl font-extrabold tracking-tight
+                 bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                 bg-clip-text text-transparent
+                 drop-shadow-[0_10px_45px_rgba(0,0,0,0.9)]
+                 [text-shadow:0_0_35px_rgba(28,197,201,0.28)]">
                     รวมบทละครทั้งหมด
                 </h1>
                 <p i18n="@@all_scripts_subtext" class="text-sm text-white/60">
@@ -12,29 +16,49 @@
                 </p>
             </div>
 
-            <a routerLink="/" i18n="@@back_to_home"
-                class="rounded-lg border border-[#3f4d1f] px-3 py-1.5 text-xs text-white hover:bg-[#6F9106]/15 hover:border-[#6F9106] transition">
+            <a routerLink="/" i18n="@@back_to_home" class="inline-flex items-center gap-2 rounded-full
+               border border-[#19a7aa]/35 bg-black/20 backdrop-blur
+               px-4 py-2 text-xs font-semibold tracking-wide text-white/90
+               shadow-[0_10px_30px_rgba(15,110,115,0.18)]
+               transition-all duration-300
+               hover:bg-black/30 hover:border-[#1cc5c9]/60
+               hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)]
+               hover:-translate-y-[1px]
+               focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/55
+               focus:ring-offset-2 focus:ring-offset-[#05070b]">
                 กลับหน้าแรก
+                <svg class="h-3.5 w-3.5 opacity-80" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
             </a>
         </div>
 
         <!-- Filter bar -->
-        <div class="mb-6 flex flex-col gap-3 rounded-xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-3">
+        <div class="mb-6 flex flex-col gap-3 rounded-2xl
+                border border-[#19a7aa]/30 bg-white/5 backdrop-blur
+                px-4 py-4
+                shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
+
             <div class="flex flex-wrap items-center gap-3">
                 <!-- Search -->
                 <div class="relative flex-1 min-w-[220px]">
-                    <input type="text" [(ngModel)]="search"
-                        class="w-full rounded-lg border border-[#3f4d1f] bg-[#0d1217] px-3 py-2 text-sm text-white placeholder-[#6F9106]/40 focus:border-[#6F9106] focus:ring-2 focus:ring-[#6F9106]/40"
+                    <input type="text" [(ngModel)]="search" class="w-full rounded-xl
+                   border border-[#19a7aa]/25 bg-black/30 backdrop-blur
+                   px-4 py-2.5 text-sm text-white placeholder:text-white/30
+                   shadow-[0_10px_30px_rgba(0,0,0,0.35)]
+                   transition
+                   focus:border-[#1cc5c9]/60 focus:ring-2 focus:ring-[#1cc5c9]/25 focus:outline-none"
                         placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก"
                         i18n-placeholder="@@search_scripts_placeholder" />
-                    <span i18n="@@search" class="pointer-events-none absolute right-3 top-2.5 text-xs text-white/50">
+                    <span i18n="@@search" class="pointer-events-none absolute right-3 top-3 text-[11px] text-white/45">
                         ค้นหา
                     </span>
                 </div>
 
                 <div class="text-xs text-white/60">
                     <label i18n="@@found_total">พบทั้งหมด</label>
-                    <span class="text-[#d9f99d] font-semibold">
+                    <span class="font-semibold text-[#bffcff] drop-shadow-[0_0_10px_rgba(28,197,201,0.25)]">
                         {{ filteredScripts.length }}
                     </span>
                     <label i18n="@@scripts">เรื่อง</label>
@@ -46,18 +70,19 @@
                 <span class="text-[11px] text-white/50" i18n="@@filter_by_tags">กรองตามแท็ก:</span>
 
                 <!-- ปุ่ม "ทั้งหมด" -->
-                <button type="button" class="rounded-full border px-3 py-0.5 text-[11px]" [ngClass]="{
-            'border-[#6F9106] bg-[#6F9106]/20 text-white': !selectedTag,
-            'border-[#3f4d1f] text-white/70': selectedTag
+                <button type="button" class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition
+                 hover:-translate-y-[1px]" [ngClass]="{
+            'border-[#1cc5c9]/70 bg-[#1cc5c9]/15 text-white shadow-[0_10px_25px_rgba(28,197,201,0.18)]': !selectedTag,
+            'border-[#19a7aa]/25 text-white/70 bg-black/20 hover:border-[#1cc5c9]/50 hover:bg-[#1cc5c9]/10': selectedTag
           }" (click)="clearTag()" i18n="@@all">
                     ทั้งหมด
                 </button>
 
                 <!-- ปุ่มแท็กแต่ละอัน -->
-                <button *ngFor="let tag of allTags" type="button" class="rounded-full border px-3 py-0.5 text-[11px]"
-                    [ngClass]="{
-            'border-[#6F9106] bg-[#6F9106]/30 text-[#e5f5a3]': selectedTag === tag,
-            'border-[#3f4d1f] text-white/70': selectedTag !== tag
+                <button *ngFor="let tag of allTags" type="button" class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition
+                 hover:-translate-y-[1px]" [ngClass]="{
+            'border-[#1cc5c9]/75 bg-[#1cc5c9]/18 text-[#bffcff] shadow-[0_10px_25px_rgba(28,197,201,0.20)]': selectedTag === tag,
+            'border-[#19a7aa]/25 text-white/70 bg-black/20 hover:border-[#1cc5c9]/55 hover:bg-[#1cc5c9]/10': selectedTag !== tag
           }" (click)="selectedTag = tag">
                     #{{ tag }}
                 </button>
@@ -70,15 +95,17 @@
         </div>
 
         <!-- Error -->
-        <div *ngIf="!loading && error"
-            class="mb-4 rounded-md bg-red-800/20 border border-red-600 px-4 py-3 text-sm text-red-300">
+        <div *ngIf="!loading && error" class="mb-4 rounded-2xl border border-red-500/40 bg-red-900/15
+                px-4 py-3 text-sm text-red-200
+                shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             {{ error }}
         </div>
 
         <!-- Empty -->
-        <div *ngIf="!loading && !error && filteredScripts.length === 0"
-            class="rounded-2xl border border-[#3f4d1f] bg-[#0d1217] px-6 py-10 text-center shadow shadow-black/80">
-            <p i18n="@@no_scripts_found" class="mb-2 text-base font-medium text-white">
+        <div *ngIf="!loading && !error && filteredScripts.length === 0" class="rounded-2xl border border-[#19a7aa]/25 bg-white/5 backdrop-blur
+                px-6 py-10 text-center
+                shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
+            <p i18n="@@no_scripts_found" class="mb-2 text-base font-semibold text-white">
                 ยังไม่พบบทละครที่ตรงกับเงื่อนไข
             </p>
             <p i18n="@@try_adjust_filters" class="mb-4 text-sm text-white/60">
@@ -88,13 +115,20 @@
 
         <!-- List -->
         <div *ngIf="!loading && !error && filteredScripts.length > 0" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            <article *ngFor="let s of filteredScripts"
-                class="group flex flex-col overflow-hidden rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] shadow shadow-black/60 hover:border-[#6F9106] hover:shadow-[0_0_12px_rgba(111,145,6,0.3)] transition"
-                (click)="onViewDetail(s)">
+
+            <article *ngFor="let s of filteredScripts" class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl
+                      border border-[#19a7aa]/25 bg-white/5 backdrop-blur
+                      shadow-[0_12px_35px_rgba(15,110,115,0.20)]
+                      transition-all duration-300
+                      hover:border-[#1cc5c9]/65
+                      hover:shadow-[0_18px_55px_rgba(20,124,127,0.45)]
+                      hover:-translate-y-[3px]" (click)="onViewDetail(s)">
+
                 <!-- Thumb -->
-                <div class="relative h-40 w-full bg-[#0f1a0b]">
-                    <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
-                        class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition" />
+                <div class="relative h-44 w-full bg-[#071316] overflow-hidden">
+                    <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title" class="h-full w-full object-cover opacity-90
+                      transition duration-300
+                      group-hover:opacity-100 group-hover:scale-[1.03]" />
 
                     <div *ngIf="!getCover(s)"
                         class="flex h-full w-full items-center justify-center text-xs text-white/50"
@@ -102,20 +136,23 @@
                         ไม่มีรูปปก
                     </div>
 
-                    <span *ngIf="s.createdAt"
-                        class="absolute bottom-2 left-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] text-[#d9f99d]">
+                    <span *ngIf="s.createdAt" class="absolute bottom-2 left-2 rounded-full
+                       bg-black/70 px-2 py-0.5 text-[10px]
+                       text-[#bffcff] border border-[#1cc5c9]/25">
                         {{ s.createdAt | date: 'dd/MM/yyyy' }}
                     </span>
                 </div>
 
                 <!-- Body -->
                 <div class="flex flex-1 flex-col p-4">
-                    <h2
-                        class="mb-1 line-clamp-2 text-sm font-semibold text-white group-hover:text-[#6F9106] drop-shadow-[0_0_6px_rgba(111,145,6,0.3)] transition">
+                    <h2 class="mb-1 line-clamp-2 text-sm font-semibold text-white
+                     transition-colors
+                     group-hover:text-[#1cc5c9]
+                     drop-shadow-[0_0_10px_rgba(28,197,201,0.18)]">
                         {{ s.title }}
                     </h2>
 
-                    <!-- ✅ i18n fallback description แบบไม่ใช้ translate pipe -->
+                    <!-- ✅ i18n fallback description -->
                     <ng-container *ngIf="s.description?.trim()?.length; else noDesc">
                         <p class="mb-2 line-clamp-3 text-xs text-white/70">{{ s.description }}</p>
                     </ng-container>
@@ -125,33 +162,51 @@
                         </p>
                     </ng-template>
 
+                    <!-- Tags -->
                     <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
-                        <span *ngFor="let tag of getTagList(s)"
-                            class="rounded-full bg-[#6F9106]/20 border border-[#6F9106]/40 px-2 py-0.5 text-[10px] text-white">
+                        <span *ngFor="let tag of getTagList(s)" class="rounded-full border border-[#19a7aa]/40 bg-[#19a7aa]/10
+                         px-2 py-0.5 text-[10px] text-[#bffcff]
+                         transition
+                         hover:border-[#1cc5c9]/60 hover:bg-[#1cc5c9]/15">
                             #{{ tag }}
                         </span>
                     </div>
 
-                    <!-- Footer + CreatedBy -->
-                    <div class="mt-auto space-y-1">
-                        <div class="flex items-center justify-between text-[11px]">
+                    <!-- Footer -->
+                    <div class="mt-auto space-y-2">
+                        <div class="flex items-center justify-between text-[11px] gap-2">
+
                             <button type="button" i18n="@@view_details"
-                                class="rounded-lg border border-[#3f4d1f] px-3 py-1 text-white/80 hover:border-[#6F9106] hover:bg-[#6F9106]/20">
+                                class="inline-flex items-center justify-center rounded-full
+                             px-4 py-1.5 text-xs font-semibold tracking-wide text-white
+                             bg-gradient-to-r from-[#1cc5c9] via-[#19a7aa] to-[#0f6e73]
+                             shadow-[0_10px_30px_rgba(15,110,115,0.35)]
+                             transition-all duration-300
+                             hover:brightness-110 hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
+                             hover:-translate-y-[1px]
+                             focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/55 focus:ring-offset-2 focus:ring-offset-[#05070b]">
                                 ดูรายละเอียด
                             </button>
 
                             <button i18n="@@open_pdf" *ngIf="s.pdfPath" type="button" (click)="openPdf(s, $event)"
-                                class="rounded-full border border-[#6F9106]/60 px-3 py-1 text-[#bbf7d0] hover:bg-[#6F9106]/20">
+                                class="inline-flex items-center justify-center rounded-full
+                             border border-[#1cc5c9]/45 bg-black/20 backdrop-blur
+                             px-4 py-1.5 text-xs font-semibold tracking-wide text-[#bffcff]
+                             shadow-[0_10px_30px_rgba(15,110,115,0.18)]
+                             transition-all duration-300
+                             hover:bg-[#1cc5c9]/10 hover:border-[#1cc5c9]/70 hover:-translate-y-[1px]
+                             focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/45 focus:ring-offset-2 focus:ring-offset-[#05070b]">
                                 เปิด PDF
                             </button>
                         </div>
 
-                        <p *ngIf="s.createdByName" class="text-[10px] mt-4 text-white/40 text-right">
+                        <p *ngIf="s.createdByName" class="text-[10px] text-white/45 text-right">
                             <label i18n="@@by">โดย</label> {{ s.createdByName }}
                         </p>
                     </div>
                 </div>
             </article>
         </div>
+
     </div>
 </div>

@@ -23,10 +23,18 @@ export type ProfileCredit = {
   jobLocation: string;
   internship: boolean;
   fellowship: boolean;
-  // ❗ ตาม backend ล่าสุด: ให้รองรับหลายอัน
+
   deptIds: number[];
+  deptText?: string | null;   // ✅ เพิ่ม
   posIds: number[];
+  posText?: string | null;    // ✅ เพิ่ม
   skillIds: number[];
+};
+
+export type ProfilePerformanceItem = {
+  id: number;
+  url: string;
+  sortOrder?: number | null;
 };
 
 export type ProfileDto = {
@@ -67,6 +75,7 @@ export type ProfileDto = {
   avatarUrl?: string;
   resumeUrl?: string;
   performanceUrls?: string[];
+  performanceItems?: ProfilePerformanceItem[]; // ✅ เพิ่ม
 };
 
 export type ProfilePayload = {
@@ -378,6 +387,8 @@ export class HandleProfileComponent implements OnInit {
     deptId: new FormControl<number | null>(null),
     posId: new FormControl<number | null>(null),
     skillIds: new FormControl<number[]>([], { nonNullable: true }),
+    deptText: new FormControl<string>(''), // ✅
+    posText: new FormControl<string>(''),  // ✅
   });
 
   /** ฟอร์มหลัก */
@@ -462,6 +473,16 @@ export class HandleProfileComponent implements OnInit {
     });
   }
 
+  private readonly OTHER_ID = 999;
+
+  get isCreditDeptOtherSelected(): boolean {
+    return this.selectedCreditDepts.has(this.OTHER_ID);
+  }
+
+  get isCreditPosOtherSelected(): boolean {
+    return this.selectedCreditPositions.has(this.OTHER_ID);
+  }
+
   // ✅ เพิ่ม input 1 ช่อง
   addLanguage(value = '') {
     this.additionalLanguagesFA.push(
@@ -518,6 +539,8 @@ export class HandleProfileComponent implements OnInit {
     return `${c.company} — ${c.title} (${period})`;
   }
 
+  performanceItems: ProfilePerformanceItem[] = [];
+
   /** ---------- Load & map from API ---------- */
   private loadProfile(): void {
     this.profileService.getProfile().subscribe({
@@ -549,8 +572,11 @@ export class HandleProfileComponent implements OnInit {
         }
 
         // Performance images
-        if (p.performanceUrls?.length) {
-          const fullUrls = p.performanceUrls.map(u => {
+        if (p.performanceItems?.length) {
+          this.performanceItems = [...p.performanceItems];
+
+          const fullUrls = p.performanceItems.map(it => {
+            const u = it.url;
             if (!u.startsWith('http')) {
               const path = u.startsWith('/') ? u : '/' + u;
               return `${apiBase}${path}`;
@@ -561,15 +587,7 @@ export class HandleProfileComponent implements OnInit {
           fullUrls.slice(0, 6).forEach((url, idx) => {
             this.imagePreviewUrls[idx] = url;
             this.images[idx] = null;
-
-            const lower = url.toLowerCase();
-            if (lower.endsWith('.pdf')) {
-              this.performanceKinds[idx] = 'pdf';
-            } else if (/\.(jpe?g|png|webp)$/.test(lower)) {
-              this.performanceKinds[idx] = 'image';
-            } else {
-              this.performanceKinds[idx] = 'other';
-            }
+            this.performanceKinds[idx] = 'image';
           });
         }
       },
@@ -839,6 +857,17 @@ export class HandleProfileComponent implements OnInit {
   }
 
   saveCreditFromModal() {
+    // ✅ บังคับ validate form controls
+    this.creditForm.markAllAsTouched();
+    this.creditForm.updateValueAndValidity({ emitEvent: false });
+
+    // ✅ ถ้าเลือก 999 แล้ว deptText/posText ต้อง valid
+    this.syncCreditOtherValidators();
+    if (this.creditForm.invalid) {
+      this.toast.warning('กรุณากรอกข้อมูลให้ครบถ้วน');
+      return;
+    }
+
     const v = this.creditForm.getRawValue();
 
     const credit: ProfileCredit = {
@@ -852,10 +881,10 @@ export class HandleProfileComponent implements OnInit {
       internship: !!v.internship,
       fellowship: !!v.fellowship,
 
-      // ✅ หลายอัน
       deptIds: Array.from(this.selectedCreditDepts),
+      deptText: this.isCreditDeptOtherSelected ? (v.deptText || '').trim() : null, // ✅
       posIds: Array.from(this.selectedCreditPositions),
-
+      posText: this.isCreditPosOtherSelected ? (v.posText || '').trim() : null,   // ✅
       skillIds: v.skillIds ?? [],
     };
 
@@ -868,13 +897,19 @@ export class HandleProfileComponent implements OnInit {
 
   public async toggleCreditDept(id: number) {
     this.toggleNumSet(this.selectedCreditDepts, id);
+
+    // ✅ sync validators
+    this.syncCreditOtherValidators();
+
     await this.reloadPositionsForSelectedDepts();
   }
 
   public toggleCreditPos(id: number) {
     this.toggleNumSet(this.selectedCreditPositions, id);
-  }
 
+    // ✅ sync validators
+    this.syncCreditOtherValidators();
+  }
   removeCredit(i: number) {
     this.credits.splice(i, 1);
   }
@@ -1387,11 +1422,56 @@ export class HandleProfileComponent implements OnInit {
   }
 
   removeImage(i: number) {
-    if (this.imagePreviewUrls[i]?.startsWith('blob:')) {
-      URL.revokeObjectURL(this.imagePreviewUrls[i]!);
+
+    const preview = this.imagePreviewUrls[i];
+
+    // ---- 1️⃣ ถ้าเป็นไฟล์ใหม่ (blob)
+    if (preview?.startsWith('blob:')) {
+      URL.revokeObjectURL(preview);
+      this.imagePreviewUrls[i] = null;
+      this.images[i] = null;
+      this.performanceKinds[i] = null;
+      return;
     }
-    this.imagePreviewUrls[i] = null;
-    this.images[i] = null;
+
+    // ---- 2️⃣ ถ้าเป็นไฟล์จาก server
+    const item = this.performanceItems[i];
+    if (!item?.id) {
+      // ไม่มี id ก็แค่เคลียร์
+      this.imagePreviewUrls[i] = null;
+      this.performanceKinds[i] = null;
+      return;
+    }
+
+    // เรียก API ลบ
+    this.profileService.deletePerformance(item.id).subscribe({
+      next: (res) => {
+
+        // อัปเดตรายการใหม่จาก response
+        this.performanceItems = res.performanceItems ?? [];
+
+        // รีโหลด preview ใหม่ทั้งหมด
+        this.imagePreviewUrls = Array(6).fill(null);
+        this.images = Array(6).fill(null);
+        this.performanceKinds = Array(6).fill(null);
+
+        const apiBase = environment.apiUrl.replace(/\/api\/?$/, '');
+
+        this.performanceItems.slice(0, 6).forEach((it, idx) => {
+          const full = it.url.startsWith('http')
+            ? it.url
+            : `${apiBase}${it.url.startsWith('/') ? it.url : '/' + it.url}`;
+
+          this.imagePreviewUrls[idx] = full;
+          this.performanceKinds[idx] = 'image';
+        });
+
+        this.toast.success($localize`:@@profile_toast_delete_success:ลบรูปเรียบร้อย`);
+      },
+      error: () => {
+        this.toast.error($localize`:@@profile_toast_delete_error:ลบรูปไม่สำเร็จ`);
+      }
+    });
   }
 
   ddOpen: Record<DdKey, boolean> = {
@@ -1674,5 +1754,24 @@ export class HandleProfileComponent implements OnInit {
     ctrl.clearValidators();
     ctrl.updateValueAndValidity({ emitEvent: false });
   }
+  private syncCreditOtherValidators() {
+    const deptCtrl = this.creditForm.controls.deptText;
+    const posCtrl = this.creditForm.controls.posText;
 
+    if (this.isCreditDeptOtherSelected) {
+      deptCtrl.setValidators([Validators.required, Validators.maxLength(120)]);
+    } else {
+      deptCtrl.setValue('', { emitEvent: false });
+      deptCtrl.clearValidators();
+    }
+    deptCtrl.updateValueAndValidity({ emitEvent: false });
+
+    if (this.isCreditPosOtherSelected) {
+      posCtrl.setValidators([Validators.required, Validators.maxLength(120)]);
+    } else {
+      posCtrl.setValue('', { emitEvent: false });
+      posCtrl.clearValidators();
+    }
+    posCtrl.updateValueAndValidity({ emitEvent: false });
+  }
 }

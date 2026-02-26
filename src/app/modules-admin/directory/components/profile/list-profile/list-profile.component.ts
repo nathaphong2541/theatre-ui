@@ -26,6 +26,12 @@ type Credit = {
   skillIds: number[];
 };
 
+export type ProfilePerformanceItem = {
+  id: number;
+  url: string;
+  sortOrder?: number | null;
+};
+
 export type ProfileDto = {
   id: number;
   userId: number;
@@ -62,6 +68,7 @@ export type ProfileDto = {
   coverUrl?: string | null;
   resumeUrl?: string | null;
   performanceUrls?: string[] | null;
+  performanceItems?: ProfilePerformanceItem[]; // ✅ เพิ่ม
 };
 
 @Component({
