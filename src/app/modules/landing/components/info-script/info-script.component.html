@@ -1,187 +1,132 @@
-<section class="bg-[#0b1417] text-white px-4 lg:px-8 py-8 lg:py-10 shadow-[0_18px_60px_rgba(0,0,0,0.85)]">
-    <!-- Header -->
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-            <h2 i18n="@@landing_script_text_1" class="text-4xl font-extrabold tracking-tight bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
-bg-clip-text text-transparent
-drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]
-[ text-shadow:0_0_40px_rgba(20,124,127,0.5) ]">
-                บทละครใหม่ล่าสุด
-            </h2>
-            <p i18n="@@landing_script_text_2" class="text-xs md:text-sm text-white/60">
-                แสดงบทละครสาธารณะใหม่ล่าสุดสูงสุด 5 เรื่อง หากต้องการดูทั้งหมด กดปุ่มด้านขวา
-            </p>
+<section class="bg-[#0b1417] px-4 py-8 text-white shadow-[0_18px_60px_rgba(0,0,0,0.85)] lg:px-8 lg:py-10">
+  <!-- Header -->
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h2
+        i18n="@@landing_script_text_1"
+        class="[ text-shadow:0_0_40px_rgba(20,124,127,0.5) ] bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] bg-clip-text text-4xl font-extrabold tracking-tight text-transparent drop-shadow-[0_8px_40px_rgba(0,0,0,0.9)]">
+        บทละครใหม่ล่าสุด
+      </h2>
+      <p i18n="@@landing_script_text_2" class="text-xs text-white/60 md:text-sm">
+        แสดงบทละครสาธารณะใหม่ล่าสุดสูงสุด 5 เรื่อง หากต้องการดูทั้งหมด กดปุ่มด้านขวา
+      </p>
+    </div>
+
+    <button
+      i18n="@@view_all"
+      type="button"
+      (click)="onViewAll()"
+      class="group inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] px-5 py-2 text-xs font-semibold tracking-wide text-white shadow-[0_10px_30px_rgba(15,110,115,0.45)] transition-all duration-300 ease-out hover:-translate-y-[2px] hover:shadow-[0_14px_45px_rgba(20,124,127,0.75)] hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/60 focus:ring-offset-2 focus:ring-offset-[#0b1417] active:translate-y-0 active:shadow-[0_6px_20px_rgba(15,110,115,0.5)] md:text-sm">
+      ดูทั้งหมด
+
+      <!-- ลูกศรเล็กๆ เพิ่มความรู้สึก interactive -->
+      <svg
+        class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="mt-3 text-xs text-white/60 md:text-sm">กำลังโหลดบทละคร...</div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && error" class="mt-3 text-xs text-red-300 md:text-sm">
+    {{ error }}
+  </div>
+
+  <!-- Empty -->
+  <div
+    i18n="@@no_public_scripts"
+    *ngIf="!loading && !error && scripts.length === 0"
+    class="mt-3 rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-6 text-center text-xs text-white/60 md:text-sm">
+    ยังไม่มีบทละครสาธารณะให้แสดง
+  </div>
+
+  <!-- Grid list -->
+  <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5">
+    <article
+      *ngFor="let s of displayedScripts"
+      class="group flex w-full flex-col overflow-hidden rounded-xl border border-[#19a7aa]/20 bg-white/5 shadow-[0_6px_18px_rgba(15,110,115,0.18)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[#1cc5c9]/60 hover:shadow-[0_10px_30px_rgba(20,124,127,0.45)]">
+      <!-- Cover -->
+      <div class="relative aspect-[3/4] w-full overflow-hidden bg-[#0b1610]">
+        <img
+          *ngIf="getCover(s) as cover"
+          [src]="cover"
+          class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+
+        <img
+          *ngIf="!getCover(s)"
+          src="/assets/images/images.png"
+          class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+      </div>
+
+      <!-- Info -->
+      <div class="flex flex-1 flex-col bg-black/40 p-2.5">
+        <!-- title -->
+        <h3
+          class="line-clamp-2 min-h-[30px] text-[12px] font-semibold text-white group-hover:text-[#1cc5c9] sm:text-[13px]">
+          {{ s.title }}
+        </h3>
+
+        <!-- tags -->
+        <div class="mt-1 min-h-[28px]">
+          <div class="line-clamp-2 flex flex-wrap gap-1 overflow-hidden" *ngIf="getTagList(s).length > 0">
+            <span
+              *ngFor="let tag of getTagList(s)"
+              class="rounded-full border border-[#19a7aa]/30 bg-[#19a7aa]/10 px-1.5 py-0.5 text-[9px] text-[#bffcff] sm:text-[10px]">
+              #{{ tag }}
+            </span>
+          </div>
         </div>
 
-        <button i18n="@@view_all" type="button" (click)="onViewAll()" class="group inline-flex items-center gap-2
-         rounded-full
-         px-5 py-2
-         text-xs md:text-sm font-semibold tracking-wide
-         text-white
+        <!-- button -->
+        <div class="mt-auto flex justify-end pt-2">
+          <button
+            type="button"
+            (click)="onViewDetail(s)"
+            class="inline-flex items-center rounded-full bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] px-3 py-1.5 text-[10px] font-semibold text-white shadow-[0_6px_18px_rgba(15,110,115,0.35)] transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_10px_30px_rgba(20,124,127,0.6)] hover:brightness-110 sm:text-xs md:text-sm">
+            ดูรายละเอียด
+          </button>
+        </div>
 
-         bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
+        <!-- author -->
+        <p *ngIf="s.createdByName" class="mt-1 text-right text-[9px] text-white/50 sm:text-[10px]">
+          โดย {{ s.createdByName }}
+        </p>
+      </div>
+    </article>
+  </div>
 
-         shadow-[0_10px_30px_rgba(15,110,115,0.45)]
-         transition-all duration-300 ease-out
+  <!-- Controls -->
+  <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+    <!-- ย้อนกลับ (แสดงเมื่อเกิน 6) -->
+    <button
+      *ngIf="showBackButton"
+      type="button"
+      (click)="onBackToDefault()"
+      class="border-[#19a7aa]/35 focus:ring-[#1cc5c9]/55 inline-flex items-center justify-center rounded-full border bg-black/20 px-4 py-2 text-[12px] font-semibold tracking-wide text-white/90 shadow-[0_10px_30px_rgba(15,110,115,0.18)] backdrop-blur transition-all duration-300 hover:-translate-y-[1px] hover:border-[#1cc5c9]/60 hover:bg-black/30 hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0b1417]">
+      ย้อนกลับ
+    </button>
 
-         hover:brightness-110
-         hover:shadow-[0_14px_45px_rgba(20,124,127,0.75)]
-         hover:-translate-y-[2px]
-
-         active:translate-y-0 active:shadow-[0_6px_20px_rgba(15,110,115,0.5)]
-
-         focus:outline-none
-         focus:ring-2 focus:ring-[#1cc5c9]/60
-         focus:ring-offset-2 focus:ring-offset-[#0b1417]">
-
-            ดูทั้งหมด
-
-            <!-- ลูกศรเล็กๆ เพิ่มความรู้สึก interactive -->
-            <svg class="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none"
-                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- Loading -->
-    <div *ngIf="loading" class="mt-3 text-xs md:text-sm text-white/60">
-        กำลังโหลดบทละคร...
-    </div>
-
-    <!-- Error -->
-    <div *ngIf="!loading && error" class="mt-3 text-xs md:text-sm text-red-300">
-        {{ error }}
-    </div>
-
-    <!-- Empty -->
-    <div i18n="@@no_public_scripts" *ngIf="!loading && !error && scripts.length === 0"
-        class="mt-3 rounded-2xl border border-[#3f4d1f] bg-[#0a0f13] px-4 py-6 text-center text-xs md:text-sm text-white/60">
-        ยังไม่มีบทละครสาธารณะให้แสดง
-    </div>
-
-    <!-- List: การ์ด 5 ใบ แถวเดียว เลื่อนข้างได้ -->
-    <!-- Grid list -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <article *ngFor="let s of displayedScripts" class="group w-full overflow-hidden rounded-2xl
-         
-         border border-[#19a7aa]/30
-         bg-white/5
-         
-         shadow-[0_8px_25px_rgba(15,110,115,0.25)]
-         
-         transition-all duration-300
-         
-         hover:border-[#1cc5c9]/70
-         hover:shadow-[0_14px_40px_rgba(20,124,127,0.55)]
-         hover:-translate-y-[4px]
-
-         flex flex-col">
-
-            <!-- Cover -->
-            <div class="relative aspect-[3/4] w-full overflow-hidden bg-[#0b1610]">
-                <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title"
-                    class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-[1.03]" />
-
-                <img *ngIf="!getCover(s)" src="/assets/images/images.png"
-                    class="h-full w-full object-cover object-center transition duration-300 group-hover:scale-[1.03]">
-
-            </div>
-
-            <!-- Info panel -->
-            <div class="bg-black/40 p-3 flex flex-col flex-1">
-                <h3
-                    class="line-clamp-2 min-h-[34px] text-[13px] font-semibold text-white group-hover:text-[#1cc5c9] transition-colors">
-                    {{ s.title }}
-                </h3>
-
-                <div class="mt-2 min-h-[34px]">
-                    <div class="flex flex-wrap gap-1 line-clamp-2 overflow-hidden" *ngIf="getTagList(s).length > 0">
-                        <span *ngFor="let tag of getTagList(s)" class="rounded-full border border-[#19a7aa]/40 bg-[#19a7aa]/10
-         px-2 py-0.5 text-[10px] text-[#bffcff]
-         transition
-         hover:border-[#1cc5c9]/60 hover:bg-[#1cc5c9]/15">
-                            #{{ tag }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="mt-auto pt-3 flex items-center justify-end gap-2">
-                    <button type="button" (click)="onViewDetail(s)" class="group inline-flex items-center gap-2
-         rounded-full
-         px-5 py-2
-         text-xs md:text-sm font-semibold tracking-wide
-         text-white
-
-         bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
-
-         shadow-[0_10px_30px_rgba(15,110,115,0.45)]
-         transition-all duration-300 ease-out
-
-         hover:brightness-110
-         hover:shadow-[0_14px_45px_rgba(20,124,127,0.75)]
-         hover:-translate-y-[2px]
-
-         active:translate-y-0 active:shadow-[0_6px_20px_rgba(15,110,115,0.5)]
-
-         focus:outline-none
-         focus:ring-2 focus:ring-[#1cc5c9]/60
-         focus:ring-offset-2 focus:ring-offset-[#0b1417]" i18n="@@view_details">
-                        ดูรายละเอียด
-                    </button>
-
-                </div>
-
-                <p *ngIf="s.createdByName" class="mt-2 text-[10px] text-white/50 text-right">
-                    โดย {{ s.createdByName }}
-                </p>
-            </div>
-        </article>
-    </div>
-
-    <!-- Controls -->
-    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-        <!-- ย้อนกลับ (แสดงเมื่อเกิน 6) -->
-        <button *ngIf="showBackButton" type="button" (click)="onBackToDefault()" class="inline-flex items-center justify-center rounded-full
-         border border-[#19a7aa]/35
-         bg-black/20 backdrop-blur
-         px-4 py-2 text-[12px] font-semibold tracking-wide text-white/90
-
-         shadow-[0_10px_30px_rgba(15,110,115,0.18)]
-         transition-all duration-300
-
-         hover:bg-black/30
-         hover:border-[#1cc5c9]/60
-         hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)]
-         hover:-translate-y-[1px]
-
-         focus:outline-none
-         focus:ring-2 focus:ring-[#1cc5c9]/55
-         focus:ring-offset-2 focus:ring-offset-[#0b1417]">
-            ย้อนกลับ
-        </button>
-
-        <!-- Load more (แสดงเมื่อยังมีของให้โหลด) -->
-        <button *ngIf="hasMore" type="button" (click)="onLoadMore()" class="group inline-flex items-center gap-2 rounded-full
-         px-5 py-2 text-[12px] font-semibold tracking-wide text-white
-
-         bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
-         shadow-[0_10px_30px_rgba(15,110,115,0.35)]
-
-         transition-all duration-300 ease-out
-         hover:brightness-110
-         hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
-         hover:-translate-y-[2px]
-         active:translate-y-0
-
-         focus:outline-none
-         focus:ring-2 focus:ring-[#1cc5c9]/55
-         focus:ring-offset-2 focus:ring-offset-[#0b1417]">
-            Load more
-            <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-[1px]" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor">
-                <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </button>
-    </div>
+    <!-- Load more (แสดงเมื่อยังมีของให้โหลด) -->
+    <button
+      *ngIf="hasMore"
+      type="button"
+      (click)="onLoadMore()"
+      class="focus:ring-[#1cc5c9]/55 group inline-flex items-center gap-2 rounded-full bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] px-5 py-2 text-[12px] font-semibold tracking-wide text-white shadow-[0_10px_30px_rgba(15,110,115,0.35)] transition-all duration-300 ease-out hover:-translate-y-[2px] hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)] hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#0b1417] active:translate-y-0">
+      Load more
+      <svg
+        class="h-4 w-4 transition-transform duration-300 group-hover:translate-y-[1px]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor">
+        <path d="M12 5v14m0 0l-6-6m6 6l6-6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+  </div>
 </section>

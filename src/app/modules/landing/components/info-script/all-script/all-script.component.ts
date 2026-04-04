@@ -117,8 +117,11 @@ export class AllScriptComponent implements OnInit {
 
   onViewDetail(script: ScriptPublic) {
     const lang = this.getLangPrefix();
-    const base = lang ? ['/', lang, 'directory'] : ['/directory'];
-    this.router.navigate([...base, 'script', script.id]);
+    const base = lang ? ['/', lang] : ['/'];
+
+    const url = this.router.createUrlTree([...base, 'theatre-library-detail', script.id]).toString();
+
+    this.router.navigateByUrl(url);
   }
 
   openPdf(script: ScriptPublic, event?: MouseEvent) {

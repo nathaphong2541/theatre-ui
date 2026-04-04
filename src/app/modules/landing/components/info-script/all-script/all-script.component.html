@@ -1,212 +1,184 @@
 <div class="min-h-screen bg-[#05070b] text-white">
-    <div class="mx-auto max-w-6xl px-4 py-8">
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    <!-- Header -->
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <h1
+          i18n="@@all_scripts_header"
+          class="bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] bg-clip-text text-2xl font-extrabold tracking-tight text-transparent drop-shadow-[0_10px_45px_rgba(0,0,0,0.9)] [text-shadow:0_0_35px_rgba(28,197,201,0.28)] md:text-3xl">
+          รวมบทละครทั้งหมด
+        </h1>
+        <p i18n="@@all_scripts_subtext" class="text-sm text-white/60">
+          ดูบทละครทั้งหมดที่เปิดให้สาธารณะ สามารถค้นหาและกรองตามแท็กได้
+        </p>
+      </div>
 
-        <!-- Header -->
-        <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <h1 i18n="@@all_scripts_header" class="text-2xl md:text-3xl font-extrabold tracking-tight
-                 bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
-                 bg-clip-text text-transparent
-                 drop-shadow-[0_10px_45px_rgba(0,0,0,0.9)]
-                 [text-shadow:0_0_35px_rgba(28,197,201,0.28)]">
-                    รวมบทละครทั้งหมด
-                </h1>
-                <p i18n="@@all_scripts_subtext" class="text-sm text-white/60">
-                    ดูบทละครทั้งหมดที่เปิดให้สาธารณะ สามารถค้นหาและกรองตามแท็กได้
-                </p>
-            </div>
-
-            <a routerLink="/" i18n="@@back_to_home" class="inline-flex items-center gap-2 rounded-full
-               border border-[#19a7aa]/35 bg-black/20 backdrop-blur
-               px-4 py-2 text-xs font-semibold tracking-wide text-white/90
-               shadow-[0_10px_30px_rgba(15,110,115,0.18)]
-               transition-all duration-300
-               hover:bg-black/30 hover:border-[#1cc5c9]/60
-               hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)]
-               hover:-translate-y-[1px]
-               focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/55
-               focus:ring-offset-2 focus:ring-offset-[#05070b]">
-                กลับหน้าแรก
-                <svg class="h-3.5 w-3.5 opacity-80" fill="none" stroke="currentColor" stroke-width="2"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-                </svg>
-            </a>
-        </div>
-
-        <!-- Filter bar -->
-        <div class="mb-6 flex flex-col gap-3 rounded-2xl
-                border border-[#19a7aa]/30 bg-white/5 backdrop-blur
-                px-4 py-4
-                shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
-
-            <div class="flex flex-wrap items-center gap-3">
-                <!-- Search -->
-                <div class="relative flex-1 min-w-[220px]">
-                    <input type="text" [(ngModel)]="search" class="w-full rounded-xl
-                   border border-[#19a7aa]/25 bg-black/30 backdrop-blur
-                   px-4 py-2.5 text-sm text-white placeholder:text-white/30
-                   shadow-[0_10px_30px_rgba(0,0,0,0.35)]
-                   transition
-                   focus:border-[#1cc5c9]/60 focus:ring-2 focus:ring-[#1cc5c9]/25 focus:outline-none"
-                        placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก"
-                        i18n-placeholder="@@search_scripts_placeholder" />
-                    <span i18n="@@search" class="pointer-events-none absolute right-3 top-3 text-[11px] text-white/45">
-                        ค้นหา
-                    </span>
-                </div>
-
-                <div class="text-xs text-white/60">
-                    <label i18n="@@found_total">พบทั้งหมด</label>
-                    <span class="font-semibold text-[#bffcff] drop-shadow-[0_0_10px_rgba(28,197,201,0.25)]">
-                        {{ filteredScripts.length }}
-                    </span>
-                    <label i18n="@@scripts">เรื่อง</label>
-                </div>
-            </div>
-
-            <!-- Tag filters -->
-            <div *ngIf="allTags.length > 0" class="flex flex-wrap items-center gap-2">
-                <span class="text-[11px] text-white/50" i18n="@@filter_by_tags">กรองตามแท็ก:</span>
-
-                <!-- ปุ่ม "ทั้งหมด" -->
-                <button type="button" class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition
-                 hover:-translate-y-[1px]" [ngClass]="{
-            'border-[#1cc5c9]/70 bg-[#1cc5c9]/15 text-white shadow-[0_10px_25px_rgba(28,197,201,0.18)]': !selectedTag,
-            'border-[#19a7aa]/25 text-white/70 bg-black/20 hover:border-[#1cc5c9]/50 hover:bg-[#1cc5c9]/10': selectedTag
-          }" (click)="clearTag()" i18n="@@all">
-                    ทั้งหมด
-                </button>
-
-                <!-- ปุ่มแท็กแต่ละอัน -->
-                <button *ngFor="let tag of allTags" type="button" class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition
-                 hover:-translate-y-[1px]" [ngClass]="{
-            'border-[#1cc5c9]/75 bg-[#1cc5c9]/18 text-[#bffcff] shadow-[0_10px_25px_rgba(28,197,201,0.20)]': selectedTag === tag,
-            'border-[#19a7aa]/25 text-white/70 bg-black/20 hover:border-[#1cc5c9]/55 hover:bg-[#1cc5c9]/10': selectedTag !== tag
-          }" (click)="selectedTag = tag">
-                    #{{ tag }}
-                </button>
-            </div>
-        </div>
-
-        <!-- Loading -->
-        <div i18n="@@loading_scripts" *ngIf="loading" class="py-10 text-center text-white/60 text-sm">
-            กำลังโหลดข้อมูลบทละคร...
-        </div>
-
-        <!-- Error -->
-        <div *ngIf="!loading && error" class="mb-4 rounded-2xl border border-red-500/40 bg-red-900/15
-                px-4 py-3 text-sm text-red-200
-                shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-            {{ error }}
-        </div>
-
-        <!-- Empty -->
-        <div *ngIf="!loading && !error && filteredScripts.length === 0" class="rounded-2xl border border-[#19a7aa]/25 bg-white/5 backdrop-blur
-                px-6 py-10 text-center
-                shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
-            <p i18n="@@no_scripts_found" class="mb-2 text-base font-semibold text-white">
-                ยังไม่พบบทละครที่ตรงกับเงื่อนไข
-            </p>
-            <p i18n="@@try_adjust_filters" class="mb-4 text-sm text-white/60">
-                ลองลบตัวกรองหรือเปลี่ยนคำค้นหาใหม่อีกครั้ง
-            </p>
-        </div>
-
-        <!-- List -->
-        <div *ngIf="!loading && !error && filteredScripts.length > 0" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-
-            <article *ngFor="let s of filteredScripts" class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl
-                      border border-[#19a7aa]/25 bg-white/5 backdrop-blur
-                      shadow-[0_12px_35px_rgba(15,110,115,0.20)]
-                      transition-all duration-300
-                      hover:border-[#1cc5c9]/65
-                      hover:shadow-[0_18px_55px_rgba(20,124,127,0.45)]
-                      hover:-translate-y-[3px]" (click)="onViewDetail(s)">
-
-                <!-- Thumb -->
-                <div class="relative h-44 w-full bg-[#071316] overflow-hidden">
-                    <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title" class="h-full w-full object-cover opacity-90
-                      transition duration-300
-                      group-hover:opacity-100 group-hover:scale-[1.03]" />
-
-                    <div *ngIf="!getCover(s)"
-                        class="flex h-full w-full items-center justify-center text-xs text-white/50"
-                        i18n="@@no_cover_image">
-                        ไม่มีรูปปก
-                    </div>
-
-                    <span *ngIf="s.createdAt" class="absolute bottom-2 left-2 rounded-full
-                       bg-black/70 px-2 py-0.5 text-[10px]
-                       text-[#bffcff] border border-[#1cc5c9]/25">
-                        {{ s.createdAt | date: 'dd/MM/yyyy' }}
-                    </span>
-                </div>
-
-                <!-- Body -->
-                <div class="flex flex-1 flex-col p-4">
-                    <h2 class="mb-1 line-clamp-2 text-sm font-semibold text-white
-                     transition-colors
-                     group-hover:text-[#1cc5c9]
-                     drop-shadow-[0_0_10px_rgba(28,197,201,0.18)]">
-                        {{ s.title }}
-                    </h2>
-
-                    <!-- ✅ i18n fallback description -->
-                    <ng-container *ngIf="s.description?.trim()?.length; else noDesc">
-                        <p class="mb-2 line-clamp-3 text-xs text-white/70">{{ s.description }}</p>
-                    </ng-container>
-                    <ng-template #noDesc>
-                        <p class="mb-2 line-clamp-3 text-xs text-white/70" i18n="@@no_script_description">
-                            ยังไม่มีคำอธิบายสำหรับบทละครนี้
-                        </p>
-                    </ng-template>
-
-                    <!-- Tags -->
-                    <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
-                        <span *ngFor="let tag of getTagList(s)" class="rounded-full border border-[#19a7aa]/40 bg-[#19a7aa]/10
-                         px-2 py-0.5 text-[10px] text-[#bffcff]
-                         transition
-                         hover:border-[#1cc5c9]/60 hover:bg-[#1cc5c9]/15">
-                            #{{ tag }}
-                        </span>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="mt-auto space-y-2">
-                        <div class="flex items-center justify-between text-[11px] gap-2">
-
-                            <button type="button" i18n="@@view_details"
-                                class="inline-flex items-center justify-center rounded-full
-                             px-4 py-1.5 text-xs font-semibold tracking-wide text-white
-                             bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73]
-                             shadow-[0_10px_30px_rgba(15,110,115,0.35)]
-                             transition-all duration-300
-                             hover:brightness-110 hover:shadow-[0_16px_45px_rgba(20,124,127,0.60)]
-                             hover:-translate-y-[1px]
-                             focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/55 focus:ring-offset-2 focus:ring-offset-[#05070b]">
-                                ดูรายละเอียด
-                            </button>
-
-                            <button i18n="@@open_pdf" *ngIf="s.pdfPath" type="button" (click)="openPdf(s, $event)"
-                                class="inline-flex items-center justify-center rounded-full
-                             border border-[#1cc5c9]/45 bg-black/20 backdrop-blur
-                             px-4 py-1.5 text-xs font-semibold tracking-wide text-[#bffcff]
-                             shadow-[0_10px_30px_rgba(15,110,115,0.18)]
-                             transition-all duration-300
-                             hover:bg-[#1cc5c9]/10 hover:border-[#1cc5c9]/70 hover:-translate-y-[1px]
-                             focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/45 focus:ring-offset-2 focus:ring-offset-[#05070b]">
-                                เปิด PDF
-                            </button>
-                        </div>
-
-                        <p *ngIf="s.createdByName" class="text-[10px] text-white/45 text-right">
-                            <label i18n="@@by">โดย</label> {{ s.createdByName }}
-                        </p>
-                    </div>
-                </div>
-            </article>
-        </div>
-
+      <a
+        routerLink="/"
+        i18n="@@back_to_home"
+        class="border-[#19a7aa]/35 focus:ring-[#1cc5c9]/55 inline-flex items-center gap-2 rounded-full border bg-black/20 px-4 py-2 text-xs font-semibold tracking-wide text-white/90 shadow-[0_10px_30px_rgba(15,110,115,0.18)] backdrop-blur transition-all duration-300 hover:-translate-y-[1px] hover:border-[#1cc5c9]/60 hover:bg-black/30 hover:shadow-[0_14px_45px_rgba(20,124,127,0.35)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#05070b]">
+        กลับหน้าแรก
+        <svg class="h-3.5 w-3.5 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
     </div>
+
+    <!-- Filter bar -->
+    <div
+      class="mb-6 flex flex-col gap-3 rounded-2xl border border-[#19a7aa]/30 bg-white/5 px-4 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.55)] backdrop-blur">
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Search -->
+        <div class="relative min-w-[220px] flex-1">
+          <input
+            type="text"
+            [(ngModel)]="search"
+            class="w-full rounded-xl border border-[#19a7aa]/25 bg-black/30 px-4 py-2.5 text-sm text-white shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur transition placeholder:text-white/30 focus:border-[#1cc5c9]/60 focus:outline-none focus:ring-2 focus:ring-[#1cc5c9]/25"
+            placeholder="ค้นหาจากชื่อเรื่อง / คำอธิบาย / แท็ก"
+            i18n-placeholder="@@search_scripts_placeholder" />
+          <span i18n="@@search" class="text-white/45 pointer-events-none absolute right-3 top-3 text-[11px]">
+            ค้นหา
+          </span>
+        </div>
+
+        <div class="text-xs text-white/60">
+          <label i18n="@@found_total">พบทั้งหมด</label>
+          <span class="font-semibold text-[#bffcff] drop-shadow-[0_0_10px_rgba(28,197,201,0.25)]">
+            {{ filteredScripts.length }}
+          </span>
+          <label i18n="@@scripts">เรื่อง</label>
+        </div>
+      </div>
+
+      <!-- Tag filters -->
+      <div *ngIf="allTags.length > 0" class="flex flex-wrap items-center gap-2">
+        <span class="text-[11px] text-white/50" i18n="@@filter_by_tags">กรองตามแท็ก:</span>
+
+        <!-- ปุ่ม "ทั้งหมด" -->
+        <button
+          type="button"
+          class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition hover:-translate-y-[1px]"
+          [ngClass]="{
+            'bg-[#1cc5c9]/15 border-[#1cc5c9]/70 text-white shadow-[0_10px_25px_rgba(28,197,201,0.18)]': !selectedTag,
+            'border-[#19a7aa]/25 bg-black/20 text-white/70 hover:border-[#1cc5c9]/50 hover:bg-[#1cc5c9]/10': selectedTag
+          }"
+          (click)="clearTag()"
+          i18n="@@all">
+          ทั้งหมด
+        </button>
+
+        <!-- ปุ่มแท็กแต่ละอัน -->
+        <button
+          *ngFor="let tag of allTags"
+          type="button"
+          class="rounded-full border px-3 py-1 text-[11px] font-semibold tracking-wide transition hover:-translate-y-[1px]"
+          [ngClass]="{
+            'bg-[#1cc5c9]/18 border-[#1cc5c9]/75 text-[#bffcff] shadow-[0_10px_25px_rgba(28,197,201,0.20)]':
+              selectedTag === tag,
+            'hover:border-[#1cc5c9]/55 border-[#19a7aa]/25 bg-black/20 text-white/70 hover:bg-[#1cc5c9]/10':
+              selectedTag !== tag
+          }"
+          (click)="selectedTag = tag">
+          #{{ tag }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div i18n="@@loading_scripts" *ngIf="loading" class="py-10 text-center text-sm text-white/60">
+      กำลังโหลดข้อมูลบทละคร...
+    </div>
+
+    <!-- Error -->
+    <div
+      *ngIf="!loading && error"
+      class="bg-red-900/15 mb-4 rounded-2xl border border-red-500/40 px-4 py-3 text-sm text-red-200 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+      {{ error }}
+    </div>
+
+    <!-- Empty -->
+    <div
+      *ngIf="!loading && !error && filteredScripts.length === 0"
+      class="rounded-2xl border border-[#19a7aa]/25 bg-white/5 px-6 py-10 text-center shadow-[0_18px_60px_rgba(0,0,0,0.55)] backdrop-blur">
+      <p i18n="@@no_scripts_found" class="mb-2 text-base font-semibold text-white">ยังไม่พบบทละครที่ตรงกับเงื่อนไข</p>
+      <p i18n="@@try_adjust_filters" class="mb-4 text-sm text-white/60">ลองลบตัวกรองหรือเปลี่ยนคำค้นหาใหม่อีกครั้ง</p>
+    </div>
+
+    <!-- List -->
+    <div
+      *ngIf="!loading && !error && filteredScripts.length > 0"
+      class="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+      <article
+        *ngFor="let s of filteredScripts"
+        class="hover:border-[#1cc5c9]/65 group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-[#19a7aa]/25 bg-white/5 shadow-[0_8px_25px_rgba(15,110,115,0.18)] backdrop-blur transition-all duration-300 hover:-translate-y-[2px] hover:shadow-[0_16px_45px_rgba(20,124,127,0.35)]"
+        (click)="onViewDetail(s)">
+        <!-- Thumb -->
+        <div class="relative aspect-[16/9] w-full bg-[#071316]">
+          <div class="relative w-full">
+            <img *ngIf="getCover(s) as cover" [src]="cover" [alt]="s.title" class="h-full w-full object-cover" />
+
+            <div *ngIf="!getCover(s)" class="flex h-full w-full items-center justify-center text-xs text-white/50">
+              ไม่มีรูปปก
+            </div>
+          </div>
+
+          <span
+            *ngIf="s.createdAt"
+            class="absolute bottom-2 left-2 rounded-full border border-[#1cc5c9]/25 bg-black/70 px-2 py-0.5 text-[10px] text-[#bffcff]">
+            {{ s.createdAt | date: 'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <!-- Body -->
+        <div class="flex flex-1 flex-col p-3 sm:p-4">
+          <h2 class="line-clamp-2 mb-1 text-sm font-semibold text-white group-hover:text-[#1cc5c9] sm:text-base">
+            {{ s.title }}
+          </h2>
+
+          <!-- description -->
+          <ng-container *ngIf="s.description?.trim()?.length; else noDesc">
+            <p class="line-clamp-3 mb-2 text-xs text-white/70 sm:text-sm">
+              {{ s.description }}
+            </p>
+          </ng-container>
+
+          <ng-template #noDesc>
+            <p class="line-clamp-3 mb-2 text-xs text-white/70 sm:text-sm">ยังไม่มีคำอธิบายสำหรับบทละครนี้</p>
+          </ng-template>
+
+          <!-- Tags -->
+          <div class="mb-3 flex flex-wrap gap-1" *ngIf="getTagList(s).length > 0">
+            <span
+              *ngFor="let tag of getTagList(s)"
+              class="rounded-full border border-[#19a7aa]/40 bg-[#19a7aa]/10 px-2 py-0.5 text-[10px] text-[#bffcff] sm:text-xs">
+              #{{ tag }}
+            </span>
+          </div>
+
+          <!-- Footer -->
+          <div class="mt-auto space-y-2">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <!-- ปุ่ม -->
+              <button
+                type="button"
+                (click)="onViewDetail(s)"
+                class="w-full rounded-full bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] px-4 py-1.5 text-center text-xs font-semibold text-white sm:w-auto">
+                ดูรายละเอียด
+              </button>
+
+              <button
+                *ngIf="s.pdfPath"
+                type="button"
+                (click)="openPdf(s, $event)"
+                class="border-[#1cc5c9]/45 w-full rounded-full border px-4 py-1.5 text-center text-xs font-semibold text-[#bffcff] sm:w-auto">
+                เปิด PDF
+              </button>
+            </div>
+
+            <p *ngIf="s.createdByName" class="text-white/45 text-right text-[10px]">โดย {{ s.createdByName }}</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
 </div>

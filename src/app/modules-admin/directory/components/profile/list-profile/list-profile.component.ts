@@ -7,6 +7,7 @@ import { ProfileService } from '../../../service/profile.service';
 import { environment } from 'src/environments/environment';
 import { MasterItem, PubilcService } from 'src/app/shared/service/public/pubilc.service';
 import { LocaleSwitcherService } from 'src/locale/locale-switcher.service';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 
 type Tag = { label: string; icon?: string };
 type Link = { type: 'email' | 'phone' | 'link'; label: string; value: string; href: string; icon: string };
@@ -76,7 +77,7 @@ export type ProfileDto = {
   standalone: true,
   imports: [CommonModule, AngularSvgIconModule, VideoGalleryComponent],
   templateUrl: './list-profile.component.html',
-  styleUrl: './list-profile.component.css'
+  styleUrl: './list-profile.component.css',
 })
 export class ListProfileComponent implements OnInit {
   // Cover/Avatar
@@ -112,9 +113,7 @@ export class ListProfileComponent implements OnInit {
 
   // stats
   creditsCount = computed(() => this.credits().length);
-  mediaCount = computed(
-    () => this.videoSources().length + this.performanceUrls().length
-  );
+  mediaCount = computed(() => this.videoSources().length + this.performanceUrls().length);
 
   // control
   userId: number | null = null;
@@ -144,14 +143,12 @@ export class ListProfileComponent implements OnInit {
   raceLabels = signal<string[]>([]);
   additionalLabels = signal<string[]>([]);
 
-
   constructor(
     private router: Router,
     private profileService: ProfileService,
-    private publicService: PubilcService,        // ✅ เพิ่ม
-    private ls: LocaleSwitcherService,          // ✅ เพิ่ม
-  ) { }
-
+    private publicService: PubilcService, // ✅ เพิ่ม
+    private ls: LocaleSwitcherService, // ✅ เพิ่ม
+  ) {}
 
   private getLangPrefix(): string | null {
     const path = this.router.url.split('?')[0].split('#')[0];
@@ -165,7 +162,7 @@ export class ListProfileComponent implements OnInit {
 
     let lang = 'th';
     try {
-      lang = this.ls.currentLocale();           // เหมือนที่ใช้ใน HandleProfileComponent
+      lang = this.ls.currentLocale(); // เหมือนที่ใช้ใน HandleProfileComponent
     } catch {
       lang = 'th';
     }
@@ -173,39 +170,38 @@ export class ListProfileComponent implements OnInit {
     const isTh = lang === 'th';
 
     return isTh
-      ? (item.nameTh || item.nameEn || fallback || `${item.id}`)
-      : (item.nameEn || item.nameTh || fallback || `${item.id}`);
+      ? item.nameTh || item.nameEn || fallback || `${item.id}`
+      : item.nameEn || item.nameTh || fallback || `${item.id}`;
   }
 
   // helper แปลง Credit → ชื่อจริง
   deptNames(c: Credit): string[] {
     return (c.deptIds || [])
-      .map(id => this.deptMap.get(id))
+      .map((id) => this.deptMap.get(id))
       .filter((x): x is MasterItem => !!x)
-      .map(x => this.pickLabel(x));
+      .map((x) => this.pickLabel(x));
   }
 
   posNames(c: Credit): string[] {
     return (c.posIds || [])
-      .map(id => this.posMap.get(id))
+      .map((id) => this.posMap.get(id))
       .filter((x): x is MasterItem => !!x)
-      .map(x => this.pickLabel(x));
+      .map((x) => this.pickLabel(x));
   }
 
   skillNames(c: Credit): string[] {
     return (c.skillIds || [])
-      .map(id => this.skillMap.get(id))
+      .map((id) => this.skillMap.get(id))
       .filter((x): x is MasterItem => !!x)
-      .map(x => this.pickLabel(x));
+      .map((x) => this.pickLabel(x));
   }
 
   ngOnInit() {
-
     this.isLoading.set(true);
 
     this.profileService.getProfile().subscribe({
       next: (p: ProfileDto | any) => {
-        this.profile = p;   // ✅ สำคัญมาก เพื่อให้ *ngIf="profile?.facebook" ใช้ได้
+        this.profile = p; // ✅ สำคัญมาก เพื่อให้ *ngIf="profile?.facebook" ใช้ได้
         this.loadProfileMasters(this.profile);
         this.setProfileLabelGroups(this.profile);
 
@@ -230,13 +226,13 @@ export class ListProfileComponent implements OnInit {
         this.userId = p?.userId ?? null;
 
         // avatar / cover
-        this.avatarUrl.set(this.toAbsolute(p?.avatarUrl) || null);
+        this.avatarUrl.set(toFullUrl(p?.avatarUrl));
         if (p?.coverUrl) {
-          this.coverUrl.set(this.toAbsolute(p.coverUrl)!);
+          this.coverUrl.set(toFullUrl(p.coverUrl)!);
         }
 
         // resume
-        const rAbs = this.toAbsolute(p?.resumeUrl) || null;
+        const rAbs = toFullUrl(p?.resumeUrl);
         this.resumeUrlAbs.set(rAbs);
         if (rAbs) {
           this.resumeIsImage.set(this.isImage(rAbs));
@@ -248,11 +244,7 @@ export class ListProfileComponent implements OnInit {
 
         // performance images
         const perf = Array.isArray(p?.performanceUrls) ? p.performanceUrls : [];
-        this.performanceUrls.set(
-          perf
-            .map((u: string) => this.toAbsolute(u))
-            .filter((u: string | null): u is string => !!u)
-        );
+        this.performanceUrls.set(perf.map((u: string) => toFullUrl(u)).filter((u: string | null): u is string => !!u));
 
         // tags
         const tags: Tag[] = [];
@@ -319,7 +311,7 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'Website',
-            value: this.normalizeUrl(p.website),  // หรือจะแสดงเต็มก็ได้
+            value: this.normalizeUrl(p.website), // หรือจะแสดงเต็มก็ได้
             href: this.normalizeUrl(p.website),
             icon: 'assets/icons/heroicons/outline/link.svg',
           });
@@ -330,8 +322,8 @@ export class ListProfileComponent implements OnInit {
           links.push({
             type: 'link',
             label: 'LinkedIn',
-            value: this.socialHandle('linkedin', p.linkedin),   // << แสดงเฉพาะ slug
-            href: this.socialUrl('linkedin', p.linkedin),       // << ยังลิงก์ถูกเหมือนเดิม
+            value: this.socialHandle('linkedin', p.linkedin), // << แสดงเฉพาะ slug
+            href: this.socialUrl('linkedin', p.linkedin), // << ยังลิงก์ถูกเหมือนเดิม
             icon: 'assets/icons/social/linkedin.svg',
           });
         }
@@ -369,11 +361,7 @@ export class ListProfileComponent implements OnInit {
         this.links.set(links);
 
         // videos
-        this.videoSources.set(
-          [p?.video1, p?.video2].filter(
-            (x): x is string => !!x && x.toString().trim().length > 0
-          )
-        );
+        this.videoSources.set([p?.video1, p?.video2].filter((x): x is string => !!x && x.toString().trim().length > 0));
 
         // languages (multiLang + additionalLanguages)
         const langs: string[] = [];
@@ -388,7 +376,6 @@ export class ListProfileComponent implements OnInit {
             .forEach((x: string) => langs.push(x));
         }
         this.languageLabels.set(Array.from(new Set(langs)));
-
 
         // credits
         this.credits.set(Array.isArray(p?.credits) ? p.credits : []);
@@ -418,13 +405,13 @@ export class ListProfileComponent implements OnInit {
     ids: number[] | null | undefined,
     map: Map<number, MasterItem>,
     opts?: {
-      otherId?: number;          // default 999
-      otherText?: string;        // ข้อความ other
-      otherPrefix?: string;      // เช่น 'Other'
-      attachToId?: number;       // เช่น 998
-      attachText?: string;       // ข้อความของ 998
+      otherId?: number; // default 999
+      otherText?: string; // ข้อความ other
+      otherPrefix?: string; // เช่น 'Other'
+      attachToId?: number; // เช่น 998
+      attachText?: string; // ข้อความของ 998
       attachFormat?: (base: string, text: string) => string; // รูปแบบการแนบ
-    }
+    },
   ): string[] {
     const list = (ids ?? []).filter((x) => typeof x === 'number');
 
@@ -478,7 +465,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getWorkLocaltion?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (wlIds.has(i.id)) this.workLocationMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (wlIds.has(i.id)) this.workLocationMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p); // โหลดเสร็จแล้วค่อย refresh labels
       },
     });
@@ -486,7 +475,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getPartnerIdentity?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (partnerIds.has(i.id)) this.partnerMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (partnerIds.has(i.id)) this.partnerMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p);
       },
     });
@@ -494,7 +485,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getExperienceLevel?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (expIds.has(i.id)) this.experienceMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (expIds.has(i.id)) this.experienceMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p);
       },
     });
@@ -502,7 +495,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getUnionMembership?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (unionIds.has(i.id)) this.unionMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (unionIds.has(i.id)) this.unionMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p);
       },
     });
@@ -510,7 +505,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getGenderIdentity?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (genderIds.has(i.id)) this.genderMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (genderIds.has(i.id)) this.genderMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p);
       },
     });
@@ -518,7 +515,9 @@ export class ListProfileComponent implements OnInit {
     this.publicService.getRacialIdentity?.().subscribe({
       next: (res: any) => {
         const items: MasterItem[] = res?.items ?? res ?? [];
-        items.forEach(i => { if (raceIds.has(i.id)) this.raceMap.set(i.id, i); });
+        items.forEach((i) => {
+          if (raceIds.has(i.id)) this.raceMap.set(i.id, i);
+        });
         this.setProfileLabelGroups(p);
       },
     });
@@ -538,7 +537,7 @@ export class ListProfileComponent implements OnInit {
         otherId: 999,
         otherPrefix: 'Other',
         otherText: p?.workLocationsOtherText,
-      })
+      }),
     );
 
     this.partnerLabels.set(
@@ -546,7 +545,7 @@ export class ListProfileComponent implements OnInit {
         otherId: 999,
         otherPrefix: 'Other',
         otherText: p?.partnerOtherText,
-      })
+      }),
     );
 
     this.experienceLabels.set(
@@ -554,7 +553,7 @@ export class ListProfileComponent implements OnInit {
         otherId: 999,
         otherPrefix: 'Other',
         otherText: p?.experienceOtherText,
-      })
+      }),
     );
 
     this.unionLabels.set(
@@ -565,7 +564,7 @@ export class ListProfileComponent implements OnInit {
         attachToId: 998, // Student/Academic
         attachText: p?.unionStudentAcademicText,
         attachFormat: (base, text) => `${base}: ${text}`,
-      })
+      }),
     );
 
     this.genderLabels.set(
@@ -573,7 +572,7 @@ export class ListProfileComponent implements OnInit {
         otherId: 999, // Prefer to self-describe
         otherPrefix: 'Self-described',
         otherText: p?.genderSelfDescribeText,
-      })
+      }),
     );
 
     this.raceLabels.set(
@@ -581,12 +580,10 @@ export class ListProfileComponent implements OnInit {
         otherId: 999,
         otherPrefix: 'Other',
         otherText: p?.racialIdentityOtherText,
-      })
+      }),
     );
 
-    this.additionalLabels.set(
-      this.buildLabels(p?.additionals, this.additionalMap)
-    );
+    this.additionalLabels.set(this.buildLabels(p?.additionals, this.additionalMap));
   }
 
   private loadCreditMasters(credits: Credit[]): void {
@@ -596,10 +593,10 @@ export class ListProfileComponent implements OnInit {
     const posIds = new Set<number>();
     const skillIds = new Set<number>();
 
-    credits.forEach(c => {
-      (c.deptIds || []).forEach(id => deptIds.add(id));
-      (c.posIds || []).forEach(id => posIds.add(id));
-      (c.skillIds || []).forEach(id => skillIds.add(id));
+    credits.forEach((c) => {
+      (c.deptIds || []).forEach((id) => deptIds.add(id));
+      (c.posIds || []).forEach((id) => posIds.add(id));
+      (c.skillIds || []).forEach((id) => skillIds.add(id));
     });
 
     // ถ้าไม่มี id อะไรเลยก็ไม่ต้องโหลด
@@ -607,42 +604,39 @@ export class ListProfileComponent implements OnInit {
 
     // 🟢 โหลด department ทั้งหมดแล้วเก็บเฉพาะที่ใช้
     this.publicService.getDepartment().subscribe({
-      next: res => {
+      next: (res) => {
         const items: MasterItem[] = res?.items ?? [];
-        items.forEach(item => {
+        items.forEach((item) => {
           if (deptIds.has(item.id)) this.deptMap.set(item.id, item);
         });
       },
-      error: err => console.error('load departments failed', err),
+      error: (err) => console.error('load departments failed', err),
     });
 
     // 🟢 โหลด position ทั้งหมดแล้วเก็บเฉพาะที่ใช้
     this.publicService.getPosition().subscribe({
-      next: res => {
+      next: (res) => {
         const items: MasterItem[] = res?.items ?? [];
-        items.forEach(item => {
+        items.forEach((item) => {
           if (posIds.has(item.id)) this.posMap.set(item.id, item);
         });
       },
-      error: err => console.error('load positions failed', err),
+      error: (err) => console.error('load positions failed', err),
     });
 
     // 🟢 โหลด skills (อาจเป็น array ตรงๆ หรือมี items)
     this.publicService.getSkills().subscribe({
-      next: res => {
-        const items: MasterItem[] = Array.isArray(res) ? res : (res?.items ?? []);
-        items.forEach(item => {
+      next: (res) => {
+        const items: MasterItem[] = Array.isArray(res) ? res : res?.items ?? [];
+        items.forEach((item) => {
           if (skillIds.has(item.id)) this.skillMap.set(item.id, item);
         });
       },
-      error: err => console.error('load skills failed', err),
+      error: (err) => console.error('load skills failed', err),
     });
   }
 
-  socialUrl(
-    platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin',
-    raw: string
-  ): string {
+  socialUrl(platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin', raw: string): string {
     const trimmed = (raw || '').trim();
     if (!trimmed) return '#';
 
@@ -678,10 +672,7 @@ export class ListProfileComponent implements OnInit {
   }
 
   /** ตัดเอาเฉพาะ handle/slug ไว้แสดง */
-  socialHandle(
-    platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin',
-    raw: string
-  ): string {
+  socialHandle(platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin', raw: string): string {
     const trimmed = (raw || '').trim();
     if (!trimmed) return '';
 
@@ -714,13 +705,6 @@ export class ListProfileComponent implements OnInit {
         // ส่วนใหญ่ handle จะเป็น segment สุดท้าย
         return parts[parts.length - 1];
     }
-  }
-
-  toAbsolute(url?: string | null): string | null {
-    if (!url) return null;
-    if (/^https?:\/\//i.test(url)) return url;
-    const apiBase = environment.apiUrl.replace(/\/api\/?$/, '');
-    return `${apiBase}${url.startsWith('/') ? url : '/' + url}`;
   }
 
   normalizeUrl(raw: string): string {
@@ -759,6 +743,45 @@ export class ListProfileComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = () => this.avatarUrl.set(reader.result as string);
     reader.readAsDataURL(f);
+  }
+
+  downloadResume() {
+    const url = this.resumeUrlAbs();
+    if (!url) return;
+
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = this.getFileName(url);
+        a.click();
+
+        window.URL.revokeObjectURL(blobUrl);
+      });
+  }
+
+  downloadFile(url: string) {
+    if (!url) return;
+
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = this.getFileName(url);
+        a.click();
+
+        window.URL.revokeObjectURL(blobUrl);
+      })
+      .catch((err) => {
+        console.error('Download failed', err);
+        window.open(url, '_blank'); // fallback
+      });
   }
 
   editProfile() {

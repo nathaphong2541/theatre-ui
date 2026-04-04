@@ -25,9 +25,9 @@ export type ProfileCredit = {
   fellowship: boolean;
 
   deptIds: number[];
-  deptText?: string | null;   // ✅ เพิ่ม
+  deptText?: string | null; // ✅ เพิ่ม
   posIds: number[];
-  posText?: string | null;    // ✅ เพิ่ม
+  posText?: string | null; // ✅ เพิ่ม
   skillIds: number[];
 };
 
@@ -134,7 +134,6 @@ export type ProfilePayload = {
   credits: ProfileCredit[];
 };
 
-
 type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races' | 'professions' | 'additional';
 
 @Component({
@@ -142,10 +141,9 @@ type DdKey = 'work' | 'unions' | 'exp' | 'partners' | 'genders' | 'races' | 'pro
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule],
   templateUrl: './handle-profile.component.html',
-  styleUrl: './handle-profile.component.css'
+  styleUrl: './handle-profile.component.css',
 })
 export class HandleProfileComponent implements OnInit {
-
   // ==== Avatar ====
   avatarFile: File | null = null;
   avatarPreviewUrl: string | null = null;
@@ -203,10 +201,9 @@ export class HandleProfileComponent implements OnInit {
     private publicService: PubilcService,
     private ls: LocaleSwitcherService,
   ) {
-
     // เมื่อเปลี่ยน Department → filter Positions
     // ✅ ใหม่: เลือก Department แล้วไปดึง Position จาก backend
-    this.creditForm.get('deptId')!.valueChanges.subscribe(deptId => {
+    this.creditForm.get('deptId')!.valueChanges.subscribe((deptId) => {
       if (!deptId) {
         this.filteredPositions = [];
         this.filteredSkills = [];
@@ -218,9 +215,8 @@ export class HandleProfileComponent implements OnInit {
       this.loadPositionsByDepartment(deptId);
     });
 
-
     // เมื่อเปลี่ยน Position → filter Skills
-    this.creditForm.get('posId')!.valueChanges.subscribe(posId => {
+    this.creditForm.get('posId')!.valueChanges.subscribe((posId) => {
       if (!posId) {
         this.filteredSkills = [];
         this.creditForm.patchValue({ skillIds: [] }, { emitEvent: false });
@@ -237,9 +233,7 @@ export class HandleProfileComponent implements OnInit {
   public pickLabel(x: { nameTh?: string; nameEn?: string }): string {
     const lang = this.ls.currentLocale();
     const isTh = lang === 'th';
-    return isTh
-      ? (x.nameTh || x.nameEn || '')
-      : (x.nameEn || x.nameTh || '');
+    return isTh ? x.nameTh || x.nameEn || '' : x.nameEn || x.nameTh || '';
   }
 
   public async refreshCreditPositions() {
@@ -248,35 +242,44 @@ export class HandleProfileComponent implements OnInit {
 
   private async loadMaster(): Promise<void> {
     await Promise.all([
-      new Promise<void>(resolve => {
-        this.publicService.getDepartment().subscribe(res => {
-          this.departmentsApi = res?.items ?? [];
+      new Promise<void>((resolve) => {
+        this.publicService.getDepartment().subscribe(
+          (res) => {
+            this.departmentsApi = res?.items ?? [];
 
-          this.deptById.clear();
-          this.departmentsApi.forEach((d: any) => this.deptById.set(d.id, d));
+            this.deptById.clear();
+            this.departmentsApi.forEach((d: any) => this.deptById.set(d.id, d));
 
-          resolve();
-        }, _ => resolve());
+            resolve();
+          },
+          (_) => resolve(),
+        );
       }),
-      new Promise<void>(resolve => {
-        this.publicService.getPosition().subscribe(res => {
-          this.positionsApi = res?.items ?? [];
+      new Promise<void>((resolve) => {
+        this.publicService.getPosition().subscribe(
+          (res) => {
+            this.positionsApi = res?.items ?? [];
 
-          this.posById.clear();
-          this.positionsApi.forEach((p: any) => this.posById.set(p.id, p));
+            this.posById.clear();
+            this.positionsApi.forEach((p: any) => this.posById.set(p.id, p));
 
-          resolve();
-        }, _ => resolve());
+            resolve();
+          },
+          (_) => resolve(),
+        );
       }),
-      new Promise<void>(resolve => {
-        this.publicService.getSkills().subscribe(res => {
-          this.skillsApi = Array.isArray(res) ? res : (res?.items ?? []);
+      new Promise<void>((resolve) => {
+        this.publicService.getSkills().subscribe(
+          (res) => {
+            this.skillsApi = Array.isArray(res) ? res : res?.items ?? [];
 
-          this.skillById.clear();
-          this.skillsApi.forEach((s: any) => this.skillById.set(s.id, s));
+            this.skillById.clear();
+            this.skillsApi.forEach((s: any) => this.skillById.set(s.id, s));
 
-          resolve();
-        }, _ => resolve());
+            resolve();
+          },
+          (_) => resolve(),
+        );
       }),
     ]);
 
@@ -296,64 +299,49 @@ export class HandleProfileComponent implements OnInit {
       professions: this.publicService.getProfessions(),
     }).subscribe({
       next: (res) => {
-        this.workLocations = res.workLocations.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.workLocations = res.workLocations.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
 
-        this.unions = res.unions.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.unions = res.unions.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
 
-        this.experienceLevels = res.experienceLevels.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.experienceLevels = res.experienceLevels.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
 
         this.partnerDirectories = res.partnerDirectories.items.map(
           (x: { id: number; nameTh: string; nameEn: string }) => ({
             label: this.pickLabel(x),
             value: x.id,
-          })
+          }),
         );
 
         this.buildPartnerLabelMap(); // ✅ ย้ายมาไว้ตรงนี้
 
-        this.races = res.races.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.races = res.races.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
 
-        this.genders = res.genders.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.genders = res.genders.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
 
-        this.professions = res.professions.items.map(
-          (x: { id: number; nameTh: string; nameEn: string }) => ({
-            label: this.pickLabel(x),
-            value: x.id,
-          })
-        );
+        this.professions = res.professions.items.map((x: { id: number; nameTh: string; nameEn: string }) => ({
+          label: this.pickLabel(x),
+          value: x.id,
+        }));
       },
       error: () =>
-        this.toast.error(
-          $localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`,
-          {
-            title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
-          }
-        ),
+        this.toast.error($localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`, {
+          title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
+        }),
     });
   }
 
@@ -388,7 +376,7 @@ export class HandleProfileComponent implements OnInit {
     posId: new FormControl<number | null>(null),
     skillIds: new FormControl<number[]>([], { nonNullable: true }),
     deptText: new FormControl<string>(''), // ✅
-    posText: new FormControl<string>(''),  // ✅
+    posText: new FormControl<string>(''), // ✅
   });
 
   /** ฟอร์มหลัก */
@@ -489,7 +477,7 @@ export class HandleProfileComponent implements OnInit {
       new FormControl<string>(value, {
         nonNullable: true,
         validators: [Validators.maxLength(50)],
-      })
+      }),
     );
   }
 
@@ -526,15 +514,14 @@ export class HandleProfileComponent implements OnInit {
     this.form.controls.partnerDetailById.setValue(next);
   }
 
-
   private buildCreditLabel(c: ProfileCredit): string {
     const presentLabel = $localize`:@@profile_credit_present:Present`;
 
     const period = c.current
       ? `${c.startYear} – ${presentLabel}`
       : c.endYear
-        ? `${c.startYear} – ${c.endYear}`
-        : `${c.startYear}`;
+      ? `${c.startYear} – ${c.endYear}`
+      : `${c.startYear}`;
 
     return `${c.company} — ${c.title} (${period})`;
   }
@@ -552,30 +539,24 @@ export class HandleProfileComponent implements OnInit {
 
         // Avatar
         if (p.avatarUrl) {
-          this.serverAvatarUrl = p.avatarUrl.startsWith('http')
-            ? p.avatarUrl
-            : `${apiBase}${p.avatarUrl}`;
+          this.serverAvatarUrl = p.avatarUrl.startsWith('http') ? p.avatarUrl : `${apiBase}${p.avatarUrl}`;
         } else {
           this.serverAvatarUrl = null;
         }
 
         // Resume
         if (p.resumeUrl) {
-          const full = p.resumeUrl.startsWith('http')
-            ? p.resumeUrl
-            : `${apiBase}${p.resumeUrl}`;
+          const full = p.resumeUrl.startsWith('http') ? p.resumeUrl : `${apiBase}${p.resumeUrl}`;
           this.resumePreviewUrl = full;
           this.resumeIsPdf = full.toLowerCase().endsWith('.pdf');
-          this.resumeSafeUrl = this.resumeIsPdf
-            ? this.sanitizer.bypassSecurityTrustResourceUrl(full)
-            : null;
+          this.resumeSafeUrl = this.resumeIsPdf ? this.sanitizer.bypassSecurityTrustResourceUrl(full) : null;
         }
 
         // Performance images
         if (p.performanceItems?.length) {
           this.performanceItems = [...p.performanceItems];
 
-          const fullUrls = p.performanceItems.map(it => {
+          const fullUrls = p.performanceItems.map((it) => {
             const u = it.url;
             if (!u.startsWith('http')) {
               const path = u.startsWith('/') ? u : '/' + u;
@@ -592,61 +573,61 @@ export class HandleProfileComponent implements OnInit {
         }
       },
       error: () =>
-        this.toast.error(
-          $localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`,
-          {
-            title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
-          }
-        ),
+        this.toast.error($localize`:@@profile_toast_profile_load_error:ไม่สามารถดึงข้อมูลโปรไฟล์ได้`, {
+          title: $localize`:@@profile_toast_profile_load_error_title:โหลดข้อมูลล้มเหลว`,
+        }),
     });
   }
 
   private populateFromProfile(p: ProfileDto): void {
-    this.form.patchValue({
-      privateProfile: p.privateProfile,
-      profileIsCompany: p.profileIsCompany,
-      firstName: p.firstName,
-      lastName: p.lastName,
-      pronouns: p.pronouns ?? '',
-      title: p.title ?? [],
-      location: p.location,
-      email: p.email,
-      phone: p.phone,
-      website: p.website,
-      linkedin: p.linkedin ?? '',
-      facebook: p.facebook ?? '',
-      instagram: p.instagram ?? '',
-      twitter: p.twitter ?? '',
-      multiLang: p.multiLang,
-      travel: p.travel,
-      tour: p.tour,
-      about: p.about,
-      education: p.education,
-      video1: p.video1,
-      video2: p.video2,
-      workLocations: p.workLocations ?? [],
-      unions: p.unions ?? [],
-      experience: p.experience ?? [],
-      partners: p.partners ?? [],
-      genders: p.genders ?? [],
-      races: p.races ?? [],
-      titleOtherText: (p as any).titleOtherText ?? '',
-      workLocationsOtherText: (p as any).workLocationsOtherText ?? '',
-      racialIdentityOtherText: (p as any).racialIdentityOtherText ?? '',
-      genderSelfDescribeText: (p as any).genderSelfDescribeText ?? '',
-      partnerOtherText: (p as any).partnerOtherText ?? '',
-      experienceOtherText: (p as any).experienceOtherText ?? '',
-      unionOtherText: (p as any).unionOtherText ?? '',
-      unionStudentAcademicText: (p as any).unionStudentAcademicText ?? '',
-      partnerDetailById: (p as any).partnerDetailById ?? {},
-    }, { emitEvent: false });
+    this.form.patchValue(
+      {
+        privateProfile: p.privateProfile,
+        profileIsCompany: p.profileIsCompany,
+        firstName: p.firstName,
+        lastName: p.lastName,
+        pronouns: p.pronouns ?? '',
+        title: p.title ?? [],
+        location: p.location,
+        email: p.email,
+        phone: p.phone,
+        website: p.website,
+        linkedin: p.linkedin ?? '',
+        facebook: p.facebook ?? '',
+        instagram: p.instagram ?? '',
+        twitter: p.twitter ?? '',
+        multiLang: p.multiLang,
+        travel: p.travel,
+        tour: p.tour,
+        about: p.about,
+        education: p.education,
+        video1: p.video1,
+        video2: p.video2,
+        workLocations: p.workLocations ?? [],
+        unions: p.unions ?? [],
+        experience: p.experience ?? [],
+        partners: p.partners ?? [],
+        genders: p.genders ?? [],
+        races: p.races ?? [],
+        titleOtherText: (p as any).titleOtherText ?? '',
+        workLocationsOtherText: (p as any).workLocationsOtherText ?? '',
+        racialIdentityOtherText: (p as any).racialIdentityOtherText ?? '',
+        genderSelfDescribeText: (p as any).genderSelfDescribeText ?? '',
+        partnerOtherText: (p as any).partnerOtherText ?? '',
+        experienceOtherText: (p as any).experienceOtherText ?? '',
+        unionOtherText: (p as any).unionOtherText ?? '',
+        unionStudentAcademicText: (p as any).unionStudentAcademicText ?? '',
+        partnerDetailById: (p as any).partnerDetailById ?? {},
+      },
+      { emitEvent: false },
+    );
 
     // ✅ เติม languages
     this.additionalLanguagesFA.clear();
-    const langs = (p.additionalLanguages ?? []).filter(x => (x ?? '').trim().length > 0);
+    const langs = (p.additionalLanguages ?? []).filter((x) => (x ?? '').trim().length > 0);
 
     if (p.multiLang) {
-      if (langs.length) langs.forEach(x => this.addLanguage(x));
+      if (langs.length) langs.forEach((x) => this.addLanguage(x));
       else this.addLanguage(); // เปิด multiLang แต่ไม่มีข้อมูล -> มี 1 ช่อง
     }
 
@@ -665,21 +646,21 @@ export class HandleProfileComponent implements OnInit {
 
   getDeptNames(c: ProfileCredit): string[] {
     return (c.deptIds || [])
-      .map(id => this.deptById.get(id))
+      .map((id) => this.deptById.get(id))
       .filter(Boolean)
       .map((d: any) => this.pickLabel(d));
   }
 
   getPosNames(c: ProfileCredit): string[] {
     return (c.posIds || [])
-      .map(id => this.posById.get(id))
+      .map((id) => this.posById.get(id))
       .filter(Boolean)
       .map((p: any) => this.pickLabel(p));
   }
 
   getSkillNames(c: ProfileCredit): string[] {
     return (c.skillIds || [])
-      .map(id => this.skillById.get(id))
+      .map((id) => this.skillById.get(id))
       .filter(Boolean)
       .map((s: any) => this.pickLabel(s));
   }
@@ -717,7 +698,7 @@ export class HandleProfileComponent implements OnInit {
     const current = ctrl.value;
 
     if (current === departmentId) {
-      ctrl.setValue(null);      // ✅ valueChanges จะเคลียร์ให้เอง
+      ctrl.setValue(null); // ✅ valueChanges จะเคลียร์ให้เอง
     } else {
       ctrl.setValue(departmentId); // ✅ valueChanges จะไปโหลด positions
     }
@@ -731,10 +712,7 @@ export class HandleProfileComponent implements OnInit {
       // กดซ้ำ → เคลียร์ position + skills
       ctrl.setValue(null);
       this.filteredSkills = [];
-      this.creditForm.patchValue(
-        { skillIds: [] },
-        { emitEvent: false }
-      );
+      this.creditForm.patchValue({ skillIds: [] }, { emitEvent: false });
     } else {
       ctrl.setValue(positionId);
       // valueChanges(posId) ที่ constructor จะ filter skills ให้อยู่แล้ว
@@ -745,7 +723,7 @@ export class HandleProfileComponent implements OnInit {
     const ctrl = this.creditForm.controls.skillIds;
     const current = ctrl.value ?? [];
     if (current.includes(skillId)) {
-      ctrl.setValue(current.filter(id => id !== skillId));
+      ctrl.setValue(current.filter((id) => id !== skillId));
     } else {
       ctrl.setValue([...current, skillId]);
     }
@@ -792,20 +770,23 @@ export class HandleProfileComponent implements OnInit {
     this.selectedCreditPositions = new Set<number>(c.posIds ?? []);
 
     // reset form fields อื่น ๆ
-    this.creditForm.patchValue({
-      company: c.company,
-      title: c.title,
-      startYear: c.startYear,
-      endYear: c.endYear ?? '',
-      current: c.current,
-      venue: c.venue,
-      jobLocation: c.jobLocation,
-      internship: c.internship,
-      fellowship: c.fellowship,
-      deptId: null,
-      posId: null,
-      skillIds: [...(c.skillIds ?? [])],
-    }, { emitEvent: false });
+    this.creditForm.patchValue(
+      {
+        company: c.company,
+        title: c.title,
+        startYear: c.startYear,
+        endYear: c.endYear ?? '',
+        current: c.current,
+        venue: c.venue,
+        jobLocation: c.jobLocation,
+        internship: c.internship,
+        fellowship: c.fellowship,
+        deptId: null,
+        posId: null,
+        skillIds: [...(c.skillIds ?? [])],
+      },
+      { emitEvent: false },
+    );
 
     // โหลด positions ตาม dept ที่เลือก (รองรับหลาย dept)
     await this.reloadPositionsForSelectedDepts();
@@ -824,10 +805,10 @@ export class HandleProfileComponent implements OnInit {
     // เรียกทีละ dept แล้วรวม (กัน duplicate ด้วย id)
     const all: any[] = [];
     for (const deptId of deptIds) {
-      const res = await new Promise<any>(resolve => {
+      const res = await new Promise<any>((resolve) => {
         this.publicService.listByDepartment(deptId, 0, 500).subscribe({
           next: (r) => resolve(r),
-          error: () => resolve(null)
+          error: () => resolve(null),
         });
       });
       const items = res?.items ?? [];
@@ -841,12 +822,12 @@ export class HandleProfileComponent implements OnInit {
 
     // map สำหรับ label
     this.posById.clear();
-    unique.forEach(p => this.posById.set(p.id, p));
+    unique.forEach((p) => this.posById.set(p.id, p));
 
     this.filteredPositions = unique;
 
     // ถ้ามี pos ที่เลือกไว้แต่ไม่อยู่ใน list แล้ว → ตัดทิ้ง
-    const keep = new Set(unique.map(p => p.id));
+    const keep = new Set(unique.map((p) => p.id));
     for (const id of Array.from(this.selectedCreditPositions)) {
       if (!keep.has(id)) this.selectedCreditPositions.delete(id);
     }
@@ -884,7 +865,7 @@ export class HandleProfileComponent implements OnInit {
       deptIds: Array.from(this.selectedCreditDepts),
       deptText: this.isCreditDeptOtherSelected ? (v.deptText || '').trim() : null, // ✅
       posIds: Array.from(this.selectedCreditPositions),
-      posText: this.isCreditPosOtherSelected ? (v.posText || '').trim() : null,   // ✅
+      posText: this.isCreditPosOtherSelected ? (v.posText || '').trim() : null, // ✅
       skillIds: v.skillIds ?? [],
     };
 
@@ -923,16 +904,12 @@ export class HandleProfileComponent implements OnInit {
     const ok = ['image/jpeg', 'image/png', 'image/webp'];
     // avatar
     if (!ok.includes(file.type)) {
-      this.toast.warning(
-        $localize`:@@profile_toast_avatar_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`
-      );
+      this.toast.warning($localize`:@@profile_toast_avatar_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`);
       return;
     }
 
     if (file.size > 20 * 1024 * 1024) {
-      this.toast.warning(
-        $localize`:@@profile_toast_avatar_large_warning:ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน`
-      );
+      this.toast.warning($localize`:@@profile_toast_avatar_large_warning:ไฟล์มีขนาดใหญ่มาก อาจใช้เวลาประมวลผลนาน`);
     }
 
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
@@ -955,7 +932,7 @@ export class HandleProfileComponent implements OnInit {
 
   private async compressImage(
     file: File,
-    opts: { maxW?: number; maxH?: number; quality?: number; mime?: 'image/webp' | 'image/jpeg' } = {}
+    opts: { maxW?: number; maxH?: number; quality?: number; mime?: 'image/webp' | 'image/jpeg' } = {},
   ): Promise<File> {
     const { maxW = 1200, maxH = 1200, quality = 0.8, mime = 'image/webp' } = opts;
 
@@ -973,11 +950,7 @@ export class HandleProfileComponent implements OnInit {
     ctx.drawImage(img, 0, 0, targetW, targetH);
 
     const blob: Blob = await new Promise((resolve, reject) => {
-      canvas.toBlob(
-        b => (b ? resolve(b) : reject(new Error('toBlob failed'))),
-        mime,
-        quality
-      );
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), mime, quality);
     });
 
     const ext = mime === 'image/webp' ? 'webp' : 'jpg';
@@ -995,22 +968,16 @@ export class HandleProfileComponent implements OnInit {
       next: (res: any) => {
         this.clearLocalAvatar();
         this.serverAvatarUrl = res?.avatarUrl || null;
-        this.toast.success(
-          $localize`:@@profile_toast_avatar_delete_success:ลบรูปเรียบร้อย`
-        );
+        this.toast.success($localize`:@@profile_toast_avatar_delete_success:ลบรูปเรียบร้อย`);
       },
-      error: () =>
-        this.toast.error(
-          $localize`:@@profile_toast_avatar_delete_error:ลบรูปไม่สำเร็จ`
-        ),
+      error: () => this.toast.error($localize`:@@profile_toast_avatar_delete_error:ลบรูปไม่สำเร็จ`),
     });
   }
 
   addConflict() {
-    this.toast.warning(
-      $localize`:@@profile_toast_conflict_coming_soon_msg:หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา`,
-      { title: $localize`:@@profile_toast_conflict_coming_soon_title:Coming soon` }
-    );
+    this.toast.warning($localize`:@@profile_toast_conflict_coming_soon_msg:หน้าต่างเพิ่มวันที่ติดภารกิจกำลังพัฒนา`, {
+      title: $localize`:@@profile_toast_conflict_coming_soon_title:Coming soon`,
+    });
   }
 
   toggleProfession(v: number) {
@@ -1156,10 +1123,9 @@ export class HandleProfileComponent implements OnInit {
 
     // ถ้าใส่มาแต่ format ไม่ถูก
     if (email && emailCtrl.hasError('email')) {
-      this.toast.error(
-        $localize`:@@profile_toast_email_invalid:รูปแบบอีเมลไม่ถูกต้อง`,
-        { title: $localize`:@@profile_toast_email_invalid_title:ตรวจสอบอีเมล` }
-      );
+      this.toast.error($localize`:@@profile_toast_email_invalid:รูปแบบอีเมลไม่ถูกต้อง`, {
+        title: $localize`:@@profile_toast_email_invalid_title:ตรวจสอบอีเมล`,
+      });
       // optional: โฟกัส input email (ถ้ามี #emailInput)
       // setTimeout(() => this.emailInput?.nativeElement?.focus(), 0);
       return false;
@@ -1167,19 +1133,17 @@ export class HandleProfileComponent implements OnInit {
 
     // ✅ required title (ตัวอย่าง field สำคัญอื่น ๆ)
     if (this.form.controls.title.invalid) {
-      this.toast.warning(
-        $localize`:@@profile_toast_title_required:กรุณากรอก Title`,
-        { title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ` }
-      );
+      this.toast.warning($localize`:@@profile_toast_title_required:กรุณากรอก Title`, {
+        title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ`,
+      });
       return false;
     }
 
     // ถ้าฟอร์ม invalid โดยรวม
     if (this.form.invalid) {
-      this.toast.warning(
-        $localize`:@@profile_toast_invalid:กรุณากรอกข้อมูลให้ครบถ้วน`,
-        { title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ` }
-      );
+      this.toast.warning($localize`:@@profile_toast_invalid:กรุณากรอกข้อมูลให้ครบถ้วน`, {
+        title: $localize`:@@profile_toast_invalid_title:ข้อมูลไม่ครบ`,
+      });
       return false;
     }
 
@@ -1190,14 +1154,17 @@ export class HandleProfileComponent implements OnInit {
     return this.selectedPartners.has(id);
   }
 
-  toggleRace(v: number) { this.toggleSet(this.selectedRaces, v); }
+  toggleRace(v: number) {
+    this.toggleSet(this.selectedRaces, v);
+  }
 
   updateEmbed(which: 1 | 2) {
     const ctrl = which === 1 ? this.form.controls.video1 : this.form.controls.video2;
     const url = ctrl.value || '';
     const id = this.extractYouTubeId(url);
     const safe = id ? this.sanitizer.bypassSecurityTrustResourceUrl(`https://www.youtube.com/embed/${id}`) : null;
-    if (which === 1) this._embed1.set(safe); else this._embed2.set(safe);
+    if (which === 1) this._embed1.set(safe);
+    else this._embed2.set(safe);
   }
 
   extractYouTubeId(url: string): string | null {
@@ -1205,9 +1172,12 @@ export class HandleProfileComponent implements OnInit {
       const u = new URL(url);
       if (u.hostname.includes('youtu.be')) return u.pathname.slice(1) || null;
       if (u.searchParams.get('v')) return u.searchParams.get('v');
-      const m = url.match(/embed\/([\w-]{6,})/i); if (m) return m[1];
+      const m = url.match(/embed\/([\w-]{6,})/i);
+      if (m) return m[1];
       return null;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
 
   isSaving = false;
@@ -1236,7 +1206,7 @@ export class HandleProfileComponent implements OnInit {
       twitter: base.twitter || '',
       multiLang: !!base.multiLang,
       additionalLanguages: this.form.controls.multiLang.value
-        ? this.additionalLanguagesFA.controls.map(c => (c.value || '').trim()).filter(Boolean)
+        ? this.additionalLanguagesFA.controls.map((c) => (c.value || '').trim()).filter(Boolean)
         : [],
       travel: base.travel ?? false,
       tour: base.tour ?? false,
@@ -1267,8 +1237,8 @@ export class HandleProfileComponent implements OnInit {
     this.isSaving = true;
 
     const save$ = this.isNewProfile
-      ? this.profileService.saveProfile(payload)     // ✅ JSON ปกติ
-      : this.profileService.updateProfile(payload);  // ✅ JSON ปกติ
+      ? this.profileService.saveProfile(payload) // ✅ JSON ปกติ
+      : this.profileService.updateProfile(payload); // ✅ JSON ปกติ
 
     save$
       .pipe(
@@ -1301,7 +1271,7 @@ export class HandleProfileComponent implements OnInit {
             duration: 3000,
           });
         }),
-        finalize(() => (this.isSaving = false))
+        finalize(() => (this.isSaving = false)),
       )
       .subscribe({
         next: () => {
@@ -1341,7 +1311,9 @@ export class HandleProfileComponent implements OnInit {
   ngOnDestroy(): void {
     if (this.avatarPreviewUrl?.startsWith('blob:')) URL.revokeObjectURL(this.avatarPreviewUrl);
     this.revokeResumeUrl();
-    this.imagePreviewUrls.forEach(u => { if (u?.startsWith('blob:')) URL.revokeObjectURL(u); });
+    this.imagePreviewUrls.forEach((u) => {
+      if (u?.startsWith('blob:')) URL.revokeObjectURL(u);
+    });
   }
 
   private readonly MAX_RESUME_SIZE_MB = 50;
@@ -1355,25 +1327,19 @@ export class HandleProfileComponent implements OnInit {
 
     // resume
     if (!ok.includes(file.type)) {
-      this.toast.warning(
-        $localize`:@@profile_toast_resume_type_warning:รองรับเฉพาะ PDF, JPG, PNG, WEBP`
-      );
+      this.toast.warning($localize`:@@profile_toast_resume_type_warning:รองรับเฉพาะ PDF, JPG, PNG, WEBP`);
       input.value = '';
       return;
     }
 
     if (file.size > maxBytes) {
-      this.toast.warning(
-        $localize`:@@profile_toast_resume_size_warning:ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`
-      );
+      this.toast.warning($localize`:@@profile_toast_resume_size_warning:ไฟล์ต้องไม่เกิน ${this.MAX_RESUME_SIZE_MB}MB`);
       input.value = '';
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      this.toast.info(
-        $localize`:@@profile_toast_resume_large_info:ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด`
-      );
+      this.toast.info($localize`:@@profile_toast_resume_large_info:ไฟล์ค่อนข้างใหญ่ อาจใช้เวลาในการพรีวิว/อัปโหลด`);
     }
 
     this.revokeResumeUrl();
@@ -1382,9 +1348,7 @@ export class HandleProfileComponent implements OnInit {
     this.resumeFile = file;
     this.resumeIsPdf = file.type === 'application/pdf';
     this.resumePreviewUrl = objectUrl;
-    this.resumeSafeUrl = this.resumeIsPdf
-      ? this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl)
-      : null;
+    this.resumeSafeUrl = this.resumeIsPdf ? this.sanitizer.bypassSecurityTrustResourceUrl(objectUrl) : null;
   }
 
   clearResume() {
@@ -1403,9 +1367,7 @@ export class HandleProfileComponent implements OnInit {
     const ok = ['image/jpeg', 'image/png', 'image/webp'];
     // performance image
     if (!ok.includes(file.type)) {
-      this.toast.warning(
-        $localize`:@@profile_toast_perf_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`
-      );
+      this.toast.warning($localize`:@@profile_toast_perf_type_warning:รองรับเฉพาะ JPG, PNG, WEBP`);
       input.value = '';
       return;
     }
@@ -1422,7 +1384,6 @@ export class HandleProfileComponent implements OnInit {
   }
 
   removeImage(i: number) {
-
     const preview = this.imagePreviewUrls[i];
 
     // ---- 1️⃣ ถ้าเป็นไฟล์ใหม่ (blob)
@@ -1446,7 +1407,6 @@ export class HandleProfileComponent implements OnInit {
     // เรียก API ลบ
     this.profileService.deletePerformance(item.id).subscribe({
       next: (res) => {
-
         // อัปเดตรายการใหม่จาก response
         this.performanceItems = res.performanceItems ?? [];
 
@@ -1470,7 +1430,7 @@ export class HandleProfileComponent implements OnInit {
       },
       error: () => {
         this.toast.error($localize`:@@profile_toast_delete_error:ลบรูปไม่สำเร็จ`);
-      }
+      },
     });
   }
 
@@ -1498,7 +1458,7 @@ export class HandleProfileComponent implements OnInit {
 
   public toggleDd(e: MouseEvent, key: DdKey) {
     e.stopPropagation();
-    (Object.keys(this.ddOpen) as DdKey[]).forEach(k => (this.ddOpen[k] = false));
+    (Object.keys(this.ddOpen) as DdKey[]).forEach((k) => (this.ddOpen[k] = false));
     this.ddOpen[key] = !this.ddOpen[key];
   }
 
@@ -1509,7 +1469,7 @@ export class HandleProfileComponent implements OnInit {
   public filterList(list: { label: string; value: number }[], q: string) {
     const s = (q || '').trim().toLowerCase();
     if (!s) return list;
-    return list.filter(x => x.label.toLowerCase().includes(s));
+    return list.filter((x) => x.label.toLowerCase().includes(s));
   }
 
   public clearSet(set: Set<number>) {
@@ -1518,8 +1478,10 @@ export class HandleProfileComponent implements OnInit {
 
   public labelsFromSet(set: Set<number>, list: { label: string; value: number }[]) {
     if (!set?.size) return '';
-    const map = new Map(list.map(x => [x.value, x.label]));
-    const arr = Array.from(set).map(v => map.get(v)).filter(Boolean) as string[];
+    const map = new Map(list.map((x) => [x.value, x.label]));
+    const arr = Array.from(set)
+      .map((v) => map.get(v))
+      .filter(Boolean) as string[];
     if (arr.length <= 3) return arr.join(', ');
     return `${arr.slice(0, 3).join(', ')} +${arr.length - 3} more`;
   }
@@ -1539,21 +1501,23 @@ export class HandleProfileComponent implements OnInit {
   filterAny(list: any[], q: string) {
     const s = (q || '').trim().toLowerCase();
     if (!s) return list;
-    return list.filter(x => (this.pickLabel(x) || '').toLowerCase().includes(s));
+    return list.filter((x) => (this.pickLabel(x) || '').toLowerCase().includes(s));
   }
 
   toggleNumSet(set: Set<number>, v: number) {
     set.has(v) ? set.delete(v) : set.add(v);
   }
 
-  clearNumSet(set: Set<number>) { set.clear(); }
+  clearNumSet(set: Set<number>) {
+    set.clear();
+  }
 
   // เดิมตัดแค่ 3 แล้ว +more → เปลี่ยนเป็นแสดงทั้งหมด
   labelsFromNumSet(set: Set<number>, list: any[]) {
     if (!set?.size) return '';
-    const map = new Map<number, string>(list.map(x => [x.id, this.pickLabel(x)]));
+    const map = new Map<number, string>(list.map((x) => [x.id, this.pickLabel(x)]));
     const arr = Array.from(set)
-      .map(id => map.get(id))
+      .map((id) => map.get(id))
       .filter(Boolean) as string[];
 
     return arr.join(', '); // ✅ แสดงทั้งหมด
@@ -1561,9 +1525,9 @@ export class HandleProfileComponent implements OnInit {
 
   public labelsArrayFromNumSet(set: Set<number>, list: any[]): string[] {
     if (!set?.size) return [];
-    const map = new Map<number, string>(list.map(x => [x.id, this.pickLabel(x)]));
+    const map = new Map<number, string>(list.map((x) => [x.id, this.pickLabel(x)]));
     return Array.from(set)
-      .map(id => map.get(id))
+      .map((id) => map.get(id))
       .filter(Boolean) as string[];
   }
 
@@ -1573,7 +1537,6 @@ export class HandleProfileComponent implements OnInit {
     this.reloadPositionsForSelectedDepts();
     this.selectedCreditPositions.clear();
   }
-
 
   toggleCreditDd(e: MouseEvent, key: 'dept' | 'pos') {
     e.stopPropagation();
@@ -1609,7 +1572,7 @@ export class HandleProfileComponent implements OnInit {
       (target as HTMLElement)?.closest?.('[data-ddwrap="races"]');
 
     if (!clickedInsideAnyMainDd) {
-      (Object.keys(this.ddOpen) as DdKey[]).forEach(k => (this.ddOpen[k] = false));
+      (Object.keys(this.ddOpen) as DdKey[]).forEach((k) => (this.ddOpen[k] = false));
     }
 
     // ---- close credit dropdowns (dept/pos) แบบไม่พัง
@@ -1624,7 +1587,7 @@ export class HandleProfileComponent implements OnInit {
   trackById = (_: number, item: any) => item?.id;
 
   public getRaceOtherValue(): number | null {
-    const it = this.races.find(x => (x.label || '').toLowerCase().includes('other'));
+    const it = this.races.find((x) => (x.label || '').toLowerCase().includes('other'));
     return it ? it.value : null;
   }
 
@@ -1649,16 +1612,13 @@ export class HandleProfileComponent implements OnInit {
       return;
     }
 
-    this.form.controls.racialIdentityOtherText.setValidators([
-      Validators.required,
-      Validators.maxLength(100)
-    ]);
+    this.form.controls.racialIdentityOtherText.setValidators([Validators.required, Validators.maxLength(100)]);
     this.form.controls.racialIdentityOtherText.updateValueAndValidity({ emitEvent: false });
   }
 
   private findValueByLabel(list: Labeled[], includesText: string): number | null {
     const t = includesText.toLowerCase();
-    const it = list.find(x => (x.label || '').toLowerCase().includes(t));
+    const it = list.find((x) => (x.label || '').toLowerCase().includes(t));
     return it ? it.value : null;
   }
 
@@ -1696,10 +1656,12 @@ export class HandleProfileComponent implements OnInit {
   }
 
   private partnerNeedsNameKeywords = [
-    'local theatre', 'community org',
-    'university', 'conservatory',
+    'local theatre',
+    'community org',
+    'university',
+    'conservatory',
     'non-profit',
-    'independent collective'
+    'independent collective',
   ];
 
   get partnerOtherValue(): number | null {
@@ -1717,9 +1679,7 @@ export class HandleProfileComponent implements OnInit {
 
   get workLocationOtherValue(): number | null {
     // หา label ที่มีคำว่า other (รองรับ th/en)
-    const it = this.workLocations.find(x =>
-      (x.label || '').toLowerCase().includes('other')
-    );
+    const it = this.workLocations.find((x) => (x.label || '').toLowerCase().includes('other'));
     return it ? it.value : null;
   }
 
@@ -1773,5 +1733,49 @@ export class HandleProfileComponent implements OnInit {
       posCtrl.clearValidators();
     }
     posCtrl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  isDragging = false;
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+
+    if (!event.dataTransfer?.files.length) return;
+    this.handleFile(event.dataTransfer.files[0]);
+  }
+
+  handleFile(file: File) {
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!validTypes.includes(file.type)) {
+      this.toast.warning('รองรับเฉพาะ JPG, PNG, WEBP');
+      return;
+    }
+
+    if (file.size > maxSize) {
+      this.toast.warning('ไฟล์ต้องไม่เกิน 2MB');
+      return;
+    }
+
+    // clear ของเก่า
+    if (this.avatarPreviewUrl?.startsWith('blob:')) {
+      URL.revokeObjectURL(this.avatarPreviewUrl);
+    }
+
+    // ✅ ใช้ระบบเดียวกับ onPickAvatar
+    this.avatarPreviewUrl = URL.createObjectURL(file);
+    this.avatarFile = file;
   }
 }
