@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 
 type ScriptImage = {
   id: number;
@@ -32,16 +33,11 @@ export class InfoScriptComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  public fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
-
   // ✅ load more config
   readonly pageSize = 6;
   visibleCount = 6;
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.loadLatest();
@@ -68,7 +64,7 @@ export class InfoScriptComponent implements OnInit {
     this.error = null;
 
     this.http.get<ScriptPublic[]>(`${environment.apiUrl}/public/scripts`).subscribe({
-      next: res => {
+      next: (res) => {
         this.scripts = [...res].sort((a, b) => {
           const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -80,7 +76,7 @@ export class InfoScriptComponent implements OnInit {
 
         this.loading = false;
       },
-      error: err => {
+      error: (err) => {
         console.error(err);
         this.error = 'ไม่สามารถโหลดข้อมูลบทละครได้ในขณะนี้';
         this.loading = false;
@@ -100,23 +96,19 @@ export class InfoScriptComponent implements OnInit {
 
   // รูปปกจากภาพแรก
   getCover(script: ScriptPublic): string | null {
-    if (!script.images || script.images.length === 0) return null;
+    if (!script.images?.length) return null;
 
-    const rawPath = script.images[0].filePath || '';
-    const normalized = rawPath.replace(/\\/g, '/');
-    return `${this.fileBase}/${normalized}`;
+    return toFullUrl(script.images[0].filePath);
   }
 
   getPdfUrl(script: ScriptPublic): string | null {
-    if (!script.pdfPath) return null;
-    const normalized = script.pdfPath.replace(/\\/g, '/');
-    return `${this.fileBase}/${normalized}`;
+    return toFullUrl(script.pdfPath);
   }
 
   getTagList(script: ScriptPublic): string[] {
     return (script.tags ?? '')
       .split(',')
-      .map(t => t.trim())
+      .map((t) => t.trim())
       .filter(Boolean);
   }
 
@@ -136,9 +128,7 @@ export class InfoScriptComponent implements OnInit {
     const lang = this.getLangPrefix();
     const base = lang ? ['/', lang] : ['/'];
 
-    const url = this.router
-      .createUrlTree([...base, 'theatre-library-detail', script.id])
-      .toString();
+    const url = this.router.createUrlTree([...base, 'theatre-library-detail', script.id]).toString();
 
     this.router.navigateByUrl(url);
   }

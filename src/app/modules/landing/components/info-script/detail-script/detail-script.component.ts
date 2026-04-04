@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 import { environment } from 'src/environments/environment';
 
 type ScriptImage = {
@@ -34,21 +35,15 @@ export class DetailScriptComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // base สำหรับ static files (/uploads/**)
-  public fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
-
   // ===== Lightbox State =====
   lightboxOpen = false;
   lightboxIndex = 0;
   lightboxUrls: string[] = [];
 
-  constructor(
-    private route: ActivatedRoute,
-    private http: HttpClient,
-  ) { }
+  constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const idParam = params.get('id');
       this.scriptId = idParam ? Number(idParam) : 0;
 
@@ -65,48 +60,40 @@ export class DetailScriptComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.http
-      .get<ScriptPublic>(`${environment.apiUrl}/public/scripts/${this.scriptId}`)
-      .subscribe({
-        next: res => {
-          this.script = res;
-          this.loading = false;
+    this.http.get<ScriptPublic>(`${environment.apiUrl}/public/scripts/${this.scriptId}`).subscribe({
+      next: (res) => {
+        this.script = res;
+        this.loading = false;
 
-          // ถ้าเปิด lightbox อยู่แล้ว (unlikely) ให้รีเซ็ต
-          this.closeLightbox();
-        },
-        error: err => {
-          console.error(err);
-          this.error = 'ไม่สามารถโหลดข้อมูลบทละครได้';
-          this.loading = false;
-        },
-      });
+        // ถ้าเปิด lightbox อยู่แล้ว (unlikely) ให้รีเซ็ต
+        this.closeLightbox();
+      },
+      error: (err) => {
+        console.error(err);
+        this.error = 'ไม่สามารถโหลดข้อมูลบทละครได้';
+        this.loading = false;
+      },
+    });
   }
 
   // ===== Helpers =====
 
   getCover(script: ScriptPublic | undefined): string | null {
-    if (!script?.images || script.images.length === 0) return null;
+    if (!script?.images?.length) return null;
 
-    const sorted = [...script.images].sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
-    );
+    const sorted = [...script.images].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
-    const rawPath = sorted[0]?.filePath || '';
-    const normalized = rawPath.replace(/\\/g, '/');
-    return `${this.fileBase}/${normalized}`;
+    return toFullUrl(sorted[0]?.filePath);
   }
 
   getPdfUrl(script: ScriptPublic | undefined): string | null {
-    if (!script?.pdfPath) return null;
-    const normalized = script.pdfPath.replace(/\\/g, '/');
-    return `${this.fileBase}/${normalized}`;
+    return toFullUrl(script?.pdfPath);
   }
 
   getTagList(script: ScriptPublic | undefined): string[] {
     return (script?.tags ?? '')
       .split(',')
-      .map(t => t.trim())
+      .map((t) => t.trim())
       .filter(Boolean);
   }
 
@@ -116,20 +103,9 @@ export class DetailScriptComponent implements OnInit {
   getGalleryUrls(script: ScriptPublic | undefined): string[] {
     if (!script?.images?.length) return [];
 
-    const sorted = [...script.images].sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
-    );
+    const sorted = [...script.images].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
-    const urls = sorted
-      .map(img => {
-        const raw = img.filePath || '';
-        const normalized = raw.replace(/\\/g, '/');
-        return `${this.fileBase}/${normalized}`;
-      })
-      .filter(Boolean);
-
-    // unique
-    return Array.from(new Set(urls));
+    return Array.from(new Set(sorted.map((img) => toFullUrl(img.filePath)).filter(Boolean) as string[]));
   }
 
   /** เรียกจาก template: เปิด lightbox พร้อมตั้ง urls ให้เรียบร้อย */
@@ -150,14 +126,12 @@ export class DetailScriptComponent implements OnInit {
 
   prevLightbox() {
     if (!this.lightboxUrls.length) return;
-    this.lightboxIndex =
-      (this.lightboxIndex - 1 + this.lightboxUrls.length) % this.lightboxUrls.length;
+    this.lightboxIndex = (this.lightboxIndex - 1 + this.lightboxUrls.length) % this.lightboxUrls.length;
   }
 
   nextLightbox() {
     if (!this.lightboxUrls.length) return;
-    this.lightboxIndex =
-      (this.lightboxIndex + 1) % this.lightboxUrls.length;
+    this.lightboxIndex = (this.lightboxIndex + 1) % this.lightboxUrls.length;
   }
 
   // ===== Keyboard support (Esc / arrows) =====

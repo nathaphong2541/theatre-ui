@@ -9,6 +9,7 @@ import { ToastService } from 'src/app/shared/components/toast/toast.service';
 import { environment } from 'src/environments/environment';
 import { Drama } from '../../../pages/drama/models/drama.model';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 
 type Mode = 'create' | 'edit' | 'view';
 
@@ -80,7 +81,7 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    private toast: ToastService
+    private toast: ToastService,
   ) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -90,10 +91,18 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
   }
 
   // --------- getters ----------
-  get titleCtrl() { return this.form.get('title'); }
-  get descriptionCtrl() { return this.form.get('description'); }
-  get tagsCtrl() { return this.form.get('tags'); }
-  get isViewMode() { return this.mode === 'view'; }
+  get titleCtrl() {
+    return this.form.get('title');
+  }
+  get descriptionCtrl() {
+    return this.form.get('description');
+  }
+  get tagsCtrl() {
+    return this.form.get('tags');
+  }
+  get isViewMode() {
+    return this.mode === 'view';
+  }
 
   @ViewChild('pdfInput') pdfInput!: ElementRef<HTMLInputElement>;
   @ViewChild('imagesInput') imagesInput!: ElementRef<HTMLInputElement>;
@@ -117,7 +126,7 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
   // =============== lifecycle ===============
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
-    const segments = this.route.snapshot.url.map(s => s.path);
+    const segments = this.route.snapshot.url.map((s) => s.path);
     const isView = segments.includes('view');
 
     if (idParam) {
@@ -134,7 +143,9 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // revoke blob urls
     if (this.pdfPreviewSrc?.startsWith('blob:')) URL.revokeObjectURL(this.pdfPreviewSrc);
-    this.previewUrls.forEach(u => { if (u?.startsWith?.('blob:')) URL.revokeObjectURL(u); });
+    this.previewUrls.forEach((u) => {
+      if (u?.startsWith?.('blob:')) URL.revokeObjectURL(u);
+    });
   }
 
   private loadScript(id: number) {
@@ -150,7 +161,7 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
         if ((res as any).pdfPath) {
           const rawPath = (res as any).pdfPath as string;
           const normalized = rawPath.replace(/\\/g, '/');
-          const url = `${this.fileBase}/${normalized}`;
+          const url = toFullUrl(normalized)!;
 
           this.pdfPreviewSrc = url;
           this.pdfPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
@@ -161,20 +172,18 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
 
         // รูปภาพเดิมจาก server
         if (res.images?.length) {
-          this.previewUrls = res.images.map(img => {
+          this.previewUrls = res.images.map((img) => {
             const raw = img.filePath || '';
-            const normalized = raw.replace(/\\/g, '/');
-            return `${this.fileBase}/${normalized}`;
+            return toFullUrl(raw)!;
           });
         }
 
         if (this.isViewMode) this.form.disable();
       },
       error: () => {
-        this.toast.error(
-          $localize`:@@drama_toast_not_found:Requested script was not found.`,
-          { title: $localize`:@@drama_toast_not_found_title:Error` }
-        );
+        this.toast.error($localize`:@@drama_toast_not_found:Requested script was not found.`, {
+          title: $localize`:@@drama_toast_not_found_title:Error`,
+        });
         this.navigateToList();
       },
     });
@@ -202,13 +211,12 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     let selected = Array.from(input.files);
 
     // กันไฟล์ไม่ใช่รูป
-    selected = selected.filter(f => f.type.startsWith('image/'));
+    selected = selected.filter((f) => f.type.startsWith('image/'));
 
     if (!selected.length) {
-      this.toast.warning(
-        $localize`:@@drama_toast_only_images:Please select image files only.`,
-        { title: $localize`:@@drama_toast_invalid_file_type_title:Invalid file type` }
-      );
+      this.toast.warning($localize`:@@drama_toast_only_images:Please select image files only.`, {
+        title: $localize`:@@drama_toast_invalid_file_type_title:Invalid file type`,
+      });
       input.value = '';
       return;
     }
@@ -216,10 +224,9 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     // จำกัดจำนวนรวม
     const remaining = this.maxImages - this.files.length;
     if (remaining <= 0) {
-      this.toast.warning(
-        $localize`:@@drama_toast_images_limit:You can select up to ${this.maxImages}:max: images.`,
-        { title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded` }
-      );
+      this.toast.warning($localize`:@@drama_toast_images_limit:You can select up to ${this.maxImages}:max: images.`, {
+        title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded`,
+      });
       input.value = '';
       return;
     }
@@ -227,7 +234,7 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     if (selected.length > remaining) {
       this.toast.warning(
         $localize`:@@drama_toast_images_remaining:You can add ${remaining}:remaining: more image(s) (max ${this.maxImages}:max:).`,
-        { title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded` }
+        { title: $localize`:@@drama_toast_images_limit_title:Image limit exceeded` },
       );
       selected = selected.slice(0, remaining);
     }
@@ -278,10 +285,9 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
   }
 
   onCropLoadFailed() {
-    this.toast.error(
-      $localize`:@@drama_toast_crop_load_failed:Failed to load image.`,
-      { title: $localize`:@@toast_title_error:Error` }
-    );
+    this.toast.error($localize`:@@drama_toast_crop_load_failed:Failed to load image.`, {
+      title: $localize`:@@toast_title_error:Error`,
+    });
     this.closeCrop();
   }
 
@@ -342,10 +348,9 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     const file = input.files[0];
 
     if (file.type !== 'application/pdf') {
-      this.toast.warning(
-        $localize`:@@drama_toast_pdf_only:Only PDF files are supported.`,
-        { title: $localize`:@@drama_toast_pdf_only_title:Invalid file type` }
-      );
+      this.toast.warning($localize`:@@drama_toast_pdf_only:Only PDF files are supported.`, {
+        title: $localize`:@@drama_toast_pdf_only_title:Invalid file type`,
+      });
       input.value = '';
       return;
     }
@@ -364,13 +369,10 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
 
     input.value = '';
 
-    this.toast.success(
-      $localize`:@@drama_toast_pdf_added:PDF added successfully.`,
-      {
-        title: $localize`:@@drama_toast_pdf_added_title:Upload successful`,
-        duration: 1500,
-      }
-    );
+    this.toast.success($localize`:@@drama_toast_pdf_added:PDF added successfully.`, {
+      title: $localize`:@@drama_toast_pdf_added_title:Upload successful`,
+      duration: 1500,
+    });
   }
 
   openPdfFullScreen() {
@@ -390,13 +392,10 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     this.pdfPreviewSrc = null;
     this.pdfFileName = null;
 
-    this.toast.warning(
-      $localize`:@@drama_toast_pdf_removed:PDF removed.`,
-      {
-        title: $localize`:@@drama_toast_pdf_removed_title:Deleted`,
-        duration: 1500,
-      }
-    );
+    this.toast.warning($localize`:@@drama_toast_pdf_removed:PDF removed.`, {
+      title: $localize`:@@drama_toast_pdf_removed_title:Deleted`,
+      duration: 1500,
+    });
   }
 
   // =============== submit ===============
@@ -405,29 +404,24 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.toast.warning(
-        $localize`:@@drama_toast_fill_required:Please complete all required fields.`,
-        {
-          title: $localize`:@@drama_toast_fill_required_title:Incomplete data`,
-          duration: 3000,
-        }
-      );
+      this.toast.warning($localize`:@@drama_toast_fill_required:Please complete all required fields.`, {
+        title: $localize`:@@drama_toast_fill_required_title:Incomplete data`,
+        duration: 3000,
+      });
       return;
     }
 
     if (this.mode === 'create' && !this.pdfFile) {
-      this.toast.warning(
-        $localize`:@@drama_toast_missing_pdf_create:You must upload at least 1 PDF file.`,
-        { title: $localize`:@@drama_toast_missing_pdf_create_title:Missing PDF` }
-      );
+      this.toast.warning($localize`:@@drama_toast_missing_pdf_create:You must upload at least 1 PDF file.`, {
+        title: $localize`:@@drama_toast_missing_pdf_create_title:Missing PDF`,
+      });
       return;
     }
 
     if (this.mode === 'edit' && !this.pdfFile && !this.pdfPreviewUrl) {
-      this.toast.warning(
-        $localize`:@@drama_toast_missing_pdf_edit:This script must have at least 1 PDF file.`,
-        { title: $localize`:@@drama_toast_missing_pdf_edit_title:Missing PDF` }
-      );
+      this.toast.warning($localize`:@@drama_toast_missing_pdf_edit:This script must have at least 1 PDF file.`, {
+        title: $localize`:@@drama_toast_missing_pdf_edit_title:Missing PDF`,
+      });
       return;
     }
 
@@ -443,7 +437,7 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
     formData.append('data', new Blob([JSON.stringify(payload)], { type: 'application/json' }));
 
     if (this.pdfFile) formData.append('pdf', this.pdfFile);
-    this.files.forEach(f => formData.append('images', f));
+    this.files.forEach((f) => formData.append('images', f));
 
     const request$ =
       this.mode === 'create'
@@ -456,16 +450,15 @@ export class HandleDramaComponent implements OnInit, OnDestroy {
           this.mode === 'create'
             ? $localize`:@@drama_toast_create_ok:Script saved successfully.`
             : $localize`:@@drama_toast_update_ok:Script updated successfully.`,
-          { title: $localize`:@@drama_toast_save_ok_title:Completed` }
+          { title: $localize`:@@drama_toast_save_ok_title:Completed` },
         );
         this.isSubmitting = false;
         this.navigateToList();
       },
       error: () => {
-        this.toast.error(
-          $localize`:@@drama_toast_save_failed:Failed to save. Please try again.`,
-          { title: $localize`:@@drama_toast_save_failed_title:Save failed` }
-        );
+        this.toast.error($localize`:@@drama_toast_save_failed:Failed to save. Please try again.`, {
+          title: $localize`:@@drama_toast_save_failed_title:Save failed`,
+        });
         this.isSubmitting = false;
       },
     });

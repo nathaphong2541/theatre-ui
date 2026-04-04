@@ -1,14 +1,15 @@
 <header class="sticky top-0 z-50 bg-gradient-to-br from-[#0a4f52] via-[#147c7f] to-[#0f6e73] text-white">
   <div class="supports-[backdrop-filter]:bg-white/5 supports-[backdrop-filter]:backdrop-blur-md">
-    <div class="mx-auto max-w-7xl px-3 sm:px-5">
-
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-5">
       <!-- แถบบน -->
       <div class="flex h-14 items-center gap-2 sm:h-16">
-
         <!-- Left: Mobile menu button -->
         <div class="md:hidden">
-          <button (click)="toggleMobileMenu()" type="button" class="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:bg-white/10
-         focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40" aria-label="เปิดเมนู"
+          <button
+            (click)="toggleMobileMenu()"
+            type="button"
+            class="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            aria-label="เปิดเมนู"
             [attr.aria-expanded]="mobileMenuAriaExpanded">
             <svg-icon *ngIf="!isMobileMenuOpen" src="assets/icons/heroicons/outline/menu.svg" [svgClass]="'h-6 w-6'">
             </svg-icon>
@@ -18,13 +19,15 @@
         </div>
 
         <!-- Center: Logo + Title -->
-        <div class="flex min-w-0 items-center gap-2 md:mx-4 sm:gap-3">
-          <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
+        <div class="flex min-w-0 items-center gap-2 sm:gap-3">
+          <a
+            [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
             class="flex shrink-0 items-center rounded-sm p-1 outline-none focus-visible:ring-2 focus-visible:ring-white/40">
-            <img src="assets/images/logo.png" class="h-12 w-h-12 sm:h-12 sm:w-12 object-contain" alt="โลโก้" />
+            <img src="assets/images/logo.png" class="w-h-12 h-12 object-contain sm:h-12 sm:w-12" alt="โลโก้" />
           </a>
-          <h1 i18n="@@homeTitle"
-            class="hidden sm:flex  truncate font-bold uppercase tracking-wide text-sm text-white sm:text-base md:text-lg">
+          <h1
+            i18n="@@homeTitle"
+            class="hidden truncate text-sm font-bold uppercase tracking-wide text-white sm:flex sm:text-sm md:text-sm lg:text-base xl:text-lg">
             พอร์ทัลผู้ทำบัญชี
           </h1>
         </div>
@@ -42,17 +45,18 @@
         <!-- Right controls -->
         <div class="flex items-center gap-2 sm:gap-3">
           <div
-            class="hidden xs:flex items-center rounded-2xl bg-white/90 px-2 py-1 text-gray-900 shadow-md ring-1 ring-black/5">
+            class="xs:flex hidden items-center rounded-2xl bg-white/90 px-2 py-1 text-gray-900 shadow-md ring-1 ring-black/5">
             <app-language-menu></app-language-menu>
           </div>
 
-          <ng-container *ngIf="(isLoggedIn$ | async); else guest">
+          <ng-container *ngIf="isLoggedIn$ | async; else guest">
             <app-profile-menu></app-profile-menu>
           </ng-container>
 
           <ng-template #guest>
-            <button (click)="login()" class="inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-medium
-                     hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+            <button
+              (click)="login()"
+              class="hover:bg-white/15 inline-flex items-center rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
               <span i18n="@@login">เข้าสู่ระบบ</span>
             </button>
           </ng-template>
@@ -66,98 +70,65 @@
       </div>
 
       <!-- Template เมนู -->
-      <ul class="hidden md:flex items-center gap-3 lg:gap-5 text-sm">
+      <ul class="hidden items-center gap-3 text-sm md:flex lg:gap-5">
         <ng-template #navLinks>
-
           <li class="snap-start">
-            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" [routerLinkActiveOptions]="{ exact: true }"
-              routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
-          inline-flex items-center
-          px-3 py-2
-          rounded-lg
-          font-medium
-          text-gray-300
-
-          hover:text-white
-          hover:bg-white/10
-          hover:shadow hover:shadow-white/5
-
-          transition-all duration-200
-        " i18n="@@footer_home">
+            <a
+              [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
+              [routerLinkActiveOptions]="{ exact: true }"
+              routerLinkActive="nav-link-active"
+              (click)="closeMobileMenu()"
+              class="inline-flex items-center px-2 py-1.5 text-xs font-medium leading-tight text-gray-300 transition-all duration-200 hover:bg-white/10 hover:text-white hover:shadow hover:shadow-white/5 sm:px-3 sm:py-2 sm:text-sm sm:leading-normal md:text-sm lg:text-base"
+              i18n="@@footer_home">
               หน้าหลัก
             </a>
           </li>
 
           <li class="snap-start">
-            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="script"
-              routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
-          inline-flex items-center
-          px-3 py-2
-          rounded-lg
-          font-medium
-          text-gray-300
-
-          hover:text-white
-          hover:bg-white/10
-          hover:shadow hover:shadow-white/5
-
-          transition-all duration-200
-        " i18n="@@footer_script">
+            <a
+              [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
+              fragment="script"
+              routerLinkActive="nav-link-active"
+              (click)="closeMobileMenu()"
+              class="inline-flex items-center px-2 py-1.5 text-xs font-medium leading-tight text-gray-300 transition-all duration-200 hover:bg-white/10 hover:text-white hover:shadow hover:shadow-white/5 sm:px-3 sm:py-2 sm:text-sm sm:leading-normal md:text-sm lg:text-base"
+              i18n="@@footer_script">
               ห้องสมุดละคร
             </a>
           </li>
 
-
           <li class="snap-start">
-            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="profiles"
-              routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
-          inline-flex items-center
-          px-3 py-2
-          rounded-lg
-          font-medium
-          text-gray-300
-
-          hover:text-white
-          hover:bg-white/10
-          hover:shadow hover:shadow-white/5
-
-          transition-all duration-200
-        " i18n="@@footer_search">
+            <a
+              [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
+              fragment="profiles"
+              routerLinkActive="nav-link-active"
+              (click)="closeMobileMenu()"
+              class="inline-flex items-center px-2 py-1.5 text-xs font-medium leading-tight text-gray-300 transition-all duration-200 hover:bg-white/10 hover:text-white hover:shadow hover:shadow-white/5 sm:px-3 sm:py-2 sm:text-sm sm:leading-normal md:text-sm lg:text-base"
+              i18n="@@footer_search">
               ค้นหาสมาชิก
             </a>
           </li>
 
           <li class="snap-start">
-            <a [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']" fragment="about"
-              routerLinkActive="nav-link-active" (click)="closeMobileMenu()" class="
-          inline-flex items-center
-          px-3 py-2
-          rounded-lg
-          font-medium
-          text-gray-300
-
-          hover:text-white
-          hover:bg-white/10
-          hover:shadow hover:shadow-white/5
-
-          transition-all duration-200
-        " i18n="@@footer_about">
+            <a
+              [routerLink]="langPrefix() ? ['/', langPrefix()] : ['/']"
+              fragment="about"
+              routerLinkActive="nav-link-active"
+              (click)="closeMobileMenu()"
+              class="inline-flex items-center px-2 py-1.5 text-xs font-medium leading-tight text-gray-300 transition-all duration-200 hover:bg-white/10 hover:text-white hover:shadow hover:shadow-white/5 sm:px-3 sm:py-2 sm:text-sm sm:leading-normal md:text-sm lg:text-base"
+              i18n="@@footer_about">
               เกี่ยวกับเรา
             </a>
           </li>
-
         </ng-template>
       </ul>
 
-
       <!-- Mobile nav -->
-      <nav *ngIf="isMobileMenuOpen" aria-label="เมนูหลัก (มือถือ)" class="md:hidden animate-fadeIn">
-        <ul class="my-3 no-scrollbar flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 p-2 backdrop-blur
-                 supports-[backdrop-filter]:bg-white/10">
+      <nav *ngIf="isMobileMenuOpen" aria-label="เมนูหลัก (มือถือ)" class="animate-fadeIn md:hidden">
+        <ul
+          class="no-scrollbar supports-[backdrop-filter]:bg-white/10 my-3 flex flex-col gap-1 rounded-xl border border-white/10 bg-white/5 p-2 backdrop-blur">
           <ng-container *ngTemplateOutlet="navLinks"></ng-container>
         </ul>
       </nav>
-
     </div>
   </div>
 </header>

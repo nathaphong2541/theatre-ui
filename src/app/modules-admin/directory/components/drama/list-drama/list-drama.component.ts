@@ -5,6 +5,7 @@ import { Drama } from '../../../pages/drama/models/drama.model';
 import { DramaService } from '../../../pages/drama/service/drama.service';
 import { FormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 
 @Component({
   selector: 'app-list-drama',
@@ -24,7 +25,7 @@ export class ListDramaComponent implements OnInit {
   // ✅ รวม tag ทั้งหมดไว้ทำ filter dropdown
   uniqueTags = computed(() => {
     const set = new Set<string>();
-    this.dramas().forEach(d => this.getTagList(d).forEach(t => set.add(t)));
+    this.dramas().forEach((d) => this.getTagList(d).forEach((t) => set.add(t)));
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   });
 
@@ -32,25 +33,20 @@ export class ListDramaComponent implements OnInit {
     const q = this.search().toLowerCase().trim();
     const tag = this.tagFilter();
 
-    return this.dramas().filter(d => {
+    return this.dramas().filter((d) => {
       const title = (d.title ?? '').toLowerCase();
       const desc = (d.description ?? '').toLowerCase();
       const tags = (d.tags ?? '').toLowerCase();
 
-      const matchText =
-        !q || title.includes(q) || desc.includes(q) || tags.includes(q);
+      const matchText = !q || title.includes(q) || desc.includes(q) || tags.includes(q);
 
-      const matchTag =
-        !tag || this.getTagList(d).includes(tag);
+      const matchTag = !tag || this.getTagList(d).includes(tag);
 
       return matchText && matchTag;
     });
   });
 
-  constructor(
-    private dramaService: DramaService,
-    private router: Router
-  ) { }
+  constructor(private dramaService: DramaService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -62,11 +58,11 @@ export class ListDramaComponent implements OnInit {
 
     // ✅ สำคัญ: ต้องเป็น endpoint ของฉันเท่านั้น (/scripts/me)
     this.dramaService.getMyDramasMe().subscribe({
-      next: res => {
+      next: (res) => {
         this.dramas.set(res ?? []);
         this.loading.set(false);
       },
-      error: err => {
+      error: (err) => {
         console.error(err);
         this.error.set('ไม่สามารถโหลดรายการบทละครได้');
         this.loading.set(false);
@@ -78,7 +74,7 @@ export class ListDramaComponent implements OnInit {
   private getLangPrefix(): string | null {
     const segments = this.router.url.split('/').filter(Boolean);
     const first = segments[0];
-    return (first === 'th' || first === 'en') ? first : null;
+    return first === 'th' || first === 'en' ? first : null;
   }
 
   // ───────────────── navigation ─────────────────
@@ -115,10 +111,10 @@ export class ListDramaComponent implements OnInit {
 
     this.dramaService.deleteDrama(id).subscribe({
       next: () => {
-        this.dramas.set(this.dramas().filter(d => d.id !== id));
+        this.dramas.set(this.dramas().filter((d) => d.id !== id));
         this.deletingId.set(null);
       },
-      error: err => {
+      error: (err) => {
         console.error(err);
         this.error.set('ลบไม่สำเร็จ');
         this.deletingId.set(null);
@@ -134,17 +130,13 @@ export class ListDramaComponent implements OnInit {
   getFirstImage(drama: Drama): string | null {
     if (!drama.images?.length) return null;
 
-    const rawPath = drama.images[0]?.filePath ?? '';
-    if (!rawPath) return null;
-
-    const normalized = rawPath.replace(/\\/g, '/'); // uploads/scripts/xxx.jpg
-    return `${this.fileBase}/${normalized}`;
+    return toFullUrl(drama.images[0]?.filePath);
   }
 
   getTagList(d: Drama): string[] {
     return (d.tags ?? '')
       .split(',')
-      .map(t => t.trim())
+      .map((t) => t.trim())
       .filter(Boolean);
   }
 

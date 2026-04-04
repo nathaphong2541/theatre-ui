@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { toFullUrl } from 'src/app/core/utils/file-url';
 
 type ScriptImage = {
   id: number;
@@ -38,13 +39,7 @@ export class AllScriptComponent implements OnInit {
   search = '';
   selectedTag: string | null = null;
 
-  // base สำหรับ static files (/uploads/**)
-  public fileBase = environment.apiUrl.replace(/\/api\/?$/, '');
-
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) { }
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.loadScripts();
@@ -54,31 +49,29 @@ export class AllScriptComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.http
-      .get<ScriptPublic[]>(`${environment.apiUrl}/public/scripts`)
-      .subscribe({
-        next: res => {
-          // sort จากใหม่ -> เก่า
-          this.scripts = [...res].sort((a, b) => {
-            const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-            const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-            return db - da;
-          });
-          this.loading = false;
-        },
-        error: err => {
-          console.error(err);
-          this.error = 'ไม่สามารถโหลดรายการบทละครได้ในขณะนี้';
-          this.loading = false;
-        },
-      });
+    this.http.get<ScriptPublic[]>(`${environment.apiUrl}/public/scripts`).subscribe({
+      next: (res) => {
+        // sort จากใหม่ -> เก่า
+        this.scripts = [...res].sort((a, b) => {
+          const da = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const db = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return db - da;
+        });
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.error = 'ไม่สามารถโหลดรายการบทละครได้ในขณะนี้';
+        this.loading = false;
+      },
+    });
   }
 
   get filteredScripts(): ScriptPublic[] {
     const q = this.search.toLowerCase().trim();
     const tag = this.selectedTag;
 
-    return this.scripts.filter(s => {
+    return this.scripts.filter((s) => {
       const matchText =
         !q ||
         s.title.toLowerCase().includes(q) ||
@@ -95,24 +88,23 @@ export class AllScriptComponent implements OnInit {
   // รวมทุกแท็กไว้ทำ filter chips
   get allTags(): string[] {
     const tags = new Set<string>();
-    this.scripts.forEach(s => {
-      this.getTagList(s).forEach(t => tags.add(t));
+    this.scripts.forEach((s) => {
+      this.getTagList(s).forEach((t) => tags.add(t));
     });
     return Array.from(tags);
   }
 
   // รูปปกจากภาพแรก
   getCover(script: ScriptPublic): string | null {
-    if (!script.images || script.images.length === 0) return null;
-    const rawPath = script.images[0].filePath || ''; // "uploads\\scripts\\xxx.jpg"
-    const normalized = rawPath.replace(/\\/g, '/');
-    return `${this.fileBase}/${normalized}`; // http://localhost:8080/uploads/scripts/xxx.jpg
+    if (!script.images?.length) return null;
+
+    return toFullUrl(script.images[0].filePath);
   }
 
   getTagList(script: ScriptPublic): string[] {
     return (script.tags ?? '')
       .split(',')
-      .map(t => t.trim())
+      .map((t) => t.trim())
       .filter(Boolean);
   }
 
@@ -133,9 +125,8 @@ export class AllScriptComponent implements OnInit {
     if (event) event.stopPropagation();
     if (!script.pdfPath) return;
 
-    const normalized = script.pdfPath.replace(/\\/g, '/');
-    const url = `${this.fileBase}/${normalized}`;
-    window.open(url, '_blank');
+    const url = toFullUrl(script.pdfPath);
+    if (url) window.open(url, '_blank');
   }
 
   clearTag() {
