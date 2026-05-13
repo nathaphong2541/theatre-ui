@@ -5,7 +5,13 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-export type MeResponse = { firstName: string; lastName: string; email: string };
+export type MeResponse = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: 'USER' | 'ADMIN';
+};
+
 export type RegisterRequest = {
   policyConfirm: boolean;
   firstName: string;
@@ -27,7 +33,7 @@ export class AuthService {
   private _sessionChecked = false;
   private _sessionCheck$?: Observable<MeResponse | null>;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /** ✅ ใช้ใน Guard / Component แบบ sync ได้ */
   isLoggedInSync(): boolean {
@@ -37,6 +43,14 @@ export class AuthService {
   /** getter เดิม (เอาไว้ใช้ใน template ถ้าชอบเขียนแบบ property) */
   get isLoggedIn(): boolean {
     return this._isLoggedIn$.value === true;
+  }
+
+  get currentUser(): MeResponse | null {
+    return this._user$.value;
+  }
+
+  get isAdmin(): boolean {
+    return this._user$.value?.role === 'ADMIN';
   }
 
   /** เรียกครั้งแรกของแอป/หลังรีเฟรช — จะเรียก /me เฉพาะกรณีมี flag จากการ login แล้วเท่านั้น */
@@ -50,22 +64,20 @@ export class AuthService {
     if (!force && this._sessionChecked && this._sessionCheck$) return this._sessionCheck$;
 
     this._sessionChecked = true;
-    this._sessionCheck$ = this.http
-      .get<MeResponse>(`${this.api}/me`, { withCredentials: true })
-      .pipe(
-        tap((me) => {
-          this._isLoggedIn$.next(true);
-          this._user$.next(me);
-        }),
-        catchError(() => {
-          this._isLoggedIn$.next(false);
-          this._user$.next(null);
-          // ถ้า cookie หมดอายุ ให้ลบ flag ด้วย
-          sessionStorage.removeItem('hasAppSession');
-          return of(null);
-        }),
-        shareReplay(1)
-      );
+    this._sessionCheck$ = this.http.get<MeResponse>(`${this.api}/me`, { withCredentials: true }).pipe(
+      tap((me) => {
+        this._isLoggedIn$.next(true);
+        this._user$.next(me);
+      }),
+      catchError(() => {
+        this._isLoggedIn$.next(false);
+        this._user$.next(null);
+        // ถ้า cookie หมดอายุ ให้ลบ flag ด้วย
+        sessionStorage.removeItem('hasAppSession');
+        return of(null);
+      }),
+      shareReplay(1),
+    );
     return this._sessionCheck$;
   }
 
@@ -76,7 +88,7 @@ export class AuthService {
       .post<{ user?: MeResponse }>(
         `${this.api}/login`,
         { email, password, remember },
-        { headers, withCredentials: true }
+        { headers, withCredentials: true },
       )
       .pipe(
         tap(() => {
@@ -93,9 +105,9 @@ export class AuthService {
             tap((me) => {
               if (me) this._user$.next(me);
             }),
-            map(() => void 0)
-          )
-        )
+            map(() => void 0),
+          ),
+        ),
       );
   }
 
@@ -108,29 +120,23 @@ export class AuthService {
         this._sessionChecked = false;
         this._sessionCheck$ = undefined;
       }),
-      map(() => void 0)
+      map(() => void 0),
     );
   }
 
   register(data: RegisterRequest, autoLogin = true): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http
-      .post<void>(`${this.api}/register`, data, { headers, withCredentials: true })
-      .pipe(
-        // ถ้าต้องการ autoLogin หลังสมัคร สามารถต่อยอด logic ตรงนี้ทีหลังได้
-        map(() => void 0)
-      );
+    return this.http.post<void>(`${this.api}/register`, data, { headers, withCredentials: true }).pipe(
+      // ถ้าต้องการ autoLogin หลังสมัคร สามารถต่อยอด logic ตรงนี้ทีหลังได้
+      map(() => void 0),
+    );
   }
 
   forgotPassword(email: string): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post<void>(
-      `${this.api}/forgot-password`,
-      { email },
-      { headers, withCredentials: true }
-    );
+    return this.http.post<void>(`${this.api}/forgot-password`, { email }, { headers, withCredentials: true });
   }
 
   resetPassword(token: string, newPassword: string, email?: string): Observable<void> {
@@ -144,7 +150,7 @@ export class AuthService {
 
     return this.http.post<void>(`${this.api}/reset-password`, body, {
       headers,
-      withCredentials: true
+      withCredentials: true,
     });
   }
 
@@ -155,7 +161,7 @@ export class AuthService {
       .post<{ message: string; user?: MeResponse }>(
         `${this.api}/change-email`,
         { newEmail, currentPassword },
-        { headers, withCredentials: true }
+        { headers, withCredentials: true },
       )
       .pipe(
         tap((res) => {
@@ -163,7 +169,7 @@ export class AuthService {
             this._user$.next(res.user);
           }
         }),
-        map(() => void 0)
+        map(() => void 0),
       );
   }
 
@@ -171,28 +177,22 @@ export class AuthService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http
-      .post<void>(
-        `${this.api}/change-password`,
-        { currentPassword, newPassword },
-        { headers, withCredentials: true }
-      )
+      .post<void>(`${this.api}/change-password`, { currentPassword, newPassword }, { headers, withCredentials: true })
       .pipe(map(() => void 0));
   }
 
   deleteAccount(): Observable<void> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http
-      .post<void>(`${this.api}/delete-account`, {}, { headers, withCredentials: true })
-      .pipe(
-        tap(() => {
-          this._isLoggedIn$.next(false);
-          this._user$.next(null);
-          sessionStorage.removeItem('hasAppSession');
-          this._sessionChecked = false;
-          this._sessionCheck$ = undefined;
-        }),
-        map(() => void 0)
-      );
+    return this.http.post<void>(`${this.api}/delete-account`, {}, { headers, withCredentials: true }).pipe(
+      tap(() => {
+        this._isLoggedIn$.next(false);
+        this._user$.next(null);
+        sessionStorage.removeItem('hasAppSession');
+        this._sessionChecked = false;
+        this._sessionCheck$ = undefined;
+      }),
+      map(() => void 0),
+    );
   }
 }

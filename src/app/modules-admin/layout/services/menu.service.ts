@@ -40,14 +40,26 @@ export class MenuService implements OnDestroy {
   }
 
   // ====== getters/setters ======
-  get showSideBar() { return this._showSidebar(); }
-  get showMobileMenu() { return this._showMobileMenu(); }
-  get pagesMenu() { return this._pagesMenu(); }
+  get showSideBar() {
+    return this._showSidebar();
+  }
+  get showMobileMenu() {
+    return this._showMobileMenu();
+  }
+  get pagesMenu() {
+    return this._pagesMenu();
+  }
 
-  set showSideBar(value: boolean) { this._showSidebar.set(value); }
-  set showMobileMenu(value: boolean) { this._showMobileMenu.set(value); }
+  set showSideBar(value: boolean) {
+    this._showSidebar.set(value);
+  }
+  set showMobileMenu(value: boolean) {
+    this._showMobileMenu.set(value);
+  }
 
-  public toggleSidebar() { this._showSidebar.set(!this._showSidebar()); }
+  public toggleSidebar() {
+    this._showSidebar.set(!this._showSidebar());
+  }
 
   public toggleMenu(menu: SubMenuItem) {
     this.showSideBar = true;
@@ -117,5 +129,4 @@ export class MenuService implements OnDestroy {
   public navigate(route?: string | null) {
     this.router.navigateByUrl(this.resolveRoute(route));
   }
-
 }
