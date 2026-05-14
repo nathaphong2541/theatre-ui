@@ -1,42 +1,45 @@
 <div *ngFor="let menu of filteredMenu" class="space-y-3">
-
   <!-- Group title -->
   <div *ngIf="menuService.showSideBar" class="mx-1 flex items-center justify-between pt-3">
-    <small class="text-white text-[11px] font-semibold tracking-wide">
+    <small class="text-[11px] font-semibold tracking-wide text-white">
       {{ menu.group }}
     </small>
   </div>
 
   <ul class="flex flex-col gap-1">
     <li *ngFor="let item of menu.items" class="relative">
-
       <!-- Row -->
-      <div (click)="toggleMenu(item)" class="group relative flex items-center gap-3 rounded-xl px-2 py-2 transition-all duration-300
-               text-white hover:text-foreground
-               hover:bg-card/50" [ngClass]="{
-          'bg-primary/10 text-foreground shadow-[0_10px_30px_rgba(20,124,127,0.15)] ring-1 ring-primary/25': item.active,
+      <div
+        (click)="toggleMenu(item)"
+        class="hover:text-foreground hover:bg-card/50 group relative flex cursor-pointer items-center gap-3 rounded-xl px-2 py-2 text-white transition-all duration-300"
+        [ngClass]="{
+          'bg-primary/10 text-foreground ring-primary/25 shadow-[0_10px_30px_rgba(20,124,127,0.15)] ring-1':
+            item.active,
           'justify-center px-2': !menuService.showSideBar
         }">
-
         <!-- Active left bar -->
-        <span class="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 h-7 w-[3px] rounded-full bg-primary
-                 opacity-0 transition-opacity duration-300"
+        <span
+          class="bg-primary pointer-events-none absolute left-0 top-1/2 h-7 w-[3px] -translate-y-1/2 rounded-full opacity-0 transition-opacity duration-300"
           [ngClass]="{ 'opacity-100': item.active && menuService.showSideBar }"></span>
 
         <!-- Icon -->
-        <div class="grid h-9 w-9 place-items-center rounded-lg transition-all duration-300"
+        <div
+          class="grid h-9 w-9 place-items-center rounded-lg transition-all duration-300"
           [ngClass]="item.active ? 'bg-primary/10 text-white' : 'text-white/60 group-hover:text-white'">
           <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"></svg-icon>
         </div>
 
         <!-- Label / click area -->
-        <ng-container [ngTemplateOutlet]="item.children ? childMenu : parentMenu"
+        <ng-container
+          [ngTemplateOutlet]="item.children ? childMenu : parentMenu"
           [ngTemplateOutletContext]="{ item: item }"></ng-container>
 
         <!-- Router link item -->
         <ng-template #parentMenu let-item="item">
           <div [routerLink]="menuService.link(item.route)" class="flex h-9 grow items-center rounded-lg">
-            <a [ngClass]="{ hidden: !menuService.showSideBar }" routerLinkActive="text-white"
+            <a
+              [ngClass]="{ hidden: !menuService.showSideBar }"
+              routerLinkActive="text-white"
               class="truncate text-xs font-semibold tracking-wide text-white">
               {{ item.label }}
             </a>
@@ -46,29 +49,32 @@
         <!-- Parent with children -->
         <ng-template #childMenu let-item="item">
           <div class="flex h-9 grow items-center">
-            <a [ngClass]="{ hidden: !menuService.showSideBar }" class="truncate text-xs font-semibold tracking-wide text-white text-white/90
-                     group-hover:text-white">
+            <a
+              [ngClass]="{ hidden: !menuService.showSideBar }"
+              class="truncate text-xs font-semibold tracking-wide text-white text-white/90 group-hover:text-white">
               {{ item.label }}
             </a>
           </div>
         </ng-template>
 
         <!-- Expand/Collapse button -->
-        <button *ngIf="item.children" type="button" [ngClass]="{ hidden: !menuService.showSideBar }" class="ml-auto grid h-8 w-8 place-items-center rounded-lg text-foreground/50
-                 transition-all duration-300 hover:bg-white/5 hover:text-foreground"
+        <button
+          *ngIf="item.children"
+          type="button"
+          [ngClass]="{ hidden: !menuService.showSideBar }"
+          class="text-foreground/50 hover:text-foreground ml-auto grid h-8 w-8 cursor-pointer place-items-center rounded-lg transition-all duration-300 hover:bg-white/5"
           (click)="$event.stopPropagation(); toggleMenu(item)">
           <svg-icon
-            [src]="!item.expanded ? 'assets/icons/heroicons/outline/plus.svg' : 'assets/icons/heroicons/outline/minus.svg'"
+            [src]="
+              !item.expanded ? 'assets/icons/heroicons/outline/plus.svg' : 'assets/icons/heroicons/outline/minus.svg'
+            "
             svgClass="h-4 w-4 transition-transform duration-300"></svg-icon>
         </button>
 
         <!-- Tooltip (when sidebar collapsed) -->
         <div class="fixed z-50" *ngIf="!menuService.showSideBar">
-          <span class="pointer-events-none absolute left-12 top-1/2 -translate-y-1/2
-                   scale-0 opacity-0 group-hover:scale-100 group-hover:opacity-100
-                   origin-left transition-all duration-200
-                   rounded-xl border border-white/10 bg-foreground/95 text-background
-                   px-3 py-2 text-xs font-semibold shadow-2xl backdrop-blur">
+          <span
+            class="bg-foreground/95 text-background pointer-events-none absolute left-12 top-1/2 origin-left -translate-y-1/2 scale-0 cursor-pointer rounded-xl border border-white/10 px-3 py-2 text-xs font-semibold opacity-0 shadow-2xl backdrop-blur transition-all duration-200 group-hover:scale-100 group-hover:opacity-100">
             {{ item.label }}
           </span>
         </div>

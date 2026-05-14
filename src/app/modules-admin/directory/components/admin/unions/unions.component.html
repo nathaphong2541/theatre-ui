@@ -1,0 +1,106 @@
+<!-- ใช้ html นี้เหมือนกันทุกหน้า -->
+<!-- เปลี่ยน title ตาม component -->
+
+<div class="space-y-6 p-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Unions</h1>
+
+      <p class="text-gray-500">Manage unions</p>
+    </div>
+
+    <button (click)="openCreate()" class="rounded-xl bg-black px-5 py-3 text-white">+ Add</button>
+  </div>
+
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <table class="w-full border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-4 text-left">ID</th>
+          <th class="p-4 text-left">Name TH</th>
+          <th class="p-4 text-left">Name EN</th>
+          <th class="p-4 text-left">Description</th>
+          <th class="p-4 text-left">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of dataList; track item.id) {
+
+        <tr class="border-t">
+          <td class="p-4">
+            {{ item.id }}
+          </td>
+
+          <td class="p-4 font-medium">
+            {{ item.nameTh }}
+          </td>
+
+          <td class="p-4">
+            {{ item.nameEn }}
+          </td>
+
+          <td class="p-4">
+            {{ item.description || '-' }}
+          </td>
+
+          <td class="p-4">
+            <div class="flex gap-2">
+              <button (click)="openEdit(item.id)" class="rounded-lg bg-yellow-500 px-4 py-2 text-sm text-white">
+                Edit
+              </button>
+
+              <button (click)="delete(item.id)" class="rounded-lg bg-red-600 px-4 py-2 text-sm text-white">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (showModal) {
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  <div class="w-full max-w-xl rounded-2xl bg-white p-6">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-2xl font-bold">
+        {{ editingId ? 'Edit' : 'Create' }}
+      </h2>
+
+      <button (click)="closeModal()">✕</button>
+    </div>
+
+    <form [formGroup]="form" class="space-y-4">
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name TH </label>
+
+        <input type="text" formControlName="nameTh" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name EN </label>
+
+        <input type="text" formControlName="nameEn" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Description </label>
+
+        <textarea rows="4" formControlName="description" class="w-full rounded-xl border p-3"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" (click)="closeModal()" class="rounded-xl border px-5 py-2">Cancel</button>
+
+        <button type="button" (click)="save()" class="rounded-xl bg-black px-5 py-2 text-white">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+}

@@ -14,7 +14,9 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/user.svg',
+
           label: $localize`:@@menu_directory_profile:Profile`,
+
           route: '/directory/profile',
 
           role: 'USER',
@@ -22,7 +24,9 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/document-text.svg',
+
           label: $localize`:@@menu_directory_script:Script`,
+
           route: '/directory/script',
 
           role: 'USER',
@@ -30,7 +34,9 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/cog-6-tooth.svg',
-          label: 'Setting',
+
+          label: $localize`:@@menu_directory_setting:Setting`,
+
           route: '/directory/setting',
 
           role: 'USER',
@@ -42,7 +48,8 @@ export class Menu {
     // MASTER DATA
     // =========================================================
     {
-      group: 'Master Data',
+      group: $localize`:@@menu_group_master_data:Master Data`,
+
       separator: true,
 
       role: 'ADMIN',
@@ -50,7 +57,9 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Department',
+
+          label: $localize`:@@menu_admin_department:Department`,
+
           route: '/admin/department',
 
           role: 'ADMIN',
@@ -58,7 +67,9 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Work Locations',
+
+          label: $localize`:@@menu_admin_work_locations:Work Locations`,
+
           route: '/admin/work-locations',
 
           role: 'ADMIN',
@@ -66,15 +77,19 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Unions / Guilds / Memberships',
-          route: '/admin/memberships',
+
+          label: $localize`:@@menu_admin_memberships:Unions`,
+
+          route: '/admin/unions',
 
           role: 'ADMIN',
         },
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Experience Levels',
+
+          label: $localize`:@@menu_admin_experience_levels:Experience Levels`,
+
           route: '/admin/experience-levels',
 
           role: 'ADMIN',
@@ -82,7 +97,9 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Partner Directories',
+
+          label: $localize`:@@menu_admin_partner_directories:Partner Directories`,
+
           route: '/admin/partner-directories',
 
           role: 'ADMIN',
@@ -90,23 +107,29 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Gender Identity',
+
+          label: $localize`:@@menu_admin_gender_identity:Gender Identity`,
+
           route: '/admin/gender-identity',
 
           role: 'ADMIN',
         },
 
+        // {
+        //   icon: 'assets/icons/heroicons/outline/folder.svg',
+
+        //   label: $localize`:@@menu_admin_personal_identity:Personal Identity`,
+
+        //   route: '/admin/personal-identity',
+
+        //   role: 'ADMIN',
+        // },
+
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Personal Identity',
-          route: '/admin/personal-identity',
 
-          role: 'ADMIN',
-        },
+          label: $localize`:@@menu_admin_racial_identity:Racial Identity`,
 
-        {
-          icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Racial Identity',
           route: '/admin/racial-identity',
 
           role: 'ADMIN',
@@ -114,7 +137,9 @@ export class Menu {
 
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
-          label: 'Profession',
+
+          label: $localize`:@@menu_admin_profession:Profession`,
+
           route: '/admin/profession',
 
           role: 'ADMIN',

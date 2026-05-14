@@ -11,6 +11,15 @@ import { HandleProfileComponent } from './components/profile/handle-profile/hand
 
 import { ListDramaComponent } from './components/drama/list-drama/list-drama.component';
 import { HandleDramaComponent } from './components/drama/handle-drama/handle-drama.component';
+import { DepartmentComponent } from './components/admin/department/department.component';
+import { WorkLocaltionComponent } from './components/admin/work-localtion/work-localtion.component';
+import { UnionsComponent } from './components/admin/unions/unions.component';
+import { ExperienceLevelComponent } from './components/admin/experience-level/experience-level.component';
+import { PartnerDirectoriesComponent } from './components/admin/partner-directories/partner-directories.component';
+import { GenderComponent } from './components/admin/gender/gender.component';
+import { PersonalComponent } from './components/admin/personal/personal.component';
+import { RacialComponent } from './components/admin/racial/racial.component';
+import { ProfessionComponent } from './components/admin/profession/profession.component';
 
 const routes: Routes = [
   {
@@ -18,38 +27,22 @@ const routes: Routes = [
     component: DirectoryComponent,
 
     children: [
-      // ================= DEFAULT =================
+      // =====================================================
+      // DEFAULT
+      // =====================================================
+
       {
         path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
-      },
-
-      // =========================================================
-      // USER ONLY
-      // =========================================================
-
-      {
-        path: 'dashboard',
         component: DashboardComponent,
-
-        data: {
-          role: 'USER',
-        },
       },
 
-      {
-        path: 'profile-new',
-        component: HandleProfileComponent,
-
-        data: {
-          role: 'USER',
-        },
-      },
+      // =====================================================
+      // USER
+      // =====================================================
 
       {
-        path: 'profile/:id',
-        component: HandleProfileComponent,
+        path: 'profile',
+        component: ProfileComponent,
 
         data: {
           role: 'USER',
@@ -66,30 +59,17 @@ const routes: Routes = [
       },
 
       {
-        path: 'script/new',
-        component: HandleDramaComponent,
-
-        data: {
-          role: 'USER',
-        },
-      },
-
-      // =========================================================
-      // USER + USER
-      // =========================================================
-
-      {
-        path: 'profile',
-        component: ProfileComponent,
-
-        data: {
-          role: 'USER',
-        },
-      },
-
-      {
         path: 'script',
         component: ListDramaComponent,
+
+        data: {
+          role: 'USER',
+        },
+      },
+
+      {
+        path: 'script/new',
+        component: HandleDramaComponent,
 
         data: {
           role: 'USER',
@@ -114,11 +94,41 @@ const routes: Routes = [
         },
       },
 
-      // ================= MASTER =================
+      {
+        path: 'profile-new',
+        component: HandleProfileComponent,
+
+        data: {
+          role: 'USER',
+        },
+      },
+
+      {
+        path: 'profile/:id',
+        component: HandleProfileComponent,
+
+        data: {
+          role: 'USER',
+        },
+      },
+
+      // =====================================================
+      // ADMIN
+      // =====================================================
+
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+
+        data: {
+          role: 'ADMIN',
+        },
+      },
 
       {
         path: 'department',
-        component: DashboardComponent,
+        component: DepartmentComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -126,15 +136,17 @@ const routes: Routes = [
 
       {
         path: 'work-locations',
-        component: DashboardComponent,
+        component: WorkLocaltionComponent,
+
         data: {
           role: 'ADMIN',
         },
       },
 
       {
-        path: 'memberships',
-        component: DashboardComponent,
+        path: 'unions',
+        component: UnionsComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -142,7 +154,8 @@ const routes: Routes = [
 
       {
         path: 'experience-levels',
-        component: DashboardComponent,
+        component: ExperienceLevelComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -150,7 +163,8 @@ const routes: Routes = [
 
       {
         path: 'partner-directories',
-        component: DashboardComponent,
+        component: PartnerDirectoriesComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -158,7 +172,8 @@ const routes: Routes = [
 
       {
         path: 'gender-identity',
-        component: DashboardComponent,
+        component: GenderComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -166,7 +181,8 @@ const routes: Routes = [
 
       {
         path: 'personal-identity',
-        component: DashboardComponent,
+        component: PersonalComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -174,7 +190,8 @@ const routes: Routes = [
 
       {
         path: 'racial-identity',
-        component: DashboardComponent,
+        component: RacialComponent,
+
         data: {
           role: 'ADMIN',
         },
@@ -182,13 +199,17 @@ const routes: Routes = [
 
       {
         path: 'profession',
-        component: DashboardComponent,
+        component: ProfessionComponent,
+
         data: {
           role: 'ADMIN',
         },
       },
 
-      // ================= 404 =================
+      // =====================================================
+      // 404
+      // =====================================================
+
       {
         path: '**',
         redirectTo: '/en/errors/404',

@@ -1,0 +1,161 @@
+<!-- ใช้ html นี้ได้ทุก component -->
+<!-- เปลี่ยนเฉพาะ title -->
+
+<div class="space-y-6 p-6">
+  <!-- HEADER -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Profession</h1>
+
+      <p class="text-gray-500">Manage Profession</p>
+    </div>
+
+    <button (click)="openCreate()" class="rounded-xl bg-black px-5 py-3 text-white transition hover:opacity-90">
+      + Add
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <table class="w-full border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-4 text-left text-sm font-semibold text-gray-700">ID</th>
+
+          <th class="p-4 text-left text-sm font-semibold text-gray-700">Name TH</th>
+
+          <th class="p-4 text-left text-sm font-semibold text-gray-700">Name EN</th>
+
+          <th class="p-4 text-left text-sm font-semibold text-gray-700">Description</th>
+
+          <th class="p-4 text-left text-sm font-semibold text-gray-700">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of dataList; track item.id) {
+
+        <tr class="border-t transition hover:bg-gray-50">
+          <td class="p-4 text-sm">
+            {{ item.id }}
+          </td>
+
+          <td class="p-4 font-medium">
+            {{ item.nameTh }}
+          </td>
+
+          <td class="p-4">
+            {{ item.nameEn }}
+          </td>
+
+          <td class="p-4 text-gray-500">
+            {{ item.description || '-' }}
+          </td>
+
+          <td class="p-4">
+            <div class="flex flex-wrap gap-2">
+              <button
+                (click)="openEdit(item.id)"
+                class="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-yellow-600">
+                Edit
+              </button>
+
+              <button
+                (click)="delete(item.id)"
+                class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        } @if (dataList.length === 0) {
+
+        <tr>
+          <td colspan="5" class="p-10 text-center text-sm text-gray-400">No data found</td>
+        </tr>
+
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- MODAL -->
+<!-- ===================================================== -->
+
+@if (showModal) {
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+  <div class="w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl">
+    <!-- HEADER -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h2 class="text-2xl font-bold">
+          {{ editingId ? 'Edit' : 'Create' }}
+        </h2>
+
+        <p class="text-sm text-gray-500">Fill all required information</p>
+      </div>
+
+      <button
+        (click)="closeModal()"
+        class="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-gray-100">
+        ✕
+      </button>
+    </div>
+
+    <!-- FORM -->
+    <form [formGroup]="form" class="space-y-5">
+      <!-- NAME TH -->
+      <div>
+        <label class="mb-2 block text-sm font-semibold text-gray-700"> Name TH </label>
+
+        <input
+          type="text"
+          formControlName="nameTh"
+          class="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-black" />
+      </div>
+
+      <!-- NAME EN -->
+      <div>
+        <label class="mb-2 block text-sm font-semibold text-gray-700"> Name EN </label>
+
+        <input
+          type="text"
+          formControlName="nameEn"
+          class="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-black" />
+      </div>
+
+      <!-- DESCRIPTION -->
+      <div>
+        <label class="mb-2 block text-sm font-semibold text-gray-700"> Description </label>
+
+        <textarea
+          rows="4"
+          formControlName="description"
+          class="w-full rounded-xl border border-gray-300 p-3 outline-none transition focus:border-black"></textarea>
+      </div>
+
+      <!-- ACTION -->
+      <div class="flex justify-end gap-3 pt-4">
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="rounded-xl border border-gray-300 px-5 py-2.5 font-medium transition hover:bg-gray-100">
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          (click)="save()"
+          class="rounded-xl bg-black px-5 py-2.5 font-medium text-white transition hover:opacity-90">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+}

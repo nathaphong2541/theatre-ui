@@ -1,0 +1,281 @@
+<!-- department.component.html -->
+
+<div class="space-y-10 p-6">
+  <!-- HEADER -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">Departments</h1>
+      <p class="text-gray-500">Manage departments & positions</p>
+    </div>
+
+    <button (click)="openCreateDepartment()" class="rounded-lg bg-black px-5 py-3 text-white">+ Add Department</button>
+  </div>
+
+  <!-- DEPARTMENT TABLE -->
+  <!-- DEPARTMENT TABLE -->
+
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+    <table class="w-full border-collapse">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-4 text-left">#</th>
+          <th class="p-4 text-left">Name TH</th>
+          <th class="p-4 text-left">Name EN</th>
+          <th class="p-4 text-left">Description</th>
+          <th class="p-4 text-left">Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (department of departments; track department.id) {
+
+        <!-- DEPARTMENT ROW -->
+        <tr class="border-t bg-white">
+          <td class="p-4 align-top">
+            <button
+              (click)="toggleExpand(department.id)"
+              class="flex h-8 w-8 items-center justify-center rounded-lg border transition hover:bg-gray-100">
+              <span class="text-sm transition" [class.rotate-90]="expandedDepartmentId === department.id"> ▶ </span>
+            </button>
+          </td>
+
+          <td class="p-4 align-top font-medium">
+            {{ department.nameTh }}
+          </td>
+
+          <td class="p-4 align-top">
+            {{ department.nameEn }}
+          </td>
+
+          <td class="p-4 align-top">
+            {{ department.description || '-' }}
+          </td>
+
+          <td class="p-4 align-top">
+            <div class="flex flex-wrap gap-2">
+              <button
+                (click)="openEditDepartment(department.id)"
+                class="rounded-lg bg-yellow-500 px-3 py-2 text-sm font-medium text-white">
+                Edit
+              </button>
+
+              <button
+                (click)="deleteDepartment(department.id)"
+                class="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white">
+                Delete
+              </button>
+
+              <button
+                (click)="openCreatePosition(department.id)"
+                class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white">
+                + Position
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- POSITION EXPAND -->
+        @if (expandedDepartmentId === department.id) {
+
+        <tr class="bg-gray-50">
+          <td colspan="5" class="p-0">
+            <div class="border-t border-gray-200 bg-gray-50 p-5">
+              <div class="mb-4 flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-bold">Positions</h3>
+
+                  <p class="text-sm text-gray-500">
+                    {{ department.nameTh }}
+                  </p>
+                </div>
+
+                <button
+                  (click)="openCreatePosition(department.id)"
+                  class="rounded-lg bg-black px-4 py-2 text-sm text-white">
+                  + Add Position
+                </button>
+              </div>
+
+              <!-- POSITION TABLE -->
+              <div class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                <table class="w-full border-collapse">
+                  <thead class="bg-gray-100">
+                    <tr>
+                      <th class="p-3 text-left text-sm">ID</th>
+
+                      <th class="p-3 text-left text-sm">Name TH</th>
+
+                      <th class="p-3 text-left text-sm">Name EN</th>
+
+                      <th class="p-3 text-left text-sm">Description</th>
+
+                      <th class="p-3 text-left text-sm">Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    @for ( position of getPositionsByDepartment(department.id); track position.id ) {
+
+                    <tr class="border-t">
+                      <td class="p-3 text-sm">
+                        {{ position.id }}
+                      </td>
+
+                      <td class="p-3 text-sm">
+                        {{ position.nameTh }}
+                      </td>
+
+                      <td class="p-3 text-sm">
+                        {{ position.nameEn }}
+                      </td>
+
+                      <td class="p-3 text-sm">
+                        {{ position.description || '-' }}
+                      </td>
+
+                      <td class="p-3 text-sm">
+                        <div class="flex gap-2">
+                          <button
+                            (click)="openEditPosition(position.id)"
+                            class="rounded bg-yellow-500 px-3 py-1.5 text-xs text-white">
+                            Edit
+                          </button>
+
+                          <button
+                            (click)="deletePosition(position.id)"
+                            class="rounded bg-red-600 px-3 py-1.5 text-xs text-white">
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+
+                    } @if ( getPositionsByDepartment(department.id).length === 0 ) {
+
+                    <tr>
+                      <td colspan="5" class="p-6 text-center text-sm text-gray-400">No positions found</td>
+                    </tr>
+
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        } }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===================================================== -->
+<!-- DEPARTMENT MODAL -->
+<!-- ===================================================== -->
+
+@if (showDepartmentModal) {
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  <div class="w-full max-w-xl rounded-2xl bg-white p-6">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-2xl font-bold">
+        {{ editingDepartmentId ? 'Edit' : 'Create' }}
+        Department
+      </h2>
+
+      <button (click)="closeDepartmentModal()">✕</button>
+    </div>
+
+    <form [formGroup]="departmentForm" class="space-y-4">
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name TH </label>
+
+        <input type="text" formControlName="nameTh" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name EN </label>
+
+        <input type="text" formControlName="nameEn" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Description </label>
+
+        <textarea rows="3" formControlName="description" class="w-full rounded-xl border p-3"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" (click)="closeDepartmentModal()" class="rounded-lg border px-4 py-2">Cancel</button>
+
+        <button type="button" (click)="saveDepartment()" class="rounded-lg bg-black px-5 py-2 text-white">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+}
+
+<!-- ===================================================== -->
+<!-- POSITION MODAL -->
+<!-- ===================================================== -->
+
+@if (showPositionModal) {
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+  <div class="w-full max-w-xl rounded-2xl bg-white p-6">
+    <div class="mb-6 flex items-center justify-between">
+      <h2 class="text-2xl font-bold">
+        {{ editingPositionId ? 'Edit' : 'Create' }}
+        Position
+      </h2>
+
+      <button (click)="closePositionModal()">✕</button>
+    </div>
+
+    <form [formGroup]="positionForm" class="space-y-4">
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Department </label>
+
+        <select formControlName="departmentId" class="w-full rounded-xl border p-3">
+          <option [ngValue]="null">Select Department</option>
+
+          @for (item of departments; track item.id) {
+
+          <option [value]="item.id">
+            {{ item.nameTh }}
+          </option>
+
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name TH </label>
+
+        <input type="text" formControlName="nameTh" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Name EN </label>
+
+        <input type="text" formControlName="nameEn" class="w-full rounded-xl border p-3" />
+      </div>
+
+      <div>
+        <label class="mb-2 block text-sm font-medium"> Description </label>
+
+        <textarea rows="3" formControlName="description" class="w-full rounded-xl border p-3"></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" (click)="closePositionModal()" class="rounded-lg border px-4 py-2">Cancel</button>
+
+        <button type="button" (click)="savePosition()" class="rounded-lg bg-black px-5 py-2 text-white">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+}
