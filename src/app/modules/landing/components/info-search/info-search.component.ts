@@ -461,7 +461,7 @@ export class InfoSearchComponent implements OnInit {
     return `${(m.title ?? 0).toString().padStart(6, '0')}`;
   }
   avatar(m: Profile): string {
-    return toAbsolute(m.avatarUrl) || 'assets/images/avatar-placeholder.png';
+    return toAbsolute(m.avatarUrl) || 'assets/images/avatar-placeholder.svg';
   }
   trackById(_: number, m: Profile): number | undefined {
     return m.id;

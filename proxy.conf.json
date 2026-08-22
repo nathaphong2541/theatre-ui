@@ -1,0 +1,14 @@
+{
+  "/api": {
+    "target": "http://136.85.96.209",
+    "secure": false,
+    "changeOrigin": true,
+    "cookieDomainRewrite": "localhost"
+  },
+  "/officer": {
+    "target": "http://136.85.96.209",
+    "secure": false,
+    "changeOrigin": true,
+    "cookieDomainRewrite": "localhost"
+  }
+}

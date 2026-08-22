@@ -432,7 +432,7 @@ export class SearchSkillComponent implements OnInit {
     return `${(m.title ?? 0).toString().padStart(6, '0')}`;
   }
   avatar(m: Profile): string {
-    return toAbsolute((m as any).avatarUrl) || 'assets/images/avatar-placeholder.png';
+    return toAbsolute((m as any).avatarUrl) || 'assets/images/avatar-placeholder.svg';
   }
   provinceOf(m: Profile): string {
     const anyM = m as any;

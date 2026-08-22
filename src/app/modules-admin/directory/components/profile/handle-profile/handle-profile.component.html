@@ -41,8 +41,11 @@
       </div>
     </div>
   </header>
-  <div class="grid grid-cols-1 p-4 xl:grid-cols-2 gap-4 lg:p-6">
-    <div class="flex flex-col gap-4">
+  <div class="mx-auto max-w-5xl space-y-6 p-4 lg:p-6">
+    <!-- ═══ TOP HERO: Avatar + Basic Info side-by-side ═══ -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-[340px_1fr] lg:gap-6">
+      <!-- LEFT: Profile Image -->
+      <div class="flex flex-col gap-4">
       <section class="z-10 rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <!-- TITLE -->
         <div class="mb-4">
@@ -109,104 +112,10 @@
           </ng-template>
         </div>
       </section>
-
-      <section
-        class="rounded-2xl border border-white/10 bg-[#0b1417]/70 p-5 text-white shadow-[0_12px_40px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-xl md:p-6">
-        <div
-          aria-hidden="true"
-          class="bg-[radial-gradient(60%_60%_at_20%_0%,rgba(138,171,6,0.14),transparent_60%), radial-gradient(50%_50%_at_90%_20%,rgba(20,124,127,0.18),transparent_55%)] pointer-events-none absolute inset-0 -z-10 rounded-2xl"></div>
-
-        <div class="mb-4">
-          <h2 class="flex items-center gap-2 text-xl font-semibold tracking-tight md:text-2xl">
-            <span class="size-2.5 inline-block rounded-full bg-[#8aab06] shadow-[0_0_14px_rgba(138,171,6,0.45)]"></span>
-            <span i18n="@@profile_options_title">Options</span>
-          </h2>
-          <p class="mt-1 text-sm text-white/60" i18n="@@profile_options_hint">
-            เปิดใช้งานโปรไฟล์ส่วนตัวเพื่อซ่อนข้อมูลจากสาธารณะ
-          </p>
-        </div>
-
-        <div class="space-y-6">
-          <div class="flex items-start gap-4">
-            <label class="inline-flex select-none items-center">
-              <input type="checkbox" class="peer sr-only" [formControl]="form.controls.privateProfile" />
-              <span
-                class="bg-white/15 relative inline-flex h-6 w-11 rounded-full border border-white/10 transition peer-checked:border-[#8aab06]/60 peer-checked:bg-[#8aab06]/70">
-                <span
-                  class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
-              </span>
-            </label>
-
-            <div class="min-w-0">
-              <div class="font-semibold text-white">
-                <span i18n="@@profile_private_label_prefix">Private Profile:</span>
-                <ng-container *ngIf="form.value.privateProfile; else privateOff">
-                  <span class="ml-1 text-[#cfe27a]" i18n="@@profile_private_on">On</span>
-                </ng-container>
-                <ng-template #privateOff>
-                  <span class="ml-1 text-white/70" i18n="@@profile_private_off">Off</span>
-                </ng-template>
-              </div>
-
-              <p class="text-white/65 mt-1 text-sm">
-                <span i18n="@@profile_private_desc_prefix">Your profile is</span>
-                <span
-                  class="border-[#8aab06]/35 mx-1 inline-flex items-center rounded-md border bg-[#8aab06]/10 px-2 py-0.5 text-xs text-[#cfe27a]">
-                  <ng-container *ngIf="form.value.privateProfile; else publicText">
-                    <span i18n="@@profile_private_private">private</span>
-                  </ng-container>
-                  <ng-template #publicText>
-                    <span i18n="@@profile_private_public">public</span>
-                  </ng-template>
-                </span>
-                <span i18n="@@profile_private_desc_suffix">and you'll appear in searches.</span>
-              </p>
-            </div>
-          </div>
-
-          <div class="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-
-          <div class="flex items-start gap-4">
-            <label class="inline-flex select-none items-center">
-              <input type="checkbox" class="peer sr-only" [formControl]="form.controls.profileIsCompany" />
-              <span
-                class="bg-white/15 relative inline-flex h-6 w-11 rounded-full border border-white/10 transition peer-checked:border-[#8aab06]/60 peer-checked:bg-[#8aab06]/70">
-                <span
-                  class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
-              </span>
-            </label>
-
-            <div class="min-w-0">
-              <div class="font-semibold text-white">
-                <span i18n="@@profile_type_label_prefix">Profile type:</span>
-                <ng-container *ngIf="form.value.profileIsCompany; else personalType">
-                  <span class="ml-1 text-[#cfe27a]" i18n="@@profile_type_company">Company</span>
-                </ng-container>
-                <ng-template #personalType>
-                  <span class="ml-1 text-white/70" i18n="@@profile_type_personal">Personal</span>
-                </ng-template>
-              </div>
-
-              <p class="text-white/65 mt-1 text-sm">
-                <span i18n="@@profile_type_desc_prefix">This is a</span>
-                <span
-                  class="border-[#8aab06]/35 mx-1 inline-flex items-center rounded-md border bg-[#8aab06]/10 px-2 py-0.5 text-xs text-[#cfe27a]">
-                  <ng-container *ngIf="form.value.profileIsCompany; else personalLower">
-                    <span i18n="@@profile_type_company_lower">company</span>
-                  </ng-container>
-                  <ng-template #personalLower>
-                    <span i18n="@@profile_type_personal_lower">personal</span>
-                  </ng-template>
-                </span>
-                <span i18n="@@profile_type_desc_suffix">profile</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <div class="flex flex-col gap-4">
+      <!-- RIGHT: Name + Profession -->
+      <div class="flex flex-col gap-4">
       <section
         class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <div class="mb-4">
@@ -353,7 +262,106 @@
           </p>
         </div>
       </section>
+      </div>
+    </div>
+    <!-- ═══ END HERO ═══ -->
 
+    <!-- ═══ OPTIONS ═══ -->
+    <section
+      class="rounded-2xl border border-white/10 bg-[#0b1417]/70 p-5 text-white shadow-[0_12px_40px_rgba(0,0,0,0.45)] ring-1 ring-white/10 backdrop-blur-xl md:p-6">
+      <div
+        aria-hidden="true"
+        class="bg-[radial-gradient(60%_60%_at_20%_0%,rgba(138,171,6,0.14),transparent_60%), radial-gradient(50%_50%_at_90%_20%,rgba(20,124,127,0.18),transparent_55%)] pointer-events-none absolute inset-0 -z-10 rounded-2xl"></div>
+
+      <div class="mb-4">
+        <h2 class="flex items-center gap-2 text-xl font-semibold tracking-tight md:text-2xl">
+          <span class="size-2.5 inline-block rounded-full bg-[#8aab06] shadow-[0_0_14px_rgba(138,171,6,0.45)]"></span>
+          <span i18n="@@profile_options_title">Options</span>
+        </h2>
+        <p class="mt-1 text-sm text-white/60" i18n="@@profile_options_hint">
+          เปิดใช้งานโปรไฟล์ส่วนตัวเพื่อซ่อนข้อมูลจากสาธารณะ
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div class="flex items-start gap-4">
+          <label class="inline-flex select-none items-center">
+            <input type="checkbox" class="peer sr-only" [formControl]="form.controls.privateProfile" />
+            <span
+              class="bg-white/15 relative inline-flex h-6 w-11 rounded-full border border-white/10 transition peer-checked:border-[#8aab06]/60 peer-checked:bg-[#8aab06]/70">
+              <span
+                class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+            </span>
+          </label>
+
+          <div class="min-w-0">
+            <div class="font-semibold text-white">
+              <span i18n="@@profile_private_label_prefix">Private Profile:</span>
+              <ng-container *ngIf="form.value.privateProfile; else privateOff">
+                <span class="ml-1 text-[#cfe27a]" i18n="@@profile_private_on">On</span>
+              </ng-container>
+              <ng-template #privateOff>
+                <span class="ml-1 text-white/70" i18n="@@profile_private_off">Off</span>
+              </ng-template>
+            </div>
+
+            <p class="text-white/65 mt-1 text-sm">
+              <span i18n="@@profile_private_desc_prefix">Your profile is</span>
+              <span
+                class="border-[#8aab06]/35 mx-1 inline-flex items-center rounded-md border bg-[#8aab06]/10 px-2 py-0.5 text-xs text-[#cfe27a]">
+                <ng-container *ngIf="form.value.privateProfile; else publicText">
+                  <span i18n="@@profile_private_private">private</span>
+                </ng-container>
+                <ng-template #publicText>
+                  <span i18n="@@profile_private_public">public</span>
+                </ng-template>
+              </span>
+              <span i18n="@@profile_private_desc_suffix">and you'll appear in searches.</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-start gap-4">
+          <label class="inline-flex select-none items-center">
+            <input type="checkbox" class="peer sr-only" [formControl]="form.controls.profileIsCompany" />
+            <span
+              class="bg-white/15 relative inline-flex h-6 w-11 rounded-full border border-white/10 transition peer-checked:border-[#8aab06]/60 peer-checked:bg-[#8aab06]/70">
+              <span
+                class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
+            </span>
+          </label>
+
+          <div class="min-w-0">
+            <div class="font-semibold text-white">
+              <span i18n="@@profile_type_label_prefix">Profile type:</span>
+              <ng-container *ngIf="form.value.profileIsCompany; else personalType">
+                <span class="ml-1 text-[#cfe27a]" i18n="@@profile_type_company">Company</span>
+              </ng-container>
+              <ng-template #personalType>
+                <span class="ml-1 text-white/70" i18n="@@profile_type_personal">Personal</span>
+              </ng-template>
+            </div>
+
+            <p class="text-white/65 mt-1 text-sm">
+              <span i18n="@@profile_type_desc_prefix">This is a</span>
+              <span
+                class="border-[#8aab06]/35 mx-1 inline-flex items-center rounded-md border bg-[#8aab06]/10 px-2 py-0.5 text-xs text-[#cfe27a]">
+                <ng-container *ngIf="form.value.profileIsCompany; else personalLower">
+                  <span i18n="@@profile_type_company_lower">company</span>
+                </ng-container>
+                <ng-template #personalLower>
+                  <span i18n="@@profile_type_personal_lower">personal</span>
+                </ng-template>
+              </span>
+              <span i18n="@@profile_type_desc_suffix">profile</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ CREDITS + ABOUT (2-column) ═══ -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
       <section
         id="credits"
         class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
@@ -494,6 +502,11 @@
           </p>
         </ng-template>
 
+      </section>
+
+      <!-- About (second column) -->
+      <section
+        class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <h2 class="mb-3 flex items-center gap-2 text-xl font-semibold tracking-tight md:text-2xl">
           <span class="size-2.5 bg-accent-500/70 inline-block rounded-full"></span>
           <span i18n="@@profile_about_title">About</span>
@@ -504,7 +517,11 @@
           i18n-placeholder="@@profile_about_ph"
           [formControl]="form.controls.about"></textarea>
       </section>
+    </div>
+    <!-- ═══ END CREDITS + ABOUT ═══ -->
 
+    <!-- ═══ CONTACT + SOCIAL (2-column) ═══ -->
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
       <section
         class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <div class="mb-4">
@@ -660,7 +677,11 @@
           </div>
         </div>
       </section>
+    </div>
+    <!-- ═══ END CONTACT + SOCIAL ═══ -->
 
+    <!-- ═══ DETAILS GRID (2-column: Work Locations / Unions / Experience / Partners) ═══ -->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
       <section
         class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <div class="mb-2">
@@ -1242,7 +1263,10 @@
           <p class="mt-1 text-xs text-gray-400" i18n="@@common_other_please_specify">Other (please specify)</p>
         </div>
       </section>
+    </div>
+    <!-- ═══ END DETAILS GRID ═══ -->
 
+    <!-- ═══ EDUCATION + MEDIA + RESUME (full-width sections) ═══ -->
       <section
         class="rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur md:p-6">
         <div class="mb-4">
@@ -1550,7 +1574,6 @@
           </div>
         </section>
       </div>
-    </div>
   </div>
 </div>
 
@@ -1558,7 +1581,7 @@
 <div *ngIf="creditModalOpen" class="fixed inset-0 z-50">
   <!-- Backdrop -->
   <button
-    class="absolute inset-0 bg-black/70 backdrop-blur-[2px]"
+    class="absolute inset-0 bg-black/50 backdrop-blur-sm"
     (click)="closeCreditModal()"
     aria-label="Close modal"
     i18n-aria-label="@@profile_credit_modal_close_aria"></button>
@@ -1566,11 +1589,11 @@
   <!-- Dialog -->
   <div class="relative mx-auto max-w-4xl px-4 py-10">
     <div
-      class="relative w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0b1417]/75 shadow-[0_25px_90px_rgba(0,0,0,0.75)] ring-1 ring-white/10 backdrop-blur-xl">
+      class="relative w-full overflow-hidden rounded-2xl border border-white/15 bg-[#141e22]/90 shadow-[0_25px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/10 backdrop-blur-2xl">
       <!-- glow -->
       <div
         aria-hidden="true"
-        class="bg-[radial-gradient(60%_40%_at_20%_0%,rgba(138,171,6,0.18),transparent_60%), radial-gradient(40%_30%_at_80%_10%,rgba(20,124,127,0.20),transparent_55%)] pointer-events-none absolute -inset-20 -z-10"></div>
+        class="bg-[radial-gradient(60%_40%_at_20%_0%,rgba(138,171,6,0.10),transparent_60%), radial-gradient(40%_30%_at_80%_10%,rgba(20,124,127,0.12),transparent_55%)] pointer-events-none absolute -inset-20 -z-10"></div>
 
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-white/10 px-6 py-4">
@@ -1760,7 +1783,7 @@
 
         <!-- Department (multi dropdown) -->
         <div
-          class="border-white/12 rounded-2xl border bg-white/[0.03] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:p-5">
+          class="border-white/10 rounded-2xl border bg-white/[0.06] p-4 sm:p-5">
           <div class="mb-3 flex items-start justify-between gap-3">
             <div class="relative pl-3">
               <span class="bg-accent-500/70 absolute left-0 top-0 h-full w-1 rounded-full"></span>
@@ -1780,13 +1803,13 @@
           <div #deptWrap class="relative">
             <button
               type="button"
-              class="focus:border-accent-500/70 w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-left hover:border-gray-300 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)] focus:outline-none"
+              class="focus:border-accent-500/50 w-full rounded-xl border border-white/15 bg-white/[0.06] px-3.5 py-2.5 text-left hover:border-white/25 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.12)] focus:outline-none"
               (click)="toggleCreditDd($event, 'dept')">
               <div class="flex flex-wrap gap-1.5">
                 <ng-container *ngIf="selectedCreditDepts.size; else deptPlaceholder">
                   <span
                     *ngFor="let label of labelsArrayFromNumSet(selectedCreditDepts, departmentsApi)"
-                    class="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs font-medium text-gray-900">
+                    class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-gray-100">
                     {{ label }}
                   </span>
                 </ng-container>
@@ -1868,7 +1891,7 @@
 
         <!-- Position (multi dropdown) -->
         <div
-          class="border-white/12 mt-4 rounded-2xl border bg-white/[0.03] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.25)] sm:p-5">
+          class="border-white/10 mt-4 rounded-2xl border bg-white/[0.06] p-4 sm:p-5">
           <div class="mb-3 flex items-start justify-between gap-3">
             <div class="relative pl-3">
               <span class="bg-accent-500/40 absolute left-0 top-0 h-full w-1 rounded-full"></span>
@@ -1888,7 +1911,7 @@
           <div #posWrap class="relative">
             <button
               type="button"
-              class="focus:border-accent-500/70 w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-left hover:border-gray-300 focus:shadow-[0_0_0_4px_rgba(138,171,6,0.18)] focus:outline-none disabled:opacity-60 disabled:hover:border-gray-200"
+              class="focus:border-accent-500/50 w-full rounded-xl border border-white/15 bg-white/[0.06] px-3.5 py-2.5 text-left hover:border-white/25 focus:shadow-[0_0_0_3px_rgba(138,171,6,0.12)] focus:outline-none disabled:opacity-60 disabled:hover:border-white/15"
               [disabled]="!filteredPositions.length"
               (click)="toggleCreditDd($event, 'pos')">
               <div class="flex flex-wrap gap-1.5">
@@ -1898,7 +1921,7 @@
                       let label of labelsArrayFromNumSet(selectedCreditPositions, filteredPositions);
                       trackBy: trackById
                     "
-                    class="inline-flex items-center rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs font-medium text-gray-900">
+                    class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-gray-100">
                     {{ label }}
                   </span>
                 </ng-container>

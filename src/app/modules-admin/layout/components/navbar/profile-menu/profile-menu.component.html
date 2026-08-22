@@ -4,7 +4,7 @@
   <button (click)="toggleMenu()" class="bg-card relative flex rounded-full text-sm" type="button">
     <span class="sr-only">Open user menu</span>
     <img class="size-9 shrink-0 rounded-md"
-      [src]="(menuUser$ | async)?.avatarSrc || 'assets/images/avatar-placeholder.png'" alt="user avatar" />
+      [src]="(menuUser$ | async)?.avatarSrc || 'assets/images/avatar-placeholder.svg'" alt="user avatar" />
   </button>
 
   <!-- Dropdown -->
@@ -13,7 +13,7 @@
     <!-- Header: avatar + name + email -->
     <div class="flex-row flex items-center px-4 pb-4" *ngIf="menuUser$ | async as u">
       <div class="w-10 shrink-0">
-        <img class="rounded-md" [src]="u.avatarSrc || 'assets/images/avatar-placeholder.png'" alt="user avatar" />
+        <img class="rounded-md" [src]="u.avatarSrc || 'assets/images/avatar-placeholder.svg'" alt="user avatar" />
       </div>
       <div class="text-white overflow-hidden px-2 text-sm font-semibold">
         {{ u.displayName || '—' }}
